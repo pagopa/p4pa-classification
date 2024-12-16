@@ -1,6 +1,6 @@
 apiVersion: v2
-name: template-payments-java-repository
-description: TEMPLATE PAYMENTS JAVA REPOSITORY
+name: p4pa-classification
+description: p4pa-classification
 type: application
 version: 1.0.0
 appVersion: 1.0.0
