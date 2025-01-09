@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Treasury {
+public class Treasury implements Serializable{
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "treasury_generator")
