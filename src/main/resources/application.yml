@@ -7,11 +7,10 @@ spring:
       virtual:
         enabled: "\${VIRTUAL_THREADS_ENABLED:true}"
     datasource:
-      classification:
-        jdbc-url: \${CLASSIFICATION_DB_URL:jdbc:postgresql://\${CLASSIFICATION_DB_HOST:localhost}:\${CLASSIFICATION_DB_PORT:5432}/\${CLASSIFICATION_DB_NAME:payhub}?currentSchema=CLASSIFICATION}
-        username: \${CLASSIFICATION_DB_USER}
-        password: \${CLASSIFICATION_DB_PASSWORD}
-        driverClassName: org.postgresql.Driver
+      url: "\${CLASSIFICATION_DB_URL:jdbc:postgresql://\${CLASSIFICATION_DB_HOST:localhost}:\${CLASSIFICATION_DB_PORT:5432}/\${CLASSIFICATION_DB_NAME:mypay}}"
+      username: "\${CLASSIFICATION_DB_USER}"
+      password: "\${CLASSIFICATION_DB_PASSWORD}"
+      driverClassName: org.postgresql.Driver
     data:
       rest:
         basePath: crud

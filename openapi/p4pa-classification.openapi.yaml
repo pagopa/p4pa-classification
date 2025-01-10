@@ -3,32 +3,160 @@ info:
   title: p4pa-classification
   description: Api and Models
   version: "1.0.0"
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
 paths:
-  /api/v1/greet:
-    get:
-      summary: "Hello World"
-      description: "Sample endpoint that return greetings"
+  /treasury:
+    post:
+      tags:
+        - treasury
+      operationId: createTreasury
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TreasuryDTO"
+        required: true
       responses:
-        '200':
-          description: "Success"
+        "201":
+          description: Created
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Hello, World!"
-        '500':
-          description: "Internal Server Error"
+                $ref: '#/components/schemas/TreasuryDTO'
+        "400":
+          description: Invalid request
+        "500":
+          description: Internal server error
+    get:
+      tags:
+        - treasury
+      operationId: getAllTreasuries
+      description: Retrieve all treasury records.
+      responses:
+        "200":
+          description: List of treasury records retrieved successfully.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Internal Server Error"
+                type: array
+                items:
+                  $ref: '#/components/schemas/TreasuryDTO'
+        "500":
+          description: Internal server error
+  /treasury/{treasuryId}:
+    get:
+      tags:
+        - treasury
+      operationId: getTreasuryById
+      description: Retrieve a single treasury record by its ID.
+      parameters:
+        - name: treasuryId
+          in: path
+          required: true
+          description: ID of the treasury record to retrieve.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Treasury record retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TreasuryDTO'
+        "404":
+          description: Treasury record not found.
+        "500":
+          description: Internal server error
+    put:
+      tags:
+        - treasury
+      operationId: updateTreasury
+      description: Update an existing treasury record by its ID.
+      parameters:
+        - name: treasuryId
+          in: path
+          required: true
+          description: ID of the treasury record to update.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TreasuryDTO'
+        required: true
+      responses:
+        "200":
+          description: Treasury record updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TreasuryDTO'
+        "404":
+          description: Treasury record not found.
+        "400":
+          description: Invalid request
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+        - treasury
+      operationId: deleteTreasury
+      description: Delete a treasury record by its ID.
+      parameters:
+        - name: treasuryId
+          in: path
+          required: true
+          description: ID of the treasury record to delete.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Treasury record deleted successfully.
+        "404":
+          description: Treasury record not found.
+        "500":
+          description: Internal server error
+#  /treasury/delete:
+#    delete:
+#      tags:
+#        - treasury
+#      operationId: deleteTreasuryByFields
+#      description: Delete treasury records by organizationId, billCode, and billYear.
+#      parameters:
+#        - name: organizationId
+#          in: query
+#          required: true
+#          schema:
+#            type: integer
+#            format: int64
+#          description: Organization ID.
+#        - name: billCode
+#          in: query
+#          required: true
+#          schema:
+#            type: string
+#          description: Bill code.
+#        - name: billYear
+#          in: query
+#          required: true
+#          schema:
+#            type: string
+#          description: Bill year.
+#      responses:
+#        "200":
+#          description: Records deleted successfully.
+#          content:
+#            application/json:
+#              schema:
+#                type: string
+#        "404":
+#          description: No records found.
 security:
   - BearerAuth: []
 components:
@@ -36,3 +164,117 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+  schemas:
+    TreasuryDTO:
+      type: object
+      properties:
+        treasuryId:
+          type: integer
+          format: int64
+        billYear:
+          type: string
+        billCode:
+          type: string
+        accountCode:
+          type: string
+        domainIdCode:
+          type: string
+        transactionTypeCode:
+          type: string
+        remittanceCode:
+          type: string
+        remittanceInformation:
+          type: string
+        billIpNumber:
+          type: number
+          format: double
+        billDate:
+          type: string
+          format: date
+        receptionDate:
+          type: string
+          format: date
+        documentYear:
+          type: string
+        documentCode:
+          type: string
+        sealCode:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        address:
+          type: string
+        postalCode:
+          type: string
+        city:
+          type: string
+        fiscalCode:
+          type: string
+        vatNumber:
+          type: string
+        abiCode:
+          type: string
+        cabCode:
+          type: string
+        accountRegistryCode:
+          type: string
+        provisionalAe:
+          type: string
+        provisionalCode:
+          type: string
+        ibanCode:
+          type: string
+        accountTypeCode:
+          type: string
+          maxLength: 1
+        processCode:
+          type: string
+        executionPgCode:
+          type: string
+        transferPgCode:
+          type: string
+        processPgNumber:
+          type: integer
+          format: int64
+        regionValueDate:
+          type: string
+          format: date
+        organizationId:
+          type: integer
+          format: int64
+        iuf:
+          type: string
+        iuv:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+        isRegularized:
+          type: boolean
+        ingestionFlowFileId:
+          type: integer
+          format: int64
+        actualSuspensionDate:
+          type: string
+          format: date
+        managementProvisionalCode:
+          type: string
+        endToEndId:
+          type: string
+        taxCodeHash:
+          type: string
+          format: byte
+        vatNumberHash:
+          type: string
+          format: byte
+        lastNameHash:
+          type: string
+          format: byte
+        personalDataId:
+          type: integer
+          format: int64
