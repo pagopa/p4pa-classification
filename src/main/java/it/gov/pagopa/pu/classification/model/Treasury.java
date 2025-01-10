@@ -1,9 +1,11 @@
 package it.gov.pagopa.pu.classification.model;
 
+import it.gov.pagopa.pu.classification.config.semanticids.TreasurySemanticIdGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,10 +17,12 @@ import java.util.Date;
 @Table(name = "treasury")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Data
 public class Treasury implements Serializable{
 
   @Id
+  @TreasurySemanticIdGenerator
   private String treasuryId;
 
   private String billYear;
