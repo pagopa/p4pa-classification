@@ -1,15 +1,15 @@
 package it.gov.pagopa.pu.classification.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "treasury")
@@ -19,9 +19,7 @@ import java.util.List;
 public class Treasury implements Serializable{
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "treasury_generator")
-  @SequenceGenerator(name = "treasury_generator", sequenceName = "treasury_seq", allocationSize = 1)
-  private Long treasuryId;
+  private String treasuryId;
 
   private String billYear;
   private String billCode;

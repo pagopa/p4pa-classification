@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc(print = MockMvcPrint.NONE)
+@AutoConfigureMockMvc(print = MockMvcPrint.NONE, addFilters = false)
 @TestPropertySource(properties = {
   "spring.datasource.driver-class-name=org.h2.Driver",
   "spring.datasource.url=jdbc:h2:mem:db;DB_CLOSE_DELAY=-1",
@@ -62,7 +62,7 @@ class OpenApiGeneratorTest {
       }
     }
     if(toStore){
-      Files.writeString(openApiGeneratedPath, openApiResult, StandardOpenOption.TRUNCATE_EXISTING);
+      Files.writeString(openApiGeneratedPath, openApiResult, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     String gitStatus = execCmd("git", "status");

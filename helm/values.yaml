@@ -61,10 +61,12 @@ microservice-chart:
     APPLICATIONINSIGHTS_PREVIEW_PROFILER_ENABLED: "false"
     ENABLE_AUDIT_APPENDER: "TRUE"
 
-
   envSecret:
     APPLICATIONINSIGHTS_CONNECTION_STRING: appinsights-connection-string
     JWT_TOKEN_PUBLIC_KEY: jwt-public-key
+    CLASSIFICATION_DB_HOST: db-host
+    CLASSIFICATION_DB_USER: db-piattaforma-unitaria-login-username
+    CLASSIFICATION_DB_PASSWORD: db-piattaforma-unitaria-login-password
 
   # nodeSelector: {}
 
