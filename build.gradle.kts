@@ -31,6 +31,7 @@ repositories {
 val springDocOpenApiVersion = "2.7.0"
 val openApiToolsVersion = "0.2.6"
 val micrometerVersion = "1.4.1"
+val postgresJdbcVersion = "42.7.4"
 val bouncycastleVersion = "1.79"
 
 dependencies {
@@ -52,6 +53,8 @@ dependencies {
   //security
   implementation("org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion")
 
+  //postgres jdbc
+  implementation("org.postgresql:postgresql:$postgresJdbcVersion")
 
   //	Testing
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
