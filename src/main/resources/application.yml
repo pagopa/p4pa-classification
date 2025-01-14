@@ -9,6 +9,8 @@ spring:
     threads:
       virtual:
         enabled: "\${VIRTUAL_THREADS_ENABLED:true}"
+    jpa:
+      show-sql: "\${SHOW_SQL:false}"
     datasource:
       url: "\${CLASSIFICATION_DB_URL:jdbc:postgresql://\${CLASSIFICATION_DB_HOST:localhost}:\${CLASSIFICATION_DB_PORT:5432}/\${CLASSIFICATION_DB_NAME:payhub}?currentSchema=classification}"
       username: "\${CLASSIFICATION_DB_USER}"
