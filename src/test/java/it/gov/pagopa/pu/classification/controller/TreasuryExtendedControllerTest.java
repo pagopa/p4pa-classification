@@ -44,4 +44,22 @@ class TreasuryExtendedControllerTest {
     // Then
     Assertions.assertEquals(entities.size(), result);
   }
+
+  @Test
+  void whenDeleteByOrganizationIdAndIuvAndIurAndTransferIndexThenInvokeRepository(){
+    // Given
+    Long organizationId = 0L;
+    String billCode = "BILLCODE";
+    String billYear = "BILLYEAR";
+    long expectedResult = 1L;
+
+    Mockito.when(repositoryMock.deleteByOrganizationIdAndBillCodeAndBillYear(Mockito.same(organizationId), Mockito.same(billCode), Mockito.same(billYear)))
+      .thenReturn(expectedResult);
+
+    // When
+    long result = controller.deleteByOrganizationIdAndBillCodeAndBillYear(organizationId, billCode, billYear);
+
+    // Then
+    Assertions.assertEquals(expectedResult, result);
+  }
 }

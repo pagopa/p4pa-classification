@@ -2,10 +2,7 @@ package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.model.Treasury;
 import it.gov.pagopa.pu.classification.repository.TreasuryRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +20,10 @@ public class TreasuryEntityExtendedController {
   @PostMapping
   public int saveAll(@RequestBody List<Treasury> treasuries){
     return repository.saveAll(treasuries).size();
+  }
+
+  @DeleteMapping("by-organizationId-billCode-billYear")
+  public long deleteByOrganizationIdAndBillCodeAndBillYear(@RequestParam Long organizationId, @RequestParam String billCode, @RequestParam String billYear){
+    return repository.deleteByOrganizationIdAndBillCodeAndBillYear(organizationId, billCode, billYear);
   }
 }
