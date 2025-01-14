@@ -2,6 +2,9 @@ package it.gov.pagopa.pu.classification.config;
 
 
 import io.swagger.v3.oas.models.PathItem;
+import it.gov.pagopa.pu.classification.model.Classification;
+import it.gov.pagopa.pu.classification.model.PaymentsReporting;
+import it.gov.pagopa.pu.classification.model.Treasury;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import org.apache.commons.lang3.StringUtils;
@@ -33,19 +36,26 @@ public class RepositoryRestCustomConfiguration {
 
   @Bean
   public OpenApiCustomizer operationIdCustomizer() {
-    return openApi -> openApi.getPaths().entrySet().stream()
-      .filter(e -> e.getKey().startsWith("/crud/"))
-      .forEach(entry -> {
-        String[] paths = entry.getKey().split("/");
-        entry.getValue().readOperationsMap().forEach((httpMethod, operation) -> operation.setOperationId(
-          "crud-" +
-            StringUtils.firstNonEmpty(
-              operation.getDescription(),
-              paths[2] + "-" + paths[paths.length - 1]
-            )
-            + (PathItem.HttpMethod.GET.equals(httpMethod) && paths.length == 3 ? "s" : "")
-        ));
-      });
+    return openApi -> {
+      openApi.getPaths().entrySet().stream()
+        .filter(e -> e.getKey().startsWith("/crud/"))
+        .forEach(entry -> {
+          String[] paths = entry.getKey().split("/");
+          entry.getValue().readOperationsMap().forEach((httpMethod, operation) -> operation.setOperationId(
+            "crud-" +
+              StringUtils.firstNonEmpty(
+                operation.getDescription(),
+                paths[2] + "-" + paths[paths.length - 1]
+              )
+              + (PathItem.HttpMethod.GET.equals(httpMethod) && paths.length == 3 ? "s" : "")
+          ));
+        });
+
+      // removing duplicate schema due to ControllerExt
+      openApi.getComponents().getSchemas().remove(PaymentsReporting.class.getSimpleName());
+      openApi.getComponents().getSchemas().remove(Classification.class.getSimpleName());
+      openApi.getComponents().getSchemas().remove(Treasury.class.getSimpleName());
+    };
   }
 
 }
