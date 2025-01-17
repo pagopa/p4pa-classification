@@ -34,7 +34,7 @@ public class Treasury extends BaseEntity implements Serializable{
   private String domainIdCode;
   private String transactionTypeCode;
   private String remittanceCode;
-  private String remittanceInformation;
+  private String remittanceDescription;
   private Long billAmountCents;
   private LocalDate billDate;
   private OffsetDateTime receptionDate;
