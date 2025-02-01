@@ -22,7 +22,6 @@ public class Treasury extends BaseEntity implements Serializable{
 
   @Id
   @TreasurySemanticIdGenerator
-  @NotNull
   private String treasuryId;
   @NotNull
   private String billYear;

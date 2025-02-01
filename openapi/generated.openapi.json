@@ -1263,7 +1263,7 @@
         }
       },
       "Treasury" : {
-        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "creationDate", "ingestionFlowFileId", "organizationId", "pspLastName", "treasuryId", "updateDate", "updateOperatorExternalId" ],
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -1457,7 +1457,7 @@
         }
       },
       "PaymentsReporting" : {
-        "required" : [ "acquiringDate", "amountPaidCents", "creationDate", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "paymentsReportingId", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex", "updateDate", "updateOperatorExternalId" ],
+        "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -1600,7 +1600,7 @@
         }
       },
       "Classification" : {
-        "required" : [ "classificationId", "creationDate", "label", "organizationId", "updateDate", "updateOperatorExternalId" ],
+        "required" : [ "label", "organizationId" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -1683,7 +1683,7 @@
         }
       },
       "ClassificationRequestBody" : {
-        "required" : [ "classificationId", "creationDate", "label", "organizationId", "updateDate", "updateOperatorExternalId" ],
+        "required" : [ "label", "organizationId" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -1741,7 +1741,7 @@
         }
       },
       "PaymentsReportingRequestBody" : {
-        "required" : [ "acquiringDate", "amountPaidCents", "creationDate", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "paymentsReportingId", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex", "updateDate", "updateOperatorExternalId" ],
+        "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -1840,7 +1840,7 @@
         }
       },
       "TreasuryRequestBody" : {
-        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "creationDate", "ingestionFlowFileId", "organizationId", "pspLastName", "treasuryId", "updateDate", "updateOperatorExternalId" ],
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {

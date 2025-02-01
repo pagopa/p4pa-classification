@@ -22,7 +22,6 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
 
   @Id
   @PaymentsReportingSemanticIdGenerator
-  @NotNull
   private String paymentsReportingId;
   @NotNull
   private Long ingestionFlowFileId;

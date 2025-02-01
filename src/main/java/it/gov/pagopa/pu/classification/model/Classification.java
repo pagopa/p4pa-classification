@@ -17,7 +17,6 @@ public class Classification extends BaseEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "classification_generator")
   @SequenceGenerator(name = "classification_generator", sequenceName = "classification_id_seq", allocationSize = 1)
-  @NotNull
   private Long classificationId;
   @NotNull
   private Long organizationId;
