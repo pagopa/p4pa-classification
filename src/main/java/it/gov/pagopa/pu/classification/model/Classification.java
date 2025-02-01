@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
@@ -16,7 +17,9 @@ public class Classification extends BaseEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "classification_generator")
   @SequenceGenerator(name = "classification_generator", sequenceName = "classification_id_seq", allocationSize = 1)
+  @NotNull
   private Long classificationId;
+  @NotNull
   private Long organizationId;
   private Long transferId;
   private Long paymentNotifyId;
@@ -27,5 +30,6 @@ public class Classification extends BaseEntity implements Serializable {
   private String iuv;
   private String iur;
   private int transferIndex;
+  @NotNull
   private String label;
 }
