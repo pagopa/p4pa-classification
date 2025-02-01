@@ -132,6 +132,6 @@ openApiGenerate {
     "useBeanValidation" to "true",
     "generateConstructorWithAllArgs" to "true",
     "generatedConstructorWithRequiredArgs" to "true",
-    "additionalModelTypeAnnotations" to "@lombok.Builder"
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder"
   ))
 }

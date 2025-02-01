@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.classification.config.semanticids.TreasurySemanticIdGene
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
@@ -21,11 +22,16 @@ public class Treasury extends BaseEntity implements Serializable{
 
   @Id
   @TreasurySemanticIdGenerator
+  @NotNull
   private String treasuryId;
+  @NotNull
   private String billYear;
+  @NotNull
   private String billCode;
 
+  @NotNull
   private Long ingestionFlowFileId;
+  @NotNull
   private Long organizationId;
   private String iuf;
   private String iuv;
@@ -35,13 +41,16 @@ public class Treasury extends BaseEntity implements Serializable{
   private String transactionTypeCode;
   private String remittanceCode;
   private String remittanceDescription;
+  @NotNull
   private Long billAmountCents;
+  @NotNull
   private LocalDate billDate;
   private OffsetDateTime receptionDate;
   private String documentYear;
   private String documentCode;
   private String sealCode;
 
+  @NotNull
   private String pspLastName;
   private String pspFirstName;
   private String pspAddress;
