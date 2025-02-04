@@ -10,6 +10,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,8 +21,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ClassificationExceptionHandler {
 
-  @ExceptionHandler(ValidationException.class)
-  public ResponseEntity<ClassificationErrorDTO> handleViolationException(ValidationException ex, HttpServletRequest request) {
+  @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class})
+  public ResponseEntity<ClassificationErrorDTO> handleViolationException(RuntimeException ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.BAD_REQUEST);
   }
 

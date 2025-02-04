@@ -1,5 +1,7 @@
 package it.gov.pagopa.pu.classification.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import it.gov.pagopa.pu.classification.config.json.OffsetDateTimeToLocalDateTimeDeserializer;
 import it.gov.pagopa.pu.classification.config.semanticids.PaymentsReportingSemanticIdGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -38,6 +40,7 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
   @NotNull
   private String iuf;
   @NotNull
+  @JsonDeserialize(using = OffsetDateTimeToLocalDateTimeDeserializer.class)
   private LocalDateTime flowDateTime;
   @NotNull
   private String regulationUniqueIdentifier;
