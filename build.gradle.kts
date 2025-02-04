@@ -37,6 +37,7 @@ val bouncycastleVersion = "1.79"
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
   implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-data-rest")
@@ -123,6 +124,11 @@ openApiGenerate {
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.classification.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.classification.dto.generated")
+  typeMappings.set(mapOf(
+    "Treasury" to "it.gov.pagopa.pu.classification.model.Treasury",
+    "PaymentsReporting" to "it.gov.pagopa.pu.classification.model.PaymentsReporting",
+    "Classification" to "it.gov.pagopa.pu.classification.model.Classification"
+  ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
     "requestMappingMode" to "api_interface",

@@ -39,7 +39,7 @@ class ClassificationEntityExtendedControllerTest {
       .thenReturn(entities);
 
     // When
-    int result = controller.saveAll(entities);
+    Integer result = controller.saveAll2(entities).getBody();
 
     // Then
     Assertions.assertEquals(entities.size(), result);
@@ -57,7 +57,7 @@ class ClassificationEntityExtendedControllerTest {
       .thenReturn(expectedResult);
 
     // When
-    long result = controller.deleteByOrganizationIdAndIufAndLabel(organizationId, iuf, label);
+    Long result = controller.deleteByOrganizationIdAndIufAndLabel(organizationId, iuf, label).getBody();
 
     // Then
     Assertions.assertEquals(expectedResult, result);
@@ -76,7 +76,7 @@ class ClassificationEntityExtendedControllerTest {
       .thenReturn(expectedResult);
 
     // When
-    long result = controller.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(organizationId, iuv, iur, transferIndex);
+    Long result = controller.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(organizationId, iuv, iur, transferIndex).getBody();
 
     // Then
     Assertions.assertEquals(expectedResult, result);

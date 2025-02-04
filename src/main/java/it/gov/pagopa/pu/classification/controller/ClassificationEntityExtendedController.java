@@ -1,15 +1,16 @@
 package it.gov.pagopa.pu.classification.controller;
 
+import it.gov.pagopa.pu.classification.controller.generated.ClassificationEntityExtendedControllerApi;
 import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 /** Controller to host spring-data-rest directly not supported methods */
 @RestController
-@RequestMapping("/crud-ext/classifications")
-public class ClassificationEntityExtendedController {
+public class ClassificationEntityExtendedController implements ClassificationEntityExtendedControllerApi {
 
   private final ClassificationRepository repository;
 
@@ -17,19 +18,19 @@ public class ClassificationEntityExtendedController {
     this.repository = repository;
   }
 
-  @PostMapping
-  public int saveAll(@RequestBody List<Classification> classifications){
-    return repository.saveAll(classifications).size();
+  @Override
+  public ResponseEntity<Integer> saveAll2(List<Classification> classifications){
+    return ResponseEntity.ok(repository.saveAll(classifications).size());
   }
 
-  @DeleteMapping("by-organizationId-iuf-label")
-  public long deleteByOrganizationIdAndIufAndLabel(@RequestParam Long organizationId,@RequestParam String iuf,@RequestParam String label){
-    return repository.deleteByOrganizationIdAndIufAndLabel(organizationId, iuf, label);
+  @Override
+  public ResponseEntity<Long> deleteByOrganizationIdAndIufAndLabel(Long organizationId, String iuf, String label){
+    return ResponseEntity.ok(repository.deleteByOrganizationIdAndIufAndLabel(organizationId, iuf, label));
   }
 
-  @DeleteMapping("by-organizationId-iuv-iur-transferIndex")
-  public long deleteByOrganizationIdAndIuvAndIurAndTransferIndex(@RequestParam Long organizationId,@RequestParam String iuv,@RequestParam String iur, @RequestParam Integer transferIndex){
-    return repository.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(organizationId, iuv, iur, transferIndex);
+  @Override
+  public ResponseEntity<Long> deleteByOrganizationIdAndIuvAndIurAndTransferIndex(Long organizationId, String iuv, String iur, Integer transferIndex){
+    return ResponseEntity.ok(repository.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(organizationId, iuv, iur, transferIndex));
   }
 
 }

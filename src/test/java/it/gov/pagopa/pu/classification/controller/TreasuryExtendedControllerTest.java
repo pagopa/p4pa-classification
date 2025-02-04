@@ -39,7 +39,7 @@ class TreasuryExtendedControllerTest {
       .thenReturn(entities);
 
     // When
-    int result = controller.saveAll(entities);
+    Integer result = controller.saveAll(entities).getBody();
 
     // Then
     Assertions.assertEquals(entities.size(), result);
@@ -57,7 +57,7 @@ class TreasuryExtendedControllerTest {
       .thenReturn(expectedResult);
 
     // When
-    long result = controller.deleteByOrganizationIdAndBillCodeAndBillYear(organizationId, billCode, billYear);
+    Long result = controller.deleteByOrganizationIdAndBillCodeAndBillYear(organizationId, billCode, billYear).getBody();
 
     // Then
     Assertions.assertEquals(expectedResult, result);

@@ -1,38 +1,226 @@
-openapi: 3.1.0
+openapi: 3.0.1
 info:
   title: p4pa-classification
   description: Api and Models
-  version: "1.0.0"
-paths:
-  /api/v1/greet:
-    get:
-      summary: "Hello World"
-      description: "Sample endpoint that return greetings"
-      responses:
-        '200':
-          description: "Success"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Hello, World!"
-        '500':
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Internal Server Error"
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
 security:
   - BearerAuth: []
+paths:
+  /crud-ext/treasury:
+    post:
+      tags:
+        - treasury-entity-extended-controller
+      operationId: saveAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: 'Treasury'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/treasury/by-organizationId-billCode-billYear:
+    delete:
+      tags:
+        - treasury-entity-extended-controller
+      operationId: deleteByOrganizationIdAndBillCodeAndBillYear
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: billCode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: billYear
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/payments-reporting:
+    post:
+      tags:
+        - payments-reporting-entity-extended-controller
+      operationId: saveAll_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: 'PaymentsReporting'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/classifications:
+    post:
+      tags:
+        - classification-entity-extended-controller
+      operationId: saveAll_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: 'Classification'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/classifications/by-organizationId-iuv-iur-transferIndex:
+    delete:
+      tags:
+        - classification-entity-extended-controller
+      operationId: deleteByOrganizationIdAndIuvAndIurAndTransferIndex
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: iur
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: transferIndex
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/classifications/by-organizationId-iuf-label:
+    delete:
+      tags:
+        - classification-entity-extended-controller
+      operationId: deleteByOrganizationIdAndIufAndLabel
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuf
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
 components:
+  schemas:
+    ClassificationErrorDTO:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          enum:
+            - CLASSIFICATION_BAD_REQUEST
+            - CLASSIFICATION_GENERIC_ERROR
+        message:
+          type: string
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT

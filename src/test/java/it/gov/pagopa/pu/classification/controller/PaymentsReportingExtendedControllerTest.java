@@ -39,7 +39,7 @@ class PaymentsReportingExtendedControllerTest {
       .thenReturn(entities);
 
     // When
-    int result = controller.saveAll(entities);
+    Integer result = controller.saveAll1(entities).getBody();
 
     // Then
     Assertions.assertEquals(entities.size(), result);
