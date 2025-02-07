@@ -215,6 +215,7 @@ components:
         code:
           type: string
           enum:
+            - CLASSIFICATION_NOT_FOUND
             - CLASSIFICATION_BAD_REQUEST
             - CLASSIFICATION_GENERIC_ERROR
         message:
