@@ -39,7 +39,7 @@ public @interface TreasurySemanticIdGenerator {
       }
     }
 
-    private String buildSemanticId(Treasury treasury) {
+    public static String buildSemanticId(Treasury treasury) {
       return treasury.getBillCode() + "-" +
         treasury.getBillYear() + "-" +
         treasury.getOrganizationId() ;

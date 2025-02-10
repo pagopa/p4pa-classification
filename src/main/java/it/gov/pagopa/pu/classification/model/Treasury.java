@@ -75,4 +75,25 @@ public class Treasury extends BaseEntity implements Serializable{
   private LocalDate actualSuspensionDate;
   private String managementProvisionalCode;
   private String endToEndId;
+
+//region keep updated semanticId
+  private void setSemanticId() {
+    this.treasuryId = TreasurySemanticIdGenerator.TreasurySemanticIdGeneratorStrategy.buildSemanticId(this);
+  }
+
+  public void setOrganizationId(Long organizationId) {
+    this.organizationId = organizationId;
+    setSemanticId();
+  }
+
+  public void setBillCode(String billCode) {
+    this.billCode = billCode;
+    setSemanticId();
+  }
+
+  public void setBillYear(String billYear) {
+    this.billYear = billYear;
+    setSemanticId();
+  }
+  //endregion
 }

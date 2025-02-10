@@ -39,7 +39,7 @@ public @interface PaymentsReportingSemanticIdGenerator {
       }
     }
 
-    private String buildSemanticId(PaymentsReporting paymentsReporting) {
+    public static String buildSemanticId(PaymentsReporting paymentsReporting) {
       return paymentsReporting.getIuf() + "/" +
         paymentsReporting.getIuv() + "/" +
         paymentsReporting.getTransferIndex() + "/" +

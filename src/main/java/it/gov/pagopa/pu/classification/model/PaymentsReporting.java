@@ -64,4 +64,30 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
   @NotNull
   private LocalDate acquiringDate;
   private String bicCodePouringBank;
+
+//region keep updated semanticId
+  private void setSemanticId() {
+    this.paymentsReportingId = PaymentsReportingSemanticIdGenerator.PaymentsReportingSemanticIdGeneratorStrategy.buildSemanticId(this);
+  }
+
+  public void setOrganizationId(Long organizationId) {
+    this.organizationId = organizationId;
+    setSemanticId();
+  }
+
+  public void setIuv(String iuv) {
+    this.iuv = iuv;
+    setSemanticId();
+  }
+
+  public void setIuf(String iuf) {
+    this.iuf = iuf;
+    setSemanticId();
+  }
+
+  public void setTransferIndex(Integer transferIndex) {
+    this.transferIndex = transferIndex;
+    setSemanticId();
+  }
+//endregion
 }

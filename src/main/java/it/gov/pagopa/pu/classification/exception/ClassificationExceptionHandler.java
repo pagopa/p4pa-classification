@@ -8,6 +8,8 @@ import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,16 @@ import java.util.stream.Collectors;
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ClassificationExceptionHandler {
+
+  @ExceptionHandler({ResourceNotFoundException.class})
+  public ResponseEntity<ClassificationErrorDTO> handleResourceNotFoundException(RuntimeException ex, HttpServletRequest request){
+    return handleException(ex, request, HttpStatus.NOT_FOUND, ClassificationErrorDTO.CodeEnum.NOT_FOUND);
+  }
+
+  @ExceptionHandler({DataIntegrityViolationException.class})
+  public ResponseEntity<ClassificationErrorDTO> handleDataIntegrityViolationException(Exception ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.CONFLICT, ClassificationErrorDTO.CodeEnum.CONFLICT);
+  }
 
   @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class})
   public ResponseEntity<ClassificationErrorDTO> handleViolationException(Exception ex, HttpServletRequest request) {
