@@ -76,3 +76,8 @@ jwt:
                 odND6HPvvvmgbK1/2qTHn/HJjWUm11LUC73BszR32BKbdEEhxPQnnwswVekWzPi1
                 IwIDAQAB
                 -----END PUBLIC KEY-----}"
+
+rest:
+  default-timeout:
+    connect-millis: "\${DEFAULT_REST_CONNECT_TIMEOUT_MILLIS:120000}"
+    read-millis: "\${DEFAULT_REST_READ_TIMEOUT_MILLIS:120000}"
