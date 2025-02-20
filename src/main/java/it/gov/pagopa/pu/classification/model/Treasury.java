@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Version;
 import lombok.*;
 
 import java.io.Serializable;
@@ -96,4 +97,7 @@ public class Treasury extends BaseEntity implements Serializable{
     setSemanticId();
   }
   //endregion
+
+  @Version
+  private Integer version;
 }
