@@ -1,6 +1,5 @@
 package it.gov.pagopa.pu.classification.model;
 
-import it.gov.pagopa.pu.classification.config.semanticids.PaymentsReportingSemanticIdGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -21,7 +20,6 @@ import java.time.LocalDateTime;
 public class PaymentsReporting extends BaseEntity implements Serializable{
 
   @Id
-  @PaymentsReportingSemanticIdGenerator
   private String paymentsReportingId;
   @NotNull
   private Long ingestionFlowFileId;
@@ -66,8 +64,15 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
   private String bicCodePouringBank;
 
 //region keep updated semanticId
+  public static String buildSemanticId(PaymentsReporting paymentsReporting) {
+    return paymentsReporting.getIuf() + "/" +
+      paymentsReporting.getIuv() + "/" +
+      paymentsReporting.getTransferIndex() + "/" +
+      paymentsReporting.getOrganizationId();
+  }
+
   private void setSemanticId() {
-    this.paymentsReportingId = PaymentsReportingSemanticIdGenerator.PaymentsReportingSemanticIdGeneratorStrategy.buildSemanticId(this);
+    this.paymentsReportingId = buildSemanticId(this);
   }
 
   public void setOrganizationId(Long organizationId) {
