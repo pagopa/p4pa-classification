@@ -1,6 +1,5 @@
 package it.gov.pagopa.pu.classification.model;
 
-import it.gov.pagopa.pu.classification.config.semanticids.TreasurySemanticIdGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -18,10 +17,9 @@ import java.time.OffsetDateTime;
 @Builder
 @Data
 @EqualsAndHashCode(of = "treasuryId", callSuper = false)
-public class Treasury extends BaseEntity implements Serializable{
+public class Treasury extends BaseEntity implements Serializable {
 
   @Id
-  @TreasurySemanticIdGenerator
   private String treasuryId;
   @NotNull
   private String billYear;
@@ -76,9 +74,15 @@ public class Treasury extends BaseEntity implements Serializable{
   private String managementProvisionalCode;
   private String endToEndId;
 
-//region keep updated semanticId
+  //region keep updated semanticId
+  public static String buildSemanticId(Treasury treasury) {
+    return treasury.getBillCode() + "-" +
+      treasury.getBillYear() + "-" +
+      treasury.getOrganizationId();
+  }
+
   private void setSemanticId() {
-    this.treasuryId = TreasurySemanticIdGenerator.TreasurySemanticIdGeneratorStrategy.buildSemanticId(this);
+    this.treasuryId = buildSemanticId(this);
   }
 
   public void setOrganizationId(Long organizationId) {
