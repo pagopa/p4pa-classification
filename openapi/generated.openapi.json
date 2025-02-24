@@ -1,5 +1,5 @@
 {
-  "openapi" : "3.0.1",
+  "openapi" : "3.1.0",
   "info" : {
     "title" : "p4pa-classification",
     "description" : "Api and Models",
@@ -34,9 +34,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -44,9 +44,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -259,9 +259,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -269,9 +269,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -379,9 +379,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -389,9 +389,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -755,9 +755,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -765,9 +765,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -1356,6 +1356,87 @@
   },
   "components" : {
     "schemas" : {
+      "PaymentsReportingView" : {
+        "type" : "object",
+        "properties" : {
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "regulationUniqueIdentifier" : {
+            "type" : "string"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "flowDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "totalPayments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "PageMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "PagedModelPaymentsReportingView" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "paymentsReportingViews" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/PaymentsReportingView"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
       "AbstractJsonSchemaPropertyObject" : {
         "type" : "object",
         "properties" : {
@@ -1422,12 +1503,6 @@
           }
         }
       },
-      "Links" : {
-        "type" : "object",
-        "additionalProperties" : {
-          "$ref" : "#/components/schemas/Link"
-        }
-      },
       "RepresentationModelObject" : {
         "type" : "object",
         "properties" : {
@@ -1436,112 +1511,7 @@
           }
         }
       },
-      "Classification" : {
-        "required" : [ "label", "organizationId" ],
-        "type" : "object",
-        "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
-          "classificationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "transferId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "paymentNotifyId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "paymentsReportingId" : {
-            "type" : "string"
-          },
-          "treasuryId" : {
-            "type" : "string"
-          },
-          "iuf" : {
-            "type" : "string"
-          },
-          "iud" : {
-            "type" : "string"
-          },
-          "iuv" : {
-            "type" : "string"
-          },
-          "iur" : {
-            "type" : "string"
-          },
-          "transferIndex" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "label" : {
-            "type" : "string"
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "PageMetadata" : {
-        "type" : "object",
-        "properties" : {
-          "size" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalElements" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "number" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
-      },
-      "PagedModelClassification" : {
-        "type" : "object",
-        "properties" : {
-          "_embedded" : {
-            "type" : "object",
-            "properties" : {
-              "classifications" : {
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/Classification"
-                }
-              }
-            }
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          },
-          "page" : {
-            "$ref" : "#/components/schemas/PageMetadata"
-          }
-        }
-      },
       "PaymentsReporting" : {
-        "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -1640,7 +1610,8 @@
           "_links" : {
             "$ref" : "#/components/schemas/Links"
           }
-        }
+        },
+        "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ]
       },
       "PagedModelPaymentsReporting" : {
         "type" : "object",
@@ -1684,7 +1655,6 @@
         }
       },
       "Treasury" : {
-        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -1832,7 +1802,8 @@
           "_links" : {
             "$ref" : "#/components/schemas/Links"
           }
-        }
+        },
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ]
       },
       "PagedModelTreasury" : {
         "type" : "object",
@@ -1856,10 +1827,21 @@
           }
         }
       },
-      "PaymentsReportingView" : {
+      "Classification" : {
         "type" : "object",
         "properties" : {
-          "ingestionFlowFileId" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "classificationId" : {
             "type" : "integer",
             "format" : "int64"
           },
@@ -1867,43 +1849,55 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "transferId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentNotifyId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentsReportingId" : {
+            "type" : "string"
+          },
+          "treasuryId" : {
+            "type" : "string"
+          },
           "iuf" : {
             "type" : "string"
           },
-          "regulationUniqueIdentifier" : {
+          "iud" : {
             "type" : "string"
           },
-          "regulationDate" : {
-            "type" : "string",
-            "format" : "date"
+          "iuv" : {
+            "type" : "string"
           },
-          "flowDateTime" : {
-            "type" : "string",
-            "format" : "date-time"
+          "iur" : {
+            "type" : "string"
           },
-          "totalPayments" : {
+          "transferIndex" : {
             "type" : "integer",
-            "format" : "int64"
+            "format" : "int32"
           },
-          "totalAmountCents" : {
-            "type" : "integer",
-            "format" : "int64"
+          "label" : {
+            "type" : "string"
           },
           "_links" : {
             "$ref" : "#/components/schemas/Links"
           }
-        }
+        },
+        "required" : [ "label", "organizationId" ]
       },
-      "PagedModelPaymentsReportingView" : {
+      "PagedModelClassification" : {
         "type" : "object",
         "properties" : {
           "_embedded" : {
             "type" : "object",
             "properties" : {
-              "paymentsReportingViews" : {
+              "classifications" : {
                 "type" : "array",
                 "items" : {
-                  "$ref" : "#/components/schemas/PaymentsReportingView"
+                  "$ref" : "#/components/schemas/Classification"
                 }
               }
             }
@@ -1917,7 +1911,6 @@
         }
       },
       "ClassificationRequestBody" : {
-        "required" : [ "label", "organizationId" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -1972,10 +1965,10 @@
           "label" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "label", "organizationId" ]
       },
       "PaymentsReportingRequestBody" : {
-        "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -2071,10 +2064,10 @@
           "bicCodePouringBank" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ]
       },
       "TreasuryRequestBody" : {
-        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ],
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -2219,10 +2212,10 @@
           "regularized" : {
             "type" : "boolean"
           }
-        }
+        },
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ]
       },
       "ClassificationErrorDTO" : {
-        "required" : [ "code", "message" ],
         "type" : "object",
         "properties" : {
           "code" : {
@@ -2232,7 +2225,8 @@
           "message" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "code", "message" ]
       },
       "Link" : {
         "type" : "object",
@@ -2261,6 +2255,12 @@
           "templated" : {
             "type" : "boolean"
           }
+        }
+      },
+      "Links" : {
+        "type" : "object",
+        "additionalProperties" : {
+          "$ref" : "#/components/schemas/Link"
         }
       }
     },
