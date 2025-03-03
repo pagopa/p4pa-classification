@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
+import java.net.URI;
+
 class SecurityUtilsTest {
 
   @AfterEach
@@ -46,6 +48,8 @@ class SecurityUtilsTest {
   }
 //endregion
 
+
+
   @Test
   void givenJwtWhenGetCurrentUserExternalIdThenReturnPrincipalName(){
     // Given
@@ -57,5 +61,16 @@ class SecurityUtilsTest {
 
     // Then
     Assertions.assertSame(principalName, result);
+  }
+
+  @Test
+  void givenUriWhenRemovePiiFromURIThenOk(){
+    String result = SecurityUtils.removePiiFromURI(URI.create("https://host/path?param1=PII&param2=noPII"));
+    Assertions.assertEquals("https://host/path?param1=***&param2=***", result);
+  }
+
+  @Test
+  void givenNullUriWhenRemovePiiFromURIThenOk(){
+    Assertions.assertNull(SecurityUtils.removePiiFromURI(null));
   }
 }
