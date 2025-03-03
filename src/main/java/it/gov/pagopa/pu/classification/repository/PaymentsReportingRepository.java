@@ -37,8 +37,8 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
   Page<PaymentsReporting> findPaymentsReportingByFilters(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
     @Parameter(required = true) @Param("iuf") String iuf,
-    @Param("iuv") String iuv,
-    @Param("payDateFrom") LocalDate payDateFrom,
-    @Param("payDateTo") LocalDate payDateTo,
+    String iuv,
+    LocalDate payDateFrom,
+    LocalDate payDateTo,
     Pageable pageable);
 }
