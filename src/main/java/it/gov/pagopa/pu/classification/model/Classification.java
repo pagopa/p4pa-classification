@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "classification")
@@ -31,4 +33,16 @@ public class Classification extends BaseEntity implements Serializable {
   private int transferIndex;
   @NotNull
   private String label;
+  private LocalDate lastClassificationDate;
+  private LocalDate payDate;
+  private OffsetDateTime paymentDateTime;
+  private LocalDate regulationDate;
+  private LocalDate billDate;
+  private LocalDate regionValueDate;
+  private String regulationUniqueIdentifier;
+  private String accountRegistryCode;
+  private Long billAmountCents;
+  private String remittanceInformation;
+  private String pspCompanyName;
+  private String pspLastName;
 }
