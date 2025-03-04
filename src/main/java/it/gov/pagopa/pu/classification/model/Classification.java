@@ -6,7 +6,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "classification")
@@ -35,7 +35,7 @@ public class Classification extends BaseEntity implements Serializable {
   private String label;
   private LocalDate lastClassificationDate;
   private LocalDate payDate;
-  private LocalDateTime paymentDateTime;
+  private OffsetDateTime paymentDateTime;
   private LocalDate regulationDate;
   private LocalDate billDate;
   private LocalDate regionValueDate;
@@ -44,5 +44,5 @@ public class Classification extends BaseEntity implements Serializable {
   private Long billAmountCents;
   private String remittanceInformation;
   private String pspCompanyName;
-  private String lastName;
+  private String pspLastName;
 }
