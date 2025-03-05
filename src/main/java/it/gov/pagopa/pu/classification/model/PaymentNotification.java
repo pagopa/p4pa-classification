@@ -8,20 +8,18 @@ import java.util.Date;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "payments_notification")
+@Table(name = "payment_notification")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-@EqualsAndHashCode(of = "paymentsNotificationId", callSuper = false)
-public class PaymentsNotification extends BaseEntity implements Serializable{
+@EqualsAndHashCode(of = "paymentNotificationId", callSuper = false)
+public class PaymentNotification extends BaseEntity implements Serializable{
 
   @Id
-  private String paymentsNotificationId;
+  private String paymentNotificationId;
   @NotNull
   private Long organizationId;
   @NotNull
@@ -50,13 +48,13 @@ public class PaymentsNotification extends BaseEntity implements Serializable{
 
 
 //region keep updated semanticId
-  public static String buildSemanticId(PaymentsNotification paymentsReporting) {
-    return paymentsReporting.getOrganizationId() + "-" +
-      paymentsReporting.getIud();
+  public static String buildSemanticId(PaymentNotification paymentsReporting) {
+    return paymentsReporting.getIud() + "/" +
+      paymentsReporting.getOrganizationId();
   }
 
   private void setSemanticId() {
-    this.paymentsNotificationId = buildSemanticId(this);
+    this.paymentNotificationId = buildSemanticId(this);
   }
 
   public void setOrganizationId(Long organizationId) {

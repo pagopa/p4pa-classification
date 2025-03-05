@@ -248,11 +248,11 @@
         }
       }
     },
-    "/crud/payments-notification" : {
+    "/crud/payment-notification" : {
       "get" : {
-        "tags" : [ "payments-notification-entity-controller" ],
-        "description" : "get-paymentsnotification",
-        "operationId" : "crud-get-paymentsnotifications",
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "get-paymentnotification",
+        "operationId" : "crud-get-paymentnotifications",
         "parameters" : [ {
           "name" : "page",
           "in" : "query",
@@ -291,12 +291,12 @@
             "content" : {
               "application/hal+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedModelPaymentsNotification"
+                  "$ref" : "#/components/schemas/PagedModelPaymentNotification"
                 }
               },
               "application/x-spring-data-compact+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedModelPaymentsNotification"
+                  "$ref" : "#/components/schemas/PagedModelPaymentNotification"
                 }
               },
               "text/uri-list" : {
@@ -309,14 +309,14 @@
         }
       },
       "post" : {
-        "tags" : [ "payments-notification-entity-controller" ],
-        "description" : "create-paymentsnotification",
-        "operationId" : "crud-create-paymentsnotification",
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "create-paymentnotification",
+        "operationId" : "crud-create-paymentnotification",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/PaymentsNotificationRequestBody"
+                "$ref" : "#/components/schemas/PaymentNotificationRequestBody"
               }
             }
           },
@@ -328,7 +328,7 @@
             "content" : {
               "application/hal+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PaymentsNotification"
+                  "$ref" : "#/components/schemas/PaymentNotification"
                 }
               }
             }
@@ -336,10 +336,10 @@
         }
       }
     },
-    "/crud/payments-notification/search/findBySemanticKey" : {
+    "/crud/payment-notification/search/findBySemanticKey" : {
       "get" : {
-        "tags" : [ "payments-notification-search-controller" ],
-        "operationId" : "crud-payments-notification-findBySemanticKey",
+        "tags" : [ "payment-notification-search-controller" ],
+        "operationId" : "crud-payment-notification-findBySemanticKey",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "query",
@@ -360,7 +360,7 @@
             "content" : {
               "application/hal+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PaymentsNotification"
+                  "$ref" : "#/components/schemas/PaymentNotification"
                 }
               }
             }
@@ -371,11 +371,11 @@
         }
       }
     },
-    "/crud/payments-notification/{id}" : {
+    "/crud/payment-notification/{id}" : {
       "get" : {
-        "tags" : [ "payments-notification-entity-controller" ],
-        "description" : "get-paymentsnotification",
-        "operationId" : "crud-get-paymentsnotification",
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "get-paymentnotification",
+        "operationId" : "crud-get-paymentnotification",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -390,7 +390,7 @@
             "content" : {
               "application/hal+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PaymentsNotification"
+                  "$ref" : "#/components/schemas/PaymentNotification"
                 }
               }
             }
@@ -401,9 +401,9 @@
         }
       },
       "put" : {
-        "tags" : [ "payments-notification-entity-controller" ],
-        "description" : "update-paymentsnotification",
-        "operationId" : "crud-update-paymentsnotification",
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "update-paymentnotification",
+        "operationId" : "crud-update-paymentnotification",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -416,7 +416,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/PaymentsNotificationRequestBody"
+                "$ref" : "#/components/schemas/PaymentNotificationRequestBody"
               }
             }
           },
@@ -428,7 +428,7 @@
             "content" : {
               "application/hal+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PaymentsNotification"
+                  "$ref" : "#/components/schemas/PaymentNotification"
                 }
               }
             }
@@ -438,7 +438,7 @@
             "content" : {
               "application/hal+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PaymentsNotification"
+                  "$ref" : "#/components/schemas/PaymentNotification"
                 }
               }
             }
@@ -449,9 +449,9 @@
         }
       },
       "delete" : {
-        "tags" : [ "payments-notification-entity-controller" ],
-        "description" : "delete-paymentsnotification",
-        "operationId" : "crud-delete-paymentsnotification",
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "delete-paymentnotification",
+        "operationId" : "crud-delete-paymentnotification",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -470,9 +470,9 @@
         }
       },
       "patch" : {
-        "tags" : [ "payments-notification-entity-controller" ],
-        "description" : "patch-paymentsnotification",
-        "operationId" : "crud-patch-paymentsnotification",
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "patch-paymentnotification",
+        "operationId" : "crud-patch-paymentnotification",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -485,7 +485,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/PaymentsNotificationRequestBody"
+                "$ref" : "#/components/schemas/PaymentNotificationRequestBody"
               }
             }
           },
@@ -497,7 +497,7 @@
             "content" : {
               "application/hal+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PaymentsNotification"
+                  "$ref" : "#/components/schemas/PaymentNotification"
                 }
               }
             }
@@ -1036,10 +1036,10 @@
         }
       }
     },
-    "/crud/profile/payments-notification" : {
+    "/crud/profile/payment-notification" : {
       "get" : {
         "tags" : [ "profile-controller" ],
-        "operationId" : "crud-profile-payments-notification",
+        "operationId" : "crud-profile-payment-notification",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -1806,213 +1806,6 @@
           }
         }
       },
-      "Classification" : {
-        "type" : "object",
-        "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
-          "classificationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "transferId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "paymentNotifyId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "paymentsReportingId" : {
-            "type" : "string"
-          },
-          "treasuryId" : {
-            "type" : "string"
-          },
-          "iuf" : {
-            "type" : "string"
-          },
-          "iud" : {
-            "type" : "string"
-          },
-          "iuv" : {
-            "type" : "string"
-          },
-          "iur" : {
-            "type" : "string"
-          },
-          "transferIndex" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "label" : {
-            "type" : "string"
-          },
-          "lastClassificationDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "payDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "paymentDateTime" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "regulationDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "billDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "regionValueDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "regulationUniqueIdentifier" : {
-            "type" : "string"
-          },
-          "accountRegistryCode" : {
-            "type" : "string"
-          },
-          "billAmountCents" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "remittanceInformation" : {
-            "type" : "string"
-          },
-          "pspCompanyName" : {
-            "type" : "string"
-          },
-          "pspLastName" : {
-            "type" : "string"
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "required" : [ "label", "organizationId" ]
-      },
-      "PageMetadata" : {
-        "type" : "object",
-        "properties" : {
-          "size" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalElements" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "number" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
-      },
-      "PagedModelClassification" : {
-        "type" : "object",
-        "properties" : {
-          "_embedded" : {
-            "type" : "object",
-            "properties" : {
-              "classifications" : {
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/Classification"
-                }
-              }
-            }
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          },
-          "page" : {
-            "$ref" : "#/components/schemas/PageMetadata"
-          }
-        }
-      },
-      "PaymentsReportingView" : {
-        "type" : "object",
-        "properties" : {
-          "ingestionFlowFileId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "iuf" : {
-            "type" : "string"
-          },
-          "regulationUniqueIdentifier" : {
-            "type" : "string"
-          },
-          "regulationDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "flowDateTime" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "totalPayments" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalAmountCents" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "PagedModelPaymentsReportingView" : {
-        "type" : "object",
-        "properties" : {
-          "_embedded" : {
-            "type" : "object",
-            "properties" : {
-              "paymentsReportingViews" : {
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/PaymentsReportingView"
-                }
-              }
-            }
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          },
-          "page" : {
-            "$ref" : "#/components/schemas/PageMetadata"
-          }
-        }
-      },
       "Treasury" : {
         "type" : "object",
         "properties" : {
@@ -2164,6 +1957,27 @@
         },
         "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ]
       },
+      "PageMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "PagedModelTreasury" : {
         "type" : "object",
         "properties" : {
@@ -2186,7 +2000,7 @@
           }
         }
       },
-      "PaymentsNotification" : {
+      "Classification" : {
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -2200,7 +2014,133 @@
           "updateOperatorExternalId" : {
             "type" : "string"
           },
-          "paymentsNotificationId" : {
+          "classificationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "transferId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentNotifyId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentsReportingId" : {
+            "type" : "string"
+          },
+          "treasuryId" : {
+            "type" : "string"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iur" : {
+            "type" : "string"
+          },
+          "transferIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "label" : {
+            "type" : "string"
+          },
+          "lastClassificationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "payDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "paymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "billDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "regionValueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "regulationUniqueIdentifier" : {
+            "type" : "string"
+          },
+          "accountRegistryCode" : {
+            "type" : "string"
+          },
+          "billAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "pspCompanyName" : {
+            "type" : "string"
+          },
+          "pspLastName" : {
+            "type" : "string"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "label", "organizationId" ]
+      },
+      "PagedModelClassification" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "classifications" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/Classification"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "PaymentNotification" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "paymentNotificationId" : {
             "type" : "string"
           },
           "organizationId" : {
@@ -2262,16 +2202,76 @@
         },
         "required" : [ "amountPaidCents", "debtPositionTypeOrgCode", "ingestionFlowFileId", "iud", "iuv", "organizationId", "paymentExecutionDate", "paymentType", "remittanceInformation", "transferCategory" ]
       },
-      "PagedModelPaymentsNotification" : {
+      "PagedModelPaymentNotification" : {
         "type" : "object",
         "properties" : {
           "_embedded" : {
             "type" : "object",
             "properties" : {
-              "paymentsNotifications" : {
+              "paymentNotifications" : {
                 "type" : "array",
                 "items" : {
-                  "$ref" : "#/components/schemas/PaymentsNotification"
+                  "$ref" : "#/components/schemas/PaymentNotification"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "PaymentsReportingView" : {
+        "type" : "object",
+        "properties" : {
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "regulationUniqueIdentifier" : {
+            "type" : "string"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "flowDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "totalPayments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "PagedModelPaymentsReportingView" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "paymentsReportingViews" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/PaymentsReportingView"
                 }
               }
             }
@@ -2528,7 +2528,7 @@
         },
         "required" : [ "label", "organizationId" ]
       },
-      "PaymentsNotificationRequestBody" : {
+      "PaymentNotificationRequestBody" : {
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -2542,7 +2542,7 @@
           "updateOperatorExternalId" : {
             "type" : "string"
           },
-          "paymentsNotificationId" : {
+          "paymentNotificationId" : {
             "type" : "string"
           },
           "organizationId" : {
