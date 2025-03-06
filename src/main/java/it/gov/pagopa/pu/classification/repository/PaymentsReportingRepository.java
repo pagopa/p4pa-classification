@@ -18,6 +18,8 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
 
   List<PaymentsReporting> findByOrganizationIdAndIuf(Long organizationId, String iuf);
 
+  PaymentsReporting findByOrganizationIdAndPaymentsReportingId(Long organizationId, String paymentsReportingId);
+
   @Query("SELECT p FROM PaymentsReporting p WHERE " +
     "p.organizationId=:organizationId AND " +
     "p.iuv=:iuv AND " +
