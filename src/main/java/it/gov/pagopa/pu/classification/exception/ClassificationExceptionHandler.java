@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.event.Level;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -75,14 +76,19 @@ public class ClassificationExceptionHandler {
   }
 
   private static void logException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus) {
-    log.info("A {} occurred handling request {}: HttpStatus {} - {}",
-      ex.getClass(),
-      getRequestDetails(request),
-      httpStatus.value(),
-      ex.getMessage());
-    if(log.isDebugEnabled() && ex.getCause()!=null){
-      log.debug("CausedBy: ", ex.getCause());
-    }
+    boolean printStackTrace = httpStatus.is5xxServerError();
+        Level logLevel = printStackTrace ? Level.ERROR : Level.INFO;
+        log.makeLoggingEventBuilder(logLevel)
+                .log("A {} occurred handling request {}: HttpStatus {} - {}",
+                        ex.getClass(),
+                        getRequestDetails(request),
+                        httpStatus.value(),
+                        ex.getMessage(),
+                        printStackTrace ? ex : null
+                );
+        if (!printStackTrace && log.isDebugEnabled() && ex.getCause() != null) {
+            log.debug("CausedBy: ", ex.getCause());
+        }
   }
 
   private static String buildReturnedMessage(Exception ex) {
