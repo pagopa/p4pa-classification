@@ -23,7 +23,11 @@ public interface TreasuryViewRepository extends Repository<TreasuryView, String>
         t.regionValueDate as regionValueDate,
         t.billDate as billDate,
         t.iuf as iuf,
-        t.billAmountCents as billAmountCents
+        t.billAmountCents as billAmountCents,
+        t.iuv as iuv,
+        t.provisionalCode as provisionalCode,
+        t.pspLastName as pspLastName,
+        t.documentCode as documentCode
         )
         FROM TreasuryView t
         WHERE (:iuv IS NULL OR t.iuv = :iuv)
