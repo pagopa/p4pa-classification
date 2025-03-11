@@ -21,6 +21,7 @@ public class TreasuryView implements Serializable {
 
   @Id
   private String treasuryId;
+  private Long organizationId;
   private String billYear;
   private String billCode;
   private LocalDate regionValueDate;

@@ -1,5 +1,7 @@
 package it.gov.pagopa.pu.classification.repository.view;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.model.view.TreasuryView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ public interface TreasuryViewRepository extends Repository<TreasuryView, String>
   @Query("""
         SELECT new TreasuryView(
         t.treasuryId as treasuryId,
+        t.organizationId as organizationId,
         t.billYear as billYear,
         t.billCode as billCode,
         t.regionValueDate as regionValueDate,
@@ -30,7 +33,8 @@ public interface TreasuryViewRepository extends Repository<TreasuryView, String>
         t.documentCode as documentCode
         )
         FROM TreasuryView t
-        WHERE (:iuv IS NULL OR t.iuv = :iuv)
+        WHERE t.organizationId = :organizationId
+        AND (:iuv IS NULL OR t.iuv = :iuv)
         AND (:iuf IS NULL OR t.iuf = :iuf)
         AND (:billAmountCents IS NULL OR t.billAmountCents = :billAmountCents)
         AND (:billDate IS NULL OR t.billDate = :billDate)
@@ -41,6 +45,7 @@ public interface TreasuryViewRepository extends Repository<TreasuryView, String>
         AND (:documentCode IS NULL OR t.documentCode = :documentCode)
     """)
   Page<TreasuryView> findTreasuriesByFilters(
+    @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
     @Param("iuv") String iuv,
     @Param("iuf") String iuf,
     @Param("billAmountCents") Long billAmountCents,
