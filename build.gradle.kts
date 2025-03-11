@@ -6,6 +6,7 @@ plugins {
   id("org.sonarqube") version "6.0.1.5171"
   id("com.github.ben-manes.versions") version "0.51.0"
   id("org.openapi.generator") version "7.10.0"
+  id("com.gorylenko.gradle-git-properties") version "2.5.0"
 }
 
 group = "it.gov.pagopa.payhub"
@@ -57,7 +58,7 @@ dependencies {
   //	Testing
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.mockito:mockito-core")
-  testImplementation ("org.projectlombok:lombok")
+  testImplementation("org.projectlombok:lombok")
   testImplementation("com.h2database:h2")
 }
 
@@ -122,6 +123,7 @@ configure<SourceSetContainer> {
 }
 
 springBoot {
+  buildInfo()
   mainClass.value("it.gov.pagopa.pu.classification.ClassificationApplication")
 }
 
