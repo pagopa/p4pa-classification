@@ -13,16 +13,16 @@ class PaymentsReportingTest {
     Assertions.assertNull(p.getPaymentsReportingId());
 
     p.setIuf("IUF");
-    assertSemanticId("IUF/null/null/null", p);
+    assertSemanticId("IUF_null_null_null", p);
 
     p.setIuv("IUV");
-    assertSemanticId("IUF/IUV/null/null", p);
+    assertSemanticId("IUF_IUV_null_null", p);
 
     p.setTransferIndex(1);
-    assertSemanticId("IUF/IUV/1/null", p);
+    assertSemanticId("IUF_IUV_1_null", p);
 
     p.setOrganizationId(0L);
-    assertSemanticId("IUF/IUV/1/0", p);
+    assertSemanticId("IUF_IUV_1_0", p);
   }
 
   private static void assertSemanticId(String expected, PaymentsReporting p) {
