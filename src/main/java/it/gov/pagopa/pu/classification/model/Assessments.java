@@ -27,5 +27,5 @@ public class Assessments extends BaseEntity implements Serializable {
   @NotNull
   private String assessmentName;
   @NotNull
-  private Boolean printed = false;
+  private boolean printed;
 }
