@@ -51,7 +51,6 @@ class SecurityUtilsTest {
   }
 //endregion
 
-
 //region test getCurrentUserExternalId
   @Test
   void givenJwtWhenGetCurrentUserExternalIdThenReturnPrincipalName(){
