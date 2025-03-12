@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.model;
 
+import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -22,8 +23,9 @@ public class Assessments extends BaseEntity implements Serializable {
   private Long organizationId;
   @NotNull
   private String debtPositionTypeOrgCode;
+  @Enumerated(EnumType.STRING)
   @NotNull
-  private String status;
+  private AssessmentStatus status;
   @NotNull
   private String assessmentName;
   @NotNull
