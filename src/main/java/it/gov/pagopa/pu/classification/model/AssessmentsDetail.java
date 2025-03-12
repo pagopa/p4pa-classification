@@ -37,5 +37,5 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   @NotNull
   private Long amountCents;
   @NotNull
-  private Boolean amountSubmitted = true;
+  private boolean amountSubmitted = true;
 }
