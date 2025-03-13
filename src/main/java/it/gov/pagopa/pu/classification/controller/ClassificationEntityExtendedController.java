@@ -1,5 +1,7 @@
 package it.gov.pagopa.pu.classification.controller;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.controller.generated.ClassificationEntityExtendedControllerApi;
 import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
@@ -19,7 +21,7 @@ public class ClassificationEntityExtendedController implements ClassificationEnt
   }
 
   @Override
-  public ResponseEntity<Integer> saveAll2(List<Classification> classifications){
+  public ResponseEntity<Integer> saveAll2(@ArraySchema(schema = @Schema(ref = "EntityModelClassification")) List<Classification> classifications){
     return ResponseEntity.ok(repository.saveAll(classifications).size());
   }
 
