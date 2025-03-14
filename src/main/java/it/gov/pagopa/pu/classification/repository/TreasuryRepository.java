@@ -25,7 +25,7 @@ public interface TreasuryRepository extends JpaRepository<Treasury, String> {
     """)
   Optional<Treasury> findByOrganizationIdAndTreasuryId(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
-    @Param("treasuryId") String treasuryId);
+    @Parameter(required = true) @Param("treasuryId") String treasuryId);
 
   @Transactional
   @Modifying
