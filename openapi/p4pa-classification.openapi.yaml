@@ -204,8 +204,126 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /classifications/{organizationId}/export:
+    get:
+      tags:
+        - classification
+      operationId: export
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the organization
+        - name: operatorExternalUserId
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClassificationDTO"
+        required: true
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedClassificationView'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    ClassificationDTO:
+        type: object
+        required:
+            - label
+        properties:
+          iuf:
+            type: string
+          iud:
+            type: string
+          iuv:
+            type: string
+          iur:
+            type: string
+          label:
+            type: string
+          lastClassificationDateFrom:
+            type: string
+            format: date-time
+          lastClassificationDateTo:
+            type: string
+            format: date-time
+          payDateFrom:
+            type: string
+            format: date-time
+          payDateTo:
+            type: string
+            format: date-time
+          paymentDateTimeFrom:
+            type: string
+            format: date-time
+          paymentDateTimeTo:
+            type: string
+            format: date-time
+          regulationDateFrom:
+            type: string
+            format: date-time
+          regulationDateTo:
+            type: string
+            format: date-time
+          billDateFrom:
+            type: string
+            format: date-time
+          billDateTo:
+            type: string
+            format: date-time
+          regionValueDateFrom:
+            type: string
+            format: date-time
+          regionValueDateTo:
+            type: string
+            format: date-time
+          regulationUniqueIdentifier:
+            type: string
+          accountRegistryCode:
+            type: string
+          billAmountCents:
+            type: integer
+            format: int64
+          remittanceInformation:
+            type: string
+          pspCompanyName:
+            type: string
+          pspLastName:
+            type: string
     ClassificationErrorDTO:
       type: object
       required:
@@ -221,8 +339,28 @@ components:
             - CLASSIFICATION_GENERIC_ERROR
         message:
           type: string
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    PagedClassificationView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'ClassificationView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
