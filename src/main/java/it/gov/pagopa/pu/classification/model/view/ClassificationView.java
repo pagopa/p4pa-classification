@@ -90,46 +90,46 @@ package it.gov.pagopa.pu.classification.model.view;
     private String receiptBeneficiaryOrgProvince;
     @JsonProperty("rec_beneficiaryOrgNation")
     private String receiptBeneficiaryOrgNation;
-    @JsonProperty("rec_uniqueIdentifierType")
-    private String receiptUniqueIdentifierType;
-    @JsonProperty("rec_uniqueIdentifierCode")
-    private String receiptUniqueIdentifierCode;
+    @JsonProperty("rec_payerEntityType")
+    private String payerEntityType;
+    @JsonProperty("rec_payerFiscalCode")
+    private String payerFiscalCode;
     @JsonProperty("rec_payerFullName")
-    private String receiptPayerFullName;
+    private String payerFullName;
     @JsonProperty("rec_payerAddress")
-    private String receiptPayerAddress;
+    private String payerAddress;
     @JsonProperty("rec_payerCivic")
-    private String receiptPayerCivic;
+    private String payerCivic;
     @JsonProperty("rec_payerPostalCode")
-    private String receiptPayerPostalCode;
+    private String payerPostalCode;
     @JsonProperty("rec_payerLocation")
-    private String receiptPayerLocation;
+    private String payerLocation;
     @JsonProperty("rec_payerProvince")
-    private String receiptPayerProvince;
+    private String payerProvince;
     @JsonProperty("rec_payerNation")
-    private String receiptPayerNation;
+    private String payerNation;
     @JsonProperty("rec_payerEmail")
-    private String receiptPayerEmail;
-    @JsonProperty("rec_debtorUniqueIdentifierType")
-    private String receiptDebtorUniqueIdentifierType;
-    @JsonProperty("rec_debtorUniqueIdentifierCode")
-    private String receiptDebtorUniqueIdentifierCode;
+    private String payerEmail;
+    @JsonProperty("rec_debtorEntityType")
+    private String debtorEntityType;
+    @JsonProperty("rec_debtorFiscalCode")
+    private String debtorFiscalCode;
     @JsonProperty("rec_debtorFullName")
-    private String receiptDebtorFullName;
+    private String debtorFullName;
     @JsonProperty("rec_debtorAddress")
-    private String receiptDebtorAddress;
+    private String debtorAddress;
     @JsonProperty("rec_debtorCivic")
-    private String receiptDebtorCivic;
+    private String debtorCivic;
     @JsonProperty("rec_debtorPostalCode")
-    private String receiptDebtorPostalCode;
+    private String debtorPostalCode;
     @JsonProperty("rec_debtorLocation")
-    private String receiptDebtorLocation;
+    private String debtorLocation;
     @JsonProperty("rec_debtorProvince")
-    private String receiptDebtorProvince;
+    private String debtorProvince;
     @JsonProperty("rec_debtorNation")
-    private String receiptDebtorNation;
+    private String debtorNation;
     @JsonProperty("rec_debtorEmail")
-    private String receiptDebtorEmail;
+    private String debtorEmail;
     @JsonProperty("rec_paymentOutcomeCode")
     private String receiptPaymentOutcomeCode;
     @JsonProperty("rec_paymentAmount")
