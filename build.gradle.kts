@@ -135,6 +135,7 @@ openApiGenerate {
     "Treasury" to "it.gov.pagopa.pu.classification.model.Treasury",
     "PaymentsReporting" to "it.gov.pagopa.pu.classification.model.PaymentsReporting",
     "Classification" to "it.gov.pagopa.pu.classification.model.Classification",
+    "ClassificationDTO" to "it.gov.pagopa.pu.classification.dto.ClassificationDTO",
     "ClassificationView" to "it.gov.pagopa.pu.classification.model.view.ClassificationView"
   ))
   configOptions.set(mapOf(
