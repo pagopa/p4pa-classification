@@ -136,7 +136,7 @@ openApiGenerate {
     "PaymentsReporting" to "it.gov.pagopa.pu.classification.model.PaymentsReporting",
     "Classification" to "it.gov.pagopa.pu.classification.model.Classification",
     "ClassificationDTO" to "it.gov.pagopa.pu.classification.dto.ClassificationDTO",
-    "ClassificationView" to "it.gov.pagopa.pu.classification.model.view.ClassificationView"
+    "ClassificationView" to "it.gov.pagopa.pu.classification.dto.ClassificationViewDTO"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
