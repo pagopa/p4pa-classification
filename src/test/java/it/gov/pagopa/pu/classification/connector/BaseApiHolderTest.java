@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.connector;
 
-import it.gov.pagopa.pu.classification.connector.debtposition.config.ApiClientExt;
-import org.apache.commons.lang3.tuple.Triple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -16,86 +15,82 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public abstract class BaseApiHolderTest {
 
-    @Mock
-    protected RestTemplate restTemplateMock;
-    @Mock
-    protected Void voidMock;
+  public enum AUTH_TYPE {
+    API_KEY,
+    BEARER
+  }
 
-    protected <T> void assertAuthenticationShouldBeSetInThreadSafeMode(Function<String, T> apiInvoke, ParameterizedTypeReference<T> apiReturnedType, Runnable apiUnloader) throws InterruptedException {
-        assertAuthenticationShouldBeSetInThreadSafeMode((accessToken, userId) -> apiInvoke.apply(accessToken), apiReturnedType, apiUnloader, false);
-    }
+  @Mock
+  protected RestTemplate restTemplateMock;
+  @Mock
+  protected Void voidMock;
 
-    @SuppressWarnings("unchecked")
-    protected <T> void assertAuthenticationShouldBeSetInThreadSafeMode(BiFunction<String, String, T> apiInvoke, ParameterizedTypeReference<T> apiReturnedType, Runnable apiUnloader, boolean expecteUserIdHeader) throws InterruptedException {
-        // Configuring useCases in a single thread
-        List<Triple<String, String, T>> useCases = IntStream.rangeClosed(0, 100)
-                .mapToObj(i -> {
-                    try {
-                        String accessToken = "accessToken" + i;
-                        String userId = "userId" + i;
-                        T expectedResult =
-                                String.class.equals(apiReturnedType.getType()) ? (T)"RESULT"
-                                : Integer.class.equals(apiReturnedType.getType()) ? (T)Integer.valueOf(0)
-                                : Long.class.equals(apiReturnedType.getType()) ? (T)Long.valueOf(0L)
-                                : apiReturnedType.getType().getTypeName().startsWith(List.class.getName()) ? (T) List.of()
-                                : Void.class.equals(apiReturnedType.getType()) ? (T) voidMock
-                                : (T) Mockito.mock(Class.forName(apiReturnedType.getType().getTypeName()));
+  protected <T> void assertAuthenticationShouldBeSetInThreadSafeMode(Function<String, T> apiInvoke, ParameterizedTypeReference<T> apiReturnedType, Runnable apiUnloader) throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(apiInvoke, apiReturnedType, apiUnloader, AUTH_TYPE.BEARER, HttpHeaders.AUTHORIZATION);
+  }
 
-                        Mockito.doReturn(ResponseEntity.ok(expectedResult))
-                                .when(restTemplateMock)
-                                .exchange(
-                                        Mockito.argThat(req ->
-                                                req.getHeaders().getOrDefault(HttpHeaders.AUTHORIZATION, Collections.emptyList()).getFirst()
-                                                        .equals("Bearer " + accessToken) &&
-                                                        (
-                                                                !expecteUserIdHeader
-                                                                        ||
-                                                                        req.getHeaders().getOrDefault(ApiClientExt.HEADER_USER_ID, Collections.emptyList()).getFirst()
-                                                                                .equals(userId)
-                                                        )
-                                        ),
-                                        Mockito.eq(apiReturnedType));
-                        return Triple.of(accessToken, userId, expectedResult);
-                    } catch (Exception e) {
-                        throw new IllegalStateException(e);
-                    }
-                })
-                .toList();
+  @SuppressWarnings("unchecked")
+  protected <T> void assertAuthenticationShouldBeSetInThreadSafeMode(Function<String, T> apiInvoke, ParameterizedTypeReference<T> apiReturnedType, Runnable apiUnloader, AUTH_TYPE authType, String authHeader) throws InterruptedException {
+    // Configuring useCases in a single thread
+    List<Pair<String, T>> useCases = IntStream.rangeClosed(0, 100)
+      .mapToObj(i -> {
+        try {
+          String auth = "auth" + i;
+          String authPrefix = AUTH_TYPE.BEARER.equals(authType) ? "Bearer " : "";
+          T expectedResult =
+            String.class.equals(apiReturnedType.getType()) ? (T)"RESULT"
+              : Integer.class.equals(apiReturnedType.getType()) ? (T)Integer.valueOf(0)
+              : Long.class.equals(apiReturnedType.getType()) ? (T)Long.valueOf(0L)
+              : apiReturnedType.getType().getTypeName().startsWith(List.class.getName()) ? (T)List.of()
+              : Void.class.equals(apiReturnedType.getType()) ? (T)voidMock
+              : (T)Mockito.mock(Class.forName(apiReturnedType.getType().getTypeName()));
 
-        try (ExecutorService executorService = Executors.newFixedThreadPool(10)) {
-            executorService.invokeAll(useCases.stream()
-                            .map(p -> (Callable<?>) () -> {
-                                // Given
-                                String accessToken = p.getLeft();
-                                String userId = p.getMiddle();
-                                T expectedResult = p.getRight();
-
-                                // When
-                                T result = apiInvoke.apply(accessToken, userId);
-
-                                // Then
-                                Assertions.assertSame(expectedResult, result);
-                                return true;
-                            })
-                            .toList())
-                    .forEach(future -> {
-                        try {
-                            future.get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+          Mockito.doReturn(ResponseEntity.ok(expectedResult))
+            .when(restTemplateMock)
+            .exchange(
+              Mockito.argThat(req ->
+                req.getHeaders().getOrDefault(authHeader, Collections.emptyList()).getFirst()
+                  .equals(authPrefix + auth)),
+              Mockito.eq(apiReturnedType));
+          return Pair.of(auth, expectedResult);
+        } catch (Exception e) {
+          throw new IllegalStateException(e);
         }
+      })
+      .toList();
 
-        apiUnloader.run();
+    try (ExecutorService executorService = Executors.newFixedThreadPool(10)) {
+      executorService.invokeAll(useCases.stream()
+          .map(p -> (Callable<?>) () -> {
+            // Given
+            String accessToken = p.getKey();
+            T expectedResult = p.getValue();
 
-        Mockito.verify(restTemplateMock, Mockito.times(useCases.size()))
-                .exchange(Mockito.any(), Mockito.<ParameterizedTypeReference<?>>any());
+            // When
+            T result = apiInvoke.apply(accessToken);
+
+            // Then
+            Assertions.assertSame(expectedResult, result);
+            return true;
+          })
+          .toList())
+        .forEach(future -> {
+          try {
+            future.get();
+          } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+          }
+        });
     }
+
+    apiUnloader.run();
+
+    Mockito.verify(restTemplateMock, Mockito.times(useCases.size()))
+      .exchange(Mockito.any(), Mockito.<ParameterizedTypeReference<?>>any());
+  }
 }

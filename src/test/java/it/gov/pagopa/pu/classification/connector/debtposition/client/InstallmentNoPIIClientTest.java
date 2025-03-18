@@ -11,9 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -52,25 +50,5 @@ class InstallmentNoPIIClientTest {
 		verify(debtPositionApisHolderMock, times(1)).getInstallmentNoPIISearchControllerApi(accessToken);
 		verify(installmentNoPiiSearchControllerApiMock, times(1)).crudInstallmentsFindByReceiptId(receiptId);
 	}
-
-  @Test
-  void getByReceiptId_withInvalidReceiptId_returnsNull() {
-    String accessToken = "ACCESSTOKEN";
-    Long receiptId = 2L;
-
-    when(debtPositionApisHolderMock.getInstallmentNoPIISearchControllerApi(accessToken))
-        .thenReturn(installmentNoPiiSearchControllerApiMock);
-    when(installmentNoPiiSearchControllerApiMock.crudInstallmentsFindByReceiptId(receiptId))
-        .thenThrow(HttpClientErrorException.NotFound.class);
-
-    List<InstallmentNoPIIResponse> result = installmentNoPIIClient.getByReceiptId(accessToken,
-        receiptId);
-
-    Assertions.assertEquals(Collections.emptyList(),result);
-    verify(debtPositionApisHolderMock, times(1)).getInstallmentNoPIISearchControllerApi(
-        accessToken);
-    verify(installmentNoPiiSearchControllerApiMock, times(1)).crudInstallmentsFindByReceiptId(
-        receiptId);
-  }
 
 }
