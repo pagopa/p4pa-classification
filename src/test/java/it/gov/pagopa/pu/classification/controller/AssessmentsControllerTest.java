@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.service.AssessmentsService;
+import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIResponseFaker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -37,9 +38,9 @@ class AssessmentsControllerTest {
   void whenCreateAssessmentByReceiptIdThenReturnOk() {
     // Given
     Long receiptId = 1L;
-    Mockito.when(serviceMock.getInstallmentsByReceiptId(receiptId))
-      .thenReturn(List.of(InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse()));
-
+    Mockito.when(serviceMock.getInstallmentsByReceiptId(receiptId, TestUtils.getFakeAccessToken()))
+            .thenReturn(List.of(InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse()));
+    TestUtils.setFakeAccessTokenInContext();
     // When
     ResponseEntity<Void> response = controller.createAssessmentByReceiptId(receiptId);
 

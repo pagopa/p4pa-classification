@@ -15,6 +15,6 @@ public interface InstallmentNoPIIService {
    * @param receiptId the unique identifier of the receipt.
    * @return a list of InstallmentNoPII associated with the given receipt ID.
    */
-  List<InstallmentNoPIIResponse> getByReceiptId(Long receiptId);
+  List<InstallmentNoPIIResponse> getByReceiptId(Long receiptId, String accessToken);
 
 }

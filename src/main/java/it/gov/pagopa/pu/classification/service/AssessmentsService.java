@@ -20,8 +20,8 @@ public class AssessmentsService {
     this.installmentNoPIIService = installmentNoPIIService;
   }
 
-  public List<InstallmentNoPIIResponse> getInstallmentsByReceiptId(Long receiptId) {
-    return installmentNoPIIService.getByReceiptId(receiptId);
+  public List<InstallmentNoPIIResponse> getInstallmentsByReceiptId(Long receiptId, String accessToken) {
+    return installmentNoPIIService.getByReceiptId(receiptId, accessToken);
   }
 
 }

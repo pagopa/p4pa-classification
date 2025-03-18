@@ -118,7 +118,6 @@ tasks.register("dependenciesBuild") {
 
   dependsOn(
     "openApiGenerate",
-    "openApiGenerateP4PAAUTH",
     "openApiGenerateDEBTPOSITIONS"
   )
 }
@@ -162,34 +161,6 @@ var targetEnv = when (grgit.branch.current().name) {
   "uat" -> "uat"
   "main" -> "main"
   else -> "develop"
-}
-
-
-tasks.register<GenerateTask>("openApiGenerateP4PAAUTH") {
-  group = "AutomaticallyGeneratedCode"
-  description = "openapi"
-
-  generatorName.set("java")
-  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-auth/refs/heads/develop/openapi/p4pa-auth.openapi.yaml")
-  outputDir.set("$projectDir/build/generated")
-  invokerPackage.set("it.gov.pagopa.pu.auth.generated")
-  apiPackage.set("it.gov.pagopa.pu.auth.controller.generated")
-  modelPackage.set("it.gov.pagopa.pu.auth.dto.generated")
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  )
-  )
-  library.set("resttemplate")
 }
 
 tasks.register<GenerateTask>("openApiGenerateDEBTPOSITIONS") {

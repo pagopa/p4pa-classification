@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentNoPIIService;
+import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,9 +40,9 @@ class AssessmentsServiceTest {
   void getInstallmentsByReceiptId_withValidReceiptId_returnsInstallments() {
     Long receiptId = 1L;
     List<InstallmentNoPIIResponse> expectedInstallments = List.of(new InstallmentNoPIIResponse());
-    when(installmentNoPIIServiceMock.getByReceiptId(receiptId)).thenReturn(expectedInstallments);
+    when(installmentNoPIIServiceMock.getByReceiptId(receiptId,TestUtils.getFakeAccessToken())).thenReturn(expectedInstallments);
 
-    List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId);
+    List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId,TestUtils.getFakeAccessToken());
 
     assertEquals(expectedInstallments, result);
   }
@@ -49,9 +50,9 @@ class AssessmentsServiceTest {
   @Test
   void getInstallmentsByReceiptId_withInvalidReceiptId_returnsEmptyList() {
     Long receiptId = 2L;
-    when(installmentNoPIIServiceMock.getByReceiptId(receiptId)).thenReturn(Collections.emptyList());
+    when(installmentNoPIIServiceMock.getByReceiptId(receiptId,TestUtils.getFakeAccessToken())).thenReturn(Collections.emptyList());
 
-    List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId);
+    List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId, TestUtils.getFakeAccessToken());
 
     assertTrue(result.isEmpty());
   }
@@ -59,9 +60,9 @@ class AssessmentsServiceTest {
   @Test
   void getInstallmentsByReceiptId_withNullReceiptId_returnsEmptyList() {
     Long receiptId = null;
-    when(installmentNoPIIServiceMock.getByReceiptId(receiptId)).thenReturn(Collections.emptyList());
+    when(installmentNoPIIServiceMock.getByReceiptId(receiptId,TestUtils.getFakeAccessToken())).thenReturn(Collections.emptyList());
 
-    List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId);
+    List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId,TestUtils.getFakeAccessToken());
 
     assertTrue(result.isEmpty());
   }
