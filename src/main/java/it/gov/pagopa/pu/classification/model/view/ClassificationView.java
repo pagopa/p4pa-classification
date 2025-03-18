@@ -3,7 +3,6 @@ package it.gov.pagopa.pu.classification.model.view;
   import com.fasterxml.jackson.annotation.JsonProperty;
   import jakarta.persistence.Entity;
   import jakarta.persistence.Id;
-  import jakarta.persistence.IdClass;
   import jakarta.persistence.Table;
   import lombok.AllArgsConstructor;
   import lombok.Data;
@@ -20,7 +19,6 @@ package it.gov.pagopa.pu.classification.model.view;
   @AllArgsConstructor
   @NoArgsConstructor
   @EqualsAndHashCode(callSuper = false)
-  @IdClass(ClassificationView.class)
   public class ClassificationView implements Serializable {
     @Id
     private Long classificationId;
