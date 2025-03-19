@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassificationDTO {
+public class ExportClassificationsFilterDTO {
 
   private String iuf;
   private String iud;

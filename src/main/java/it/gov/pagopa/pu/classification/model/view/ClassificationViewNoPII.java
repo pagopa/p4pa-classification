@@ -45,7 +45,7 @@ package it.gov.pagopa.pu.classification.model.view;
     private String receiptPspProvince;
     private String receiptPspNation;
     private String receiptOrgEntityType;
-    private String receiptOrgUniqueIdentifierCode;
+
     private String receiptBeneficiaryOrgName;
     private String receiptBeneficiaryOrgOperatingUnitCode;
     private String receiptBeneficiaryOrgOperatingUnitName;
