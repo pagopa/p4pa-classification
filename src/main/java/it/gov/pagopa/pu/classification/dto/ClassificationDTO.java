@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import java.time.OffsetDateTime;
 
 @Data
 @Builder(toBuilder = true)
@@ -20,23 +19,12 @@ public class ClassificationDTO {
   @NotNull
   private String label;
 
-  private OffsetDateTime lastClassificationDateFrom;
-  private OffsetDateTime lastClassificationDateTo;
-
-  private OffsetDateTime payDateFrom;
-  private OffsetDateTime payDateTo;
-
-  private OffsetDateTime paymentDateTimeFrom;
-  private OffsetDateTime paymentDateTimeTo;
-
-  private OffsetDateTime regulationDateFrom;
-  private OffsetDateTime regulationDateTo;
-
-  private OffsetDateTime billDateFrom;
-  private OffsetDateTime billDateTo;
-
-  private OffsetDateTime regionValueDateFrom;
-  private OffsetDateTime regionValueDateTo;
+  private OffsetDateTimeIntervalFilter lastClassificationDate;
+  private OffsetDateTimeIntervalFilter payDate;
+  private OffsetDateTimeIntervalFilter paymentDateTime;
+  private OffsetDateTimeIntervalFilter regulationDate;
+  private OffsetDateTimeIntervalFilter billDate;
+  private OffsetDateTimeIntervalFilter regionValueDate;
 
   private String regulationUniqueIdentifier;
   private String accountRegistryCode;

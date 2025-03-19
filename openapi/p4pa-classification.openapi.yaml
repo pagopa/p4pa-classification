@@ -208,7 +208,7 @@ paths:
     get:
       tags:
         - data-exports
-      operationId: export
+      operationId: export-classifications
       description: "|
         The API returns a list of classifications.
         **Error:** If the size of the requested export is too large, the API will return an error."
@@ -225,12 +225,112 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: 'ClassificationDTO'
-        required: true
+        - name: iuf
+          in: query
+          schema:
+            type: string
+        - name: iud
+          in: query
+          schema:
+            type: string
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iur
+          in: query
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: lastClassificationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: lastClassificationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: payDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: payDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: billDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: billDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regionValueDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regionValueDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationUniqueIdentifier
+          in: query
+          schema:
+            type: string
+        - name: accountRegistryCode
+          in: query
+          schema:
+            type: string
+        - name: billAmountCents
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: remittanceInformation
+          in: query
+          schema:
+            type: string
+        - name: pspCompanyName
+          in: query
+          schema:
+            type: string
+        - name: pspLastName
+          in: query
+          schema:
+            type: string
       responses:
         "200":
           description: Ok
