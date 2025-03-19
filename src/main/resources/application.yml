@@ -23,6 +23,13 @@ spring:
       basePath: crud
 
 management:
+  info:
+    build.enabled: true
+    java.enabled: true
+    git.enabled: true
+  tracing:
+    baggage.remote-fields:
+      - X-user-id
   endpoints:
     jmx:
       exposure.include: "*"
@@ -82,6 +89,16 @@ jwt:
                 -----END PUBLIC KEY-----}"
 
 rest:
-  default-timeout:
-    connect-millis: "\${DEFAULT_REST_CONNECT_TIMEOUT_MILLIS:120000}"
-    read-millis: "\${DEFAULT_REST_READ_TIMEOUT_MILLIS:120000}"
+  defaults:
+    connection-pool:
+      size: "\${DEFAULT_REST_CONNECTION_POOL_SIZE:10}"
+      size-per-route: "\${DEFAULT_REST_CONNECTION_POOL_SIZE_PER_ROUTE:5}"
+      time-to-live-minutes: "\${DEFAULT_REST_CONNECTION_POOL_TIME_TO_LIVE_MINUTES:10}"
+    timeout:
+      connect-millis: "\${DEFAULT_REST_TIMEOUT_CONNECT_MILLIS:120000}"
+      read-millis: "\${DEFAULT_REST_TIMEOUT_READ_MILLIS:120000}"
+  debt-position:
+    base-url: "\${DEBT_POSITION_BASE_URL:}"
+    max-attempts: "\${DEBT_POSITION_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${DEBT_POSITION_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${DEBT_POSITION_PRINT_BODY_WHEN_ERROR:true}"

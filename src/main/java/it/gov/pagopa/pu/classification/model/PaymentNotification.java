@@ -44,12 +44,12 @@ public class PaymentNotification extends BaseEntity implements Serializable{
   private String balance;
   private Long personalDataId;
   private byte[] remittanceInformationHash;
-  private byte[] debtor_fiscal_code_hash;
+  private byte[] debtorFiscalCodeHash;
 
 
 //region keep updated semanticId
   public static String buildSemanticId(PaymentNotification paymentsReporting) {
-    return paymentsReporting.getIud() + "/" +
+    return paymentsReporting.getIud() + "_" +
       paymentsReporting.getOrganizationId();
   }
 

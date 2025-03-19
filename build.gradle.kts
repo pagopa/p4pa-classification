@@ -1,3 +1,5 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 plugins {
   java
   id("org.springframework.boot") version "3.4.3"
@@ -6,6 +8,8 @@ plugins {
   id("org.sonarqube") version "6.0.1.5171"
   id("com.github.ben-manes.versions") version "0.51.0"
   id("org.openapi.generator") version "7.10.0"
+  id("org.ajoberstar.grgit") version "5.3.0"
+  id("com.gorylenko.gradle-git-properties") version "2.5.0"
 }
 
 group = "it.gov.pagopa.payhub"
@@ -33,6 +37,7 @@ val openApiToolsVersion = "0.2.6"
 val micrometerVersion = "1.4.3"
 val postgresJdbcVersion = "42.7.5"
 val bouncycastleVersion = "1.80"
+val httpClientVersion = "5.4.2"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
@@ -49,6 +54,7 @@ dependencies {
   implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
   implementation("org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion")
   implementation("org.postgresql:postgresql:$postgresJdbcVersion")
+  implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
 
   compileOnly("org.projectlombok:lombok")
   annotationProcessor("org.projectlombok:lombok")
@@ -57,7 +63,7 @@ dependencies {
   //	Testing
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.mockito:mockito-core")
-  testImplementation ("org.projectlombok:lombok")
+  testImplementation("org.projectlombok:lombok")
   testImplementation("com.h2database:h2")
 }
 
@@ -111,7 +117,8 @@ tasks.register("dependenciesBuild") {
   description = "grouping all together automatically generate code tasks"
 
   dependsOn(
-    "openApiGenerate"
+    "openApiGenerate",
+    "openApiGenerateDEBTPOSITIONS"
   )
 }
 
@@ -122,6 +129,7 @@ configure<SourceSetContainer> {
 }
 
 springBoot {
+  buildInfo()
   mainClass.value("it.gov.pagopa.pu.classification.ClassificationApplication")
 }
 
@@ -149,4 +157,37 @@ openApiGenerate {
     "generatedConstructorWithRequiredArgs" to "true",
     "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
   ))
+}
+
+var targetEnv = when (grgit.branch.current().name) {
+  "uat" -> "uat"
+  "main" -> "main"
+  else -> "develop"
+}
+
+tasks.register<GenerateTask>("openApiGenerateDEBTPOSITIONS") {
+  group = "AutomaticallyGeneratedCode"
+  description = "openapi"
+
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-debt-positions/refs/heads/$targetEnv/openapi/generated.openapi.json")
+  outputDir.set("$projectDir/build/generated")
+  invokerPackage.set("it.gov.pagopa.pu.debtposition.generated")
+  apiPackage.set("it.gov.pagopa.pu.debtposition.client.generated")
+  modelPackage.set("it.gov.pagopa.pu.debtposition.dto.generated")
+  typeMappings.set(mapOf("LocalDateTime" to "java.time.LocalDateTime"))
+  configOptions.set(mapOf(
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java8",
+    "serializableModel" to "true",
+    "useSpringBoot3" to "true",
+    "useJakartaEe" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true",
+    "generateConstructorWithAllArgs" to "true",
+    "generatedConstructorWithRequiredArgs" to "true",
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+  ))
+  library.set("resttemplate")
 }

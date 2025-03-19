@@ -65,9 +65,9 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
 
 //region keep updated semanticId
   public static String buildSemanticId(PaymentsReporting paymentsReporting) {
-    return paymentsReporting.getIuf() + "/" +
-      paymentsReporting.getIuv() + "/" +
-      paymentsReporting.getTransferIndex() + "/" +
+    return paymentsReporting.getIuf() + "_" +
+      paymentsReporting.getIuv() + "_" +
+      paymentsReporting.getTransferIndex() + "_" +
       paymentsReporting.getOrganizationId();
   }
 
