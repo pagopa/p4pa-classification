@@ -23,7 +23,6 @@ public class InstallmentNoPIIResponseFaker {
                 .iuf("iuf")
                 .nav("nav")
                 .dueDate(LocalDate.now())
-                .paymentTypeCode("paymentTypeCode")
                 .amountCents(100L)
                 .remittanceInformation("remittanceInformation")
                 .balance("balance")

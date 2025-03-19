@@ -225,7 +225,167 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /export/organization/{organizationId}/classifications:
+    get:
+      tags:
+        - data-exports
+      operationId: export-classifications
+      description: "|
+        The API returns a list of classifications.
+        **Error:** If the size of the requested export is too large, the API will return an error."
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the organization
+        - name: operatorExternalUserId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: iuf
+          in: query
+          schema:
+            type: string
+        - name: iud
+          in: query
+          schema:
+            type: string
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iur
+          in: query
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: lastClassificationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: lastClassificationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: payDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: payDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: billDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: billDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regionValueDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regionValueDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationUniqueIdentifier
+          in: query
+          schema:
+            type: string
+        - name: accountRegistryCode
+          in: query
+          schema:
+            type: string
+        - name: billAmountCents
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: remittanceInformation
+          in: query
+          schema:
+            type: string
+        - name: pspCompanyName
+          in: query
+          schema:
+            type: string
+        - name: pspLastName
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedClassificationView'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+              example:
+                code: "DEBT_POSITION_BAD_REQUEST"
+                message: "The number of InstallmentPaidViewNoPII records returned exceeds the maximum allowed"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     ClassificationErrorDTO:
       type: object
@@ -242,8 +402,28 @@ components:
             - CLASSIFICATION_GENERIC_ERROR
         message:
           type: string
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    PagedClassificationView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'ClassificationView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
