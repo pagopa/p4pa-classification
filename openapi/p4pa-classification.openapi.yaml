@@ -204,6 +204,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/assessments/create-assessment-by-receipt-id:
+    post:
+      tags:
+        - assessment-entity-extended-controller
+      operationId: createAssessmentByReceiptId
+      parameters:
+        - name: receiptId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: The resource was created successfully.
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
   /export/organization/{organizationId}/classifications:
     get:
       tags:
