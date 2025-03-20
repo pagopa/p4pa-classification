@@ -1,10 +1,9 @@
 package it.gov.pagopa.pu.classification.controller;
 
+import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.classification.service.AssessmentsService;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIResponseFaker;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,35 +15,33 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @ExtendWith(MockitoExtension.class)
 class AssessmentsControllerTest {
 
   @Mock
   private AssessmentsService serviceMock;
+  @Mock
+  private AssessmentsRepository assessmentsRepository;
 
   private AssessmentsController controller;
 
-  @BeforeEach
+@BeforeEach
   void init() {
-    controller = new AssessmentsController(serviceMock);
-  }
-
-  @AfterEach
-  void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(serviceMock);
+    controller = new AssessmentsController(serviceMock,assessmentsRepository);
   }
 
   @Test
   void whenCreateAssessmentByReceiptIdThenReturnOk() {
-    // Given
     Long receiptId = 1L;
     Mockito.when(serviceMock.getInstallmentsByReceiptId(receiptId, TestUtils.getFakeAccessToken()))
-            .thenReturn(List.of(InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse()));
+      .thenReturn(List.of(InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse()));
     TestUtils.setFakeAccessTokenInContext();
-    // When
+
     ResponseEntity<Void> response = controller.createAssessmentByReceiptId(receiptId);
 
-    // Then
-    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    Mockito.verify(serviceMock).getInstallmentsByReceiptId(receiptId, TestUtils.getFakeAccessToken());
   }
 }

@@ -29,13 +29,13 @@ class InstallmentNoPIIServiceTest {
 		List<InstallmentNoPIIResponse> expected = mock(List.class);
 		Long receiptId = 1L;
 
-		when(installmentNoPIIClientMock.getByReceiptId(accessToken, receiptId)).thenReturn(expected);
+		when(installmentNoPIIClientMock.getByReceiptId(receiptId, accessToken)).thenReturn(expected);
 
 		// When
 		List<InstallmentNoPIIResponse> result = installmentNoPIIService.getByReceiptId(receiptId, accessToken);
 
 		// Then
 		assertEquals(expected, result);
-		verify(installmentNoPIIClientMock, times(1)).getByReceiptId(accessToken, receiptId);
+		verify(installmentNoPIIClientMock, times(1)).getByReceiptId(receiptId, accessToken);
 	}
 }

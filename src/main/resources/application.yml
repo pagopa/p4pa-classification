@@ -102,3 +102,8 @@ rest:
     max-attempts: "\${DEBT_POSITION_MAX_ATTEMPTS:3}" # It's counting also the first attempt
     wait-time-millis: "\${DEBT_POSITION_WAIT_TIME_MILLIS:500}"
     print-body-when-error: "\${DEBT_POSITION_PRINT_BODY_WHEN_ERROR:true}"
+  process-executions:
+    base-url: "\${PROCESS_EXECUTIONS_BASE_URL:}"
+    max-attempts: "\${PROCESS_EXECUTIONS_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${PROCESS_EXECUTIONS_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${PROCESS_EXECUTIONS_PRINT_BODY_WHEN_ERROR:true}"

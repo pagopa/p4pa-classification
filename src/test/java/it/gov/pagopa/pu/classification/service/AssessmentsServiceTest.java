@@ -1,9 +1,17 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentNoPIIService;
+import it.gov.pagopa.pu.classification.connector.processexecutions.IngestionFlowFileService;
+import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
+import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.util.TestUtils;
+import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIResponseFaker;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,12 +30,16 @@ import static org.mockito.Mockito.when;
 class AssessmentsServiceTest {
   @Mock
   private InstallmentNoPIIService installmentNoPIIServiceMock;
+  @Mock
+  private IngestionFlowFileService ingestionFlowFileServiceMock;
+  @Mock
+  private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
 
   private AssessmentsService service;
 
   @BeforeEach
   void init() {
-    service = new AssessmentsService(installmentNoPIIServiceMock);
+    service = new AssessmentsService(installmentNoPIIServiceMock, ingestionFlowFileServiceMock, debtPositionTypeOrgServiceMock);
   }
 
   @AfterEach
@@ -65,5 +77,29 @@ class AssessmentsServiceTest {
     List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId,TestUtils.getFakeAccessToken());
 
     assertTrue(result.isEmpty());
+  }
+
+
+  @Test
+  void getAssessment_withValidInstallmentNoPIIResponse_returnsAssessment() {
+    InstallmentNoPIIResponse installmentNoPIIResponse = InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse();
+    IngestionFlowFile ingestionFlowFile = new IngestionFlowFile();
+    ingestionFlowFile.setOrganizationId(1L);
+    ingestionFlowFile.setFileName("testFile");
+    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
+    debtPositionTypeOrg.setCode("testCode");
+
+    when(ingestionFlowFileServiceMock.getIngestionFlowFile(installmentNoPIIResponse.getIngestionFlowFileId(), TestUtils.getFakeAccessToken()))
+      .thenReturn(ingestionFlowFile);
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), TestUtils.getFakeAccessToken()))
+      .thenReturn(debtPositionTypeOrg);
+
+    Assessments result = service.getAssessment(installmentNoPIIResponse, TestUtils.getFakeAccessToken());
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(ingestionFlowFile.getOrganizationId(), result.getOrganizationId());
+    Assertions.assertEquals(debtPositionTypeOrg.getCode(), result.getDebtPositionTypeOrgCode());
+    Assertions.assertEquals(AssessmentStatus.NEW, result.getStatus());
+    Assertions.assertEquals(ingestionFlowFile.getFileName() + "_" + debtPositionTypeOrg.getCode(), result.getAssessmentName());
   }
 }

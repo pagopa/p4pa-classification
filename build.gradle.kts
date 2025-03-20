@@ -10,6 +10,7 @@ plugins {
   id("org.openapi.generator") version "7.10.0"
   id("org.ajoberstar.grgit") version "5.3.0"
   id("com.gorylenko.gradle-git-properties") version "2.5.0"
+  id("com.intershop.gradle.jaxb") version "7.0.1"
 }
 
 group = "it.gov.pagopa.payhub"
@@ -38,6 +39,9 @@ val micrometerVersion = "1.4.3"
 val postgresJdbcVersion = "42.7.5"
 val bouncycastleVersion = "1.80"
 val httpClientVersion = "5.4.2"
+val activationVersion = "2.1.3"
+val jaxbVersion = "4.0.5"
+val jaxbApiVersion = "4.0.2"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
@@ -56,6 +60,15 @@ dependencies {
   implementation("org.postgresql:postgresql:$postgresJdbcVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
 
+  //jaxb
+  implementation("com.sun.xml.bind:jaxb-xjc:$jaxbVersion")
+  implementation("com.sun.xml.bind:jaxb-jxc:$jaxbVersion")
+  implementation("com.sun.xml.bind:jaxb-core:$jaxbVersion")
+  implementation("jakarta.xml.bind:jakarta.xml.bind-api:$jaxbApiVersion")
+  implementation("jakarta.activation:jakarta.activation-api:$activationVersion")
+  runtimeOnly("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
+
+
   compileOnly("org.projectlombok:lombok")
   annotationProcessor("org.projectlombok:lombok")
   testAnnotationProcessor("org.projectlombok:lombok")
@@ -65,6 +78,10 @@ dependencies {
   testImplementation("org.mockito:mockito-core")
   testImplementation("org.projectlombok:lombok")
   testImplementation("com.h2database:h2")
+
+
+  jaxbext("com.github.jaxb-xew-plugin:jaxb-xew-plugin:2.1")
+  jaxbext("org.jvnet.jaxb:jaxb-plugins:4.0.0")
 }
 
 tasks.withType<Test> {
@@ -102,6 +119,20 @@ tasks {
   }
 }
 
+
+jaxb {
+  javaGen {
+    register("Assessment") {
+      extension = true
+      args = listOf("-xmlschema")
+      outputDir = file("$projectDir/build/generated/jaxb/java")
+      schema = file("src/main/resources/xsd/PagInf_Dovuti_Pagati_6_2_0.xsd")
+    }
+  }
+}
+
+
+
 configurations {
   compileClasspath {
     resolutionStrategy.activateDependencyLocking()
@@ -118,7 +149,8 @@ tasks.register("dependenciesBuild") {
 
   dependsOn(
     "openApiGenerate",
-    "openApiGenerateDEBTPOSITIONS"
+    "openApiGenerateDEBTPOSITIONS",
+    "openApiGeneratePROCESSEXECUTION"
   )
 }
 
@@ -143,7 +175,8 @@ openApiGenerate {
     "Treasury" to "it.gov.pagopa.pu.classification.model.Treasury",
     "PaymentsReporting" to "it.gov.pagopa.pu.classification.model.PaymentsReporting",
     "Classification" to "it.gov.pagopa.pu.classification.model.Classification",
-    "ClassificationView" to "it.gov.pagopa.pu.classification.dto.ClassificationViewDTO"
+    "ClassificationView" to "it.gov.pagopa.pu.classification.dto.ClassificationViewDTO",
+    "Assessments" to "it.gov.pagopa.pu.classification.model.Assessments"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -189,4 +222,36 @@ tasks.register<GenerateTask>("openApiGenerateDEBTPOSITIONS") {
     "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
   ))
   library.set("resttemplate")
+}
+
+
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGeneratePROCESSEXECUTION") {
+  group = "openapi"
+  description = "description"
+
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-process-executions/refs/heads/$targetEnv/openapi/generated.openapi.json")
+  outputDir.set("$projectDir/build/generated")
+  apiPackage.set("it.gov.pagopa.pu.p4paprocessexecutions.controller.generated")
+  modelPackage.set("it.gov.pagopa.pu.p4paprocessexecutions.dto.generated")
+  typeMappings.set(mapOf(
+    "LocalDateTime" to "java.time.LocalDateTime"
+  ))
+  configOptions.set(mapOf(
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java8",
+    "useSpringBoot3" to "true",
+    "useJakartaEe" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true",
+    "generateConstructorWithAllArgs" to "true",
+    "generatedConstructorWithRequiredArgs" to "true",
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+  ))
+  library.set("resttemplate")
+}
+
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
