@@ -31,10 +31,10 @@ public class AssessmentsController implements AssessmentEntityExtendedController
   public ResponseEntity<Void> createAssessmentByReceiptId(Long receiptId) {
     String accessToken = SecurityUtils.getAccessToken();
     List<InstallmentNoPIIResponse> installmentsList = assessmentsService.getInstallmentsByReceiptId(receiptId, accessToken);
-    List<Assessments> assessmentsList = new ArrayList<>();
-    installmentsList.forEach(installmentNoPIIResponse ->
-      assessmentsList.add(assessmentsService.getAssessment(installmentNoPIIResponse, accessToken))
-    );
+    List<Assessments> assessmentsList = installmentsList.stream()
+       .map(i ->
+           assessmentsService.getAssessment(i, accessToken))
+       .toList();
     assessmentsRepository.saveAll(assessmentsList);
 
     return ResponseEntity.ok().build();
