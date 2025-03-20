@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.model.view;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,16 +21,23 @@ import java.time.LocalDate;
 public class TreasuryView implements Serializable {
 
   @Id
+  @NotNull
   private String treasuryId;
+  @NotNull
   private Long organizationId;
+  @NotNull
   private String billYear;
+  @NotNull
   private String billCode;
   private LocalDate regionValueDate;
+  @NotNull
   private LocalDate billDate;
   private String iuf;
+  @NotNull
   private Long billAmountCents;
   private String iuv;
   private String provisionalCode;
+  @NotNull
   private String pspLastName;
   private String documentCode;
 
