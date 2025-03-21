@@ -42,6 +42,7 @@ val httpClientVersion = "5.4.2"
 val activationVersion = "2.1.3"
 val jaxbVersion = "4.0.5"
 val jaxbApiVersion = "4.0.2"
+val xmlSchemaVersion = "2.3.1"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
@@ -62,7 +63,17 @@ dependencies {
   implementation("org.postgresql:postgresql:$postgresJdbcVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
 
-
+//jaxb
+  implementation("org.apache.ws.xmlschema:xmlschema-core:$xmlSchemaVersion")
+  runtimeOnly("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
+  jaxb("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
+  jaxb("com.sun.xml.bind:jaxb-xjc:$jaxbVersion")
+  jaxb("com.sun.xml.bind:jaxb-jxc:$jaxbVersion")
+  jaxb("com.sun.xml.bind:jaxb-core:$jaxbVersion")
+  jaxb("jakarta.xml.bind:jakarta.xml.bind-api:$jaxbApiVersion")
+  jaxb("jakarta.activation:jakarta.activation-api:$activationVersion")
+  jaxbext("org.jvnet.jaxb:jaxb-plugin-annotate:3.0.2")
+  jaxbext("org.slf4j:slf4j-simple:2.0.16") // see https://github.com/IntershopCommunicationsAG/jaxb-gradle-plugin/issues/37
 
   compileOnly("org.projectlombok:lombok")
   annotationProcessor("org.projectlombok:lombok")
@@ -142,8 +153,7 @@ tasks.register("dependenciesBuild") {
   dependsOn(
     "openApiGenerate",
     "openApiGenerateDEBTPOSITIONS",
-    "openApiGeneratePROCESSEXECUTION",
-    "jaxbJavaGenAssessment"
+    "openApiGeneratePROCESSEXECUTION"
   )
 }
 
