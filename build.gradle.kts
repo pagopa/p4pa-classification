@@ -50,7 +50,9 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-data-rest")
-  implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+  implementation("org.springframework.boot:spring-boot-starter-data-jpa") {
+    exclude(group = "org.glassfish.jaxb", module = "jaxb-core")
+  }
   implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
   implementation("io.micrometer:micrometer-registry-prometheus")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion")
@@ -60,13 +62,6 @@ dependencies {
   implementation("org.postgresql:postgresql:$postgresJdbcVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
 
-  //jaxb
-  implementation("com.sun.xml.bind:jaxb-xjc:$jaxbVersion")
-  implementation("com.sun.xml.bind:jaxb-jxc:$jaxbVersion")
-  implementation("com.sun.xml.bind:jaxb-core:$jaxbVersion")
-  implementation("jakarta.xml.bind:jakarta.xml.bind-api:$jaxbApiVersion")
-  implementation("jakarta.activation:jakarta.activation-api:$activationVersion")
-  runtimeOnly("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
 
 
   compileOnly("org.projectlombok:lombok")
@@ -79,9 +74,6 @@ dependencies {
   testImplementation("org.projectlombok:lombok")
   testImplementation("com.h2database:h2")
 
-
-  jaxbext("com.github.jaxb-xew-plugin:jaxb-xew-plugin:2.1")
-  jaxbext("org.jvnet.jaxb:jaxb-plugins:4.0.0")
 }
 
 tasks.withType<Test> {
@@ -150,7 +142,8 @@ tasks.register("dependenciesBuild") {
   dependsOn(
     "openApiGenerate",
     "openApiGenerateDEBTPOSITIONS",
-    "openApiGeneratePROCESSEXECUTION"
+    "openApiGeneratePROCESSEXECUTION",
+    "jaxbJavaGenAssessment"
   )
 }
 
@@ -252,6 +245,6 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   library.set("resttemplate")
 }
 
-tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+tasks.withType<Copy> {
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
