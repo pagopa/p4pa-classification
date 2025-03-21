@@ -105,4 +105,28 @@ class AssessmentsServiceTest {
     Assertions.assertEquals(AssessmentStatus.NEW, result.getStatus());
     Assertions.assertEquals(ingestionFlowFile.getFileName() + "_" + debtPositionTypeOrg.getCode(), result.getAssessmentName());
   }
+
+  @Test
+  void createAssessment_withValidReceiptId_returnsAssessments() {
+    Long receiptId = 1L;
+    List<InstallmentNoPIIResponse> installments = List.of(InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse());
+    Assessments assessment = new Assessments();
+    IngestionFlowFile ingestionFlowFile = new IngestionFlowFile();
+    ingestionFlowFile.setOrganizationId(1L);
+    ingestionFlowFile.setFileName("testFile");
+
+    when(installmentNoPIIServiceMock.getByReceiptId(receiptId, TestUtils.getFakeAccessToken())).thenReturn(installments);
+    when(ingestionFlowFileServiceMock.getIngestionFlowFile(installments.getFirst().getIngestionFlowFileId(), TestUtils.getFakeAccessToken()))
+      .thenReturn(ingestionFlowFile);
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(Mockito.anyLong(), Mockito.anyString())).thenReturn(new DebtPositionTypeOrg());
+    when(assessmentsRepositoryMock.saveAll(Mockito.anyList())).thenReturn(List.of(assessment));
+
+    List<Assessments> result = service.createAssesment(receiptId, TestUtils.getFakeAccessToken());
+
+    assertEquals(1, result.size());
+    assertEquals(assessment, result.getFirst());
+  }
+
+
+
 }
