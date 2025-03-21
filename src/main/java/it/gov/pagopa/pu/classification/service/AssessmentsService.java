@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentNoPIISe
 import it.gov.pagopa.pu.classification.connector.processexecutions.IngestionFlowFileService;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
+import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +22,13 @@ public class AssessmentsService {
   private final InstallmentNoPIIService installmentNoPIIService;
   private final IngestionFlowFileService ingestionFlowFileService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
+  private final AssessmentsRepository assessmentsRepository;
 
-  public AssessmentsService(InstallmentNoPIIService installmentNoPIIService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService) {
+  public AssessmentsService(InstallmentNoPIIService installmentNoPIIService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository) {
     this.installmentNoPIIService = installmentNoPIIService;
     this.ingestionFlowFileService = ingestionFlowFileService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
+    this.assessmentsRepository = assessmentsRepository;
   }
 
   public List<InstallmentNoPIIResponse> getInstallmentsByReceiptId(Long receiptId, String accessToken) {
@@ -43,5 +46,15 @@ public class AssessmentsService {
       .status(AssessmentStatus.NEW)
       .assessmentName(ingestionFlowFile.getFileName() + "_" + debtPositionTypeOrgCode)
       .build();
+  }
+
+  public List<Assessments> createAssesment(Long receiptId, String accessToken) {
+    List<InstallmentNoPIIResponse> installmentsList = this.getInstallmentsByReceiptId(receiptId, accessToken);
+    List<Assessments> assessmentsList = installmentsList.stream()
+      .map(i ->
+        this.getAssessment(i, accessToken))
+      .toList();
+
+    return assessmentsRepository.saveAll(assessmentsList);
   }
 }

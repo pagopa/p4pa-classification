@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
+import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.service.AssessmentsService;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIResponseFaker;
@@ -22,14 +22,12 @@ class AssessmentsControllerTest {
 
   @Mock
   private AssessmentsService serviceMock;
-  @Mock
-  private AssessmentsRepository assessmentsRepository;
 
   private AssessmentsController controller;
 
 @BeforeEach
   void init() {
-    controller = new AssessmentsController(serviceMock,assessmentsRepository);
+    controller = new AssessmentsController(serviceMock);
   }
 
   @Test
@@ -39,7 +37,7 @@ class AssessmentsControllerTest {
       .thenReturn(List.of(InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse()));
     TestUtils.setFakeAccessTokenInContext();
 
-    ResponseEntity<Void> response = controller.createAssessmentByReceiptId(receiptId);
+    ResponseEntity<List<Assessments>> response = controller.createAssessmentByReceiptId(receiptId);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     Mockito.verify(serviceMock).getInstallmentsByReceiptId(receiptId, TestUtils.getFakeAccessToken());

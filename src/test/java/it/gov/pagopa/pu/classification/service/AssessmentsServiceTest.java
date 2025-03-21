@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentNoPIISe
 import it.gov.pagopa.pu.classification.connector.processexecutions.IngestionFlowFileService;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
+import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIResponseFaker;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
@@ -34,12 +35,14 @@ class AssessmentsServiceTest {
   private IngestionFlowFileService ingestionFlowFileServiceMock;
   @Mock
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
+  @Mock
+  private AssessmentsRepository assessmentsRepositoryMock;
 
   private AssessmentsService service;
 
   @BeforeEach
   void init() {
-    service = new AssessmentsService(installmentNoPIIServiceMock, ingestionFlowFileServiceMock, debtPositionTypeOrgServiceMock);
+    service = new AssessmentsService(installmentNoPIIServiceMock, ingestionFlowFileServiceMock, debtPositionTypeOrgServiceMock, assessmentsRepositoryMock);
   }
 
   @AfterEach
