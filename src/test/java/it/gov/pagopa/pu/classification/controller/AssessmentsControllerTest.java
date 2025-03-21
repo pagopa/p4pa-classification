@@ -3,7 +3,6 @@ package it.gov.pagopa.pu.classification.controller;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.service.AssessmentsService;
 import it.gov.pagopa.pu.classification.util.TestUtils;
-import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIResponseFaker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,15 +30,18 @@ class AssessmentsControllerTest {
   }
 
   @Test
-  void whenCreateAssessmentByReceiptIdThenReturnOk() {
+  void whenCreateAssessmentByReceiptIdWithValidReceiptIdThenReturnAssessments() {
     Long receiptId = 1L;
-    Mockito.when(serviceMock.getInstallmentsByReceiptId(receiptId, TestUtils.getFakeAccessToken()))
-      .thenReturn(List.of(InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse()));
+    Mockito.when(serviceMock.createAssesment(receiptId, TestUtils.getFakeAccessToken()))
+      .thenReturn(List.of(new Assessments()));
     TestUtils.setFakeAccessTokenInContext();
 
     ResponseEntity<List<Assessments>> response = controller.createAssessmentByReceiptId(receiptId);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    Mockito.verify(serviceMock).getInstallmentsByReceiptId(receiptId, TestUtils.getFakeAccessToken());
+    assertEquals(1, response.getBody().size());
+    Mockito.verify(serviceMock).createAssesment(receiptId, TestUtils.getFakeAccessToken());
   }
+
+
 }
