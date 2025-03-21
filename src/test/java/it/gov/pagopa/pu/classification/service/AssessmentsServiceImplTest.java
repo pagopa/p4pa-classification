@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AssessmentsServiceTest {
+class AssessmentsServiceImplTest {
   @Mock
   private InstallmentNoPIIService installmentNoPIIServiceMock;
   @Mock
@@ -38,11 +38,11 @@ class AssessmentsServiceTest {
   @Mock
   private AssessmentsRepository assessmentsRepositoryMock;
 
-  private AssessmentsService service;
+  private AssessmentsServiceImpl service;
 
   @BeforeEach
   void init() {
-    service = new AssessmentsService(installmentNoPIIServiceMock, ingestionFlowFileServiceMock, debtPositionTypeOrgServiceMock, assessmentsRepositoryMock);
+    service = new AssessmentsServiceImpl(installmentNoPIIServiceMock, ingestionFlowFileServiceMock, debtPositionTypeOrgServiceMock, assessmentsRepositoryMock);
   }
 
   @AfterEach
@@ -84,23 +84,24 @@ class AssessmentsServiceTest {
 
 
   @Test
-  void getAssessment_withValidInstallmentNoPIIResponse_returnsAssessment() {
+  void buildAssessment_withValidInstallmentNoPIIResponse_returnsAssessment() {
     InstallmentNoPIIResponse installmentNoPIIResponse = InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse();
     IngestionFlowFile ingestionFlowFile = new IngestionFlowFile();
     ingestionFlowFile.setOrganizationId(1L);
     ingestionFlowFile.setFileName("testFile");
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
     debtPositionTypeOrg.setCode("testCode");
+    debtPositionTypeOrg.setDebtPositionTypeOrgId(2L);
 
     when(ingestionFlowFileServiceMock.getIngestionFlowFile(installmentNoPIIResponse.getIngestionFlowFileId(), TestUtils.getFakeAccessToken()))
       .thenReturn(ingestionFlowFile);
     when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), TestUtils.getFakeAccessToken()))
       .thenReturn(debtPositionTypeOrg);
 
-    Assessments result = service.getAssessment(installmentNoPIIResponse, TestUtils.getFakeAccessToken());
+    Assessments result = service.buildAssessment(installmentNoPIIResponse, TestUtils.getFakeAccessToken());
 
     Assertions.assertNotNull(result);
-    Assertions.assertEquals(ingestionFlowFile.getOrganizationId(), result.getOrganizationId());
+    Assertions.assertEquals(debtPositionTypeOrg.getOrganizationId(), result.getOrganizationId());
     Assertions.assertEquals(debtPositionTypeOrg.getCode(), result.getDebtPositionTypeOrgCode());
     Assertions.assertEquals(AssessmentStatus.NEW, result.getStatus());
     Assertions.assertEquals(ingestionFlowFile.getFileName() + "_" + debtPositionTypeOrg.getCode(), result.getAssessmentName());

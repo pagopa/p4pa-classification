@@ -153,7 +153,8 @@ tasks.register("dependenciesBuild") {
   dependsOn(
     "openApiGenerate",
     "openApiGenerateDEBTPOSITIONS",
-    "openApiGeneratePROCESSEXECUTION"
+    "openApiGeneratePROCESSEXECUTION",
+    "jaxbJavaGenAssessment"
   )
 }
 
