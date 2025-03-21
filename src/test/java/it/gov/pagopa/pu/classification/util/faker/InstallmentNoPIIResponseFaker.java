@@ -1,7 +1,9 @@
 package it.gov.pagopa.pu.classification.util.faker;
 
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentSyncStatus;
+import it.gov.pagopa.pu.debtposition.dto.generated.PersonEntityType;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -15,7 +17,7 @@ public class InstallmentNoPIIResponseFaker {
                 .updateOperatorExternalId("operator123")
                 .installmentId(1L)
                 .paymentOptionId(1L)
-                .status(InstallmentNoPIIResponse.StatusEnum.PAID)
+                .status(InstallmentStatus.PAID)
                 .iupdPagopa("iupdPagopa")
                 .iud("iud")
                 .iuv("iuv")
@@ -28,7 +30,7 @@ public class InstallmentNoPIIResponseFaker {
                 .balance("balance")
                 .legacyPaymentMetadata("legacyPaymentMetadata")
                 .personalDataId(1L)
-                .debtorEntityType(InstallmentNoPIIResponse.DebtorEntityTypeEnum.F)
+                .debtorEntityType(PersonEntityType.F)
                 .debtorFiscalCodeHash("fiscalCodeHash".getBytes())
                 .syncStatus(new InstallmentSyncStatus())
                 .notificationDate(OffsetDateTime.now())
