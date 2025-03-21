@@ -228,7 +228,7 @@ tasks.register<GenerateTask>("openApiGenerateDEBTPOSITIONS") {
 }
 
 
-tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGeneratePROCESSEXECUTION") {
+tasks.register<GenerateTask>("openApiGeneratePROCESSEXECUTION") {
   group = "openapi"
   description = "description"
 
