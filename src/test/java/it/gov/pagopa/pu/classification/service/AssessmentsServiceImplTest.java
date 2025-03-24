@@ -81,19 +81,22 @@ class AssessmentsServiceImplTest {
     IngestionFlowFile ingestionFlowFile = new IngestionFlowFile();
     ingestionFlowFile.setOrganizationId(1L);
     ingestionFlowFile.setFileName("testFile");
+    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
+    debtPositionTypeOrg.setCode("testCode");
+    debtPositionTypeOrg.setOrganizationId(3L);
 
     when(installmentNoPIIServiceMock.getByReceiptId(receiptId, TestUtils.getFakeAccessToken())).thenReturn(installments);
     when(ingestionFlowFileServiceMock.getIngestionFlowFile(installments.getFirst().getIngestionFlowFileId(), TestUtils.getFakeAccessToken()))
-      .thenReturn(ingestionFlowFile);
-    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(Mockito.anyLong(), Mockito.anyString())).thenReturn(new DebtPositionTypeOrg());
-    when(assessmentsRepositoryMock.saveAll(Mockito.anyList())).thenReturn(List.of(assessment));
+            .thenReturn(ingestionFlowFile);
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), TestUtils.getFakeAccessToken())).thenReturn(debtPositionTypeOrg);
+    when(assessmentsRepositoryMock.getByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
+            debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getCode(), "testFile_testCode"))
+            .thenReturn(null);
+    when(assessmentsRepositoryMock.save(Mockito.any(Assessments.class))).thenReturn(assessment);
 
     List<Assessments> result = service.createAssesment(receiptId, TestUtils.getFakeAccessToken());
 
     assertEquals(1, result.size());
     assertEquals(assessment, result.getFirst());
   }
-
-
-
 }

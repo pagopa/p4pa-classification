@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 @Lazy
 @Slf4j
@@ -27,8 +26,16 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     private final IngestionFlowFileService ingestionFlowFileService;
     private final DebtPositionTypeOrgService debtPositionTypeOrgService;
     private final AssessmentsRepository assessmentsRepository;
-    public static final String CURRENT_DATE_STRING = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    /**
+     * Constructs a new AssessmentsServiceImpl with the given dependencies.
+     *
+     * @param installmentNoPIIService the service for retrieving installment information
+     * @param ingestionFlowFileService the service for retrieving ingestion flow files
+     * @param debtPositionTypeOrgService the service for retrieving debt position type organization information
+     * @param assessmentsRepository the repository for managing assessments
+     */
     public AssessmentsServiceImpl(InstallmentNoPIIService installmentNoPIIService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository) {
         this.installmentNoPIIService = installmentNoPIIService;
         this.ingestionFlowFileService = ingestionFlowFileService;
@@ -36,23 +43,34 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         this.assessmentsRepository = assessmentsRepository;
     }
 
+
+    /**
+     * {@inheritDoc}
+     *
+     */
     @Override
     public List<Assessments> createAssesment(Long receiptId, String accessToken) {
         List<InstallmentNoPIIResponse> installmentsList = installmentNoPIIService.getByReceiptId(receiptId, accessToken);
-        List<Assessments> assessmentsList = installmentsList.stream()
+
+        return installmentsList.stream()
                 .map(i -> {
                     Assessments a = this.buildAssessment(i, accessToken);
                     if (assessmentsRepository.getByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(a.getOrganizationId(), a.getDebtPositionTypeOrgCode(), a.getAssessmentName()) == null) {
-                        return a;
+                        return assessmentsRepository.save(a);
                     }
-                    return null;
+                    return a;
                 })
-                .filter(Objects::nonNull)
                 .toList();
-
-        return assessmentsRepository.saveAll(assessmentsList);
     }
 
+
+    /**
+     * Builds an assessment based on the given installment information and access token.
+     *
+     * @param installmentNoPIIResponse the installment information
+     * @param accessToken the access token for authentication
+     * @return the built assessment
+     */
     Assessments buildAssessment(InstallmentNoPIIResponse installmentNoPIIResponse, String accessToken) {
         IngestionFlowFile ingestionFlowFile = ingestionFlowFileService.getIngestionFlowFile(installmentNoPIIResponse.getIngestionFlowFileId(), accessToken);
         DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), accessToken);
@@ -60,9 +78,9 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         String assessmentName = "";
 
         if (ingestionFlowFile != null)
-            assessmentName = ingestionFlowFile.getFileName() + "_" + debtPositionTypeOrgCode;
+            assessmentName = ingestionFlowFile.getFileName().replaceFirst("[.][^.]+$", "") + "_" + debtPositionTypeOrgCode;
         else
-            assessmentName = "ACC" + CURRENT_DATE_STRING + "_" + debtPositionTypeOrgCode;
+            assessmentName = "ACC" + LocalDate.now().format(DATE_TIME_FORMATTER) + "_" + debtPositionTypeOrgCode;
 
         return Assessments.builder()
                 .organizationId(debtPositionTypeOrg.getOrganizationId())

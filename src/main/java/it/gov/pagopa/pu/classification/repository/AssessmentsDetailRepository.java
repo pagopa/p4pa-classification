@@ -6,6 +6,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 
 @RepositoryRestResource(path = "assessments-details")
-public interface AssessmentsDetailRepository extends JpaRepository<AssessmentsDetail,String> {
+public interface AssessmentsDetailRepository extends JpaRepository<AssessmentsDetail,Long> {
 
 }
