@@ -1,6 +1,10 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import it.gov.pagopa.pu.classification.controller.generated.AssessmentEntityExtendedControllerApi;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import it.gov.pagopa.pu.classification.controller.generated.AssessmentsControllerApi;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.service.AssessmentsService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
@@ -13,7 +17,7 @@ import java.util.List;
  * Controller to host spring-data-rest directly not supported methods
  */
 @RestController
-public class AssessmentsController implements AssessmentEntityExtendedControllerApi {
+public class AssessmentsController implements AssessmentsControllerApi {
 
   private final AssessmentsService assessmentsService;
 
@@ -22,6 +26,7 @@ public class AssessmentsController implements AssessmentEntityExtendedController
   }
 
 
+  @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(ref = "EntityModelAssessments"))))
   @Override
   public ResponseEntity<List<Assessments>> createAssessmentByReceiptId(Long receiptId) {
     String accessToken = SecurityUtils.getAccessToken();
