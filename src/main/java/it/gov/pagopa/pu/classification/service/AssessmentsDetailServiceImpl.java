@@ -36,21 +36,21 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   @Override
   public void createAssessmentDetail(Assessments assessments, InstallmentNoPIIResponse installmentNoPIIResponse) {
     List<AssessmentsDetail> assessmentsDetailList = buildAssessmentDetail(installmentNoPIIResponse, assessments);
-    assessmentsDetailList.stream()
-      .map(assessementDetail -> {
-        AssessmentsDetail ad = assessmentsDetailRepository.getByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(assessementDetail.getAssessmentId(), assessementDetail.getIuv(), assessementDetail.getIud(), assessementDetail.getOfficeCode(), assessementDetail.getSectionCode(), assessementDetail.getAssessmentCode());
-        if (ad == null) {
-          return assessmentsDetailRepository.save(assessementDetail);
-        } else if (!(ad.getAmountCents().equals( assessementDetail.getAmountCents()))) {
-          ad.setAmountCents(assessementDetail.getAmountCents());
-          return assessmentsDetailRepository.save(ad);
-        }
-        return Collections.emptyList();
-      });
+    assessmentsDetailList.forEach(assessmentDetail -> {
+      AssessmentsDetail ad = assessmentsDetailRepository.getByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
+              assessmentDetail.getAssessmentId(), assessmentDetail.getIuv(), assessmentDetail.getIud(),
+              assessmentDetail.getOfficeCode(), assessmentDetail.getSectionCode(), assessmentDetail.getAssessmentCode());
+      if (ad == null) {
+        assessmentsDetailRepository.save(assessmentDetail);
+      } else if (!ad.getAmountCents().equals(assessmentDetail.getAmountCents())) {
+        ad.setAmountCents(assessmentDetail.getAmountCents());
+        assessmentsDetailRepository.save(ad);
+      }
+    });
   }
 
 
-  private List<AssessmentsDetail> buildAssessmentDetail(InstallmentNoPIIResponse installmentNoPIIResponse, Assessments assessment) {
+  List<AssessmentsDetail> buildAssessmentDetail(InstallmentNoPIIResponse installmentNoPIIResponse, Assessments assessment) {
     CtBilancio balance;
     try {
       balance = convertBalance(installmentNoPIIResponse);
@@ -60,7 +60,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     }
 
     List<CtCapitolo> capitoloList = balance.getCapitolo();
-    List<AssessmentsDetail> assessmentsDetailList = List.of();
+    List<AssessmentsDetail> assessmentsDetailList = Collections.emptyList();
 
     capitoloList.forEach(capitolo -> {
       List<CtAccertamento> accertamentiList = capitolo.getAccertamento();
@@ -81,7 +81,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   }
 
 
-  private CtBilancio convertBalance(InstallmentNoPIIResponse installmentNoPIIResponse) throws JAXBException {
+  CtBilancio convertBalance(InstallmentNoPIIResponse installmentNoPIIResponse) throws JAXBException {
     String balanceXml = installmentNoPIIResponse.getBalance();
     JAXBContext jaxbContext = JAXBContext.newInstance(CtBilancio.class);
     Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
