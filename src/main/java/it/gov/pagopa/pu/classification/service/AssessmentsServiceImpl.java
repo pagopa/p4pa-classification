@@ -27,6 +27,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     private final IngestionFlowFileService ingestionFlowFileService;
     private final DebtPositionTypeOrgService debtPositionTypeOrgService;
     private final AssessmentsRepository assessmentsRepository;
+    private final AssessmentsDetailService assessmentsDetailService;
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     /**
@@ -37,11 +38,12 @@ public class AssessmentsServiceImpl implements AssessmentsService {
      * @param debtPositionTypeOrgService the service for retrieving debt position type organization information
      * @param assessmentsRepository      the repository for managing assessments
      */
-    public AssessmentsServiceImpl(InstallmentNoPIIService installmentNoPIIService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository) {
+    public AssessmentsServiceImpl(InstallmentNoPIIService installmentNoPIIService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository, AssessmentsDetailService assessmentsDetailService) {
         this.installmentNoPIIService = installmentNoPIIService;
         this.ingestionFlowFileService = ingestionFlowFileService;
         this.debtPositionTypeOrgService = debtPositionTypeOrgService;
         this.assessmentsRepository = assessmentsRepository;
+        this.assessmentsDetailService = assessmentsDetailService;
     }
 
 
@@ -57,8 +59,9 @@ public class AssessmentsServiceImpl implements AssessmentsService {
                 .map(i -> {
                     Assessments a = this.buildAssessment(i, accessToken);
                     if (assessmentsRepository.getByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(a.getOrganizationId(), a.getDebtPositionTypeOrgCode(), a.getAssessmentName()) == null) {
-                        return assessmentsRepository.save(a);
+                        a = assessmentsRepository.save(a);
                     }
+                    assessmentsDetailService.createAssessmentDetail(a, i);
                     return a;
                 })
                 .toList();

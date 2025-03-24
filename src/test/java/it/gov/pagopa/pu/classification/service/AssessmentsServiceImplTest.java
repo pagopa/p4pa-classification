@@ -35,12 +35,14 @@ class AssessmentsServiceImplTest {
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
   @Mock
   private AssessmentsRepository assessmentsRepositoryMock;
+  @Mock
+  private AssessmentsDetailService assessmentsDetailServiceMock;
 
   private AssessmentsServiceImpl service;
 
   @BeforeEach
   void init() {
-    service = new AssessmentsServiceImpl(installmentNoPIIServiceMock, ingestionFlowFileServiceMock, debtPositionTypeOrgServiceMock, assessmentsRepositoryMock);
+    service = new AssessmentsServiceImpl(installmentNoPIIServiceMock, ingestionFlowFileServiceMock, debtPositionTypeOrgServiceMock, assessmentsRepositoryMock,assessmentsDetailServiceMock);
   }
 
   @AfterEach
