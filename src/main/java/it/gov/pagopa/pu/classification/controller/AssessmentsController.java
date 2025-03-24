@@ -1,12 +1,17 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentEntityExtendedControllerApi;
+import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.service.AssessmentsService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Controller to host spring-data-rest directly not supported methods */
+import java.util.List;
+
+/**
+ * Controller to host spring-data-rest directly not supported methods
+ */
 @RestController
 public class AssessmentsController implements AssessmentEntityExtendedControllerApi {
 
@@ -18,10 +23,10 @@ public class AssessmentsController implements AssessmentEntityExtendedController
 
 
   @Override
-  public ResponseEntity<Void> createAssessmentByReceiptId(Long receiptId) {
+  public ResponseEntity<List<Assessments>> createAssessmentByReceiptId(Long receiptId) {
     String accessToken = SecurityUtils.getAccessToken();
-    assessmentsService.getInstallmentsByReceiptId(receiptId, accessToken);
-    return ResponseEntity.ok().build();
+
+    return ResponseEntity.ok(assessmentsService.createAssesment(receiptId, accessToken));
   }
 
 }

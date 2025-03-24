@@ -1,27 +1,20 @@
 package it.gov.pagopa.pu.classification.service;
 
-import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentNoPIIService;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
+import it.gov.pagopa.pu.classification.model.Assessments;
 
 import java.util.List;
 
-@Lazy
-@Slf4j
-@Service
-public class AssessmentsService {
+/**
+ * Service interface for managing assessments.
+ */
+public interface AssessmentsService {
 
-  private final InstallmentNoPIIService installmentNoPIIService;
-
-
-  public AssessmentsService(InstallmentNoPIIService installmentNoPIIService) {
-    this.installmentNoPIIService = installmentNoPIIService;
-  }
-
-  public List<InstallmentNoPIIResponse> getInstallmentsByReceiptId(Long receiptId, String accessToken) {
-    return installmentNoPIIService.getByReceiptId(receiptId, accessToken);
-  }
-
+  /**
+   * Creates assessments based on the given receipt ID and access token.
+   *
+   * @param receiptId the ID of the receipt
+   * @param accessToken the access token for authentication
+   * @return a list of created assessments
+   */
+  List<Assessments> createAssesment(Long receiptId, String accessToken);
 }

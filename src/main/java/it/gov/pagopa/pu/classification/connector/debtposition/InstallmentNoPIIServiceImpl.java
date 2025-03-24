@@ -18,6 +18,6 @@ public class InstallmentNoPIIServiceImpl implements InstallmentNoPIIService{
 
   @Override
   public List<InstallmentNoPIIResponse> getByReceiptId(Long receiptId, String accessToken) {
-    return installmentNoPIIClient.getByReceiptId(accessToken, receiptId);
+    return installmentNoPIIClient.getByReceiptId(receiptId, accessToken);
   }
 }

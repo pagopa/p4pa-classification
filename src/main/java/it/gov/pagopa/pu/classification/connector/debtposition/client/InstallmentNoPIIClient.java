@@ -19,7 +19,7 @@ public class InstallmentNoPIIClient {
     }
 
 
-    public List<InstallmentNoPIIResponse> getByReceiptId(String accessToken, Long receiptId) {
+    public List<InstallmentNoPIIResponse> getByReceiptId(Long receiptId, String accessToken) {
       return debtPositionApisHolder.getInstallmentNoPIISearchControllerApi(accessToken)
         .crudInstallmentsFindByReceiptId(receiptId).getEmbedded().getInstallmentNoPIIs();
     }
