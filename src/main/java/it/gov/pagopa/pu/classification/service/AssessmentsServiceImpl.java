@@ -32,10 +32,10 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     /**
      * Constructs a new AssessmentsServiceImpl with the given dependencies.
      *
-     * @param installmentNoPIIService the service for retrieving installment information
-     * @param ingestionFlowFileService the service for retrieving ingestion flow files
+     * @param installmentNoPIIService    the service for retrieving installment information
+     * @param ingestionFlowFileService   the service for retrieving ingestion flow files
      * @param debtPositionTypeOrgService the service for retrieving debt position type organization information
-     * @param assessmentsRepository the repository for managing assessments
+     * @param assessmentsRepository      the repository for managing assessments
      */
     public AssessmentsServiceImpl(InstallmentNoPIIService installmentNoPIIService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository) {
         this.installmentNoPIIService = installmentNoPIIService;
@@ -47,9 +47,8 @@ public class AssessmentsServiceImpl implements AssessmentsService {
 
     /**
      * {@inheritDoc}
-     *
      */
-@Transactional
+    @Transactional
     @Override
     public List<Assessments> createAssesment(Long receiptId, String accessToken) {
         List<InstallmentNoPIIResponse> installmentsList = installmentNoPIIService.getByReceiptId(receiptId, accessToken);
@@ -70,7 +69,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
      * Builds an assessment based on the given installment information and access token.
      *
      * @param installmentNoPIIResponse the installment information
-     * @param accessToken the access token for authentication
+     * @param accessToken              the access token for authentication
      * @return the built assessment
      */
     Assessments buildAssessment(InstallmentNoPIIResponse installmentNoPIIResponse, String accessToken) {
