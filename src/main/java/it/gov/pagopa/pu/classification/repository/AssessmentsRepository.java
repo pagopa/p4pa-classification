@@ -8,4 +8,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource(path = "assessments")
 public interface AssessmentsRepository extends JpaRepository<Assessments,String> {
 
+  Assessments getByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(Long organizationId, String debtPositionTypeOrgCode, String assessmentName);
+
 }

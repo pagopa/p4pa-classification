@@ -16,56 +16,60 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @Lazy
 @Slf4j
 @Service
 public class AssessmentsServiceImpl implements AssessmentsService {
 
-  private final InstallmentNoPIIService installmentNoPIIService;
-  private final IngestionFlowFileService ingestionFlowFileService;
-  private final DebtPositionTypeOrgService debtPositionTypeOrgService;
-  private final AssessmentsRepository assessmentsRepository;
+    private final InstallmentNoPIIService installmentNoPIIService;
+    private final IngestionFlowFileService ingestionFlowFileService;
+    private final DebtPositionTypeOrgService debtPositionTypeOrgService;
+    private final AssessmentsRepository assessmentsRepository;
+    public static final String CURRENT_DATE_STRING = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-  public AssessmentsServiceImpl(InstallmentNoPIIService installmentNoPIIService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository) {
-    this.installmentNoPIIService = installmentNoPIIService;
-    this.ingestionFlowFileService = ingestionFlowFileService;
-    this.debtPositionTypeOrgService = debtPositionTypeOrgService;
-    this.assessmentsRepository = assessmentsRepository;
-  }
-
-  @Override
-  public List<InstallmentNoPIIResponse> getInstallmentsByReceiptId(Long receiptId, String accessToken) {
-    return installmentNoPIIService.getByReceiptId(receiptId, accessToken);
-  }
-
-  @Override
-  public List<Assessments> createAssesment(Long receiptId, String accessToken) {
-    List<InstallmentNoPIIResponse> installmentsList = this.getInstallmentsByReceiptId(receiptId, accessToken);
-    List<Assessments> assessmentsList = installmentsList.stream()
-      .map(i ->
-        this.buildAssessment(i, accessToken))
-      .toList();
-
-    return assessmentsRepository.saveAll(assessmentsList);
-  }
-
-  Assessments buildAssessment(InstallmentNoPIIResponse installmentNoPIIResponse, String accessToken) {
-    IngestionFlowFile ingestionFlowFile = ingestionFlowFileService.getIngestionFlowFile(installmentNoPIIResponse.getIngestionFlowFileId(), accessToken);
-    DebtPositionTypeOrg debtPositionTypeOrg =debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), accessToken);
-    String debtPositionTypeOrgCode = debtPositionTypeOrg.getCode();
-    String assessmentName = "ACC" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "_" + debtPositionTypeOrgCode;
-
-    if (ingestionFlowFile != null) {
-      assessmentName = ingestionFlowFile.getFileName() + "_" + debtPositionTypeOrgCode;
+    public AssessmentsServiceImpl(InstallmentNoPIIService installmentNoPIIService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository) {
+        this.installmentNoPIIService = installmentNoPIIService;
+        this.ingestionFlowFileService = ingestionFlowFileService;
+        this.debtPositionTypeOrgService = debtPositionTypeOrgService;
+        this.assessmentsRepository = assessmentsRepository;
     }
 
-    return Assessments.builder()
-      .organizationId(debtPositionTypeOrg.getOrganizationId())
-      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
-      .status(AssessmentStatus.NEW)
-      .assessmentName(assessmentName)
-      .build();
-  }
+    @Override
+    public List<Assessments> createAssesment(Long receiptId, String accessToken) {
+        List<InstallmentNoPIIResponse> installmentsList = installmentNoPIIService.getByReceiptId(receiptId, accessToken);
+        List<Assessments> assessmentsList = installmentsList.stream()
+                .map(i -> {
+                    Assessments a = this.buildAssessment(i, accessToken);
+                    if (assessmentsRepository.getByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(a.getOrganizationId(), a.getDebtPositionTypeOrgCode(), a.getAssessmentName()) == null) {
+                        return a;
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        return assessmentsRepository.saveAll(assessmentsList);
+    }
+
+    Assessments buildAssessment(InstallmentNoPIIResponse installmentNoPIIResponse, String accessToken) {
+        IngestionFlowFile ingestionFlowFile = ingestionFlowFileService.getIngestionFlowFile(installmentNoPIIResponse.getIngestionFlowFileId(), accessToken);
+        DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), accessToken);
+        String debtPositionTypeOrgCode = debtPositionTypeOrg.getCode();
+        String assessmentName = "";
+
+        if (ingestionFlowFile != null)
+            assessmentName = ingestionFlowFile.getFileName() + "_" + debtPositionTypeOrgCode;
+        else
+            assessmentName = "ACC" + CURRENT_DATE_STRING + "_" + debtPositionTypeOrgCode;
+
+        return Assessments.builder()
+                .organizationId(debtPositionTypeOrg.getOrganizationId())
+                .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+                .status(AssessmentStatus.NEW)
+                .assessmentName(assessmentName)
+                .build();
+    }
 
 }

@@ -255,7 +255,3 @@ tasks.register<GenerateTask>("openApiGeneratePROCESSEXECUTION") {
   ))
   library.set("resttemplate")
 }
-
-tasks.withType<Copy> {
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}

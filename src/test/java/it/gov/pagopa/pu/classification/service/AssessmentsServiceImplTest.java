@@ -20,11 +20,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,38 +46,6 @@ class AssessmentsServiceImplTest {
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(installmentNoPIIServiceMock);
-  }
-
-
-  @Test
-  void getInstallmentsByReceiptId_withValidReceiptId_returnsInstallments() {
-    Long receiptId = 1L;
-    List<InstallmentNoPIIResponse> expectedInstallments = List.of(new InstallmentNoPIIResponse());
-    when(installmentNoPIIServiceMock.getByReceiptId(receiptId,TestUtils.getFakeAccessToken())).thenReturn(expectedInstallments);
-
-    List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId,TestUtils.getFakeAccessToken());
-
-    assertEquals(expectedInstallments, result);
-  }
-
-  @Test
-  void getInstallmentsByReceiptId_withInvalidReceiptId_returnsEmptyList() {
-    Long receiptId = 2L;
-    when(installmentNoPIIServiceMock.getByReceiptId(receiptId,TestUtils.getFakeAccessToken())).thenReturn(Collections.emptyList());
-
-    List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId, TestUtils.getFakeAccessToken());
-
-    assertTrue(result.isEmpty());
-  }
-
-  @Test
-  void getInstallmentsByReceiptId_withNullReceiptId_returnsEmptyList() {
-    Long receiptId = null;
-    when(installmentNoPIIServiceMock.getByReceiptId(receiptId,TestUtils.getFakeAccessToken())).thenReturn(Collections.emptyList());
-
-    List<InstallmentNoPIIResponse> result = service.getInstallmentsByReceiptId(receiptId,TestUtils.getFakeAccessToken());
-
-    assertTrue(result.isEmpty());
   }
 
 
