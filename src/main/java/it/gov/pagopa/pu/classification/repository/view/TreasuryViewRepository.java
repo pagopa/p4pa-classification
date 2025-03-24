@@ -37,11 +37,11 @@ public interface TreasuryViewRepository extends Repository<TreasuryView, String>
         AND (:iuv IS NULL OR t.iuv = :iuv)
         AND (:iuf IS NULL OR t.iuf = :iuf)
         AND (:billAmountCents IS NULL OR t.billAmountCents = :billAmountCents)
-        AND (:billDate IS NULL OR t.billDate = :billDate)
+        AND (cast(:billDate AS DATE) IS NULL OR t.billDate = :billDate)
         AND (:provisionalCode IS NULL OR t.provisionalCode = :provisionalCode)
         AND (:billCode IS NULL OR t.billCode = :billCode)
         AND (:pspLastName IS NULL OR t.pspLastName = :pspLastName)
-        AND (:regionValueDate IS NULL OR t.regionValueDate = :regionValueDate)
+        AND (cast(:regionValueDate AS DATE) IS NULL OR t.regionValueDate = :regionValueDate)
         AND (:documentCode IS NULL OR t.documentCode = :documentCode)
     """)
   Page<TreasuryView> findTreasuriesByFilters(
