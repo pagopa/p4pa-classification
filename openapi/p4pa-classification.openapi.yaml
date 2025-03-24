@@ -204,10 +204,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
-  /crud-ext/assessments/create-assessment-by-receipt-id:
+  /assessments/create-by-receipt-id:
     post:
       tags:
-        - assessment-entity-extended-controller
+        - assessments-controller
       operationId: createAssessmentByReceiptId
       parameters:
         - name: receiptId
