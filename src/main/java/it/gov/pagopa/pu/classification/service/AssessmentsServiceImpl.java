@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
      * {@inheritDoc}
      *
      */
+@Transactional
     @Override
     public List<Assessments> createAssesment(Long receiptId, String accessToken) {
         List<InstallmentNoPIIResponse> installmentsList = installmentNoPIIService.getByReceiptId(receiptId, accessToken);
