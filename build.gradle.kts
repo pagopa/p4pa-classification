@@ -130,7 +130,6 @@ jaxb {
       args = listOf("-xmlschema")
       outputDir = file("$projectDir/build/generated/jaxb/java")
       schema = file("src/main/resources/xsd/PagInf_Dovuti_Pagati_6_2_0.xsd")
-//      bindings = layout.files("src/main/resources/xsd/PagInf_Dovuti_Pagati_6_2_0.xjb")
     }
   }
 }
