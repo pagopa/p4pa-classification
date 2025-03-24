@@ -76,7 +76,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         IngestionFlowFile ingestionFlowFile = ingestionFlowFileService.getIngestionFlowFile(installmentNoPIIResponse.getIngestionFlowFileId(), accessToken);
         DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), accessToken);
         String debtPositionTypeOrgCode = debtPositionTypeOrg.getCode();
-        String assessmentName = "";
+        String assessmentName;
 
         if (ingestionFlowFile != null)
             assessmentName = ingestionFlowFile.getFileName().replaceFirst("[.][^.]+$", "") + "_" + debtPositionTypeOrgCode;
