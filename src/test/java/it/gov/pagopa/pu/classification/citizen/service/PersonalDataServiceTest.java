@@ -64,7 +64,7 @@ class PersonalDataServiceTest {
     Mockito.when(repositoryMock.save(personalDataInput)).thenReturn(personalDataOutput);
 
     // When
-    long insert = service.insert(pii, PersonalDataType.CLASSIFICAITON);
+    long insert = service.insert(pii, PersonalDataType.CLASSIFICATION);
 
     // Then
     Assertions.assertEquals(piiId, insert);
@@ -77,7 +77,7 @@ class PersonalDataServiceTest {
     //given
     ClassificationViewDTO expected = mock(ClassificationViewDTO.class);
     Mockito.when(repositoryMock.findById(1L)).thenReturn(
-      Optional.of(PersonalData.builder().id(1L).data(new byte[0]).type(PersonalDataType.CLASSIFICAITON.name()).build()));
+      Optional.of(PersonalData.builder().id(1L).data(new byte[0]).type(PersonalDataType.CLASSIFICATION.name()).build()));
     Mockito.when(cipherServiceMock.decryptObj(new byte[0], ClassificationViewDTO.class)).thenReturn(expected);
     //when
     ClassificationViewDTO classificationViewDTO = service.get(1L, ClassificationViewDTO.class);
