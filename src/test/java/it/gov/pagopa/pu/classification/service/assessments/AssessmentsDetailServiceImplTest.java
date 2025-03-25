@@ -32,7 +32,7 @@ class AssessmentsDetailServiceImplTest {
     private AssessmentsDetailServiceImpl assessmentsDetailService;
 
     private static final String BALANCE =
-            "<bilancio>" +
+            "<bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\">>" +
                     "<capitolo>" +
                     "<codCapitolo>CAP1</codCapitolo>" +
                     "<codUfficio>UFF1</codUfficio>" +
@@ -97,5 +97,78 @@ class AssessmentsDetailServiceImplTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void createAssessmentDetail_savesNewDetails() {
+        InstallmentNoPIIResponse installmentNoPIIResponse = new InstallmentNoPIIResponse();
+        installmentNoPIIResponse.setBalance(BALANCE);
+        installmentNoPIIResponse.setIuv("IUV");
+        installmentNoPIIResponse.setIud("IUD");
+        Assessments assessment = new Assessments();
+        assessment.setAssessmentId(1L);
+        assessment.setOrganizationId(1L);
+        assessment.setDebtPositionTypeOrgCode("DPTC");
+
+        CtBilancio bilancio = new CtBilancio();
+        CtCapitolo capitolo = new CtCapitolo();
+        capitolo.setCodCapitolo("CAP1");
+        capitolo.setCodUfficio("UFF1");
+        CtAccertamento accertamento = new CtAccertamento();
+        accertamento.setCodAccertamento("ACC1");
+        accertamento.setImporto(new BigDecimal("100.00"));
+        capitolo.getAccertamento().add(accertamento);
+        bilancio.getCapitolo().add(capitolo);
+
+        when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
+        doReturn(null).when(assessmentsDetailRepositoryMock).getByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
+                1L, "IUV", "IUD", "UFF1","CAP1", "ACC1");
+
+        assessmentsDetailService.createAssessmentDetail(assessment, installmentNoPIIResponse);
+
+        verify(assessmentsDetailRepositoryMock, times(1)).save(any(AssessmentsDetail.class));
+    }
+
+    @Test
+    void createAssessmentDetail_updatesExistingDetails() {
+        InstallmentNoPIIResponse installmentNoPIIResponse = new InstallmentNoPIIResponse();
+        installmentNoPIIResponse.setBalance(BALANCE);
+        installmentNoPIIResponse.setIuv("IUV");
+        installmentNoPIIResponse.setIud("IUD");
+        Assessments assessment = new Assessments();
+        assessment.setAssessmentId(1L);
+        assessment.setOrganizationId(1L);
+        assessment.setDebtPositionTypeOrgCode("DPTC");
+
+        CtBilancio bilancio = new CtBilancio();
+        CtCapitolo capitolo = new CtCapitolo();
+        capitolo.setCodCapitolo("CAP1");
+        capitolo.setCodUfficio("UFF1");
+        CtAccertamento accertamento = new CtAccertamento();
+        accertamento.setCodAccertamento("ACC1");
+        accertamento.setImporto(new BigDecimal("100.00"));
+        capitolo.getAccertamento().add(accertamento);
+        bilancio.getCapitolo().add(capitolo);
+
+        AssessmentsDetail existingDetail = AssessmentsDetail.builder()
+                .assessmentId(1L)
+                .organizationId(1L)
+                .debtPositionTypeOrgCode("DPTC")
+                .iuv("IUV")
+                .iud("IUD")
+                .officeCode("UFF1")
+                .sectionCode("CAP1")
+                .assessmentCode("ACC1")
+                .amountCents(5000L)
+                .build();
+
+        when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
+        doReturn(existingDetail).when(assessmentsDetailRepositoryMock).getByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
+                1L,"IUV", "IUD", "UFF1", "CAP1", "ACC1");
+
+        assessmentsDetailService.createAssessmentDetail(assessment, installmentNoPIIResponse);
+
+        verify(assessmentsDetailRepositoryMock, times(1)).save(existingDetail);
+        assertEquals(10000L, existingDetail.getAmountCents());
     }
 }
