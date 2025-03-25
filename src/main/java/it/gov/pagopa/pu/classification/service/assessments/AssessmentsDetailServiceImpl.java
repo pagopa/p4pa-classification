@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsDetailRepository;
 import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Lazy
@@ -36,7 +34,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     public void createAssessmentDetail(Assessments assessments, InstallmentNoPIIResponse installmentNoPIIResponse) {
         List<AssessmentsDetail> assessmentsDetailList = buildAssessmentDetail(installmentNoPIIResponse, assessments);
         assessmentsDetailList.forEach(assessmentDetail -> {
-            AssessmentsDetail ad = assessmentsDetailRepository.getByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
+            AssessmentsDetail ad = assessmentsDetailRepository.findByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
                     assessmentDetail.getAssessmentId(), assessmentDetail.getIuv(), assessmentDetail.getIud(),
                     assessmentDetail.getOfficeCode(), assessmentDetail.getSectionCode(), assessmentDetail.getAssessmentCode());
             if (ad == null) {

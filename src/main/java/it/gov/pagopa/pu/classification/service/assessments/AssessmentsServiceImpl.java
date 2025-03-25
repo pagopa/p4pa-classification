@@ -58,7 +58,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         return installmentsList.stream()
                 .map(i -> {
                     Assessments a = this.buildAssessment(i, accessToken);
-                    if (assessmentsRepository.getByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(a.getOrganizationId(), a.getDebtPositionTypeOrgCode(), a.getAssessmentName()) == null) {
+                    if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(a.getOrganizationId(), a.getDebtPositionTypeOrgCode(), a.getAssessmentName()) == null) {
                         a = assessmentsRepository.save(a);
                     }
                     assessmentsDetailService.createAssessmentDetail(a, i);

@@ -91,7 +91,7 @@ class AssessmentsServiceImplTest {
     when(ingestionFlowFileServiceMock.getIngestionFlowFile(installments.getFirst().getIngestionFlowFileId(), TestUtils.getFakeAccessToken()))
             .thenReturn(ingestionFlowFile);
     when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), TestUtils.getFakeAccessToken())).thenReturn(debtPositionTypeOrg);
-    when(assessmentsRepositoryMock.getByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
+    when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
             debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getCode(), "testFile_testCode"))
             .thenReturn(null);
     when(assessmentsRepositoryMock.save(Mockito.any(Assessments.class))).thenReturn(assessment);
