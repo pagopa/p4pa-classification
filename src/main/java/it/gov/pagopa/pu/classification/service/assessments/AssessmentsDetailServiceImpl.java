@@ -53,23 +53,19 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
         CtBilancio balance = balanceUnmashallerService.unmarshal(installmentNoPIIResponse.getBalance());
 
         List<CtCapitolo> capitoloList = balance.getCapitolo();
-        List<AssessmentsDetail> assessmentsDetailList = new ArrayList<>();
-
-        capitoloList.forEach(capitolo -> {
-            List<CtAccertamento> accertamentiList = capitolo.getAccertamento();
-            accertamentiList.forEach(accertamento ->
-                    assessmentsDetailList.add(AssessmentsDetail.builder()
-                            .assessmentId(assessment.getAssessmentId())
-                            .organizationId(assessment.getOrganizationId())
-                            .debtPositionTypeOrgCode(assessment.getDebtPositionTypeOrgCode())
-                            .iuv(installmentNoPIIResponse.getIuv())
-                            .iud(installmentNoPIIResponse.getIud())
-                            .officeCode(capitolo.getCodUfficio())
-                            .sectionCode(capitolo.getCodCapitolo())
-                            .assessmentCode(accertamento.getCodAccertamento())
-                            .amountCents(Utilities.bigDecimalEuroToLongCentsAmount(accertamento.getImporto()))
-                            .build()));
-        });
-        return assessmentsDetailList;
+        return capitoloList.stream()
+           .flatMap(capitolo -> capitolo.getAccertamento().stream()
+                                                 .map(accertamento -> AssessmentsDetail.builder()
+                                                    .assessmentId(assessment.getAssessmentId())
+                                                    .organizationId(assessment.getOrganizationId())
+                                                    .debtPositionTypeOrgCode(assessment.getDebtPositionTypeOrgCode())
+                                                    .iuv(installmentNoPIIResponse.getIuv())
+                                                    .iud(installmentNoPIIResponse.getIud())
+                                                    .officeCode(capitolo.getCodUfficio())
+                                                    .sectionCode(capitolo.getCodCapitolo())
+                                                    .assessmentCode(accertamento.getCodAccertamento())
+                                                    .amountCents(Utilities.bigDecimalEuroToLongCentsAmount(accertamento.getImporto()))
+                                                    .build())
+        ).toList();
     }
 }
