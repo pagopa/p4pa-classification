@@ -10,6 +10,6 @@ import org.springframework.data.rest.core.annotation.RestResource;
 public interface AssessmentsDetailRepository extends JpaRepository<AssessmentsDetail, Long> {
 
   @RestResource(exported = false)
-  AssessmentsDetail findByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(Long assessmentId, String iuv, String iud, String officeCode, String sectionCode, String assessmentCode);
+  AssessmentsDetail findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(String debtPositionTypeOrgCode, String iuv, String iud, String officeCode, String sectionCode, String assessmentCode);
 
 }

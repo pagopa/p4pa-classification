@@ -121,8 +121,8 @@ class AssessmentsDetailServiceImplTest {
         bilancio.getCapitolo().add(capitolo);
 
         when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
-        doReturn(null).when(assessmentsDetailRepositoryMock).findByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
-                1L, "IUV", "IUD", "UFF1","CAP1", "ACC1");
+        doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
+                "DPTC", "IUV", "IUD", "UFF1","CAP1", "ACC1");
 
         assessmentsDetailService.createAssessmentDetail(assessment, installmentNoPIIResponse);
 
@@ -163,8 +163,8 @@ class AssessmentsDetailServiceImplTest {
                 .build();
 
         when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
-        doReturn(existingDetail).when(assessmentsDetailRepositoryMock).findByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
-                1L,"IUV", "IUD", "UFF1", "CAP1", "ACC1");
+        doReturn(existingDetail).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
+                "DPTC","IUV", "IUD", "UFF1", "CAP1", "ACC1");
 
         assessmentsDetailService.createAssessmentDetail(assessment, installmentNoPIIResponse);
 

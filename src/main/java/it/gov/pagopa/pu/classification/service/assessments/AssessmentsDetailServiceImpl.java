@@ -34,8 +34,8 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     public void createAssessmentDetail(Assessments assessments, InstallmentNoPIIResponse installmentNoPIIResponse) {
         List<AssessmentsDetail> assessmentsDetailList = buildAssessmentDetail(installmentNoPIIResponse, assessments);
         assessmentsDetailList.forEach(assessmentDetail -> {
-            AssessmentsDetail ad = assessmentsDetailRepository.findByAssessmentIdAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
-                    assessmentDetail.getAssessmentId(), assessmentDetail.getIuv(), assessmentDetail.getIud(),
+            AssessmentsDetail ad = assessmentsDetailRepository.findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
+                    assessmentDetail.getDebtPositionTypeOrgCode(), assessmentDetail.getIuv(), assessmentDetail.getIud(),
                     assessmentDetail.getOfficeCode(), assessmentDetail.getSectionCode(), assessmentDetail.getAssessmentCode());
             if (ad == null) {
                 assessmentsDetailRepository.save(assessmentDetail);
