@@ -50,8 +50,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
 
 
     List<AssessmentsDetail> buildAssessmentDetail(InstallmentNoPIIResponse installmentNoPIIResponse, Assessments assessment) {
-        CtBilancio balance;
-        balance = balanceUnmashallerService.unmarshal(installmentNoPIIResponse.getBalance());
+        CtBilancio balance = balanceUnmashallerService.unmarshal(installmentNoPIIResponse.getBalance());
 
         List<CtCapitolo> capitoloList = balance.getCapitolo();
         List<AssessmentsDetail> assessmentsDetailList = new ArrayList<>();
