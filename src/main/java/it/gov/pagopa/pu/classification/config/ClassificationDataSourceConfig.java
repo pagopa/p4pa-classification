@@ -67,5 +67,4 @@ public class ClassificationDataSourceConfig {
   public AuditorAware<String> auditorProvider() {
     return () -> Optional.ofNullable(SecurityUtils.getCurrentUserExternalId());
   }
-
 }
