@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.model.Assessments;
-import it.gov.pagopa.pu.classification.service.AssessmentsService;
+import it.gov.pagopa.pu.classification.service.assessments.AssessmentsService;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
