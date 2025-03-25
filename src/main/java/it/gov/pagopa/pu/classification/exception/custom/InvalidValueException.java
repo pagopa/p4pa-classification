@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.exception;
+package it.gov.pagopa.pu.classification.exception.custom;
 
 public class InvalidValueException extends RuntimeException {
 
