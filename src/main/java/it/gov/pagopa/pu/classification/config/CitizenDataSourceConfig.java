@@ -21,7 +21,7 @@ import java.util.Map;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "emfCitizen",
         transactionManagerRef = "tmCitizen",
-        basePackages = {"it.gov.pagopa.pu.debtpositions.citizen.repository"}
+        basePackages = {"it.gov.pagopa.pu.classification.citizen.repository"}
 )
 public class CitizenDataSourceConfig {
 
@@ -37,7 +37,7 @@ public class CitizenDataSourceConfig {
           EntityManagerFactoryBuilder builder) {
 
     return builder.dataSource(dataSource)
-            .packages("it.gov.pagopa.pu.debtpositions.citizen.model")
+            .packages("it.gov.pagopa.pu.classification.citizen.model")
             .properties(Map.of(
                     "hibernate.physical_naming_strategy", CamelCaseToUnderscoresNamingStrategy.class.getName(),
                     "hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName()
