@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.service;
+package it.gov.pagopa.pu.classification.service.assessments;
 
 import it.gov.pagopa.pu.classification.model.Assessments;
 

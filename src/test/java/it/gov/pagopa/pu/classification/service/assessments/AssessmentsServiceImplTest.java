@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.service;
+package it.gov.pagopa.pu.classification.service.assessments;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentNoPIIService;
@@ -35,12 +35,14 @@ class AssessmentsServiceImplTest {
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
   @Mock
   private AssessmentsRepository assessmentsRepositoryMock;
+  @Mock
+  private AssessmentsDetailService assessmentsDetailServiceMock;
 
   private AssessmentsServiceImpl service;
 
   @BeforeEach
   void init() {
-    service = new AssessmentsServiceImpl(installmentNoPIIServiceMock, ingestionFlowFileServiceMock, debtPositionTypeOrgServiceMock, assessmentsRepositoryMock);
+    service = new AssessmentsServiceImpl(installmentNoPIIServiceMock, ingestionFlowFileServiceMock, debtPositionTypeOrgServiceMock, assessmentsRepositoryMock,assessmentsDetailServiceMock);
   }
 
   @AfterEach
@@ -89,7 +91,7 @@ class AssessmentsServiceImplTest {
     when(ingestionFlowFileServiceMock.getIngestionFlowFile(installments.getFirst().getIngestionFlowFileId(), TestUtils.getFakeAccessToken()))
             .thenReturn(ingestionFlowFile);
     when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), TestUtils.getFakeAccessToken())).thenReturn(debtPositionTypeOrg);
-    when(assessmentsRepositoryMock.getByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
+    when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
             debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getCode(), "testFile_testCode"))
             .thenReturn(null);
     when(assessmentsRepositoryMock.save(Mockito.any(Assessments.class))).thenReturn(assessment);
