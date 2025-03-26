@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.service;
 
-import it.gov.pagopa.pu.classification.exception.InvalidValueException;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;

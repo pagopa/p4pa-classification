@@ -2,6 +2,8 @@ package it.gov.pagopa.pu.classification.exception;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationErrorDTO;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
@@ -30,8 +32,13 @@ import java.util.stream.Collectors;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ClassificationExceptionHandler {
 
-  @ExceptionHandler({ResourceNotFoundException.class})
-  public ResponseEntity<ClassificationErrorDTO> handleResourceNotFoundException(RuntimeException ex, HttpServletRequest request){
+  @ExceptionHandler({InvalidValueException.class})
+  public ResponseEntity<ClassificationErrorDTO> handleInternalError(RuntimeException ex, HttpServletRequest request){
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({NotFoundException.class, ResourceNotFoundException.class})
+  public ResponseEntity<ClassificationErrorDTO> handleNotFoundError(RuntimeException ex, HttpServletRequest request){
     return handleException(ex, request, HttpStatus.NOT_FOUND, ClassificationErrorDTO.CodeEnum.NOT_FOUND);
   }
 

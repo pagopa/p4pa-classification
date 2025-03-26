@@ -2,6 +2,8 @@ package it.gov.pagopa.pu.classification.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.classification.config.json.JsonConfig;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -214,5 +216,27 @@ class ClassificationExceptionHandlerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"));
+    }
+
+    @Test
+    void handleInvalidValueExceptionError() throws Exception {
+      doThrow(new InvalidValueException("Error")).when(testControllerSpy).testEndpoint(DATA,BODY);
+
+      performRequest(DATA, MediaType.APPLICATION_JSON)
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"));
+
+    }
+
+    @Test
+    void handleNotFoundException() throws Exception {
+      doThrow(new NotFoundException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+      performRequest(DATA, MediaType.APPLICATION_JSON)
+        .andExpect(MockMvcResultMatchers.status().isNotFound())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_NOT_FOUND"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"));
+
     }
 }
