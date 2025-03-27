@@ -52,28 +52,19 @@ public class Classification extends BaseEntity implements Serializable {
   private String receiptPaymentReceiptId;
   private OffsetDateTime receiptPaymentDateTime;
   private String receiptPaymentRequestId;
-  private OffsetDateTime receiptPaymentRequestDateTime;
-  private String receiptIud;
-  private String receiptPspCodeType;
+
   private String receiptIdPsp;
   private String receiptPspCompanyName;
   private String receiptOrgEntityType;
   private String receiptBeneficiaryOrgName;
-  private String receiptBeneficiaryOrgAddress;
-  private String receiptBeneficiaryOrgCivic;
-  private String receiptBeneficiaryOrgPostalCode;
-  private String receiptBeneficiaryOrgLocation;
-  private String receiptBeneficiaryOrgProvince;
-  private String receiptBeneficiaryOrgNation;
+
   private Long receiptPersonalDataId;
   private String receiptPaymentOutcomeCode;
   private Long receiptPaymentAmount;
   private String receiptCreditorReferenceId;
-  private String receiptPaymentContextId;
+
   private Long receiptTransferAmount;
-  private String receiptTransferPaymentOutcomeCode;
-  private OffsetDateTime receiptTransferPaymentDateTime;
-  private String receiptTransferPaymentReceiptId;
+
   private String receiptTransferCategory;
   private OffsetDateTime receiptCreationDate;
   private String receiptInstallmentBalance;
