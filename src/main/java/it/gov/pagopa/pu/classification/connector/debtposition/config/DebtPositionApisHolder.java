@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.debtposition.config;
 
 import it.gov.pagopa.pu.classification.config.RestTemplateConfig;
+import it.gov.pagopa.pu.debtposition.client.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.client.generated.InstallmentNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.generated.ApiClient;
 import it.gov.pagopa.pu.debtposition.generated.BaseApi;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class DebtPositionApisHolder {
   private final InstallmentNoPiiSearchControllerApi installmentNoPiiSearchControllerApi;
+  private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -31,6 +33,7 @@ public class DebtPositionApisHolder {
     }
 
     this.installmentNoPiiSearchControllerApi = new InstallmentNoPiiSearchControllerApi(apiClient);
+    this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -40,6 +43,10 @@ public class DebtPositionApisHolder {
 
   public InstallmentNoPiiSearchControllerApi getInstallmentNoPIISearchControllerApi(String accessToken) {
     return getApi(accessToken, installmentNoPiiSearchControllerApi);
+  }
+
+  public DebtPositionTypeOrgSearchControllerApi getDebtPositionTypeOrgSearchControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionTypeOrgSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

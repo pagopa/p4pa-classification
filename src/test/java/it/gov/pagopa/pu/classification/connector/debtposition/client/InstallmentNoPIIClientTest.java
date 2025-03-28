@@ -44,7 +44,7 @@ class InstallmentNoPIIClientTest {
 		when(installmentNoPiiSearchControllerApiMock.crudInstallmentsFindByReceiptId(receiptId))
 				.thenReturn(collectionModel);
 
-		List<InstallmentNoPIIResponse> result = installmentNoPIIClient.getByReceiptId(accessToken, receiptId);
+		List<InstallmentNoPIIResponse> result = installmentNoPIIClient.getByReceiptId(receiptId, accessToken);
 
 		Assertions.assertEquals(expectedInstallments, result);
 		verify(debtPositionApisHolderMock, times(1)).getInstallmentNoPIISearchControllerApi(accessToken);
