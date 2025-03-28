@@ -4,10 +4,7 @@ package it.gov.pagopa.pu.classification.model.view;
   import jakarta.persistence.Id;
   import jakarta.persistence.Table;
   import jakarta.validation.constraints.NotNull;
-  import lombok.AllArgsConstructor;
-  import lombok.Data;
-  import lombok.EqualsAndHashCode;
-  import lombok.NoArgsConstructor;
+  import lombok.*;
 
   import java.io.Serializable;
   import java.time.LocalDate;
@@ -15,6 +12,7 @@ package it.gov.pagopa.pu.classification.model.view;
 
   @Entity
   @Table(name = "classification")
+  @Builder
   @Data
   @AllArgsConstructor
   @NoArgsConstructor
@@ -69,7 +67,7 @@ package it.gov.pagopa.pu.classification.model.view;
     private String receiptTransferPaymentReceiptId;
     private String receiptTransferRemittanceInformation;
     private String receiptTransferCategory;
-    private String receiptDebtPositionTypeOrgId;
+    private String receiptDebtPositionTypeOrgCode;
     private LocalDateTime receiptCreationDate;
     private String receiptInstallmentBalance;
     private String paymentsReportingObjectVersion;
@@ -121,9 +119,9 @@ package it.gov.pagopa.pu.classification.model.view;
     private String treasuryManagementProvisionalCode;
     private String classificationLabel;
     private LocalDate classificationDate;
-    private String typeCodePal;
-    private String typeDescriptionPal;
-    private String taxonomicCodePal;
-    private String fiscalCodePal;
-    private String namePal;
+    private String typeCodePa1;
+    private String typeDescriptionPa1;
+    private String taxonomicCodePa1;
+    private String fiscalCodePa1;
+    private String namePa1;
   }
