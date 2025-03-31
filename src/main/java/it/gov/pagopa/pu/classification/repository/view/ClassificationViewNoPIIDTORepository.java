@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @RepositoryRestResource(path = "classifications-export-view")
