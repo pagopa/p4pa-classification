@@ -37,8 +37,10 @@ public class TreasuryView implements Serializable {
   private Long billAmountCents;
   private String iuv;
   private String provisionalCode;
+  private String provisionalAe;
   @NotNull
   private String pspLastName;
   private String documentCode;
+  private String documentYear;
 
 }
