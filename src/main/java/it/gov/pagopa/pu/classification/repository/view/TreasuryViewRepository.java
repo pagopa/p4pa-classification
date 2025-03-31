@@ -29,32 +29,44 @@ public interface TreasuryViewRepository extends Repository<TreasuryView, String>
         t.billAmountCents as billAmountCents,
         t.iuv as iuv,
         t.provisionalCode as provisionalCode,
+        t.provisionalAe as provisionalAe,
         t.pspLastName as pspLastName,
-        t.documentCode as documentCode
+        t.documentCode as documentCode,
+        t.documentYear as documentYear
         )
         FROM TreasuryView t
         WHERE t.organizationId = :organizationId
         AND (:iuv IS NULL OR t.iuv = :iuv)
         AND (:iuf IS NULL OR t.iuf = :iuf)
         AND (:billAmountCents IS NULL OR t.billAmountCents = :billAmountCents)
-        AND (cast(:billDate AS DATE) IS NULL OR t.billDate = :billDate)
+        AND (cast(:billDateFrom AS DATE) IS NULL OR t.billDate >= :billDateFrom)
+        AND (cast(:billDateTo AS DATE) IS NULL OR t.billDate <= :billDateTo)
         AND (:provisionalCode IS NULL OR t.provisionalCode = :provisionalCode)
+        AND (:provisionalAe IS NULL OR t.provisionalAe = :provisionalAe)
         AND (:billCode IS NULL OR t.billCode = :billCode)
+        AND (:billYear IS NULL OR t.billYear = :billYear)
         AND (:pspLastName IS NULL OR t.pspLastName = :pspLastName)
-        AND (cast(:regionValueDate AS DATE) IS NULL OR t.regionValueDate = :regionValueDate)
+        AND (cast(:regionValueDateFrom AS DATE) IS NULL OR t.regionValueDate >= :regionValueDateFrom)
+        AND (cast(:regionValueDateTo AS DATE) IS NULL OR t.regionValueDate <= :regionValueDateTo)
         AND (:documentCode IS NULL OR t.documentCode = :documentCode)
+        AND (:documentYear IS NULL OR t.documentYear = :documentYear)
     """)
   Page<TreasuryView> findTreasuriesByFilters(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
     @Param("iuv") String iuv,
     @Param("iuf") String iuf,
     @Param("billAmountCents") Long billAmountCents,
-    @Param("billDate") LocalDate billDate,
+    @Param("billDateFrom") LocalDate billDateFrom,
+    @Param("billDateTo") LocalDate billDateTo,
     @Param("provisionalCode") String provisionalCode,
+    @Param("provisionalAe") String provisionalAe,
     @Param("billCode") String billCode,
+    @Param("billYear") String billYear,
     @Param("pspLastName") String pspLastName,
-    @Param("regionValueDate") LocalDate regionValueDate,
+    @Param("regionValueDateFrom") LocalDate regionValueDateFrom,
+    @Param("regionValueDateTo") LocalDate regionValueDateTo,
     @Param("documentCode") String documentCode,
+    @Param("documentYear") String documentYear,
     Pageable pageable);
 
 }
