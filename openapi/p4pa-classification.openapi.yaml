@@ -1,0 +1,462 @@
+openapi: 3.0.1
+info:
+  title: p4pa-classification
+  description: Api and Models
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+security:
+  - BearerAuth: []
+paths:
+  /crud-ext/treasury:
+    post:
+      tags:
+        - treasury-entity-extended-controller
+      operationId: saveAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: 'Treasury'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/treasury/by-organizationId-billCode-billYear:
+    delete:
+      tags:
+        - treasury-entity-extended-controller
+      operationId: deleteByOrganizationIdAndBillCodeAndBillYear
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: billCode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: billYear
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/payments-reporting:
+    post:
+      tags:
+        - payments-reporting-entity-extended-controller
+      operationId: saveAll_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: 'PaymentsReporting'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/classifications:
+    post:
+      tags:
+        - classification-entity-extended-controller
+      operationId: saveAll_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: 'Classification'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/classifications/by-organizationId-iuv-iur-transferIndex:
+    delete:
+      tags:
+        - classification-entity-extended-controller
+      operationId: deleteByOrganizationIdAndIuvAndIurAndTransferIndex
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: iur
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: transferIndex
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/classifications/by-organizationId-iuf-label:
+    delete:
+      tags:
+        - classification-entity-extended-controller
+      operationId: deleteByOrganizationIdAndIufAndLabel
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuf
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /assessments/create-by-receipt-id:
+    post:
+      tags:
+        - assessments-controller
+      operationId: createAssessmentByReceiptId
+      parameters:
+        - name: receiptId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: List of assessments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Assessments"
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /export/organization/{organizationId}/classifications:
+    get:
+      tags:
+        - data-exports
+      operationId: export-classifications
+      description: "|
+        The API returns a list of classifications.
+        **Error:** If the size of the requested export is too large, the API will return an error."
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the organization
+        - name: operatorExternalUserId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: iuf
+          in: query
+          schema:
+            type: string
+        - name: iud
+          in: query
+          schema:
+            type: string
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iur
+          in: query
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: lastClassificationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: lastClassificationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: payDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: payDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: billDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: billDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regionValueDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regionValueDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationUniqueIdentifier
+          in: query
+          schema:
+            type: string
+        - name: accountRegistryCode
+          in: query
+          schema:
+            type: string
+        - name: billAmountCents
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: remittanceInformation
+          in: query
+          schema:
+            type: string
+        - name: pspCompanyName
+          in: query
+          schema:
+            type: string
+        - name: pspLastName
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedClassificationView'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+              example:
+                code: "DEBT_POSITION_BAD_REQUEST"
+                message: "The number of InstallmentPaidViewNoPII records returned exceeds the maximum allowed"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ClassificationErrorDTO:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          enum:
+            - CLASSIFICATION_NOT_FOUND
+            - CLASSIFICATION_BAD_REQUEST
+            - CLASSIFICATION_CONFLICT
+            - CLASSIFICATION_GENERIC_ERROR
+        message:
+          type: string
+    PagedClassificationView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'ClassificationView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    Assessments:
+      type: object
+      required:
+        - organizationId
+        - debtPositionTypeOrgCode
+        - status
+        - assessmentName
+        - printed
+      properties:
+        assessmentId:
+          type: integer
+          format: int64
+        organizationId:
+          type: integer
+          format: int64
+        debtPositionTypeOrgCode:
+          type: string
+        status:
+          type: string
+          enum:
+            - NEW
+            - IN_PROGRESS
+            - COMPLETED
+        assessmentName:
+          type: string
+        printed:
+          type: boolean

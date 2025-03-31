@@ -1,0 +1,4499 @@
+{
+  "openapi" : "3.1.0",
+  "info" : {
+    "title" : "p4pa-classification",
+    "description" : "Api and Models",
+    "version" : "0.0.1"
+  },
+  "servers" : [ {
+    "url" : "http://localhost",
+    "description" : "Generated server url"
+  } ],
+  "security" : [ {
+    "BearerAuth" : [ ]
+  } ],
+  "tags" : [ {
+    "name" : "classification-entity-extended-controller",
+    "description" : "the classification-entity-extended-controller API"
+  }, {
+    "name" : "payments-reporting-entity-extended-controller",
+    "description" : "the payments-reporting-entity-extended-controller API"
+  }, {
+    "name" : "treasury-entity-extended-controller",
+    "description" : "the treasury-entity-extended-controller API"
+  }, {
+    "name" : "assessments-controller",
+    "description" : "the assessments-controller API"
+  } ],
+  "paths" : {
+    "/crud/assessments" : {
+      "get" : {
+        "tags" : [ "assessments-entity-controller" ],
+        "description" : "get-assessments",
+        "operationId" : "crud-get-assessmentss",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelAssessments"
+                }
+              },
+              "application/x-spring-data-compact+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelAssessments"
+                }
+              },
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "assessments-entity-controller" ],
+        "description" : "create-assessments",
+        "operationId" : "crud-create-assessments",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssessmentsRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/assessments-details" : {
+      "get" : {
+        "tags" : [ "assessments-detail-entity-controller" ],
+        "description" : "get-assessmentsdetail",
+        "operationId" : "crud-get-assessmentsdetails",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelAssessmentsDetail"
+                }
+              },
+              "application/x-spring-data-compact+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelAssessmentsDetail"
+                }
+              },
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "assessments-detail-entity-controller" ],
+        "description" : "create-assessmentsdetail",
+        "operationId" : "crud-create-assessmentsdetail",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssessmentsDetailRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/assessments-details/{id}" : {
+      "get" : {
+        "tags" : [ "assessments-detail-entity-controller" ],
+        "description" : "get-assessmentsdetail",
+        "operationId" : "crud-get-assessmentsdetail",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "assessments-detail-entity-controller" ],
+        "description" : "update-assessmentsdetail",
+        "operationId" : "crud-update-assessmentsdetail",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssessmentsDetailRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "assessments-detail-entity-controller" ],
+        "description" : "delete-assessmentsdetail",
+        "operationId" : "crud-delete-assessmentsdetail",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "assessments-detail-entity-controller" ],
+        "description" : "patch-assessmentsdetail",
+        "operationId" : "crud-patch-assessmentsdetail",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssessmentsDetailRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/crud/assessments-registries" : {
+      "get" : {
+        "tags" : [ "assessments-registry-entity-controller" ],
+        "description" : "get-assessmentsregistry",
+        "operationId" : "crud-get-assessmentsregistrys",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelAssessmentsRegistry"
+                }
+              },
+              "application/x-spring-data-compact+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelAssessmentsRegistry"
+                }
+              },
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "assessments-registry-entity-controller" ],
+        "description" : "create-assessmentsregistry",
+        "operationId" : "crud-create-assessmentsregistry",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssessmentsRegistryRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsRegistry"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/assessments-registries/{id}" : {
+      "get" : {
+        "tags" : [ "assessments-registry-entity-controller" ],
+        "description" : "get-assessmentsregistry",
+        "operationId" : "crud-get-assessmentsregistry",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsRegistry"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "assessments-registry-entity-controller" ],
+        "description" : "update-assessmentsregistry",
+        "operationId" : "crud-update-assessmentsregistry",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssessmentsRegistryRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsRegistry"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsRegistry"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "assessments-registry-entity-controller" ],
+        "description" : "delete-assessmentsregistry",
+        "operationId" : "crud-delete-assessmentsregistry",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "assessments-registry-entity-controller" ],
+        "description" : "patch-assessmentsregistry",
+        "operationId" : "crud-patch-assessmentsregistry",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssessmentsRegistryRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsRegistry"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/crud/assessments/{id}" : {
+      "get" : {
+        "tags" : [ "assessments-entity-controller" ],
+        "description" : "get-assessments",
+        "operationId" : "crud-get-assessments",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "assessments-entity-controller" ],
+        "description" : "update-assessments",
+        "operationId" : "crud-update-assessments",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssessmentsRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "assessments-entity-controller" ],
+        "description" : "delete-assessments",
+        "operationId" : "crud-delete-assessments",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "assessments-entity-controller" ],
+        "description" : "patch-assessments",
+        "operationId" : "crud-patch-assessments",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssessmentsRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/crud/classifications" : {
+      "get" : {
+        "tags" : [ "classification-entity-controller" ],
+        "description" : "get-classification",
+        "operationId" : "crud-get-classifications",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelClassification"
+                }
+              },
+              "application/x-spring-data-compact+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelClassification"
+                }
+              },
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "classification-entity-controller" ],
+        "description" : "create-classification",
+        "operationId" : "crud-create-classification",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ClassificationRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Classification"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/classifications/{id}" : {
+      "get" : {
+        "tags" : [ "classification-entity-controller" ],
+        "description" : "get-classification",
+        "operationId" : "crud-get-classification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Classification"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "classification-entity-controller" ],
+        "description" : "update-classification",
+        "operationId" : "crud-update-classification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ClassificationRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Classification"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Classification"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "classification-entity-controller" ],
+        "description" : "delete-classification",
+        "operationId" : "crud-delete-classification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "classification-entity-controller" ],
+        "description" : "patch-classification",
+        "operationId" : "crud-patch-classification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ClassificationRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Classification"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/crud/payment-notification" : {
+      "get" : {
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "get-paymentnotification",
+        "operationId" : "crud-get-paymentnotifications",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelPaymentNotification"
+                }
+              },
+              "application/x-spring-data-compact+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelPaymentNotification"
+                }
+              },
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "create-paymentnotification",
+        "operationId" : "crud-create-paymentnotification",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaymentNotificationRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentNotification"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/payment-notification/search/findBySemanticKey" : {
+      "get" : {
+        "tags" : [ "payment-notification-search-controller" ],
+        "operationId" : "crud-payment-notification-findBySemanticKey",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iud",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentNotification"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/payment-notification/{id}" : {
+      "get" : {
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "get-paymentnotification",
+        "operationId" : "crud-get-paymentnotification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentNotification"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "update-paymentnotification",
+        "operationId" : "crud-update-paymentnotification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaymentNotificationRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentNotification"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentNotification"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "delete-paymentnotification",
+        "operationId" : "crud-delete-paymentnotification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "payment-notification-entity-controller" ],
+        "description" : "patch-paymentnotification",
+        "operationId" : "crud-patch-paymentnotification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaymentNotificationRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentNotification"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/crud/payments-reporting" : {
+      "get" : {
+        "tags" : [ "payments-reporting-entity-controller" ],
+        "description" : "get-paymentsreporting",
+        "operationId" : "crud-get-paymentsreportings",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelPaymentsReporting"
+                }
+              },
+              "application/x-spring-data-compact+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelPaymentsReporting"
+                }
+              },
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "payments-reporting-entity-controller" ],
+        "description" : "create-paymentsreporting",
+        "operationId" : "crud-create-paymentsreporting",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaymentsReportingRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/payments-reporting-view/search/findDistinctByIufAndRegulationUniqueIdentifier" : {
+      "get" : {
+        "tags" : [ "payments-reporting-view-search-controller" ],
+        "operationId" : "crud-payments-reporting-view-findDistinctByIufAndRegulationUniqueIdentifier",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iuf",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "regulationUniqueIdentifier",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "regulationDateFrom",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "regulationDateTo",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelPaymentsReportingView"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/payments-reporting/search/findByOrganizationIdAndIuf" : {
+      "get" : {
+        "tags" : [ "payments-reporting-search-controller" ],
+        "operationId" : "crud-payments-reporting-findByOrganizationIdAndIuf",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iuf",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CollectionModelPaymentsReporting"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/payments-reporting/search/findByOrganizationIdAndPaymentsReportingId" : {
+      "get" : {
+        "tags" : [ "payments-reporting-search-controller" ],
+        "operationId" : "crud-payments-reporting-findByOrganizationIdAndPaymentsReportingId",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "paymentsReportingId",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/payments-reporting/search/findBySemanticKey" : {
+      "get" : {
+        "tags" : [ "payments-reporting-search-controller" ],
+        "operationId" : "crud-payments-reporting-findBySemanticKey",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iuv",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iur",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "transferIndex",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/payments-reporting/search/findPaymentsReportingByFilters" : {
+      "get" : {
+        "tags" : [ "payments-reporting-search-controller" ],
+        "operationId" : "crud-payments-reporting-findPaymentsReportingByFilters",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iuf",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iuv",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "payDateFrom",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "payDateTo",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelPaymentsReporting"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/payments-reporting/{id}" : {
+      "get" : {
+        "tags" : [ "payments-reporting-entity-controller" ],
+        "description" : "get-paymentsreporting",
+        "operationId" : "crud-get-paymentsreporting",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "payments-reporting-entity-controller" ],
+        "description" : "update-paymentsreporting",
+        "operationId" : "crud-update-paymentsreporting",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaymentsReportingRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "payments-reporting-entity-controller" ],
+        "description" : "delete-paymentsreporting",
+        "operationId" : "crud-delete-paymentsreporting",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "payments-reporting-entity-controller" ],
+        "description" : "patch-paymentsreporting",
+        "operationId" : "crud-patch-paymentsreporting",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaymentsReportingRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/crud/profile" : {
+      "get" : {
+        "tags" : [ "profile-controller" ],
+        "operationId" : "crud-profile-profiles",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RepresentationModelObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/profile/assessments" : {
+      "get" : {
+        "tags" : [ "profile-controller" ],
+        "operationId" : "crud-profile-assessments",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/alps+json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/schema+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/profile/assessments-details" : {
+      "get" : {
+        "tags" : [ "profile-controller" ],
+        "operationId" : "crud-profile-assessments-details",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/alps+json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/schema+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/profile/assessments-registries" : {
+      "get" : {
+        "tags" : [ "profile-controller" ],
+        "operationId" : "crud-profile-assessments-registries",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/alps+json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/schema+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/profile/classifications" : {
+      "get" : {
+        "tags" : [ "profile-controller" ],
+        "operationId" : "crud-profile-classifications",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/alps+json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/schema+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/profile/payment-notification" : {
+      "get" : {
+        "tags" : [ "profile-controller" ],
+        "operationId" : "crud-profile-payment-notification",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/alps+json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/schema+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/profile/payments-reporting" : {
+      "get" : {
+        "tags" : [ "profile-controller" ],
+        "operationId" : "crud-profile-payments-reporting",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/alps+json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/schema+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/profile/treasury" : {
+      "get" : {
+        "tags" : [ "profile-controller" ],
+        "operationId" : "crud-profile-treasury",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/alps+json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/schema+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/treasuries-view/search/findTreasuriesByFilters" : {
+      "get" : {
+        "tags" : [ "treasury-view-search-controller" ],
+        "operationId" : "crud-treasuries-view-findTreasuriesByFilters",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iuv",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iuf",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "billAmountCents",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "billDateFrom",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "billDateTo",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "provisionalCode",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "provisionalAe",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "billCode",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "billYear",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "pspLastName",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "regionValueDateFrom",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "regionValueDateTo",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "documentCode",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "documentYear",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelTreasuryView"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/treasury" : {
+      "get" : {
+        "tags" : [ "treasury-entity-controller" ],
+        "description" : "get-treasury",
+        "operationId" : "crud-get-treasurys",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelTreasury"
+                }
+              },
+              "application/x-spring-data-compact+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedModelTreasury"
+                }
+              },
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "treasury-entity-controller" ],
+        "description" : "create-treasury",
+        "operationId" : "crud-create-treasury",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TreasuryRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crud/treasury/search/findByOrganizationIdAndTreasuryId" : {
+      "get" : {
+        "tags" : [ "treasury-search-controller" ],
+        "operationId" : "crud-treasury-findByOrganizationIdAndTreasuryId",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "treasuryId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/treasury/search/findBySemanticKey" : {
+      "get" : {
+        "tags" : [ "treasury-search-controller" ],
+        "operationId" : "crud-treasury-findBySemanticKey",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "billCode",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "billYear",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/treasury/search/getByOrganizationIdAndIuf" : {
+      "get" : {
+        "tags" : [ "treasury-search-controller" ],
+        "operationId" : "crud-treasury-getByOrganizationIdAndIuf",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iuf",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
+    "/crud/treasury/{id}" : {
+      "get" : {
+        "tags" : [ "treasury-entity-controller" ],
+        "description" : "get-treasury",
+        "operationId" : "crud-get-treasury",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "treasury-entity-controller" ],
+        "description" : "update-treasury",
+        "operationId" : "crud-update-treasury",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TreasuryRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "treasury-entity-controller" ],
+        "description" : "delete-treasury",
+        "operationId" : "crud-delete-treasury",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "treasury-entity-controller" ],
+        "description" : "patch-treasury",
+        "operationId" : "crud-patch-treasury",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TreasuryRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/crud-ext/treasury" : {
+      "post" : {
+        "tags" : [ "treasury-entity-extended-controller" ],
+        "operationId" : "saveAll",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "integer",
+                  "format" : "int32"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClassificationErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/crud-ext/payments-reporting" : {
+      "post" : {
+        "tags" : [ "payments-reporting-entity-extended-controller" ],
+        "operationId" : "saveAll1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "integer",
+                  "format" : "int32"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClassificationErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/crud-ext/classifications" : {
+      "post" : {
+        "tags" : [ "classification-entity-extended-controller" ],
+        "operationId" : "saveAll2",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/Classification"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "integer",
+                  "format" : "int32"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClassificationErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/assessments/create-by-receipt-id" : {
+      "post" : {
+        "tags" : [ "assessments-controller" ],
+        "operationId" : "createAssessmentByReceiptId",
+        "parameters" : [ {
+          "name" : "receiptId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Assessments"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClassificationErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/crud-ext/treasury/by-organizationId-billCode-billYear" : {
+      "delete" : {
+        "tags" : [ "treasury-entity-extended-controller" ],
+        "operationId" : "deleteByOrganizationIdAndBillCodeAndBillYear",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "billCode",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "billYear",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "integer",
+                  "format" : "int64"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClassificationErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/crud-ext/classifications/by-organizationId-iuv-iur-transferIndex" : {
+      "delete" : {
+        "tags" : [ "classification-entity-extended-controller" ],
+        "operationId" : "deleteByOrganizationIdAndIuvAndIurAndTransferIndex",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iuv",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iur",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "transferIndex",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "integer",
+                  "format" : "int64"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClassificationErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/crud-ext/classifications/by-organizationId-iuf-label" : {
+      "delete" : {
+        "tags" : [ "classification-entity-extended-controller" ],
+        "operationId" : "deleteByOrganizationIdAndIufAndLabel",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iuf",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "label",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "integer",
+                  "format" : "int64"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClassificationErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AbstractJsonSchemaPropertyObject" : {
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "readOnly" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Item" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          },
+          "properties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/AbstractJsonSchemaPropertyObject"
+            }
+          },
+          "requiredProperties" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "JsonSchema" : {
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "properties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/AbstractJsonSchemaPropertyObject"
+            }
+          },
+          "requiredProperties" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "definitions" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Item"
+            }
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "$schema" : {
+            "type" : "string"
+          }
+        }
+      },
+      "RepresentationModelObject" : {
+        "type" : "object",
+        "properties" : {
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Treasury" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "treasuryId" : {
+            "type" : "string"
+          },
+          "billYear" : {
+            "type" : "string"
+          },
+          "billCode" : {
+            "type" : "string"
+          },
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "accountCode" : {
+            "type" : "string"
+          },
+          "domainIdCode" : {
+            "type" : "string"
+          },
+          "transactionTypeCode" : {
+            "type" : "string"
+          },
+          "remittanceCode" : {
+            "type" : "string"
+          },
+          "remittanceDescription" : {
+            "type" : "string"
+          },
+          "billAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "billDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "receptionDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "documentYear" : {
+            "type" : "string"
+          },
+          "documentCode" : {
+            "type" : "string"
+          },
+          "sealCode" : {
+            "type" : "string"
+          },
+          "pspLastName" : {
+            "type" : "string"
+          },
+          "pspFirstName" : {
+            "type" : "string"
+          },
+          "pspAddress" : {
+            "type" : "string"
+          },
+          "pspPostalCode" : {
+            "type" : "string"
+          },
+          "pspCity" : {
+            "type" : "string"
+          },
+          "pspFiscalCode" : {
+            "type" : "string"
+          },
+          "pspVatNumber" : {
+            "type" : "string"
+          },
+          "abiCode" : {
+            "type" : "string"
+          },
+          "cabCode" : {
+            "type" : "string"
+          },
+          "ibanCode" : {
+            "type" : "string"
+          },
+          "accountRegistryCode" : {
+            "type" : "string"
+          },
+          "provisionalAe" : {
+            "type" : "string"
+          },
+          "provisionalCode" : {
+            "type" : "string"
+          },
+          "accountTypeCode" : {
+            "type" : "string"
+          },
+          "processCode" : {
+            "type" : "string"
+          },
+          "executionPgCode" : {
+            "type" : "string"
+          },
+          "transferPgCode" : {
+            "type" : "string"
+          },
+          "processPgNumber" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "regionValueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "actualSuspensionDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "managementProvisionalCode" : {
+            "type" : "string"
+          },
+          "endToEndId" : {
+            "type" : "string"
+          },
+          "regularized" : {
+            "type" : "boolean"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ]
+      },
+      "PageMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "PagedModelTreasury" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "treasuries" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/Treasury"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "PaymentsReportingView" : {
+        "type" : "object",
+        "properties" : {
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "regulationUniqueIdentifier" : {
+            "type" : "string"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "flowDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "totalPayments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "flowDateTime", "ingestionFlowFileId", "iuf", "organizationId", "regulationDate", "regulationUniqueIdentifier", "totalAmountCents", "totalPayments" ]
+      },
+      "PagedModelPaymentsReportingView" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "paymentsReportingViews" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/PaymentsReportingView"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "Classification" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "classificationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "transferId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentNotifyId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentsReportingId" : {
+            "type" : "string"
+          },
+          "treasuryId" : {
+            "type" : "string"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iur" : {
+            "type" : "string"
+          },
+          "transferIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "label" : {
+            "type" : "string"
+          },
+          "lastClassificationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "payDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "paymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "billDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "regionValueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "regulationUniqueIdentifier" : {
+            "type" : "string"
+          },
+          "accountRegistryCode" : {
+            "type" : "string"
+          },
+          "billAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "pspCompanyName" : {
+            "type" : "string"
+          },
+          "pspLastName" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "receiptFileName" : {
+            "type" : "string"
+          },
+          "receiptOrgFiscalCode" : {
+            "type" : "string"
+          },
+          "receiptPaymentReceiptId" : {
+            "type" : "string"
+          },
+          "receiptPaymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "receiptPaymentRequestId" : {
+            "type" : "string"
+          },
+          "receiptIdPsp" : {
+            "type" : "string"
+          },
+          "receiptPspCompanyName" : {
+            "type" : "string"
+          },
+          "receiptOrgEntityType" : {
+            "type" : "string"
+          },
+          "receiptBeneficiaryOrgName" : {
+            "type" : "string"
+          },
+          "receiptPersonalDataId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptPaymentOutcomeCode" : {
+            "type" : "string"
+          },
+          "receiptPaymentAmount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptCreditorReferenceId" : {
+            "type" : "string"
+          },
+          "receiptTransferAmount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptTransferCategory" : {
+            "type" : "string"
+          },
+          "receiptCreationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "receiptInstallmentBalance" : {
+            "type" : "string"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "label", "organizationId" ]
+      },
+      "PagedModelClassification" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "classifications" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/Classification"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "AssessmentsDetail" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "assessmentDetailId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "assessmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "officeCode" : {
+            "type" : "string"
+          },
+          "sectionCode" : {
+            "type" : "string"
+          },
+          "assessmentCode" : {
+            "type" : "string"
+          },
+          "amountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "amountSubmitted" : {
+            "type" : "boolean"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "amountCents", "amountSubmitted", "assessmentCode", "assessmentId", "debtPositionTypeOrgCode", "iud", "iuv", "officeCode", "organizationId", "sectionCode" ]
+      },
+      "PagedModelAssessmentsDetail" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "assessmentsDetails" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "TreasuryView" : {
+        "type" : "object",
+        "properties" : {
+          "treasuryId" : {
+            "type" : "string"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "billYear" : {
+            "type" : "string"
+          },
+          "billCode" : {
+            "type" : "string"
+          },
+          "regionValueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "billDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "billAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "provisionalCode" : {
+            "type" : "string"
+          },
+          "provisionalAe" : {
+            "type" : "string"
+          },
+          "pspLastName" : {
+            "type" : "string"
+          },
+          "documentCode" : {
+            "type" : "string"
+          },
+          "documentYear" : {
+            "type" : "string"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "organizationId", "pspLastName", "treasuryId" ]
+      },
+      "PagedModelTreasuryView" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "treasuryViews" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/TreasuryView"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "AssessmentStatus" : {
+        "type" : "string",
+        "enum" : [ "NEW", "CLOSED", "CANCELLED" ]
+      },
+      "Assessments" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "assessmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/AssessmentStatus"
+          },
+          "assessmentName" : {
+            "type" : "string"
+          },
+          "printed" : {
+            "type" : "boolean"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "organizationId", "printed", "status" ]
+      },
+      "PagedModelAssessments" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "assessmentses" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "PaymentNotification" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "paymentNotificationId" : {
+            "type" : "string"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "paymentExecutionDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "paymentType" : {
+            "type" : "string"
+          },
+          "amountPaidCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paCommission" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "transferCategory" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "balance" : {
+            "type" : "string"
+          },
+          "personalDataId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformationHash" : {
+            "type" : "string",
+            "format" : "byte"
+          },
+          "debtorFiscalCodeHash" : {
+            "type" : "string",
+            "format" : "byte"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "amountPaidCents", "debtPositionTypeOrgCode", "ingestionFlowFileId", "iud", "iuv", "organizationId", "paymentExecutionDate", "paymentType", "remittanceInformation", "transferCategory" ]
+      },
+      "PagedModelPaymentNotification" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "paymentNotifications" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/PaymentNotification"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "AssessmentsRegistry" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "assessmentRegistryId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "sectionCode" : {
+            "type" : "string"
+          },
+          "sectionDescription" : {
+            "type" : "string"
+          },
+          "officeCode" : {
+            "type" : "string"
+          },
+          "officeDescription" : {
+            "type" : "string"
+          },
+          "assessmentCode" : {
+            "type" : "string"
+          },
+          "assessmentDescription" : {
+            "type" : "string"
+          },
+          "operatingYear" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "assessmentCode", "assessmentDescription", "debtPositionTypeOrgCode", "officeCode", "officeDescription", "operatingYear", "organizationId", "sectionCode", "sectionDescription", "status" ]
+      },
+      "PagedModelAssessmentsRegistry" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "assessmentsRegistries" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/AssessmentsRegistry"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "PaymentsReporting" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "paymentsReportingId" : {
+            "type" : "string"
+          },
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iur" : {
+            "type" : "string"
+          },
+          "transferIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pspIdentifier" : {
+            "type" : "string"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "flowDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "regulationUniqueIdentifier" : {
+            "type" : "string"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "senderPspType" : {
+            "type" : "string"
+          },
+          "senderPspCode" : {
+            "type" : "string"
+          },
+          "senderPspName" : {
+            "type" : "string"
+          },
+          "receiverOrganizationType" : {
+            "type" : "string"
+          },
+          "receiverOrganizationCode" : {
+            "type" : "string"
+          },
+          "receiverOrganizationName" : {
+            "type" : "string"
+          },
+          "totalPayments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "amountPaidCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentOutcomeCode" : {
+            "type" : "string"
+          },
+          "payDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "acquiringDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "bicCodePouringBank" : {
+            "type" : "string"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ]
+      },
+      "PagedModelPaymentsReporting" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "paymentsReportings" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "CollectionModelPaymentsReporting" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "paymentsReportings" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/PaymentsReporting"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "AssessmentsRequestBody" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "assessmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/AssessmentStatus"
+          },
+          "assessmentName" : {
+            "type" : "string"
+          },
+          "printed" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "organizationId", "printed", "status" ]
+      },
+      "AssessmentsDetailRequestBody" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "assessmentDetailId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "assessmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "officeCode" : {
+            "type" : "string"
+          },
+          "sectionCode" : {
+            "type" : "string"
+          },
+          "assessmentCode" : {
+            "type" : "string"
+          },
+          "amountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "amountSubmitted" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "amountCents", "amountSubmitted", "assessmentCode", "assessmentId", "debtPositionTypeOrgCode", "iud", "iuv", "officeCode", "organizationId", "sectionCode" ]
+      },
+      "AssessmentsRegistryRequestBody" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "assessmentRegistryId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "sectionCode" : {
+            "type" : "string"
+          },
+          "sectionDescription" : {
+            "type" : "string"
+          },
+          "officeCode" : {
+            "type" : "string"
+          },
+          "officeDescription" : {
+            "type" : "string"
+          },
+          "assessmentCode" : {
+            "type" : "string"
+          },
+          "assessmentDescription" : {
+            "type" : "string"
+          },
+          "operatingYear" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "assessmentCode", "assessmentDescription", "debtPositionTypeOrgCode", "officeCode", "officeDescription", "operatingYear", "organizationId", "sectionCode", "sectionDescription", "status" ]
+      },
+      "ClassificationRequestBody" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "classificationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "transferId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentNotifyId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentsReportingId" : {
+            "type" : "string"
+          },
+          "treasuryId" : {
+            "type" : "string"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iur" : {
+            "type" : "string"
+          },
+          "transferIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "label" : {
+            "type" : "string"
+          },
+          "lastClassificationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "payDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "paymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "billDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "regionValueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "regulationUniqueIdentifier" : {
+            "type" : "string"
+          },
+          "accountRegistryCode" : {
+            "type" : "string"
+          },
+          "billAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "pspCompanyName" : {
+            "type" : "string"
+          },
+          "pspLastName" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "receiptFileName" : {
+            "type" : "string"
+          },
+          "receiptOrgFiscalCode" : {
+            "type" : "string"
+          },
+          "receiptPaymentReceiptId" : {
+            "type" : "string"
+          },
+          "receiptPaymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "receiptPaymentRequestId" : {
+            "type" : "string"
+          },
+          "receiptIdPsp" : {
+            "type" : "string"
+          },
+          "receiptPspCompanyName" : {
+            "type" : "string"
+          },
+          "receiptOrgEntityType" : {
+            "type" : "string"
+          },
+          "receiptBeneficiaryOrgName" : {
+            "type" : "string"
+          },
+          "receiptPersonalDataId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptPaymentOutcomeCode" : {
+            "type" : "string"
+          },
+          "receiptPaymentAmount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptCreditorReferenceId" : {
+            "type" : "string"
+          },
+          "receiptTransferAmount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptTransferCategory" : {
+            "type" : "string"
+          },
+          "receiptCreationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "receiptInstallmentBalance" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "label", "organizationId" ]
+      },
+      "PaymentNotificationRequestBody" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "paymentNotificationId" : {
+            "type" : "string"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "paymentExecutionDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "paymentType" : {
+            "type" : "string"
+          },
+          "amountPaidCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paCommission" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "transferCategory" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "balance" : {
+            "type" : "string"
+          },
+          "personalDataId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformationHash" : {
+            "type" : "string",
+            "format" : "byte"
+          },
+          "debtorFiscalCodeHash" : {
+            "type" : "string",
+            "format" : "byte"
+          }
+        },
+        "required" : [ "amountPaidCents", "debtPositionTypeOrgCode", "ingestionFlowFileId", "iud", "iuv", "organizationId", "paymentExecutionDate", "paymentType", "remittanceInformation", "transferCategory" ]
+      },
+      "PaymentsReportingRequestBody" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "paymentsReportingId" : {
+            "type" : "string"
+          },
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iur" : {
+            "type" : "string"
+          },
+          "transferIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pspIdentifier" : {
+            "type" : "string"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "flowDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "regulationUniqueIdentifier" : {
+            "type" : "string"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "senderPspType" : {
+            "type" : "string"
+          },
+          "senderPspCode" : {
+            "type" : "string"
+          },
+          "senderPspName" : {
+            "type" : "string"
+          },
+          "receiverOrganizationType" : {
+            "type" : "string"
+          },
+          "receiverOrganizationCode" : {
+            "type" : "string"
+          },
+          "receiverOrganizationName" : {
+            "type" : "string"
+          },
+          "totalPayments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "amountPaidCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentOutcomeCode" : {
+            "type" : "string"
+          },
+          "payDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "acquiringDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "bicCodePouringBank" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ]
+      },
+      "TreasuryRequestBody" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "treasuryId" : {
+            "type" : "string"
+          },
+          "billYear" : {
+            "type" : "string"
+          },
+          "billCode" : {
+            "type" : "string"
+          },
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "accountCode" : {
+            "type" : "string"
+          },
+          "domainIdCode" : {
+            "type" : "string"
+          },
+          "transactionTypeCode" : {
+            "type" : "string"
+          },
+          "remittanceCode" : {
+            "type" : "string"
+          },
+          "remittanceDescription" : {
+            "type" : "string"
+          },
+          "billAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "billDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "receptionDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "documentYear" : {
+            "type" : "string"
+          },
+          "documentCode" : {
+            "type" : "string"
+          },
+          "sealCode" : {
+            "type" : "string"
+          },
+          "pspLastName" : {
+            "type" : "string"
+          },
+          "pspFirstName" : {
+            "type" : "string"
+          },
+          "pspAddress" : {
+            "type" : "string"
+          },
+          "pspPostalCode" : {
+            "type" : "string"
+          },
+          "pspCity" : {
+            "type" : "string"
+          },
+          "pspFiscalCode" : {
+            "type" : "string"
+          },
+          "pspVatNumber" : {
+            "type" : "string"
+          },
+          "abiCode" : {
+            "type" : "string"
+          },
+          "cabCode" : {
+            "type" : "string"
+          },
+          "ibanCode" : {
+            "type" : "string"
+          },
+          "accountRegistryCode" : {
+            "type" : "string"
+          },
+          "provisionalAe" : {
+            "type" : "string"
+          },
+          "provisionalCode" : {
+            "type" : "string"
+          },
+          "accountTypeCode" : {
+            "type" : "string"
+          },
+          "processCode" : {
+            "type" : "string"
+          },
+          "executionPgCode" : {
+            "type" : "string"
+          },
+          "transferPgCode" : {
+            "type" : "string"
+          },
+          "processPgNumber" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "regionValueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "actualSuspensionDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "managementProvisionalCode" : {
+            "type" : "string"
+          },
+          "endToEndId" : {
+            "type" : "string"
+          },
+          "regularized" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ]
+      },
+      "ClassificationErrorDTO" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "$ref" : "#/components/schemas/CodeEnum"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "message" ]
+      },
+      "CodeEnum" : {
+        "type" : "string",
+        "enum" : [ "CLASSIFICATION_NOT_FOUND", "CLASSIFICATION_BAD_REQUEST", "CLASSIFICATION_CONFLICT", "CLASSIFICATION_GENERIC_ERROR" ]
+      },
+      "Link" : {
+        "type" : "object",
+        "properties" : {
+          "href" : {
+            "type" : "string"
+          },
+          "hreflang" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "deprecation" : {
+            "type" : "string"
+          },
+          "profile" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "templated" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Links" : {
+        "type" : "object",
+        "additionalProperties" : {
+          "$ref" : "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes" : {
+      "BearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
+}
