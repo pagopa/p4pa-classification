@@ -386,6 +386,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /validate/balance/{balance}:
+    get:
+      tags:
+        - balance
+      operationId: validateBalance
+      description: "The API validates the formal structure of balance"
+      parameters:
+        - name: balance
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The balance value to be validated
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: boolean
+                description: "Indicates whether the balance field is valid or not"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
 components:
   securitySchemes:
     BearerAuth:
