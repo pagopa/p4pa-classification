@@ -196,8 +196,6 @@ openApiGenerate {
   ))
 }
 
-println("TARGETBRANCH2:::")
-println(System.getProperty("targetBranch"))
 var targetEnv = when (Objects.requireNonNullElse(System.getProperty("targetBranch"), grgit.branch.current().name)) {
   "uat" -> "uat"
   "main" -> "main"
