@@ -43,6 +43,6 @@ class ClassificationViewPIIMapperTest {
 
     // Then
     assertNotNull(result);
-    TestUtils.checkNotNullFields(result, "receiptNumTotalRows", "receiptObjectVersion", "receiptBrokerId", "receiptPaymentRequestDateTime", "receiptPspCodeType", "receiptPspOperatingUnitCode", "receiptPspOperatingUnitName", "receiptPspAddress", "receiptPspCivic", "receiptPspPostalCode", "receiptPspLocation", "receiptPspProvince", "receiptPspNation", "receiptOrgUniqueIdentifierCode", "receiptBeneficiaryOrgOperatingUnitCode", "receiptBeneficiaryOrgOperatingUnitName", "receiptBeneficiaryOrgAddress", "receiptBeneficiaryOrgCivic", "receiptBeneficiaryOrgPostalCode", "receiptBeneficiaryOrgLocation", "receiptBeneficiaryOrgProvince", "receiptBeneficiaryOrgNation", "receiptPaymentContextId", "receiptTransferPaymentOutcomeCode", "receiptTransferPaymentDateTime", "receiptTransferPaymentReceiptId", "receiptDebtPositionTypeOrgId", "paymentsReportingObjectVersion", "treasuryCurrencyCode", "treasuryCheckNumber", "treasuryBankReference", "treasuryCustomerReference", "treasuryOrderDate", "treasuryOrlCode", "typeCodePal", "typeDescriptionPal", "taxonomicCodePal", "fiscalCodePal", "namePal");
+    TestUtils.checkNotNullFields(result);
   }
 }
