@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-@Lazy
 @Slf4j
 @Service
 public class IngestionFlowFileClient {
