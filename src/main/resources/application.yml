@@ -116,3 +116,10 @@ rest:
 
 data-cipher:
   encrypt-psw: "\${DATA_CIPHER_ENCRYPT_PASSWORD:PWD}"
+
+data-export:
+  default:
+    max-total-elements: "\${DATA_EXPORT_MAX_TOTAL_ELEMENTS: 100000}"
+  classification-view:
+    max-months-interval: "\${CLASSIFICATION_VIEW_MAX_MONTHS_INTERVAL: 6}"
+    max-total-elements: "\${CLASSIFICATION_VIEW_MAX_TOTAL_ELEMENTS:\${data-export.default.max-total-elements}}"

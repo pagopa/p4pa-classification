@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.classification.util;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Utilities {
 
@@ -12,4 +14,7 @@ public class Utilities {
     return euroAmount != null ? euroAmount.multiply(HUNDRED).longValue() : null;
   }
 
+  public static boolean isValidIntervalBetweenOffsetDateTime(OffsetDateTime dateFrom, OffsetDateTime dateTo, ChronoUnit chronoUnit, long maxInterval) {
+    return chronoUnit.between(dateFrom, dateTo) <= maxInterval;
+  }
 }

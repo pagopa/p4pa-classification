@@ -2,6 +2,8 @@ package it.gov.pagopa.pu.classification.exception;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationErrorDTO;
+import it.gov.pagopa.pu.classification.exception.custom.ExportTooManyRecordsException;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
 import jakarta.servlet.ServletException;
@@ -31,6 +33,16 @@ import java.util.stream.Collectors;
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ClassificationExceptionHandler {
+
+  @ExceptionHandler({ExportTooManyRecordsException.class})
+  public ResponseEntity<ClassificationErrorDTO> handleExportTooManyRecordsException(RuntimeException ex, HttpServletRequest request){
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({InvalidDateTimeIntervalException.class})
+  public ResponseEntity<ClassificationErrorDTO> handleInvalidDateTimeIntervalException(RuntimeException ex, HttpServletRequest request){
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.BAD_REQUEST);
+  }
 
   @ExceptionHandler({InvalidValueException.class})
   public ResponseEntity<ClassificationErrorDTO> handleInternalError(RuntimeException ex, HttpServletRequest request){
