@@ -5,7 +5,6 @@ import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-@Lazy
 @Service
 public class IngestionFlowFileServiceImpl implements IngestionFlowFileService {
 
