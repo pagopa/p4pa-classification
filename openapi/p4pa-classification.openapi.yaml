@@ -386,19 +386,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
-  /validate/balance/{balance}:
+  /validate/balance:
     get:
       tags:
         - balance
       operationId: validateBalance
       description: "The API validates the formal structure of balance"
-      parameters:
-        - name: balance
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The balance value to be validated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                balance:
+                  type: string
+        required: true
       responses:
         "200":
           description: Ok

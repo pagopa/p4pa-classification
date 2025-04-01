@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.BalanceApi;
+import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.service.BalanceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,7 @@ public class BalanceController implements BalanceApi {
   }
 
   @Override
-  public ResponseEntity<Boolean> validateBalance(String balance) {
-    return ResponseEntity.ok(balanceService.isBalanceValid(balance));
+  public ResponseEntity<Boolean> validateBalance(ValidateBalanceRequest balanceRequest) {
+    return ResponseEntity.ok(balanceService.isBalanceValid(balanceRequest.getBalance()));
   }
 }
