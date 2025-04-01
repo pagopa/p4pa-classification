@@ -3,7 +3,6 @@ package it.gov.pagopa.pu.classification.connector.processexecutions.client;
 import it.gov.pagopa.pu.classification.connector.processexecutions.config.ProcessExecutionsApisHolder;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
