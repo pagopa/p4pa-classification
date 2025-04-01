@@ -7,10 +7,14 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.util.ReflectionUtils;
+import uk.co.jemos.podam.api.AttributeMetadata;
+import uk.co.jemos.podam.api.DataProviderStrategy;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
+import uk.co.jemos.podam.common.ManufacturingContext;
+import uk.co.jemos.podam.typeManufacturers.AbstractTypeManufacturer;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class TestUtils {
 
@@ -51,4 +55,14 @@ public class TestUtils {
       f -> !excludedFieldsSet.contains(f.getName()) && f.getAnnotation(Nullable.class)==null);
   }
 
+  public static PodamFactory getPodamFactory() {
+    PodamFactoryImpl podamFactory = new PodamFactoryImpl();
+    podamFactory.getStrategy().addOrReplaceTypeManufacturer(SortedSet.class, new AbstractTypeManufacturer<>(){
+      @Override
+      public SortedSet<?> getType(DataProviderStrategy strategy, AttributeMetadata attributeMetadata, ManufacturingContext manufacturingCtx) {
+        return new TreeSet<>();
+      }
+    });
+    return podamFactory;
+  }
 }
