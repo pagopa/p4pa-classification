@@ -15,7 +15,6 @@ import java.util.List;
 
 @RepositoryRestResource(path = "classifications-export-view")
 public interface ClassificationViewNoPIIDTORepository extends Repository<ClassificationViewNoPII, Long> {
-  @SuppressWarnings("squid:S107")
   @RestResource(exported = false)
   @Query(value = """
     SELECT new ClassificationViewNoPII(
@@ -85,33 +84,33 @@ public interface ClassificationViewNoPIIDTORepository extends Repository<Classif
       c.lastClassificationDate as classificationDate
     )
     FROM Classification c
-    JOIN PaymentReporting pr ON c.paymentsReportingId = pr.paymentsReportingId
+    JOIN PaymentsReporting pr ON c.paymentsReportingId = pr.paymentsReportingId
     JOIN Treasury t ON c.treasuryId = t.treasuryId
     WHERE c.organizationId = :organizationId
-    AND (:#{#filters.iud} IS NULL OR c.iud = :#{#filters.iud})
-    AND (:#{#filters.iuv} IS NULL OR c.iuv = :#{#filters.iuv})
-    AND (:#{#filters.iuf} IS NULL OR c.iuf = :#{#filters.iuf})
-    AND (:#{#filters.iur} IS NULL OR c.iur = :#{#filters.iur})
-    AND (:#{#filters.paymentDateTime.from} IS NULL OR c.receiptPaymentDateTime >= :#{#filters.paymentDateTime.from})
-    AND (:#{#filters.paymentDateTime.to} IS NULL OR c.receiptPaymentDateTime <= :#{#filters.paymentDateTime.to})
-    AND (:#{#filters.regulationDate.from} IS NULL OR pr.paymentsReportingRegulationDate >= :#{#filters.regulationDate.from})
-    AND (:#{#filters.regulationDate.to} IS NULL OR pr.paymentsReportingRegulationDate <= :#{#filters.regulationDate.to})
-    AND (:#{#filters.billDate.from} IS NULL OR t.treasuryBillDate >= :#{#filters.billDate.from})
-    AND (:#{#filters.billDate.to} IS NULL OR t.treasuryBillDate <= :#{#filters.billDate.to})
-    AND (:#{#filters.regionValueDate.from} IS NULL OR t.treasuryRegionValueDate >= :#{#filters.regionValueDate.from})
-    AND (:#{#filters.regionValueDate.to} IS NULL OR t.treasuryRegionValueDate <= :#{#filters.regionValueDate.to})
-    AND (:#{#filters.payDate.from} IS NULL OR pr.paymentsReportingPayDate >= :#{#filters.payDate.from})
-    AND (:#{#filters.payDate.to} IS NULL OR pr.paymentsReportingPayDate <= :#{#filters.payDate.to})
-    AND (:#{#filters.lastClassificationDate.from} IS NULL OR c.classificationDate >= :#{#filters.lastClassificationDate.from})
-    AND (:#{#filters.lastClassificationDate.to} IS NULL OR c.classificationDate <= :#{#filters.lastClassificationDate.to})
-    AND (:#{#filters.regulationUniqueIdentifier} IS NULL OR pr.paymentsReportingRegulationUniqueIdentifier = :#{#filters.regulationUniqueIdentifier})
-    AND (:#{#filters.accountRegistryCode} IS NULL OR t.treasuryAccountRegistryCode = :#{#filters.accountRegistryCode})
-    AND (:#{#filters.billAmountCents} IS NULL OR t.treasuryBillAmountCents = :#{#filters.billAmountCents})
-    AND (:#{#filters.remittanceInformation} IS NULL OR c.receiptTransferRemittanceInformation = :#{#filters.remittanceInformation})
-    AND (:#{#filters.pspCompanyName} IS NULL OR c.receiptPspCompanyName = :#{#filters.pspCompanyName})
-    AND (:#{#filters.pspLastName} IS NULL OR c.treasuryLastName = :#{#filters.pspLastName})
+    AND (:#{#filter.iud} IS NULL OR c.iud = :#{#filter.iud})
+    AND (:#{#filter.iuv} IS NULL OR c.iuv = :#{#filter.iuv})
+    AND (:#{#filter.iuf} IS NULL OR c.iuf = :#{#filter.iuf})
+    AND (:#{#filter.iur} IS NULL OR c.iur = :#{#filter.iur})
+    AND (:#{#filter.paymentDateTime.from} IS NULL OR c.receiptPaymentDateTime >= :#{#filter.paymentDateTime.from})
+    AND (:#{#filter.paymentDateTime.to} IS NULL OR c.receiptPaymentDateTime <= :#{#filter.paymentDateTime.to})
+    AND (:#{#filter.regulationDate.from} IS NULL OR pr.paymentsReportingRegulationDate >= :#{#filter.regulationDate.from})
+    AND (:#{#filter.regulationDate.to} IS NULL OR pr.paymentsReportingRegulationDate <= :#{#filter.regulationDate.to})
+    AND (:#{#filter.billDate.from} IS NULL OR t.treasuryBillDate >= :#{#filter.billDate.from})
+    AND (:#{#filter.billDate.to} IS NULL OR t.treasuryBillDate <= :#{#filter.billDate.to})
+    AND (:#{#filter.regionValueDate.from} IS NULL OR t.treasuryRegionValueDate >= :#{#filter.regionValueDate.from})
+    AND (:#{#filter.regionValueDate.to} IS NULL OR t.treasuryRegionValueDate <= :#{#filter.regionValueDate.to})
+    AND (:#{#filter.payDate.from} IS NULL OR pr.paymentsReportingPayDate >= :#{#filter.payDate.from})
+    AND (:#{#filter.payDate.to} IS NULL OR pr.paymentsReportingPayDate <= :#{#filter.payDate.to})
+    AND (:#{#filter.lastClassificationDate.from} IS NULL OR c.classificationDate >= :#{#filter.lastClassificationDate.from})
+    AND (:#{#filter.lastClassificationDate.to} IS NULL OR c.classificationDate <= :#{#filter.lastClassificationDate.to})
+    AND (:#{#filter.regulationUniqueIdentifier} IS NULL OR pr.paymentsReportingRegulationUniqueIdentifier = :#{#filter.regulationUniqueIdentifier})
+    AND (:#{#filter.accountRegistryCode} IS NULL OR t.treasuryAccountRegistryCode = :#{#filter.accountRegistryCode})
+    AND (:#{#filter.billAmountCents} IS NULL OR t.treasuryBillAmountCents = :#{#filter.billAmountCents})
+    AND (:#{#filter.remittanceInformation} IS NULL OR c.receiptTransferRemittanceInformation = :#{#filter.remittanceInformation})
+    AND (:#{#filter.pspCompanyName} IS NULL OR c.receiptPspCompanyName = :#{#filter.pspCompanyName})
+    AND (:#{#filter.pspLastName} IS NULL OR c.treasuryLastName = :#{#filter.pspLastName})
     AND c.debtPositionTypeOrgCode IN :receiptDebtPositionTypeOrgCodes
-    """, nativeQuery = true)
+    """)
   Page<ClassificationViewNoPII> findClassificationViewNoPIIDTO(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Parameter(required = true) @Param("filter") ExportClassificationsFilterDTO exportClassificationsFilterDTO,
