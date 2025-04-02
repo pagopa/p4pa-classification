@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
@@ -44,7 +45,7 @@ class ClassificationServiceTest {
     List<String> debtPositionTypeOrgCodes = debtPositionTypeOrgs.stream()
       .map(DebtPositionTypeOrg::getCode)
       .toList();
-
+    Pageable pageable = PageRequest.of(0, 10);
     ExportClassificationsFilterDTO filterDTO = podamFactory.manufacturePojo(ExportClassificationsFilterDTO.class);
     PagedClassificationView pagedClassificationView = podamFactory.manufacturePojo(PagedClassificationView.class);
 
@@ -54,11 +55,11 @@ class ClassificationServiceTest {
       organizationId,
       filterDTO,
       debtPositionTypeOrgCodes,
-      Pageable.ofSize(1)))
+      pageable))
       .thenReturn(pagedClassificationView);
 
     // Act
-    PagedClassificationView result = service.getPagedClassificationView(organizationId, operatorExternalUserId, filterDTO, Pageable.ofSize(1));
+    PagedClassificationView result = service.getPagedClassificationView(organizationId, operatorExternalUserId, filterDTO, pageable);
 
     // Assert
     assertNotNull(result);
@@ -70,6 +71,6 @@ class ClassificationServiceTest {
       organizationId,
       filterDTO,
       debtPositionTypeOrgCodes,
-      Pageable.ofSize(1));
+      pageable);
   }
 }
