@@ -26,7 +26,7 @@ class ClassificationServiceTest {
   @Mock
   private ClassificationViewPIIRepository classificationViewPIIRepositoryMock;
 
-  private ClassificationServiceImpl service;
+  private ClassificationService service;
 
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
@@ -40,20 +40,22 @@ class ClassificationServiceTest {
     // Arrange
     Long organizationId = 1L;
     String operatorExternalUserId = "operator123";
-    String debtPositionTypeOrgCodes = "code1";
-    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg().code(debtPositionTypeOrgCodes);
+    List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
+    List<String> debtPositionTypeOrgCodes = debtPositionTypeOrgs.stream()
+      .map(DebtPositionTypeOrg::getCode)
+      .toList();
 
     ExportClassificationsFilterDTO filterDTO = podamFactory.manufacturePojoWithFullData(ExportClassificationsFilterDTO.class);
     PagedClassificationView pagedClassificationView = podamFactory.manufacturePojo(PagedClassificationView.class);
 
-    when(classificationViewPIIRepositoryMock.getPagedClassificationView(
-        organizationId,
-        filterDTO,
-        List.of(debtPositionTypeOrgCodes),
-        Pageable.ofSize(1)))
-      .thenReturn(pagedClassificationView);
     when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null))
-      .thenReturn(List.of(debtPositionTypeOrg));
+      .thenReturn(debtPositionTypeOrgs);
+    when(classificationViewPIIRepositoryMock.getPagedClassificationView(
+      organizationId,
+      filterDTO,
+      debtPositionTypeOrgCodes,
+      Pageable.ofSize(1)))
+      .thenReturn(pagedClassificationView);
 
     // Act
     PagedClassificationView result = service.getPagedClassificationView(organizationId, operatorExternalUserId, filterDTO, Pageable.ofSize(1));
@@ -63,10 +65,10 @@ class ClassificationServiceTest {
     assertEquals(pagedClassificationView, result);
 
     // Verify that the method was called with the correct parameters
-    verify(classificationViewPIIRepositoryMock).getPagedClassificationView(
-        organizationId,
-        filterDTO,
-        List.of(debtPositionTypeOrgCodes),
-        Pageable.ofSize(1));
+    verify(classificationViewPIIRepositoryMock, times(1)).getPagedClassificationView(
+      organizationId,
+      filterDTO,
+      debtPositionTypeOrgCodes,
+      Pageable.ofSize(1));
   }
 }
