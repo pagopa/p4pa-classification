@@ -54,7 +54,7 @@ class DataExportsControllerTest {
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedClassificationView expectedView = podamFactory.manufacturePojo(PagedClassificationView.class);
-    lenient().when(classificationServiceMock.getPagedClassificationView(
+    when(classificationServiceMock.getPagedClassificationView(
       organizationId,
       operatorExternalUserId,
       filterDTO,
