@@ -58,12 +58,12 @@ class ClassificationViewPIIRepositoryTest {
 
     List<ClassificationViewNoPII> content = podamFactory.manufacturePojo(List.class, ClassificationViewNoPII.class);
     Pageable pageable = PageRequest.of(0, 10);
-    Page<ClassificationViewNoPII> ClassificationViewNoPIIPages = new PageImpl<>(content, pageable, 10);
+    Page<ClassificationViewNoPII> noPiiPage = new PageImpl<>(content, pageable, 10);
 
     PagedClassificationView pagedClassificationView = podamFactory.manufacturePojo(PagedClassificationView.class);
 
-    when(classificationViewNoPIIDTORepositoryMock.findClassificationViewNoPIIDTO(organizationId, exportClassificationsFilterDTO, debtPositionTypeOrgCodes, pageable)).thenReturn(ClassificationViewNoPIIPages);
-    when(pagedClassificationViewMapperMock.map2PagedClassificationView(ClassificationViewNoPIIPages)).thenReturn(pagedClassificationView);
+    when(classificationViewNoPIIDTORepositoryMock.findClassificationViewNoPIIDTO(organizationId, exportClassificationsFilterDTO, debtPositionTypeOrgCodes, pageable)).thenReturn(noPiiPage);
+    when(pagedClassificationViewMapperMock.map2PagedClassificationView(noPiiPage)).thenReturn(pagedClassificationView);
     //when
 
     PagedClassificationView result = repository.getPagedClassificationView(organizationId, exportClassificationsFilterDTO, debtPositionTypeOrgCodes, pageable);
@@ -85,14 +85,14 @@ class ClassificationViewPIIRepositoryTest {
       .mapToObj(i -> podamFactory.manufacturePojo(ClassificationViewNoPII.class))
       .toList();
 
-    Page<ClassificationViewNoPII> ClassificationViewNoPIIPages = new PageImpl<>(content, pageable, 12);
-
-    when(classificationViewNoPIIDTORepositoryMock.findClassificationViewNoPIIDTO(organizationId, exportClassificationsFilterDTO, debtPositionTypeOrgCodes, Pageable.ofSize(1)))
-      .thenReturn(ClassificationViewNoPIIPages);
+    Page<ClassificationViewNoPII> noPiiPage = new PageImpl<>(content, pageable, 12);
+    Pageable pageable1 = Pageable.ofSize(1);
+    when(classificationViewNoPIIDTORepositoryMock.findClassificationViewNoPIIDTO(organizationId, exportClassificationsFilterDTO, debtPositionTypeOrgCodes, pageable1))
+      .thenReturn(noPiiPage);
 
     //when then
     assertThrows(ExportTooManyRecordsException.class,
-      () -> repository.getPagedClassificationView(organizationId, exportClassificationsFilterDTO, debtPositionTypeOrgCodes, Pageable.ofSize(1)),
+      () -> repository.getPagedClassificationView(organizationId, exportClassificationsFilterDTO, debtPositionTypeOrgCodes, pageable1),
       "The number of elements returned: 12 exceeds the maximum limit of 10"
     );
   }
