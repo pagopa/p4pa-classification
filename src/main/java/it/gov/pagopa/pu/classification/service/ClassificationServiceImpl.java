@@ -26,7 +26,6 @@ public class ClassificationServiceImpl implements ClassificationService {
   @Override
   public PagedClassificationView getPagedClassificationView(Long organizationId, String operatorExternalUserId, ExportClassificationsFilterDTO exportClassificationsFilterDTO, Pageable pageable) {
     String accessToken = SecurityUtils.getAccessToken();
-    log.debug("Access token: {}", accessToken);
     log.info("Fetching debt position type org codes for organizationId: {} and operatorExternalUserId: {}", organizationId, operatorExternalUserId);
     List<String> debtPositionTypeOrgCodes = debtPositionTypeOrgService.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken)
       .stream().map(DebtPositionTypeOrg::getCode).toList();
