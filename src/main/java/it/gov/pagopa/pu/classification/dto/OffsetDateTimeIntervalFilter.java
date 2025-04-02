@@ -12,7 +12,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OffsetDateTimeIntervalFilter {
-    private OffsetDateTime from;
-    private OffsetDateTime to;
+  private OffsetDateTime from;
+  private OffsetDateTime to;
 }
-
