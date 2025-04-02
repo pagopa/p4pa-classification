@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
+import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,7 @@ import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DataExportsControllerTest {
@@ -34,15 +35,18 @@ class DataExportsControllerTest {
 
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
   private final Integer maxMonthsInterval = 1;
+  private final String accessToken = "accessToken";
 
   @BeforeEach
   void setUp() {
     controller = new DataExportsController(maxMonthsInterval, classificationServiceMock);
+    SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(classificationServiceMock);
+    SecurityUtilsTest.clearSecurityContext();
   }
 
   @Test
@@ -54,12 +58,12 @@ class DataExportsControllerTest {
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedClassificationView expectedView = podamFactory.manufacturePojo(PagedClassificationView.class);
-    lenient().when(classificationServiceMock.getPagedClassificationView(
+    when(classificationServiceMock.getPagedClassificationView(
       organizationId,
       operatorExternalUserId,
       filterDTO,
       pageable,
-      null)
+      accessToken)
     ).thenReturn(expectedView);
 
     ResponseEntity<PagedClassificationView> response = controller.exportClassifications(
@@ -93,14 +97,6 @@ class DataExportsControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(expectedView, response.getBody());
-
-    verify(classificationServiceMock, times(1)).getPagedClassificationView(
-      organizationId,
-      operatorExternalUserId,
-      filterDTO,
-      pageable,
-      null
-    );
   }
 
   @Test
