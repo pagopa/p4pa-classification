@@ -386,6 +386,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+      x-spring-paginated: true
   /validate/balance:
     get:
       tags:

@@ -1,10 +1,13 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.DataExportsApi;
+import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +28,7 @@ public class DataExportsController implements DataExportsApi {
   }
 
   @Override
-  public ResponseEntity<PagedClassificationView> exportClassifications(Long organizationId, String operatorExternalUserId, String label, String iuf, String iud, String iuv, String iur, OffsetDateTime lastClassificationDateFrom, OffsetDateTime lastClassificationDateTo, OffsetDateTime payDateFrom, OffsetDateTime payDateTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, OffsetDateTime regulationDateFrom, OffsetDateTime regulationDateTo, OffsetDateTime billDateFrom, OffsetDateTime billDateTo, OffsetDateTime regionValueDateFrom, OffsetDateTime regionValueDateTo, String regulationUniqueIdentifier, String accountRegistryCode, Long billAmountCents, String remittanceInformation, String pspCompanyName, String pspLastName) {
+  public ResponseEntity<PagedClassificationView> exportClassifications(Long organizationId, String operatorExternalUserId, String label, String iuf, String iud, String iuv, String iur, OffsetDateTime lastClassificationDateFrom, OffsetDateTime lastClassificationDateTo, OffsetDateTime payDateFrom, OffsetDateTime payDateTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, OffsetDateTime regulationDateFrom, OffsetDateTime regulationDateTo, OffsetDateTime billDateFrom, OffsetDateTime billDateTo, OffsetDateTime regionValueDateFrom, OffsetDateTime regionValueDateTo, String regulationUniqueIdentifier, String accountRegistryCode, Long billAmountCents, String remittanceInformation, String pspCompanyName, String pspLastName, Pageable pageable) {
     validateInterval(lastClassificationDateFrom, lastClassificationDateTo);
     validateInterval(payDateFrom, payDateTo);
     validateInterval(paymentDateTimeFrom, paymentDateTimeTo);
@@ -33,7 +36,45 @@ public class DataExportsController implements DataExportsApi {
     validateInterval(billDateFrom, billDateTo);
     validateInterval(regionValueDateFrom, regionValueDateTo);
 
-    return ResponseEntity.ok(classificationService.getPagedClassificationView(organizationId, operatorExternalUserId, label, iuf, iud, iuv, iur, lastClassificationDateFrom, lastClassificationDateTo, payDateFrom, payDateTo, paymentDateTimeFrom, paymentDateTimeTo, regulationDateFrom, regulationDateTo, billDateFrom, billDateTo, regionValueDateFrom, regionValueDateTo, regulationUniqueIdentifier, accountRegistryCode, billAmountCents, remittanceInformation, pspCompanyName, pspLastName));
+    ExportClassificationsFilterDTO exportClassificationsFilterDTO = ExportClassificationsFilterDTO.builder()
+            .label(label)
+            .iuf(iuf)
+            .iud(iud)
+            .iuv(iuv)
+            .iur(iur)
+            .lastClassificationDate(OffsetDateTimeIntervalFilter.builder()
+                .from(lastClassificationDateFrom)
+                .to(lastClassificationDateTo)
+                .build())
+            .payDate(OffsetDateTimeIntervalFilter.builder()
+                .from(payDateFrom)
+                .to(payDateTo)
+                .build())
+            .paymentDateTime(OffsetDateTimeIntervalFilter.builder()
+                .from(paymentDateTimeFrom)
+                .to(paymentDateTimeTo)
+                .build())
+            .regulationDate(OffsetDateTimeIntervalFilter.builder()
+                .from(regulationDateFrom)
+                .to(regulationDateTo)
+                .build())
+            .billDate(OffsetDateTimeIntervalFilter.builder()
+                .from(billDateFrom)
+                .to(billDateTo)
+                .build())
+            .regionValueDate(OffsetDateTimeIntervalFilter.builder()
+                .from(regionValueDateFrom)
+                .to(regionValueDateTo)
+                .build())
+            .regulationUniqueIdentifier(regulationUniqueIdentifier)
+            .accountRegistryCode(accountRegistryCode)
+            .billAmountCents(billAmountCents)
+            .remittanceInformation(remittanceInformation)
+            .pspCompanyName(pspCompanyName)
+            .pspLastName(pspLastName)
+            .build();
+
+    return ResponseEntity.ok(classificationService.getPagedClassificationView(organizationId, operatorExternalUserId, exportClassificationsFilterDTO, pageable));
   }
 
   private void validateInterval(OffsetDateTime dateFrom, OffsetDateTime dateTo) {
