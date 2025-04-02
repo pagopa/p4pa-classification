@@ -5,5 +5,5 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import org.springframework.data.domain.Pageable;
 
 public interface ClassificationService {
-  PagedClassificationView getPagedClassificationView(Long organizationId, String operatorExternalUserId, ExportClassificationsFilterDTO exportClassificationsFilterDTO, Pageable pageable);
+  PagedClassificationView getPagedClassificationView(Long organizationId, String operatorExternalUserId, ExportClassificationsFilterDTO exportClassificationsFilterDTO, Pageable pageable, String accessToken);
 }

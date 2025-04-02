@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
+import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class DataExportsController implements DataExportsApi {
 
   @Override
   public ResponseEntity<PagedClassificationView> exportClassifications(Long organizationId, String operatorExternalUserId, String label, String iuf, String iud, String iuv, String iur, OffsetDateTime lastClassificationDateFrom, OffsetDateTime lastClassificationDateTo, OffsetDateTime payDateFrom, OffsetDateTime payDateTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, OffsetDateTime regulationDateFrom, OffsetDateTime regulationDateTo, OffsetDateTime billDateFrom, OffsetDateTime billDateTo, OffsetDateTime regionValueDateFrom, OffsetDateTime regionValueDateTo, String regulationUniqueIdentifier, String accountRegistryCode, Long billAmountCents, String remittanceInformation, String pspCompanyName, String pspLastName, Pageable pageable) {
+    String accessToken = SecurityUtils.getAccessToken();
     validateInterval(lastClassificationDateFrom, lastClassificationDateTo);
     validateInterval(payDateFrom, payDateTo);
     validateInterval(paymentDateTimeFrom, paymentDateTimeTo);
@@ -74,7 +76,7 @@ public class DataExportsController implements DataExportsApi {
             .pspLastName(pspLastName)
             .build();
 
-    return ResponseEntity.ok(classificationService.getPagedClassificationView(organizationId, operatorExternalUserId, exportClassificationsFilterDTO, pageable));
+    return ResponseEntity.ok(classificationService.getPagedClassificationView(organizationId, operatorExternalUserId, exportClassificationsFilterDTO, pageable, accessToken));
   }
 
   private void validateInterval(OffsetDateTime dateFrom, OffsetDateTime dateTo) {

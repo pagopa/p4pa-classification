@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOr
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
-import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +23,7 @@ public class ClassificationServiceImpl implements ClassificationService {
   }
 
   @Override
-  public PagedClassificationView getPagedClassificationView(Long organizationId, String operatorExternalUserId, ExportClassificationsFilterDTO exportClassificationsFilterDTO, Pageable pageable) {
-    String accessToken = SecurityUtils.getAccessToken();
+  public PagedClassificationView getPagedClassificationView(Long organizationId, String operatorExternalUserId, ExportClassificationsFilterDTO exportClassificationsFilterDTO, Pageable pageable, String accessToken) {
     log.info("Fetching debt position type org codes for organizationId: {} and operatorExternalUserId: {}", organizationId, operatorExternalUserId);
     List<String> debtPositionTypeOrgCodes = debtPositionTypeOrgService.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken)
       .stream().map(DebtPositionTypeOrg::getCode).toList();

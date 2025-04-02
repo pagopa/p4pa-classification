@@ -59,7 +59,7 @@ class ClassificationServiceTest {
       .thenReturn(pagedClassificationView);
 
     // Act
-    PagedClassificationView result = service.getPagedClassificationView(organizationId, operatorExternalUserId, filterDTO, pageable);
+    PagedClassificationView result = service.getPagedClassificationView(organizationId, operatorExternalUserId, filterDTO, pageable, null);
 
     // Assert
     assertNotNull(result);
