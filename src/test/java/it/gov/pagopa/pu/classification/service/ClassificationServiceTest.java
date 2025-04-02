@@ -45,7 +45,7 @@ class ClassificationServiceTest {
       .map(DebtPositionTypeOrg::getCode)
       .toList();
 
-    ExportClassificationsFilterDTO filterDTO = podamFactory.manufacturePojoWithFullData(ExportClassificationsFilterDTO.class);
+    ExportClassificationsFilterDTO filterDTO = podamFactory.manufacturePojo(ExportClassificationsFilterDTO.class);
     PagedClassificationView pagedClassificationView = podamFactory.manufacturePojo(PagedClassificationView.class);
 
     when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null))
@@ -65,6 +65,7 @@ class ClassificationServiceTest {
     assertEquals(pagedClassificationView, result);
 
     // Verify that the method was called with the correct parameters
+    verify(debtPositionTypeOrgServiceMock, times(1)).findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null);
     verify(classificationViewPIIRepositoryMock, times(1)).getPagedClassificationView(
       organizationId,
       filterDTO,
