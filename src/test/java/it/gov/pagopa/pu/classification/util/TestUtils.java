@@ -2,10 +2,6 @@ package it.gov.pagopa.pu.classification.util;
 
 import jakarta.annotation.Nullable;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.util.ReflectionUtils;
 import uk.co.jemos.podam.api.AttributeMetadata;
 import uk.co.jemos.podam.api.DataProviderStrategy;
@@ -17,20 +13,6 @@ import uk.co.jemos.podam.typeManufacturers.AbstractTypeManufacturer;
 import java.util.*;
 
 public class TestUtils {
-
-  private static final String ACCESS_TOKEN = "TOKENHEADER.TOKENPAYLOAD.TOKENDIGEST";
-
-  public static String getFakeAccessToken() {
-    return ACCESS_TOKEN;
-  }
-
-  public static void setFakeAccessTokenInContext(){
-    SecurityContextHolder.setContext(new SecurityContextImpl(new JwtAuthenticationToken(Jwt
-      .withTokenValue(ACCESS_TOKEN)
-      .header("", "")
-      .claim("", "")
-      .build())));
-  }
 
   /**
    * It will assert not null on all o's fields

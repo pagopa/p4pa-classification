@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -36,4 +38,20 @@ class DebtPositionTypeOrgServiceTest {
 		assertEquals(expected, result);
 		verify(debtPositionTypeOrgClientMock, times(1)).getDebtPositionTypeOrgByInstallmentId(installmentId, accessToken);
 	}
+
+  @Test
+  void whenFindDebtPositionTypeOrgsThenInvokeClient() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    String operatorExternalUserId = "OPERATOR_EXTERNAL_USER_ID";
+    List<DebtPositionTypeOrg> expected = List.of(mock(DebtPositionTypeOrg.class));
+
+    when(debtPositionTypeOrgClientMock.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken)).thenReturn(expected);
+    // When
+    List<DebtPositionTypeOrg> result = debtPositionTypeOrgService.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
+    // Then
+    assertEquals(expected, result);
+    verify(debtPositionTypeOrgClientMock, times(1)).findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
+  }
 }
