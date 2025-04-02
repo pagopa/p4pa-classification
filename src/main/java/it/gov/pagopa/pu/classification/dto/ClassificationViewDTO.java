@@ -186,7 +186,7 @@ package it.gov.pagopa.pu.classification.dto;
     private LocalDate paymentsReportingPayDate;
 
     @JsonProperty("payRep_creationDate")
-    private LocalDateTime paymentsReportingCreationDate;
+    private LocalDate paymentsReportingCreationDate;
 
     @JsonProperty("tres_abiCode")
     private String treasuryAbiCode;

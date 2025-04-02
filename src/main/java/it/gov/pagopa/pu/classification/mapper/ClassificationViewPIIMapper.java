@@ -87,7 +87,7 @@ public class ClassificationViewPIIMapper {
       .treasuryBillAmountCents(noPii.getTreasuryBillAmountCents())
       .treasurySignCode(noPii.getTreasurySignCode())
       .treasuryRemittanceCode(noPii.getTreasuryRemittanceCode())
-      .treasuryLastName(noPii.getTreasuryLastName())
+      .treasuryLastName(noPii.getTreasuryPspLastName())
       .treasuryIuf(noPii.getTreasuryIuf())
       .treasuryIuv(noPii.getTreasuryIuv())
       .treasuryCreationDate(noPii.getTreasuryCreationDate())
