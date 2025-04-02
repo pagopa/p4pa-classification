@@ -5,10 +5,12 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import it.gov.pagopa.pu.classification.util.TestUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +22,7 @@ import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DataExportsControllerTest {
@@ -38,6 +40,11 @@ class DataExportsControllerTest {
     controller = new DataExportsController(maxMonthsInterval, classificationServiceMock);
   }
 
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(classificationServiceMock);
+  }
+
   @Test
   void exportClassificationsReturnsPagedClassificationViewOnValidInterval() {
     Long organizationId = 1L;
@@ -46,8 +53,8 @@ class DataExportsControllerTest {
 
     Pageable pageable = PageRequest.of(0, 10);
 
-    PagedClassificationView expectedView = new PagedClassificationView();
-    when(classificationServiceMock.getPagedClassificationView(
+    PagedClassificationView expectedView = podamFactory.manufacturePojo(PagedClassificationView.class);
+    lenient().when(classificationServiceMock.getPagedClassificationView(
       organizationId,
       operatorExternalUserId,
       filterDTO,
@@ -86,6 +93,14 @@ class DataExportsControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(expectedView, response.getBody());
+
+    verify(classificationServiceMock, times(1)).getPagedClassificationView(
+      organizationId,
+      operatorExternalUserId,
+      filterDTO,
+      pageable,
+      null
+    );
   }
 
   @Test
