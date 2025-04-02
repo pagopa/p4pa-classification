@@ -366,14 +366,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/PagedClassificationView'
         "400":
-          description: Invalid request
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
               example:
-                code: "DEBT_POSITION_BAD_REQUEST"
-                message: "The number of InstallmentPaidViewNoPII records returned exceeds the maximum allowed"
+                code: "CLASSIFICATION_BAD_REQUEST"
+                message: "The number of ClassificationViewNoPII records returned exceeds the maximum allowed"
         "404":
           description: Not found
           content:
