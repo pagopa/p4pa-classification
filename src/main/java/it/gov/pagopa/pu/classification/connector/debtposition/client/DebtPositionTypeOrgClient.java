@@ -3,11 +3,11 @@ package it.gov.pagopa.pu.classification.connector.debtposition.client;
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-@Lazy
+import java.util.List;
+
 @Slf4j
 @Service
 public class DebtPositionTypeOrgClient {
@@ -17,7 +17,6 @@ public class DebtPositionTypeOrgClient {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 
-
   public DebtPositionTypeOrg getDebtPositionTypeOrgByInstallmentId(Long installmentId, String accessToken) {
     try {
       return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
@@ -26,5 +25,12 @@ public class DebtPositionTypeOrgClient {
       log.info("Cannot find DeptPositionTypeOrg from installment id {}", installmentId);
       return null;
     }
+  }
+
+  public List<DebtPositionTypeOrg> findDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
+      return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId)
+        .getEmbedded()
+        .getDebtPositionTypeOrgs();
   }
 }
