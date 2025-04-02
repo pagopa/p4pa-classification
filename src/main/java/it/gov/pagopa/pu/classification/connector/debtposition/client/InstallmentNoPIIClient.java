@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Lazy
 @Slf4j
 @Service
 public class InstallmentNoPIIClient {
@@ -17,7 +16,6 @@ public class InstallmentNoPIIClient {
     public InstallmentNoPIIClient(DebtPositionApisHolder debtPositionApisHolder) {
         this.debtPositionApisHolder = debtPositionApisHolder;
     }
-
 
     public List<InstallmentNoPIIResponse> getByReceiptId(Long receiptId, String accessToken) {
       return debtPositionApisHolder.getInstallmentNoPIISearchControllerApi(accessToken)
