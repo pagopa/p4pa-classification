@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.model;
 
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -16,7 +17,7 @@ import java.io.Serializable;
 @Builder
 @Data
 @EqualsAndHashCode(of = "paymentNotificationId", callSuper = false)
-public class PaymentNotification extends BaseEntity implements Serializable{
+public class PaymentNotificationNoPII extends BaseEntity implements Serializable, NoPIIEntity<PaymentNotificationPIIDTO>{
 
   @Id
   private String paymentNotificationId;
@@ -48,7 +49,7 @@ public class PaymentNotification extends BaseEntity implements Serializable{
 
 
 //region keep updated semanticId
-  public static String buildSemanticId(PaymentNotification paymentsReporting) {
+  public static String buildSemanticId(PaymentNotificationNoPII paymentsReporting) {
     return paymentsReporting.getIud() + "_" +
       paymentsReporting.getOrganizationId();
   }
