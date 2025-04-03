@@ -366,16 +366,52 @@ paths:
               schema:
                 $ref: '#/components/schemas/PagedClassificationView'
         "400":
-          description: Invalid request
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
               example:
-                code: "DEBT_POSITION_BAD_REQUEST"
-                message: "The number of InstallmentPaidViewNoPII records returned exceeds the maximum allowed"
+                code: "CLASSIFICATION_BAD_REQUEST"
+                message: "The number of ClassificationViewNoPII records returned exceeds the maximum allowed"
         "404":
           description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+      x-spring-paginated: true
+  /validate/balance:
+    get:
+      tags:
+        - balance
+      operationId: validateBalance
+      description: "The API validates the formal structure of balance"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                balance:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: boolean
+                description: "Indicates whether the balance field is valid or not"
+        "400":
+          description: Invalid request
           content:
             application/json:
               schema:

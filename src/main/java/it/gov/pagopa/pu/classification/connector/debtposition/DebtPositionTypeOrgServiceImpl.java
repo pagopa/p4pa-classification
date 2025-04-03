@@ -5,6 +5,8 @@ import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Lazy
 public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgService{
@@ -18,5 +20,10 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   @Override
   public DebtPositionTypeOrg getDebtPositionTypeOrgByInstallmentId(Long installmentId, String accessToken) {
     return debtPositionTypeOrgClient.getDebtPositionTypeOrgByInstallmentId(installmentId,accessToken);
+  }
+
+  @Override
+  public List<DebtPositionTypeOrg> findDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
+    return debtPositionTypeOrgClient.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
   }
 }

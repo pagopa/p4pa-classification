@@ -1,4 +1,5 @@
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+import java.util.*
 
 plugins {
   java
@@ -43,6 +44,7 @@ val activationVersion = "2.1.3"
 val jaxbVersion = "4.0.5"
 val jaxbApiVersion = "4.0.2"
 val xmlSchemaVersion = "2.3.1"
+val podamVersion = "8.0.2.RELEASE"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
@@ -84,6 +86,7 @@ dependencies {
   testImplementation("org.mockito:mockito-core")
   testImplementation("org.projectlombok:lombok")
   testImplementation("com.h2database:h2")
+  testImplementation("uk.co.jemos.podam:podam:$podamVersion")
 
 }
 
@@ -195,7 +198,7 @@ openApiGenerate {
   ))
 }
 
-var targetEnv = when (grgit.branch.current().name) {
+var targetEnv = when (Objects.requireNonNullElse(System.getProperty("targetBranch"), grgit.branch.current().name)) {
   "uat" -> "uat"
   "main" -> "main"
   else -> "develop"

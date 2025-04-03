@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.classification.connector.processexecutions.IngestionFlow
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
-import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIResponseFaker;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
@@ -53,6 +52,7 @@ class AssessmentsServiceImplTest {
 
   @Test
   void buildAssessment_withValidInstallmentNoPIIResponse_returnsAssessment() {
+    String accessToken = "accessToken";
     InstallmentNoPIIResponse installmentNoPIIResponse = InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse();
     IngestionFlowFile ingestionFlowFile = new IngestionFlowFile();
     ingestionFlowFile.setOrganizationId(1L);
@@ -61,12 +61,12 @@ class AssessmentsServiceImplTest {
     debtPositionTypeOrg.setCode("testCode");
     debtPositionTypeOrg.setDebtPositionTypeOrgId(2L);
 
-    when(ingestionFlowFileServiceMock.getIngestionFlowFile(installmentNoPIIResponse.getIngestionFlowFileId(), TestUtils.getFakeAccessToken()))
+    when(ingestionFlowFileServiceMock.getIngestionFlowFile(installmentNoPIIResponse.getIngestionFlowFileId(), accessToken))
       .thenReturn(ingestionFlowFile);
-    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), TestUtils.getFakeAccessToken()))
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), accessToken))
       .thenReturn(debtPositionTypeOrg);
 
-    Assessments result = service.buildAssessment(installmentNoPIIResponse, TestUtils.getFakeAccessToken());
+    Assessments result = service.buildAssessment(installmentNoPIIResponse, accessToken);
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(debtPositionTypeOrg.getOrganizationId(), result.getOrganizationId());
@@ -78,6 +78,7 @@ class AssessmentsServiceImplTest {
   @Test
   void createAssessment_withValidReceiptId_returnsAssessments() {
     Long receiptId = 1L;
+    String accessToken = "accessToken";
     List<InstallmentNoPIIResponse> installments = List.of(InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse());
     Assessments assessment = new Assessments();
     IngestionFlowFile ingestionFlowFile = new IngestionFlowFile();
@@ -87,16 +88,16 @@ class AssessmentsServiceImplTest {
     debtPositionTypeOrg.setCode("testCode");
     debtPositionTypeOrg.setOrganizationId(3L);
 
-    when(installmentNoPIIServiceMock.getByReceiptId(receiptId, TestUtils.getFakeAccessToken())).thenReturn(installments);
-    when(ingestionFlowFileServiceMock.getIngestionFlowFile(installments.getFirst().getIngestionFlowFileId(), TestUtils.getFakeAccessToken()))
+    when(installmentNoPIIServiceMock.getByReceiptId(receiptId, accessToken)).thenReturn(installments);
+    when(ingestionFlowFileServiceMock.getIngestionFlowFile(installments.getFirst().getIngestionFlowFileId(), accessToken))
             .thenReturn(ingestionFlowFile);
-    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), TestUtils.getFakeAccessToken())).thenReturn(debtPositionTypeOrg);
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), accessToken)).thenReturn(debtPositionTypeOrg);
     when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
             debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getCode(), "testFile_testCode"))
             .thenReturn(null);
     when(assessmentsRepositoryMock.save(Mockito.any(Assessments.class))).thenReturn(assessment);
 
-    List<Assessments> result = service.createAssesment(receiptId, TestUtils.getFakeAccessToken());
+    List<Assessments> result = service.createAssesment(receiptId, accessToken);
 
     assertEquals(1, result.size());
     assertEquals(assessment, result.getFirst());
