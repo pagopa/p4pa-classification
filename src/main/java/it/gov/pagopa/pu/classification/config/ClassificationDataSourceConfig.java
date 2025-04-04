@@ -18,6 +18,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -43,13 +44,15 @@ public class ClassificationDataSourceConfig {
   @Bean(name = "emfClassification")
   public LocalContainerEntityManagerFactoryBean classificationEntityManagerFactory(
     @Qualifier("dsClassification") DataSource dataSource,
-    EntityManagerFactoryBuilder builder) {
+    EntityManagerFactoryBuilder builder,
+    LocalValidatorFactoryBean validatorFactoryBean) {
 
     return builder.dataSource(dataSource)
       .packages("it.gov.pagopa.pu.classification.model")
       .properties(Map.of(
         "hibernate.physical_naming_strategy", CamelCaseToUnderscoresNamingStrategy.class.getName(),
-        "hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName()
+        "hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName(),
+        "jakarta.persistence.validation.factory", validatorFactoryBean
       ))
       .persistenceUnit("classification")
       .build();
