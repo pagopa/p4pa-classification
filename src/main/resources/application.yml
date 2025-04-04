@@ -116,6 +116,8 @@ rest:
 
 data-cipher:
   encrypt-psw: "\${DATA_CIPHER_ENCRYPT_PASSWORD:PWD}"
+  hash-pepper: "\${DATA_CIPHER_HASH_PEPPER:PEPPER}"
+
 
 data-export:
   default:

@@ -7,14 +7,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "payment_notification")
+@SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
 @EqualsAndHashCode(of = "paymentNotificationId", callSuper = false)
 public class PaymentNotificationNoPII extends BaseEntity implements Serializable, NoPIIEntity<PaymentNotificationPIIDTO>{

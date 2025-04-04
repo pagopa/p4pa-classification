@@ -5,5 +5,6 @@ import it.gov.pagopa.pu.classification.dto.PaymentNotification;
 public interface PaymentNotificationPIIRepository {
 
   PaymentNotification save (PaymentNotification paymentNotification);
+  PaymentNotification findBySemanticKey(Long organizationId, String iud);
 
 }
