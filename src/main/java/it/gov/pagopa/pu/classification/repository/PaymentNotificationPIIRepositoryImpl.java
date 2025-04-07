@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.classification.dto.PaymentNotification;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.mapper.PaymentNotificationPIIMapper;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,8 +14,8 @@ public class PaymentNotificationPIIRepositoryImpl extends BasePIIRepository<Paym
   private final PaymentNotificationNoPIIRepository paymentNotificationNoPIIRepository;
     private final PaymentNotificationPIIMapper paymentNotificationPIIMapper;
 
-  PaymentNotificationPIIRepositoryImpl(PersonalDataService personalDataService, JpaRepository<PaymentNotificationNoPII, String> noPIIRepository, PaymentNotificationNoPIIRepository paymentNotificationNoPIIRepository, PaymentNotificationPIIMapper paymentNotificationPIIMapper) {
-    super(paymentNotificationPIIMapper, personalDataService, noPIIRepository);
+  PaymentNotificationPIIRepositoryImpl(PersonalDataService personalDataService, PaymentNotificationNoPIIRepository paymentNotificationNoPIIRepository, PaymentNotificationPIIMapper paymentNotificationPIIMapper) {
+    super(paymentNotificationPIIMapper, personalDataService, paymentNotificationNoPIIRepository);
       this.paymentNotificationNoPIIRepository = paymentNotificationNoPIIRepository;
       this.paymentNotificationPIIMapper = paymentNotificationPIIMapper;
   }

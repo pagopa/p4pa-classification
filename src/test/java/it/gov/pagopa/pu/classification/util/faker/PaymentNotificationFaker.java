@@ -14,7 +14,7 @@ public class PaymentNotificationFaker {
 
     public static PaymentNotification buildPaymentNotification() {
         return PaymentNotification.builder()
-                .paymentNotificationId("paymentNotificationId789")
+                .paymentNotificationId("iud_1")
                 .organizationId(1L)
                 .ingestionFlowFileId(2L)
                 .iud("iud")
@@ -36,7 +36,7 @@ public class PaymentNotificationFaker {
 
     public static PaymentNotificationNoPII buildPaymentNotificationNoPII() {
         return PaymentNotificationNoPII.builder()
-                .paymentNotificationId("paymentNotificationId789")
+                .paymentNotificationId("iud_1")
                 .organizationId(1L)
                 .ingestionFlowFileId(2L)
                 .iud("iud")
@@ -66,7 +66,7 @@ public class PaymentNotificationFaker {
 
     public static PaymentNotificationDTO buildPaymentNotificationDTO() {
         return PaymentNotificationDTO.builder()
-                .paymentNotificationId("paymentNotificationId789")
+                .paymentNotificationId("iud_1")
                 .organizationId(1L)
                 .ingestionFlowFileId(2L)
                 .iud("iud")
