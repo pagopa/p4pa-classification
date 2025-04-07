@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -22,10 +24,10 @@ public class PaymentNotification implements FullPIIDTO<PaymentNotificationNoPII,
   private Long ingestionFlowFileId;
   private String iud;
   private String iuv;
-  private Date paymentExecutionDate;
+  private LocalDate paymentExecutionDate;
   private String paymentType;
-  private Long amountPaidCents;
-  private Long paCommission;
+  private BigInteger amountPaidCents;
+  private BigInteger paCommission;
   private String remittanceInformation;
   private String transferCategory;
   private String debtPositionTypeOrgCode;
