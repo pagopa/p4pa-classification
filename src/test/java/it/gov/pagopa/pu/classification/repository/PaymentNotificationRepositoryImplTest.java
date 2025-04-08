@@ -48,7 +48,6 @@ class PaymentNotificationRepositoryImplTest {
       paymentNotificationPIIMapperMock);
   }
 
-
   @Test
   void findBySemanticKey_success() {
     Long organizationId = 1L;
@@ -61,9 +60,5 @@ class PaymentNotificationRepositoryImplTest {
 
     Assertions.assertEquals(iud+"_"+organizationId, result.getPaymentNotificationId());
   }
-
-
-
-
 
 }

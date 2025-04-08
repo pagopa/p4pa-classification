@@ -32,6 +32,7 @@ public class PaymentNotificationFaker {
                 .creationDate(DATETIME.toLocalDateTime())
                 .updateDate(DATETIME.toLocalDateTime())
                 .updateOperatorExternalId("updateOperatorExternalId")
+                .noPII(buildPaymentNotificationNoPII())
                 .build();
     }
 
@@ -52,6 +53,7 @@ public class PaymentNotificationFaker {
                 .balance("balance")
                 .remittanceInformationHash("remittanceInformationHash".getBytes())
                 .debtorFiscalCodeHash("debtorFiscalCodeHash".getBytes())
+                .personalDataId(1L)
                 .creationDate(DATETIME.toLocalDateTime())
                 .updateDate(DATETIME.toLocalDateTime())
                 .updateOperatorExternalId("updateOperatorExternalId")

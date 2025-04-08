@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,4 +61,46 @@ class PaymentNotificationPIIMapperTest {
     checkNotNullFields(result.getSecond());
   }
 
+  @Test
+  void mapNoPii_success() {
+    PaymentNotificationPIIDTO paymentNotification = buildPaymentNotificationPIIDTO();
+    PaymentNotificationDTO paymentNotificationDTO = buildPaymentNotification();
+    PaymentNotificationNoPII paymentNotificationNoPII = buildPaymentNotificationNoPII();
+    Mockito.when(personalDataServiceMock.get(1L,PaymentNotificationPIIDTO.class)).thenReturn(paymentNotification);
+
+    PaymentNotificationDTO result = mapper.map(paymentNotificationNoPII);
+
+    reflectionEqualsByName(paymentNotificationDTO, result);
+    checkNotNullFields(result );
+  }
+
+  @Test
+  void extractNoPiiEntity_success() {
+    // Given
+    PaymentNotificationDTO paymentNotificationDTO = buildPaymentNotification();
+    byte[] expectedHashedCF = "debtorFiscalCodeHash".getBytes();
+    byte[] expectedHashedRemInfo = "remittanceInformationHash".getBytes();
+    Mockito.when(dataCipherServiceMock.hash(paymentNotificationDTO.getDebtor().getFiscalCode())).thenReturn(expectedHashedCF);
+    Mockito.when(dataCipherServiceMock.hash(paymentNotificationDTO.getRemittanceInformation())).thenReturn(expectedHashedRemInfo);
+
+    // When
+    PaymentNotificationNoPII result = mapper.extractNoPiiEntity(paymentNotificationDTO);
+
+    // Then
+    Assertions.assertEquals(expectedHashedCF, result.getDebtorFiscalCodeHash());
+    Assertions.assertEquals(expectedHashedRemInfo, result.getRemittanceInformationHash());
+    Assertions.assertEquals(paymentNotificationDTO.getOrganizationId(), result.getOrganizationId());
+  }
+
+  @Test
+  void extractPiiDto_success() {
+    // Given
+    PaymentNotificationDTO paymentNotificationDTO = buildPaymentNotification();
+
+    // When
+    PaymentNotificationPIIDTO result = mapper.extractPiiDto(paymentNotificationDTO);
+
+    // Then
+    Assertions.assertEquals(paymentNotificationDTO.getDebtor(), result.getDebtor());
+  }
 }

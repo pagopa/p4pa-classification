@@ -72,7 +72,7 @@ public class PaymentNotificationPIIMapper extends BasePIIMapper<PaymentNotificat
       .creationDate(noPii.getCreationDate())
       .updateDate(noPii.getUpdateDate())
       .updateOperatorExternalId(noPii.getUpdateOperatorExternalId())
-            .noPII(noPii)
+      .noPII(noPii)
       .build();
   }
 }
