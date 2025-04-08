@@ -71,7 +71,7 @@ class PaymentNotificationPIIMapperTest {
     PaymentNotificationDTO result = mapper.map(paymentNotificationNoPII);
 
     reflectionEqualsByName(paymentNotificationDTO, result);
-    checkNotNullFields(result );
+    checkNotNullFields(result);
   }
 
   @Test
@@ -90,6 +90,7 @@ class PaymentNotificationPIIMapperTest {
     Assertions.assertEquals(expectedHashedCF, result.getDebtorFiscalCodeHash());
     Assertions.assertEquals(expectedHashedRemInfo, result.getRemittanceInformationHash());
     Assertions.assertEquals(paymentNotificationDTO.getOrganizationId(), result.getOrganizationId());
+    checkNotNullFields(result,"personalDataId");
   }
 
   @Test
@@ -102,5 +103,6 @@ class PaymentNotificationPIIMapperTest {
 
     // Then
     Assertions.assertEquals(paymentNotificationDTO.getDebtor(), result.getDebtor());
+    checkNotNullFields(result);
   }
 }
