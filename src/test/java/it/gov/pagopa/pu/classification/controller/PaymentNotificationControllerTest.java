@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import it.gov.pagopa.pu.classification.dto.generated.PaymentNotificationDTO;
-import it.gov.pagopa.pu.classification.dto.generated.PaymentNotificationNoPIIDTO;
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.service.PaymentNotificationService;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +26,6 @@ class PaymentNotificationControllerTest {
   private PaymentNotificationController controller;
 
   private final PaymentNotificationDTO paymentNotificationDTO = new PaymentNotificationDTO();
-  private final PaymentNotificationNoPIIDTO paymentNotificationNoPIIDTO = new PaymentNotificationNoPIIDTO();
 
   @BeforeEach
   void init() {
@@ -43,14 +41,14 @@ class PaymentNotificationControllerTest {
   void createPaymentNotification_success() {
     String accessToken = "testAccessToken";
     when(serviceMock.createPaymentNotification(accessToken, paymentNotificationDTO))
-      .thenReturn(paymentNotificationNoPIIDTO);
+      .thenReturn(paymentNotificationDTO);
     SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
 
-    ResponseEntity<PaymentNotificationNoPIIDTO> response = controller.createPaymentNotification(paymentNotificationDTO);
+    ResponseEntity<PaymentNotificationDTO> response = controller.createPaymentNotification(paymentNotificationDTO);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertEquals(paymentNotificationNoPIIDTO, response.getBody());
+    assertEquals(paymentNotificationDTO, response.getBody());
     Mockito.verify(serviceMock).createPaymentNotification(accessToken,paymentNotificationDTO);
   }
 

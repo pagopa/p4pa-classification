@@ -431,7 +431,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PaymentNotificationDTO"
+              type: 'PaymentNotificationDTO'
         required: true
       responses:
         "201":
@@ -439,7 +439,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PaymentNotificationNoPIIDTO"
+                type: 'PaymentNotificationDTO'
         "400":
           description: Invalid request
         "409":
@@ -524,118 +524,4 @@ components:
           type: string
         printed:
           type: boolean
-    PersonDTO:
-      required:
-        - fullName
-        - entityType
-        - fiscalCode
-      type: object
-      properties:
-        entityType:
-          type: string
-          enum:
-            - F
-            - G
-        fiscalCode:
-          type: string
-        fullName:
-          type: string
-        address:
-          type: string
-        civic:
-          type: string
-        postalCode:
-          type: string
-        location:
-          type: string
-        province:
-          type: string
-        nation:
-          type: string
-        email:
-          type: string
-    PaymentNotificationDTO:
-      type: object
-      properties:
-        paymentNotificationId:
-          type: string
-        organizationId:
-          type: integer
-          format: int64
-        ingestionFlowFileId:
-          type: integer
-          format: int64
-        iud:
-          type: string
-        iuv:
-          type: string
-        paymentExecutionDate:
-          type: string
-          format: date
-        paymentType:
-          type: string
-        amountPaidCents:
-          type: integer
-          format: int64
-        paCommission:
-          type: integer
-          format: int64
-        remittanceInformation:
-          type: string
-        transferCategory:
-          type: string
-        debtPositionTypeOrgCode:
-          type: string
-        balance:
-          type: string
-        debtor:
-          $ref: '#/components/schemas/PersonDTO'
-        creationDate:
-          type: string
-          format: date-time
-        updateDate:
-          type: string
-          format: date-time
-    PaymentNotificationNoPIIDTO:
-      type: object
-      properties:
-        paymentNotificationId:
-          type: string
-        organizationId:
-          type: integer
-          format: int64
-        ingestionFlowFileId:
-          type: integer
-          format: int64
-        iud:
-          type: string
-        iuv:
-          type: string
-        paymentExecutionDate:
-          type: string
-          format: date
-        paymentType:
-          type: string
-        amountPaidCents:
-          type: integer
-          format: int64
-        paCommission:
-          type: integer
-          format: int64
-        remittanceInformation:
-          type: string
-        transferCategory:
-          type: string
-        debtPositionTypeOrgCode:
-          type: string
-        balance:
-          type: string
-        personalDataId:
-          type: integer
-          format: int64
-        remittanceInformationHash:
-          type: string
-          format: byte
-        debtorFiscalCodeHash:
-          type: string
-          format: byte
+

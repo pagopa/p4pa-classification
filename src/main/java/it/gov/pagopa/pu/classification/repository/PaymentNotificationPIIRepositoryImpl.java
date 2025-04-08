@@ -2,14 +2,14 @@ package it.gov.pagopa.pu.classification.repository;
 
 import it.gov.pagopa.pu.classification.citizen.enums.PersonalDataType;
 import it.gov.pagopa.pu.classification.citizen.service.PersonalDataService;
-import it.gov.pagopa.pu.classification.dto.PaymentNotification;
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.mapper.PaymentNotificationPIIMapper;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentNotificationPIIRepositoryImpl extends BasePIIRepository<PaymentNotification, PaymentNotificationNoPII, PaymentNotificationPIIDTO, String> implements PaymentNotificationPIIRepository {
+public class PaymentNotificationPIIRepositoryImpl extends BasePIIRepository<PaymentNotificationDTO, PaymentNotificationNoPII, PaymentNotificationPIIDTO, String> implements PaymentNotificationPIIRepository {
 
   private final PaymentNotificationNoPIIRepository paymentNotificationNoPIIRepository;
     private final PaymentNotificationPIIMapper paymentNotificationPIIMapper;
@@ -21,7 +21,7 @@ public class PaymentNotificationPIIRepositoryImpl extends BasePIIRepository<Paym
   }
 
   @Override
-  void setId(PaymentNotification fullDTO, String id) {
+  void setId(PaymentNotificationDTO fullDTO, String id) {
     fullDTO.setPaymentNotificationId(id);
   }
 
@@ -46,7 +46,7 @@ public class PaymentNotificationPIIRepositoryImpl extends BasePIIRepository<Paym
   }
 
   @Override
-  public PaymentNotification findBySemanticKey(Long organizationId, String iud) {
+  public PaymentNotificationDTO findBySemanticKey(Long organizationId, String iud) {
         return paymentNotificationPIIMapper.map(paymentNotificationNoPIIRepository.findBySemanticKey(organizationId, iud));
     }
 

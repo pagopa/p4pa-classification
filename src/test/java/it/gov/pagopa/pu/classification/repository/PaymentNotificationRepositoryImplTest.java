@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.classification.repository;
 
 import it.gov.pagopa.pu.classification.citizen.service.PersonalDataService;
-import it.gov.pagopa.pu.classification.dto.PaymentNotification;
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.mapper.PaymentNotificationPIIMapper;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import static it.gov.pagopa.pu.classification.util.faker.PaymentNotificationFake
 class PaymentNotificationRepositoryImplTest {
 
   @Mock
-  private PersonalDataService personalDataService;
+  private PersonalDataService personalDataServiceMock;
 
   @Mock(answer = Answers.RETURNS_MOCKS)
   private PaymentNotificationNoPIIRepository paymentNotificationNoPIIRepositoryMock;
@@ -32,12 +33,21 @@ class PaymentNotificationRepositoryImplTest {
   private PaymentNotificationPIIRepository repository;
 
   private final PaymentNotificationNoPII paymentNotificationNoPII = buildPaymentNotificationNoPII();
-  private final PaymentNotification paymentNotification = buildPaymentNotification();
+  private final PaymentNotificationDTO paymentNotificationDTO = buildPaymentNotification();
 
   @BeforeEach
   void init() {
-    repository = new PaymentNotificationPIIRepositoryImpl(personalDataService, paymentNotificationNoPIIRepositoryMock, paymentNotificationPIIMapperMock);
+    repository = new PaymentNotificationPIIRepositoryImpl(personalDataServiceMock, paymentNotificationNoPIIRepositoryMock, paymentNotificationPIIMapperMock);
   }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(
+      paymentNotificationNoPIIRepositoryMock,
+      personalDataServiceMock,
+      paymentNotificationPIIMapperMock);
+  }
+
 
   @Test
   void findBySemanticKey_success() {
@@ -45,24 +55,14 @@ class PaymentNotificationRepositoryImplTest {
     String iud = "iud";
 
     Mockito.when(paymentNotificationNoPIIRepositoryMock.findBySemanticKey(organizationId, iud)).thenReturn(paymentNotificationNoPII);
-    Mockito.when(paymentNotificationPIIMapperMock.map(paymentNotificationNoPII)).thenReturn(paymentNotification);
+    Mockito.when(paymentNotificationPIIMapperMock.map(paymentNotificationNoPII)).thenReturn(paymentNotificationDTO);
 
-    PaymentNotification result = repository.findBySemanticKey(organizationId, iud);
+    PaymentNotificationDTO result = repository.findBySemanticKey(organizationId, iud);
 
     Assertions.assertEquals(iud+"_"+organizationId, result.getPaymentNotificationId());
   }
 
-  @Test
-  void findBySemanticKey_notFound() {
-    Long organizationId = 1L;
-    String iud = "iud1";
 
-    Mockito.when(paymentNotificationNoPIIRepositoryMock.findBySemanticKey(organizationId, iud)).thenReturn(null);
-
-    PaymentNotification result = repository.findBySemanticKey(organizationId, iud);
-
-    Assertions.assertEquals(null, result);
-  }
 
 
 

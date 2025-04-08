@@ -1,18 +1,18 @@
 package it.gov.pagopa.pu.classification.service;
 
-import it.gov.pagopa.pu.classification.dto.PaymentNotification;
-import it.gov.pagopa.pu.classification.dto.generated.PaymentNotificationDTO;
-import it.gov.pagopa.pu.classification.dto.generated.PaymentNotificationNoPIIDTO;
-import it.gov.pagopa.pu.classification.mapper.PaymentNotificationPIIMapper;
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.repository.PaymentNotificationPIIRepository;
+import it.gov.pagopa.pu.classification.util.TestUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static it.gov.pagopa.pu.classification.util.faker.PaymentNotificationFaker.buildPaymentNotification;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,37 +21,31 @@ class PaymentNotificationServiceTest {
   @Mock
   private PaymentNotificationPIIRepository paymentNotificationPIIRepositoryMock;
 
-  @Mock
-  private PaymentNotificationPIIMapper paymentNotificationPIIMapper;
-
   private PaymentNotificationService paymentNotificationService;
 
   @BeforeEach
   void setUp() {
-    paymentNotificationService = new PaymentNotificationServiceImpl(paymentNotificationPIIRepositoryMock, paymentNotificationPIIMapper);
+    paymentNotificationService = new PaymentNotificationServiceImpl(paymentNotificationPIIRepositoryMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(
+      paymentNotificationPIIRepositoryMock);
   }
 
   @Test
   void createPaymentNotification_success() {
-    PaymentNotificationDTO paymentNotificationDTO = new PaymentNotificationDTO();
-    PaymentNotification paymentNotification = new PaymentNotification();
-    PaymentNotificationNoPIIDTO paymentNotificationNoPIIDTO = new PaymentNotificationNoPIIDTO();
+    PaymentNotificationDTO paymentNotificationDTO = buildPaymentNotification();
+    paymentNotificationDTO.setPaymentNotificationId(null);
+    PaymentNotificationDTO experctedResult = buildPaymentNotification();
 
-    when(paymentNotificationPIIMapper.mapToModel(any(PaymentNotificationDTO.class))).thenReturn(paymentNotification);
-    when(paymentNotificationPIIRepositoryMock.save(any(PaymentNotification.class))).thenReturn(paymentNotification);
-    when(paymentNotificationPIIMapper.mapToNoPiiDTO(any(PaymentNotification.class))).thenReturn(paymentNotificationNoPIIDTO);
+    when(paymentNotificationPIIRepositoryMock.save(paymentNotificationDTO)).thenReturn(experctedResult);
 
-    PaymentNotificationNoPIIDTO result = paymentNotificationService.createPaymentNotification("accessToken", paymentNotificationDTO);
+    PaymentNotificationDTO result = paymentNotificationService.createPaymentNotification("accessToken", paymentNotificationDTO);
 
-    assertEquals(paymentNotificationNoPIIDTO, result);
-  }
+    TestUtils.reflectionEqualsByName(paymentNotificationDTO, experctedResult, "paymentNotificationId");
+    Assertions.assertEquals(result.getPaymentNotificationId(), paymentNotificationDTO.getIud()+"_"+paymentNotificationDTO.getOrganizationId());
 
-
-
-  @Test
-  void createPaymentNotification_emptyAccessToken() {
-    PaymentNotificationDTO paymentNotificationDTO = new PaymentNotificationDTO();
-    PaymentNotificationNoPIIDTO result = paymentNotificationService.createPaymentNotification("", paymentNotificationDTO);
-    assertEquals(null, result);
   }
 }

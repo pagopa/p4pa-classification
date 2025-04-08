@@ -8,16 +8,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentNotification implements FullPIIDTO<PaymentNotificationNoPII, PaymentNotificationPIIDTO> {
+public class PaymentNotificationDTO implements FullPIIDTO<PaymentNotificationNoPII, PaymentNotificationPIIDTO> {
 
   private String paymentNotificationId;
   private Long organizationId;
@@ -26,8 +24,8 @@ public class PaymentNotification implements FullPIIDTO<PaymentNotificationNoPII,
   private String iuv;
   private LocalDate paymentExecutionDate;
   private String paymentType;
-  private BigInteger amountPaidCents;
-  private BigInteger paCommission;
+  private Long amountPaidCents;
+  private Long paCommission;
   private String remittanceInformation;
   private String transferCategory;
   private String debtPositionTypeOrgCode;

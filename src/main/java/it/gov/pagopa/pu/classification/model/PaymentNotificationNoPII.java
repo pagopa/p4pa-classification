@@ -39,8 +39,8 @@ public class PaymentNotificationNoPII extends BaseEntity implements Serializable
   @NotNull
   private String paymentType;
   @NotNull
-  private BigInteger amountPaidCents;
-  private BigInteger paCommission;
+  private Long amountPaidCents;
+  private Long paCommission;
   @NotNull
   private String remittanceInformation;
   @NotNull

@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.classification.repository;
 
-import it.gov.pagopa.pu.classification.dto.PaymentNotification;
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 
 public interface PaymentNotificationPIIRepository {
 
-  PaymentNotification save (PaymentNotification paymentNotification);
-  PaymentNotification findBySemanticKey(Long organizationId, String iud);
+  PaymentNotificationDTO save (PaymentNotificationDTO paymentNotificationDTO);
+  PaymentNotificationDTO findBySemanticKey(Long organizationId, String iud);
 
 }

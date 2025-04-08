@@ -1,19 +1,20 @@
 package it.gov.pagopa.pu.classification.util.faker;
 
-import it.gov.pagopa.pu.classification.dto.PaymentNotification;
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
-import it.gov.pagopa.pu.classification.dto.generated.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
 
-import java.math.BigInteger;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public class PaymentNotificationFaker {
     private static final LocalDate DATE = LocalDate.of(2099, 1, 1);
     private static final OffsetDateTime DATETIME = OffsetDateTime.of(DATE, LocalTime.MIDNIGHT, ZoneOffset.UTC);
 
-    public static PaymentNotification buildPaymentNotification() {
-        return PaymentNotification.builder()
+    public static PaymentNotificationDTO buildPaymentNotification() {
+        return PaymentNotificationDTO.builder()
                 .paymentNotificationId("iud_1")
                 .organizationId(1L)
                 .ingestionFlowFileId(2L)
@@ -21,8 +22,8 @@ public class PaymentNotificationFaker {
                 .iuv("iuv")
                 .paymentExecutionDate(DATE)
                 .paymentType("paymentType")
-                .amountPaidCents(BigInteger.valueOf(100))
-                .paCommission(BigInteger.valueOf(10))
+                .amountPaidCents(100L)
+                .paCommission(10L)
                 .remittanceInformation("remittanceInformation")
                 .transferCategory("transferCategory")
                 .debtPositionTypeOrgCode("debtPositionTypeOrgCode")
@@ -43,8 +44,8 @@ public class PaymentNotificationFaker {
                 .iuv("iuv")
                 .paymentExecutionDate(DATE)
                 .paymentType("paymentType")
-                .amountPaidCents(BigInteger.valueOf(100))
-                .paCommission(BigInteger.valueOf(10))
+                .amountPaidCents(100L)
+                .paCommission(10L)
                 .remittanceInformation("remittanceInformation")
                 .transferCategory("transferCategory")
                 .debtPositionTypeOrgCode("debtPositionTypeOrgCode")
@@ -79,9 +80,9 @@ public class PaymentNotificationFaker {
                 .transferCategory("transferCategory")
                 .debtPositionTypeOrgCode("debtPositionTypeOrgCode")
                 .balance("balance")
-                .debtor(PersonFaker.buildPersonDTO())
-                .creationDate(DATETIME)
-                .updateDate(DATETIME)
+                .debtor(PersonFaker.buildPerson())
+                .creationDate(DATETIME.toLocalDateTime())
+                .updateDate(DATETIME.toLocalDateTime())
                 .build();
     }
 

@@ -1,8 +1,7 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.PaymentNotificationApi;
-import it.gov.pagopa.pu.classification.dto.generated.PaymentNotificationDTO;
-import it.gov.pagopa.pu.classification.dto.generated.PaymentNotificationNoPIIDTO;
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.service.PaymentNotificationService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import org.springframework.http.HttpStatus;
@@ -23,9 +22,9 @@ public class PaymentNotificationController implements PaymentNotificationApi {
 
 
   @Override
-  public  ResponseEntity<PaymentNotificationNoPIIDTO> createPaymentNotification(PaymentNotificationDTO paymentNotificationDTO){
+  public  ResponseEntity<PaymentNotificationDTO> createPaymentNotification(PaymentNotificationDTO paymentNotificationDTO){
     String accessToken = SecurityUtils.getAccessToken();
-    PaymentNotificationNoPIIDTO body = paymentNotificationService.createPaymentNotification(accessToken, paymentNotificationDTO);
+    PaymentNotificationDTO body = paymentNotificationService.createPaymentNotification(accessToken, paymentNotificationDTO);
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 
