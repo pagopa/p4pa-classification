@@ -422,6 +422,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /payment-notification:
+    post:
+      tags:
+        - payment-notification
+      operationId: createPaymentNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'PaymentNotificationDTO'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: 'PaymentNotificationDTO'
+        "400":
+          description: Invalid request
+        "409":
+          description: Payment notification already exists
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
 components:
   securitySchemes:
     BearerAuth:
@@ -496,3 +524,4 @@ components:
           type: string
         printed:
           type: boolean
+
