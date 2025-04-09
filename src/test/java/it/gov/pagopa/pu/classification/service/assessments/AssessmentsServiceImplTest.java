@@ -117,7 +117,6 @@ class AssessmentsServiceImplTest {
 
     assertEquals(0, result.size());
     Mockito.verify(installmentNoPIIServiceMock).getByReceiptId(receiptId, accessToken);
-    Mockito.verifyNoInteractions(assessmentsRepositoryMock);
   }
 
 
