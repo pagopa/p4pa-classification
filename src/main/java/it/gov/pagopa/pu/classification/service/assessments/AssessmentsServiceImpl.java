@@ -58,7 +58,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
       return installmentsList.stream()
         .filter(i -> {
           if (i.getBalance() == null) {
-            log.info("Balance is null for installmentId: {} and receiptId: {}", i.getInstallmentId(), receiptId);
+            log.warn("Balance is null for installmentId: {} and receiptId: {}", i.getInstallmentId(), receiptId);
             return false;
           }
           return true;
