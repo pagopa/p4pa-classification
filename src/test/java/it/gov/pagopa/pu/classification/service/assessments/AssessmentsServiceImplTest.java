@@ -102,4 +102,23 @@ class AssessmentsServiceImplTest {
     assertEquals(1, result.size());
     assertEquals(assessment, result.getFirst());
   }
+
+
+  @Test
+  void createAssessment_withNullBalance_skipsAssessmentCreation() {
+    Long receiptId = 1L;
+    String accessToken = "accessToken";
+    InstallmentNoPIIResponse installment = InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse();
+    installment.setBalance(null);
+
+    when(installmentNoPIIServiceMock.getByReceiptId(receiptId, accessToken)).thenReturn(List.of(installment));
+
+    List<Assessments> result = service.createAssesment(receiptId, accessToken);
+
+    assertEquals(0, result.size());
+    Mockito.verify(installmentNoPIIServiceMock).getByReceiptId(receiptId, accessToken);
+    Mockito.verifyNoInteractions(assessmentsRepositoryMock);
+  }
+
+
 }
