@@ -2,7 +2,6 @@ package it.gov.pagopa.pu.classification.repository.view;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
-import it.gov.pagopa.pu.classification.model.view.ClassificationViewNoPII;
 import it.gov.pagopa.pu.classification.model.view.FullClassificationViewNoPII;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -125,7 +124,7 @@ public interface FullClassificationViewNoPIIDTORepository extends Repository<Ful
     AND (:#{#filter.pspLastName} IS NULL OR c.pspLastName = :#{#filter.pspLastName})
     AND c.debtPositionTypeOrgCode IN :receiptDebtPositionTypeOrgCodes
     """)
-  Page<ClassificationViewNoPII> findClassificationViewNoPIIDTO(
+  Page<FullClassificationViewNoPII> findFullClassificationViewNoPIIDTO(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Parameter(required = true) @Param("filter") ExportClassificationsFilterDTO exportClassificationsFilterDTO,
     @Parameter(required = true) @Param("debtPositionTypeOrgCodes") List<String> receiptDebtPositionTypeOrgCodes,
