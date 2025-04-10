@@ -1,18 +1,19 @@
 package it.gov.pagopa.pu.classification.dto;
 
   import com.fasterxml.jackson.annotation.JsonProperty;
+  import it.gov.pagopa.pu.debtposition.dto.generated.Person;
   import lombok.AllArgsConstructor;
-  import lombok.Builder;
   import lombok.Data;
   import lombok.NoArgsConstructor;
+  import lombok.experimental.SuperBuilder;
 
   import java.time.LocalDate;
   import java.time.LocalDateTime;
 
   @Data
-  @Builder(toBuilder = true)
   @NoArgsConstructor
   @AllArgsConstructor
+  @SuperBuilder(toBuilder = true)
   public class ClassificationViewDTO {
 
     private Long classificationId;
@@ -50,65 +51,11 @@ package it.gov.pagopa.pu.classification.dto;
     @JsonProperty("rec_beneficiaryOrgName")
     private String receiptBeneficiaryOrgName;
 
-    @JsonProperty("rec_payerEntityType")
-    private String payerEntityType;
+    @JsonProperty("rec_payer")
+    private Person receiptPayer;
 
-    @JsonProperty("rec_payerFiscalCode")
-    private String payerFiscalCode;
-
-    @JsonProperty("rec_payerFullName")
-    private String payerFullName;
-
-    @JsonProperty("rec_payerAddress")
-    private String payerAddress;
-
-    @JsonProperty("rec_payerCivic")
-    private String payerCivic;
-
-    @JsonProperty("rec_payerPostalCode")
-    private String payerPostalCode;
-
-    @JsonProperty("rec_payerLocation")
-    private String payerLocation;
-
-    @JsonProperty("rec_payerProvince")
-    private String payerProvince;
-
-    @JsonProperty("rec_payerNation")
-    private String payerNation;
-
-    @JsonProperty("rec_payerEmail")
-    private String payerEmail;
-
-    @JsonProperty("rec_debtorEntityType")
-    private String debtorEntityType;
-
-    @JsonProperty("rec_debtorFiscalCode")
-    private String debtorFiscalCode;
-
-    @JsonProperty("rec_debtorFullName")
-    private String debtorFullName;
-
-    @JsonProperty("rec_debtorAddress")
-    private String debtorAddress;
-
-    @JsonProperty("rec_debtorCivic")
-    private String debtorCivic;
-
-    @JsonProperty("rec_debtorPostalCode")
-    private String debtorPostalCode;
-
-    @JsonProperty("rec_debtorLocation")
-    private String debtorLocation;
-
-    @JsonProperty("rec_debtorProvince")
-    private String debtorProvince;
-
-    @JsonProperty("rec_debtorNation")
-    private String debtorNation;
-
-    @JsonProperty("rec_debtorEmail")
-    private String debtorEmail;
+    @JsonProperty("rec_debtor")
+    private Person receiptDebtor;
 
     @JsonProperty("rec_paymentOutcomeCode")
     private String receiptPaymentOutcomeCode;

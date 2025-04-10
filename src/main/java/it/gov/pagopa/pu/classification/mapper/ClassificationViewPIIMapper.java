@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.classification.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.classification.dto.ClassificationViewDTO;
 import it.gov.pagopa.pu.classification.dto.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.ClassificationViewNoPII;
-import it.gov.pagopa.pu.debtposition.dto.generated.Person;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,30 +16,10 @@ public class ClassificationViewPIIMapper {
 
   public ClassificationViewDTO map(ClassificationViewNoPII noPii) {
     ReceiptPIIDTO pii = personalDataService.get(noPii.getReceiptPersonalDataId(), ReceiptPIIDTO.class);
-    Person debtor = pii.getDebtor();
-    Person payer = pii.getPayer();
 
     return ClassificationViewDTO.builder()
-      .payerEntityType(payer.getEntityType().getValue())
-      .payerFiscalCode(payer.getFiscalCode())
-      .payerFullName(payer.getFullName())
-      .payerAddress(payer.getAddress())
-      .payerCivic(payer.getCivic())
-      .payerPostalCode(payer.getPostalCode())
-      .payerLocation(payer.getLocation())
-      .payerProvince(payer.getProvince())
-      .payerNation(payer.getNation())
-      .payerEmail(payer.getEmail())
-      .debtorEntityType(debtor.getEntityType().getValue())
-      .debtorFiscalCode(debtor.getFiscalCode())
-      .debtorFullName(debtor.getFullName())
-      .debtorAddress(debtor.getAddress())
-      .debtorCivic(debtor.getCivic())
-      .debtorPostalCode(debtor.getPostalCode())
-      .debtorLocation(debtor.getLocation())
-      .debtorProvince(debtor.getProvince())
-      .debtorNation(debtor.getNation())
-      .debtorEmail(debtor.getEmail())
+      .receiptDebtor(pii.getDebtor())
+      .receiptPayer(pii.getPayer())
       .classificationId(noPii.getClassificationId())
       .receiptFileName(noPii.getReceiptFileName())
       .receiptIud(noPii.getReceiptIud())
