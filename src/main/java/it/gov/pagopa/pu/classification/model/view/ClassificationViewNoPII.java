@@ -4,6 +4,7 @@ package it.gov.pagopa.pu.classification.model.view;
   import jakarta.persistence.Id;
   import jakarta.persistence.Table;
   import lombok.*;
+  import lombok.experimental.SuperBuilder;
 
   import java.io.Serializable;
   import java.time.LocalDate;
@@ -13,7 +14,7 @@ package it.gov.pagopa.pu.classification.model.view;
   @Entity
   @Table(name = "classification")
   @Data
-  @Builder
+  @SuperBuilder(toBuilder = true)
   @NoArgsConstructor
   @AllArgsConstructor
   @EqualsAndHashCode(callSuper = false)

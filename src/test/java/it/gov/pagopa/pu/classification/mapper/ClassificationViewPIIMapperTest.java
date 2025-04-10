@@ -43,6 +43,7 @@ class ClassificationViewPIIMapperTest {
 
     // Then
     assertNotNull(result);
+    TestUtils.reflectionEqualsByName(classificationViewNoPII, result);
     TestUtils.checkNotNullFields(result);
   }
 }
