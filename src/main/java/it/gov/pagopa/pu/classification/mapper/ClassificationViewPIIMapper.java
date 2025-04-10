@@ -73,7 +73,7 @@ public class ClassificationViewPIIMapper {
       .treasuryBillYear(noPii.getTreasuryBillYear())
       .treasuryBillCode(noPii.getTreasuryBillCode())
       .treasuryDomainIdCode(noPii.getTreasuryDomainIdCode())
-      .treasuryReceptionDate(noPii.getTreasuryReceptionDate().toLocalDate())
+      .treasuryReceptionDate(noPii.getTreasuryReceptionDate())
       .treasuryDocumentYear(noPii.getTreasuryDocumentYear())
       .treasuryDocumentCode(noPii.getTreasuryDocumentCode())
       .treasuryProvisionalAe(noPii.getTreasuryProvisionalAe())
