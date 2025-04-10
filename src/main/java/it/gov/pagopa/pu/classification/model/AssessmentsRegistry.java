@@ -24,15 +24,15 @@ public class AssessmentsRegistry extends BaseEntity implements Serializable {
   private String debtPositionTypeOrgCode;
   @NotNull
   private String sectionCode;
-  @NotNull
+
   private String sectionDescription;
-  @NotNull
+
   private String officeCode;
-  @NotNull
+
   private String officeDescription;
-  @NotNull
+
   private String assessmentCode;
-  @NotNull
+
   private String assessmentDescription;
   @NotNull
   private String operatingYear;
