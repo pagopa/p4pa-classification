@@ -47,14 +47,14 @@ class PagedClassificationViewMapperTest {
 
     Pageable pageable = PageRequest.of(0, pageSize);
 
-    Page<ClassificationViewNoPII> pagedInstallmentPaidViewNoPII = new PageImpl<>(content, pageable, totalElements);
+    Page<ClassificationViewNoPII> classificationViewNoPIIPage = new PageImpl<>(content, pageable, totalElements);
 
     ClassificationViewDTO classificationViewDTO = podamFactory.manufacturePojo(ClassificationViewDTO.class);
 
     when(classificationViewPIIMapperMock.map(classificationViewNoPII)).thenReturn(classificationViewDTO);
     //when
 
-    PagedClassificationView result = mapper.map2PagedClassificationView(pagedInstallmentPaidViewNoPII);
+    PagedClassificationView result = mapper.map2PagedClassificationView(classificationViewNoPIIPage);
     //then
     assertNotNull(result);
     assertFalse(result.getContent().isEmpty());
