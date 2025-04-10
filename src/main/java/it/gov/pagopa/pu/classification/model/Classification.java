@@ -23,7 +23,7 @@ public class Classification extends BaseEntity implements Serializable {
   @NotNull
   private Long organizationId;
   private Long transferId;
-  private Long paymentNotifyId;
+  private String paymentNotificationId;
   private String paymentsReportingId;
   private String treasuryId;
   private String iuf;
