@@ -10,6 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RepositoryRestResource(path = "classifications")
 public interface ClassificationRepository extends JpaRepository<Classification,String> {
+  @Transactional
+  @Modifying
+  @RestResource(exported = false)
+  long deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud, String label);
 
   @Transactional
   @Modifying

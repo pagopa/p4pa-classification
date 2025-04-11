@@ -35,4 +35,8 @@ public class ClassificationEntityExtendedController implements ClassificationEnt
     return ResponseEntity.ok(repository.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(organizationId, iuv, iur, transferIndex));
   }
 
+  @Override
+  public ResponseEntity<Long> deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud, String label){
+    return ResponseEntity.ok(repository.deleteByOrganizationIdAndIudAndLabel(organizationId, iud, label));
+  }
 }
