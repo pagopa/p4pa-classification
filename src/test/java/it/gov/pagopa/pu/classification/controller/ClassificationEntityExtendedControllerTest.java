@@ -94,7 +94,7 @@ class ClassificationEntityExtendedControllerTest {
       .thenReturn(expectedResult);
 
     // When
-    Long result = controller.deleteByOrganizationIdAndIufAndLabel(organizationId, iud, label).getBody();
+    Long result = controller.deleteByOrganizationIdAndIudAndLabel(organizationId, iud, label).getBody();
 
     // Then
     Assertions.assertEquals(expectedResult, result);
