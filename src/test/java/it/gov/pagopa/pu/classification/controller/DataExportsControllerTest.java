@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
@@ -21,8 +22,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.OffsetDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -128,6 +128,93 @@ class DataExportsControllerTest {
         invalidTo,
         invalidFrom,
         invalidTo,
+        "regUniqueId",
+        "accRegistryCode",
+        1000L,
+        "remittanceInfo",
+        "pspCompany",
+        "pspLastName",
+        pageable
+      )
+    );
+  }
+
+  @Test
+  void exportFullClassificationsReturnsPagedFullClassificationViewOnValidInterval() {
+    Long organizationId = 1L;
+    String operatorExternalUserId = "operator123";
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedFullClassificationView expectedView = new PagedFullClassificationView();
+    ExportClassificationsFilterDTO filterDTO = podamFactory.manufacturePojo(ExportClassificationsFilterDTO.class);
+
+    when(classificationServiceMock.getPagedFullClassificationView(
+      organizationId,
+      operatorExternalUserId,
+      filterDTO,
+      pageable,
+      accessToken)
+    ).thenReturn(expectedView);
+
+    ResponseEntity<PagedFullClassificationView> response = controller.exportFullClassifications(
+      organizationId,
+      operatorExternalUserId,
+      filterDTO.getLabel(),
+      filterDTO.getIuf(),
+      filterDTO.getIud(),
+      filterDTO.getIuv(),
+      filterDTO.getIur(),
+      filterDTO.getLastClassificationDate().getFrom(),
+      filterDTO.getLastClassificationDate().getTo(),
+      filterDTO.getPayDate().getFrom(),
+      filterDTO.getPayDate().getTo(),
+      filterDTO.getPaymentDateTime().getFrom(),
+      filterDTO.getPaymentDateTime().getTo(),
+      filterDTO.getRegulationDate().getFrom(),
+      filterDTO.getRegulationDate().getTo(),
+      filterDTO.getBillDate().getFrom(),
+      filterDTO.getBillDate().getTo(),
+      filterDTO.getRegionValueDate().getFrom(),
+      filterDTO.getRegionValueDate().getTo(),
+      filterDTO.getRegulationUniqueIdentifier(),
+      filterDTO.getAccountRegistryCode(),
+      filterDTO.getBillAmountCents(),
+      filterDTO.getRemittanceInformation(),
+      filterDTO.getPspCompanyName(),
+      filterDTO.getPspLastName(),
+      pageable
+    );
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(expectedView, response.getBody());
+  }
+
+  @Test
+  void exportFullClassificationsThrowsInvalidDateTimeIntervalExceptionOnInvalidInterval() {
+    OffsetDateTime now = OffsetDateTime.now();
+    Pageable pageable = PageRequest.of(0, 10);
+    OffsetDateTime invalidFrom = now.minusMonths(2);
+
+    assertThrows(InvalidDateTimeIntervalException.class, () ->
+      controller.exportFullClassifications(
+        1L,
+        "operator123",
+        "label",
+        "iuf_value",
+        "iud_value",
+        "iuv_value",
+        "iur_value",
+        invalidFrom,
+        now,
+        invalidFrom,
+        now,
+        invalidFrom,
+        now,
+        invalidFrom,
+        now,
+        invalidFrom,
+        now,
+        invalidFrom,
+        now,
         "regUniqueId",
         "accRegistryCode",
         1000L,

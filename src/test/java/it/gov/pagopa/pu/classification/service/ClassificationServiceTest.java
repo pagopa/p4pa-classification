@@ -3,7 +3,9 @@ package it.gov.pagopa.pu.classification.service;
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
+import it.gov.pagopa.pu.classification.repository.view.FullClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +28,8 @@ class ClassificationServiceTest {
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
   @Mock
   private ClassificationViewPIIRepository classificationViewPIIRepositoryMock;
+  @Mock
+  private FullClassificationViewPIIRepository fullClassificationViewPIIRepositoryMock;
 
   private ClassificationService service;
 
@@ -33,7 +37,7 @@ class ClassificationServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock, classificationViewPIIRepositoryMock);
+    service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock, classificationViewPIIRepositoryMock, fullClassificationViewPIIRepositoryMock);
   }
 
   @Test
@@ -68,6 +72,44 @@ class ClassificationServiceTest {
     // Verify that the method was called with the correct parameters
     verify(debtPositionTypeOrgServiceMock, times(1)).findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null);
     verify(classificationViewPIIRepositoryMock, times(1)).getPagedClassificationView(
+      organizationId,
+      filterDTO,
+      debtPositionTypeOrgCodes,
+      pageable);
+  }
+
+  @Test
+  void whenGetPagedFullClassificationViewThenOk() {
+    // Arrange
+    Long organizationId = 1L;
+    String operatorExternalUserId = "operator123";
+    List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
+    List<String> debtPositionTypeOrgCodes = debtPositionTypeOrgs.stream()
+      .map(DebtPositionTypeOrg::getCode)
+      .toList();
+    Pageable pageable = PageRequest.of(0, 10);
+    ExportClassificationsFilterDTO filterDTO = podamFactory.manufacturePojo(ExportClassificationsFilterDTO.class);
+    PagedFullClassificationView pagedFullClassificationView = podamFactory.manufacturePojo(PagedFullClassificationView.class);
+
+    when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null))
+      .thenReturn(debtPositionTypeOrgs);
+    when(fullClassificationViewPIIRepositoryMock.getPagedFullClassificationView(
+      organizationId,
+      filterDTO,
+      debtPositionTypeOrgCodes,
+      pageable))
+      .thenReturn(pagedFullClassificationView);
+
+    // Act
+    PagedFullClassificationView result = service.getPagedFullClassificationView(organizationId, operatorExternalUserId, filterDTO, pageable, null);
+
+    // Assert
+    assertNotNull(result);
+    assertEquals(pagedFullClassificationView, result);
+
+    // Verify that the method was called with the correct parameters
+    verify(debtPositionTypeOrgServiceMock, times(1)).findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null);
+    verify(fullClassificationViewPIIRepositoryMock, times(1)).getPagedFullClassificationView(
       organizationId,
       filterDTO,
       debtPositionTypeOrgCodes,
