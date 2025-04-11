@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.util;
 
-import it.gov.pagopa.pu.classification.config.HttpClientConfig;
+import it.gov.pagopa.pu.classification.config.rest.HttpClientConfig;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.ssl.TlsSocketStrategy;

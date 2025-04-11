@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.config;
+package it.gov.pagopa.pu.classification.config.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

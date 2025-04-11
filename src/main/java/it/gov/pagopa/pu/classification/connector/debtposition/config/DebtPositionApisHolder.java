@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.connector.debtposition.config;
 
-import it.gov.pagopa.pu.classification.config.RestTemplateConfig;
+import it.gov.pagopa.pu.classification.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.debtposition.client.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.client.generated.InstallmentNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.generated.ApiClient;

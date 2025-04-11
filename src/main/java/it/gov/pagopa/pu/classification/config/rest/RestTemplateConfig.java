@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.config;
+package it.gov.pagopa.pu.classification.config.rest;
 
 import it.gov.pagopa.pu.classification.performancelogger.RestInvokePerformanceLogger;
 import it.gov.pagopa.pu.classification.util.HttpUtils;
