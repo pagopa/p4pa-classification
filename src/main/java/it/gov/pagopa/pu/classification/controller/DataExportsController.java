@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.classification.controller.generated.DataExportsApi;
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
@@ -29,59 +30,124 @@ public class DataExportsController implements DataExportsApi {
   }
 
   @Override
-  public ResponseEntity<PagedClassificationView> exportClassifications(Long organizationId, String operatorExternalUserId, String label, String iuf, String iud, String iuv, String iur, OffsetDateTime lastClassificationDateFrom, OffsetDateTime lastClassificationDateTo, OffsetDateTime payDateFrom, OffsetDateTime payDateTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, OffsetDateTime regulationDateFrom, OffsetDateTime regulationDateTo, OffsetDateTime billDateFrom, OffsetDateTime billDateTo, OffsetDateTime regionValueDateFrom, OffsetDateTime regionValueDateTo, String regulationUniqueIdentifier, String accountRegistryCode, Long billAmountCents, String remittanceInformation, String pspCompanyName, String pspLastName, Pageable pageable) {
+  public ResponseEntity<PagedClassificationView> exportClassifications(Long organizationId,
+                                                                       String operatorExternalUserId,
+                                                                       String label, String iuf, String iud,
+                                                                       String iuv, String iur,
+                                                                       OffsetDateTime lastClassificationDateFrom,
+                                                                       OffsetDateTime lastClassificationDateTo,
+                                                                       OffsetDateTime payDateFrom,
+                                                                       OffsetDateTime payDateTo,
+                                                                       OffsetDateTime paymentDateTimeFrom,
+                                                                       OffsetDateTime paymentDateTimeTo,
+                                                                       OffsetDateTime regulationDateFrom,
+                                                                       OffsetDateTime regulationDateTo,
+                                                                       OffsetDateTime billDateFrom,
+                                                                       OffsetDateTime billDateTo,
+                                                                       OffsetDateTime regionValueDateFrom,
+                                                                       OffsetDateTime regionValueDateTo,
+                                                                       String regulationUniqueIdentifier,
+                                                                       String accountRegistryCode,
+                                                                       Long billAmountCents,
+                                                                       String remittanceInformation,
+                                                                       String pspCompanyName,
+                                                                       String pspLastName,
+                                                                       Pageable pageable) {
     String accessToken = SecurityUtils.getAccessToken();
-    validateInterval(lastClassificationDateFrom, lastClassificationDateTo);
-    validateInterval(payDateFrom, payDateTo);
-    validateInterval(paymentDateTimeFrom, paymentDateTimeTo);
-    validateInterval(regulationDateFrom, regulationDateTo);
-    validateInterval(billDateFrom, billDateTo);
-    validateInterval(regionValueDateFrom, regionValueDateTo);
+    OffsetDateTimeIntervalFilter lastClassificationDate = validateInterval(lastClassificationDateFrom, lastClassificationDateTo);
+    OffsetDateTimeIntervalFilter payDate = validateInterval(payDateFrom, payDateTo);
+    OffsetDateTimeIntervalFilter paymentDate = validateInterval(paymentDateTimeFrom, paymentDateTimeTo);
+    OffsetDateTimeIntervalFilter regulationDate = validateInterval(regulationDateFrom, regulationDateTo);
+    OffsetDateTimeIntervalFilter billDate = validateInterval(billDateFrom, billDateTo);
+    OffsetDateTimeIntervalFilter regionValueDate = validateInterval(regionValueDateFrom, regionValueDateTo);
 
-    ExportClassificationsFilterDTO exportClassificationsFilterDTO = ExportClassificationsFilterDTO.builder()
-            .label(label)
-            .iuf(iuf)
-            .iud(iud)
-            .iuv(iuv)
-            .iur(iur)
-            .lastClassificationDate(OffsetDateTimeIntervalFilter.builder()
-                .from(lastClassificationDateFrom)
-                .to(lastClassificationDateTo)
-                .build())
-            .payDate(OffsetDateTimeIntervalFilter.builder()
-                .from(payDateFrom)
-                .to(payDateTo)
-                .build())
-            .paymentDateTime(OffsetDateTimeIntervalFilter.builder()
-                .from(paymentDateTimeFrom)
-                .to(paymentDateTimeTo)
-                .build())
-            .regulationDate(OffsetDateTimeIntervalFilter.builder()
-                .from(regulationDateFrom)
-                .to(regulationDateTo)
-                .build())
-            .billDate(OffsetDateTimeIntervalFilter.builder()
-                .from(billDateFrom)
-                .to(billDateTo)
-                .build())
-            .regionValueDate(OffsetDateTimeIntervalFilter.builder()
-                .from(regionValueDateFrom)
-                .to(regionValueDateTo)
-                .build())
-            .regulationUniqueIdentifier(regulationUniqueIdentifier)
-            .accountRegistryCode(accountRegistryCode)
-            .billAmountCents(billAmountCents)
-            .remittanceInformation(remittanceInformation)
-            .pspCompanyName(pspCompanyName)
-            .pspLastName(pspLastName)
-            .build();
+    ExportClassificationsFilterDTO exportClassificationsFilterDTO =
+      buildExportClassificationsFilterDTO(label, iuf, iud, iuv, iur, lastClassificationDate, payDate, paymentDate, regulationDate, billDate, regionValueDate, regulationUniqueIdentifier, accountRegistryCode, billAmountCents, remittanceInformation, pspCompanyName, pspLastName);
 
     return ResponseEntity.ok(classificationService.getPagedClassificationView(organizationId, operatorExternalUserId, exportClassificationsFilterDTO, pageable, accessToken));
   }
 
-  private void validateInterval(OffsetDateTime dateFrom, OffsetDateTime dateTo) {
+  @Override
+  public ResponseEntity<PagedFullClassificationView> exportFullClassifications(Long organizationId,
+                                                                               String operatorExternalUserId,
+                                                                               String label, String iuf, String iud,
+                                                                               String iuv, String iur,
+                                                                               OffsetDateTime lastClassificationDateFrom,
+                                                                               OffsetDateTime lastClassificationDateTo,
+                                                                               OffsetDateTime payDateFrom,
+                                                                               OffsetDateTime payDateTo,
+                                                                               OffsetDateTime paymentDateTimeFrom,
+                                                                               OffsetDateTime paymentDateTimeTo,
+                                                                               OffsetDateTime regulationDateFrom,
+                                                                               OffsetDateTime regulationDateTo,
+                                                                               OffsetDateTime billDateFrom,
+                                                                               OffsetDateTime billDateTo,
+                                                                               OffsetDateTime regionValueDateFrom,
+                                                                               OffsetDateTime regionValueDateTo,
+                                                                               String regulationUniqueIdentifier,
+                                                                               String accountRegistryCode,
+                                                                               Long billAmountCents,
+                                                                               String remittanceInformation,
+                                                                               String pspCompanyName,
+                                                                               String pspLastName,
+                                                                               Pageable pageable) {
+    String accessToken = SecurityUtils.getAccessToken();
+    OffsetDateTimeIntervalFilter lastClassificationDate = validateInterval(lastClassificationDateFrom, lastClassificationDateTo);
+    OffsetDateTimeIntervalFilter payDate = validateInterval(payDateFrom, payDateTo);
+    OffsetDateTimeIntervalFilter paymentDate = validateInterval(paymentDateTimeFrom, paymentDateTimeTo);
+    OffsetDateTimeIntervalFilter regulationDate = validateInterval(regulationDateFrom, regulationDateTo);
+    OffsetDateTimeIntervalFilter billDate = validateInterval(billDateFrom, billDateTo);
+    OffsetDateTimeIntervalFilter regionValueDate = validateInterval(regionValueDateFrom, regionValueDateTo);
+
+    ExportClassificationsFilterDTO exportClassificationsFilterDTO =
+      buildExportClassificationsFilterDTO(label, iuf, iud, iuv, iur, lastClassificationDate, payDate, paymentDate, regulationDate, billDate, regionValueDate, regulationUniqueIdentifier, accountRegistryCode, billAmountCents, remittanceInformation, pspCompanyName, pspLastName);
+
+    return ResponseEntity.ok(classificationService.getPagedFullClassificationView(organizationId, operatorExternalUserId, exportClassificationsFilterDTO, pageable, accessToken));
+  }
+
+  private OffsetDateTimeIntervalFilter validateInterval(OffsetDateTime dateFrom, OffsetDateTime dateTo) {
     if (!isValidIntervalBetweenOffsetDateTime(dateFrom, dateTo, ChronoUnit.MONTHS, maxMonthsInterval)) {
       throw new InvalidDateTimeIntervalException("The date interval between %s and %s cannot exceed %d months".formatted(dateFrom, dateTo, maxMonthsInterval));
     }
+    return OffsetDateTimeIntervalFilter.builder()
+      .from(dateFrom)
+      .to(dateTo)
+      .build();
+  }
+
+  @SuppressWarnings("squid:S107")
+  private ExportClassificationsFilterDTO buildExportClassificationsFilterDTO(String label, String iuf, String iud,
+                                                                             String iuv, String iur,
+                                                                             OffsetDateTimeIntervalFilter lastClassificationDate,
+                                                                             OffsetDateTimeIntervalFilter payDate,
+                                                                             OffsetDateTimeIntervalFilter paymentDate,
+                                                                             OffsetDateTimeIntervalFilter regulationDate,
+                                                                             OffsetDateTimeIntervalFilter billDate,
+                                                                             OffsetDateTimeIntervalFilter regionValueDate,
+                                                                             String regulationUniqueIdentifier,
+                                                                             String accountRegistryCode,
+                                                                             Long billAmountCents,
+                                                                             String remittanceInformation,
+                                                                             String pspCompanyName,
+                                                                             String pspLastName) {
+    return ExportClassificationsFilterDTO.builder()
+      .label(label)
+      .iuf(iuf)
+      .iud(iud)
+      .iuv(iuv)
+      .iur(iur)
+      .lastClassificationDate(lastClassificationDate)
+      .payDate(payDate)
+      .paymentDateTime(paymentDate)
+      .regulationDate(regulationDate)
+      .billDate(billDate)
+      .regionValueDate(regionValueDate)
+      .regulationUniqueIdentifier(regulationUniqueIdentifier)
+      .accountRegistryCode(accountRegistryCode)
+      .billAmountCents(billAmountCents)
+      .remittanceInformation(remittanceInformation)
+      .pspCompanyName(pspCompanyName)
+      .pspLastName(pspLastName)
+      .build();
   }
 }
