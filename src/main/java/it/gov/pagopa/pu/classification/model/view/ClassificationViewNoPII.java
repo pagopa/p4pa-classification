@@ -1,15 +1,17 @@
 package it.gov.pagopa.pu.classification.model.view;
 
-  import jakarta.persistence.Entity;
-  import jakarta.persistence.Id;
-  import jakarta.persistence.Table;
-  import lombok.*;
-  import lombok.experimental.SuperBuilder;
+import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-  import java.io.Serializable;
-  import java.time.LocalDate;
-  import java.time.LocalDateTime;
-  import java.time.OffsetDateTime;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
   @Entity
   @Table(name = "classification")
@@ -82,6 +84,7 @@ package it.gov.pagopa.pu.classification.model.view;
     private String treasuryProvisionalCode;
     private LocalDate treasuryActualSuspensionDate;
     private String treasuryManagementProvisionalCode;
-    private String classificationLabel;
+    @Enumerated(EnumType.STRING)
+    private ClassificationsEnum classificationLabel;
     private LocalDate classificationDate;
   }

@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.model;
 
+import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -32,7 +33,8 @@ public class Classification extends BaseEntity implements Serializable {
   private String iur;
   private int transferIndex;
   @NotNull
-  private String label;
+  @Enumerated(EnumType.STRING)
+  private ClassificationsEnum label;
   private LocalDate lastClassificationDate;
   private LocalDate payDate;
   private OffsetDateTime paymentDateTime;
