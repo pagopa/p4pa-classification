@@ -81,4 +81,22 @@ class ClassificationEntityExtendedControllerTest {
     // Then
     Assertions.assertEquals(expectedResult, result);
   }
+
+  @Test
+  void whenDeleteByOrganizationIdAndIudAndLabelThenInvokeRepository(){
+    // Given
+    Long organizationId = 0L;
+    String iud = "IUD";
+    String label = "LABEL";
+    long expectedResult = 1L;
+
+    Mockito.when(repositoryMock.deleteByOrganizationIdAndIudAndLabel(Mockito.same(organizationId), Mockito.same(iud), Mockito.same(label)))
+      .thenReturn(expectedResult);
+
+    // When
+    Long result = controller.deleteByOrganizationIdAndIufAndLabel(organizationId, iud, label).getBody();
+
+    // Then
+    Assertions.assertEquals(expectedResult, result);
+  }
 }
