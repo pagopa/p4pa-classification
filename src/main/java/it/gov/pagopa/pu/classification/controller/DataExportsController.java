@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
+import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
@@ -32,7 +33,7 @@ public class DataExportsController implements DataExportsApi {
   @Override
   public ResponseEntity<PagedClassificationView> exportClassifications(Long organizationId,
                                                                        String operatorExternalUserId,
-                                                                       String label, String iuf, String iud,
+                                                                       ClassificationsEnum label, String iuf, String iud,
                                                                        String iuv, String iur,
                                                                        OffsetDateTime lastClassificationDateFrom,
                                                                        OffsetDateTime lastClassificationDateTo,
@@ -70,7 +71,7 @@ public class DataExportsController implements DataExportsApi {
   @Override
   public ResponseEntity<PagedFullClassificationView> exportFullClassifications(Long organizationId,
                                                                                String operatorExternalUserId,
-                                                                               String label, String iuf, String iud,
+                                                                               ClassificationsEnum  label, String iuf, String iud,
                                                                                String iuv, String iur,
                                                                                OffsetDateTime lastClassificationDateFrom,
                                                                                OffsetDateTime lastClassificationDateTo,
@@ -116,7 +117,7 @@ public class DataExportsController implements DataExportsApi {
   }
 
   @SuppressWarnings("squid:S107")
-  private ExportClassificationsFilterDTO buildExportClassificationsFilterDTO(String label, String iuf, String iud,
+  private ExportClassificationsFilterDTO buildExportClassificationsFilterDTO(ClassificationsEnum  label, String iuf, String iud,
                                                                              String iuv, String iur,
                                                                              OffsetDateTimeIntervalFilter lastClassificationDate,
                                                                              OffsetDateTimeIntervalFilter payDate,

@@ -189,7 +189,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: ClassificationsEnum
       responses:
         '200':
           description: OK
@@ -225,7 +225,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: ClassificationsEnum
       responses:
         '200':
           description: OK
@@ -308,7 +308,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
           schema:
@@ -464,7 +464,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
           schema:

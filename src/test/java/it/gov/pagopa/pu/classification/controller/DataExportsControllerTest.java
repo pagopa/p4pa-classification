@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.controller;
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
+import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
@@ -22,7 +23,8 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.OffsetDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,11 +36,11 @@ class DataExportsControllerTest {
   private DataExportsController controller;
 
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
-  private final Integer maxMonthsInterval = 1;
   private final String accessToken = "accessToken";
 
   @BeforeEach
   void setUp() {
+    Integer maxMonthsInterval = 1;
     controller = new DataExportsController(maxMonthsInterval, classificationServiceMock);
     SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
   }
@@ -111,7 +113,7 @@ class DataExportsControllerTest {
       controller.exportClassifications(
         1L,
         "operator123",
-        "label",
+        ClassificationsEnum.TES_NO_MATCH,
         "iuf_value",
         "iud_value",
         "iuv_value",
@@ -198,7 +200,7 @@ class DataExportsControllerTest {
       controller.exportFullClassifications(
         1L,
         "operator123",
-        "label",
+        ClassificationsEnum.TES_NO_MATCH,
         "iuf_value",
         "iud_value",
         "iuv_value",

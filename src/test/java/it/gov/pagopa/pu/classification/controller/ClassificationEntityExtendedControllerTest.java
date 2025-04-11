@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.controller;
 
+import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -50,7 +51,7 @@ class ClassificationEntityExtendedControllerTest {
     // Given
     Long organizationId = 0L;
     String iuf = "IUF";
-    String label = "LABEL";
+    ClassificationsEnum label = ClassificationsEnum.RT_NO_IUF;
     long expectedResult = 1L;
 
     Mockito.when(repositoryMock.deleteByOrganizationIdAndIufAndLabel(Mockito.same(organizationId), Mockito.same(iuf), Mockito.same(label)))
@@ -87,7 +88,7 @@ class ClassificationEntityExtendedControllerTest {
     // Given
     Long organizationId = 0L;
     String iud = "IUD";
-    String label = "LABEL";
+    ClassificationsEnum label = ClassificationsEnum.IUD_NO_RT;
     long expectedResult = 1L;
 
     Mockito.when(repositoryMock.deleteByOrganizationIdAndIudAndLabel(Mockito.same(organizationId), Mockito.same(iud), Mockito.same(label)))
