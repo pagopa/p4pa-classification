@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.model;
 
+import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -23,7 +24,7 @@ public class Classification extends BaseEntity implements Serializable {
   @NotNull
   private Long organizationId;
   private Long transferId;
-  private Long paymentNotifyId;
+  private String paymentNotificationId;
   private String paymentsReportingId;
   private String treasuryId;
   private String iuf;
@@ -32,7 +33,8 @@ public class Classification extends BaseEntity implements Serializable {
   private String iur;
   private int transferIndex;
   @NotNull
-  private String label;
+  @Enumerated(EnumType.STRING)
+  private ClassificationsEnum label;
   private LocalDate lastClassificationDate;
   private LocalDate payDate;
   private OffsetDateTime paymentDateTime;
@@ -47,7 +49,7 @@ public class Classification extends BaseEntity implements Serializable {
   private String pspLastName;
   private String debtPositionTypeOrgCode;
 
-  private String receiptFileName;
+  private String installmentIngestionFlowFileName;
   private String receiptOrgFiscalCode;
   private String receiptPaymentReceiptId;
   private OffsetDateTime receiptPaymentDateTime;
@@ -55,17 +57,17 @@ public class Classification extends BaseEntity implements Serializable {
 
   private String receiptIdPsp;
   private String receiptPspCompanyName;
-  private String receiptOrgEntityType;
-  private String receiptBeneficiaryOrgName;
+  private String organizationEntityType;
+  private String organizationName;
 
   private Long receiptPersonalDataId;
   private String receiptPaymentOutcomeCode;
   private Long receiptPaymentAmount;
   private String receiptCreditorReferenceId;
 
-  private Long receiptTransferAmount;
+  private Long transferAmount;
 
-  private String receiptTransferCategory;
+  private String transferCategory;
   private OffsetDateTime receiptCreationDate;
-  private String receiptInstallmentBalance;
+  private String installmentBalance;
 }

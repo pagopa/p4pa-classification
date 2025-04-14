@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.controller;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.controller.generated.ClassificationEntityExtendedControllerApi;
+import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class ClassificationEntityExtendedController implements ClassificationEnt
   }
 
   @Override
-  public ResponseEntity<Long> deleteByOrganizationIdAndIufAndLabel(Long organizationId, String iuf, String label){
+  public ResponseEntity<Long> deleteByOrganizationIdAndIufAndLabel(Long organizationId, String iuf, ClassificationsEnum  label){
     return ResponseEntity.ok(repository.deleteByOrganizationIdAndIufAndLabel(organizationId, iuf, label));
   }
 
@@ -35,4 +36,8 @@ public class ClassificationEntityExtendedController implements ClassificationEnt
     return ResponseEntity.ok(repository.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(organizationId, iuv, iur, transferIndex));
   }
 
+  @Override
+  public ResponseEntity<Long> deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud, ClassificationsEnum  label){
+    return ResponseEntity.ok(repository.deleteByOrganizationIdAndIudAndLabel(organizationId, iud, label));
+  }
 }

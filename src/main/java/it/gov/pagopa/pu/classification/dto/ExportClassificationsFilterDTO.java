@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.dto;
 
+import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class ExportClassificationsFilterDTO {
   private String iuv;
   private String iur;
   @NotNull
-  private String label;
+  private ClassificationsEnum label;
 
   private OffsetDateTimeIntervalFilter lastClassificationDate;
   private OffsetDateTimeIntervalFilter payDate;

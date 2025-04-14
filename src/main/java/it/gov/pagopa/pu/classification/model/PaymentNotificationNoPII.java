@@ -1,22 +1,28 @@
 package it.gov.pagopa.pu.classification.model;
 
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.util.Date;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "payment_notification")
+@SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
 @EqualsAndHashCode(of = "paymentNotificationId", callSuper = false)
-public class PaymentNotification extends BaseEntity implements Serializable{
+public class PaymentNotificationNoPII extends BaseEntity implements Serializable, NoPIIEntity<PaymentNotificationPIIDTO>{
 
   @Id
   private String paymentNotificationId;
@@ -29,7 +35,7 @@ public class PaymentNotification extends BaseEntity implements Serializable{
   @NotNull
   private String iuv;
   @NotNull
-  private Date paymentExecutionDate;
+  private LocalDate paymentExecutionDate;
   @NotNull
   private String paymentType;
   @NotNull
@@ -48,7 +54,7 @@ public class PaymentNotification extends BaseEntity implements Serializable{
 
 
 //region keep updated semanticId
-  public static String buildSemanticId(PaymentNotification paymentsReporting) {
+  public static String buildSemanticId(PaymentNotificationNoPII paymentsReporting) {
     return paymentsReporting.getIud() + "_" +
       paymentsReporting.getOrganizationId();
   }

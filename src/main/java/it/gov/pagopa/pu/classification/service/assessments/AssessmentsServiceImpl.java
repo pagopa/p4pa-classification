@@ -53,18 +53,26 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     @Transactional
     @Override
     public List<Assessments> createAssesment(Long receiptId, String accessToken) {
-        List<InstallmentNoPIIResponse> installmentsList = installmentNoPIIService.getByReceiptId(receiptId, accessToken);
+      List<InstallmentNoPIIResponse> installmentsList = installmentNoPIIService.getByReceiptId(receiptId, accessToken);
 
-        return installmentsList.stream()
-                .map(i -> {
-                    Assessments a = this.buildAssessment(i, accessToken);
-                    if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(a.getOrganizationId(), a.getDebtPositionTypeOrgCode(), a.getAssessmentName()) == null) {
-                        a = assessmentsRepository.save(a);
-                    }
-                    assessmentsDetailService.createAssessmentDetail(a, i);
-                    return a;
-                })
-                .toList();
+      return installmentsList.stream()
+        .filter(i -> {
+          if (i.getBalance() == null) {
+            log.info("Balance is null for installmentId: {} and receiptId: {}", i.getInstallmentId(), receiptId);
+            return false;
+          }
+          return true;
+        })
+        .map(i -> {
+          Assessments a = this.buildAssessment(i, accessToken);
+          if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
+            a.getOrganizationId(), a.getDebtPositionTypeOrgCode(), a.getAssessmentName()) == null) {
+            a = assessmentsRepository.save(a);
+          }
+          assessmentsDetailService.createAssessmentDetail(a, i);
+          return a;
+        })
+        .toList();
     }
 
 

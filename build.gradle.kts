@@ -183,7 +183,11 @@ openApiGenerate {
     "PaymentsReporting" to "it.gov.pagopa.pu.classification.model.PaymentsReporting",
     "Classification" to "it.gov.pagopa.pu.classification.model.Classification",
     "ClassificationView" to "it.gov.pagopa.pu.classification.dto.ClassificationViewDTO",
-    "Assessments" to "it.gov.pagopa.pu.classification.model.Assessments"
+    "Assessments" to "it.gov.pagopa.pu.classification.model.Assessments",
+    "PaymentNotificationDTO" to "it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO",
+    "PersonDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO",
+    "FullClassificationView" to "it.gov.pagopa.pu.classification.dto.FullClassificationViewDTO",
+    "ClassificationsEnum" to "it.gov.pagopa.pu.classification.enums.ClassificationsEnum"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

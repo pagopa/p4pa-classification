@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.connector.processexecutions.config;
 
-import it.gov.pagopa.pu.classification.config.RestTemplateConfig;
+import it.gov.pagopa.pu.classification.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.p4paprocessexecutions.controller.ApiClient;
 import it.gov.pagopa.pu.p4paprocessexecutions.controller.BaseApi;
 import it.gov.pagopa.pu.p4paprocessexecutions.controller.generated.IngestionFlowFileEntityControllerApi;
