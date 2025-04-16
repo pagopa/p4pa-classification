@@ -16,4 +16,6 @@ public interface PaymentNotificationNoPIIRepository extends JpaRepository<Paymen
     "p.iud=:iud ")
   PaymentNotificationNoPII findBySemanticKey(Long organizationId, String iud);
 
+  PaymentNotificationNoPII getByOrganizationIdAndIud(Long organizationId, String iud);
+
 }
