@@ -28,11 +28,9 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   private String iuv;
   @NotNull
   private String iud;
-  @NotNull
   private String officeCode;
   @NotNull
   private String sectionCode;
-  @NotNull
   private String assessmentCode;
   @NotNull
   private Long amountCents;
