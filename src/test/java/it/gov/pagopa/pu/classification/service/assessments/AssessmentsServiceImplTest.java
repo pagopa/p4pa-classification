@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,7 +50,6 @@ class AssessmentsServiceImplTest {
     Mockito.verifyNoMoreInteractions(installmentNoPIIServiceMock);
   }
 
-
   @Test
   void buildAssessment_withValidInstallmentNoPIIResponse_returnsAssessment() {
     String accessToken = "accessToken";
@@ -73,6 +73,26 @@ class AssessmentsServiceImplTest {
     Assertions.assertEquals(debtPositionTypeOrg.getCode(), result.getDebtPositionTypeOrgCode());
     Assertions.assertEquals(AssessmentStatus.NEW, result.getStatus());
     Assertions.assertEquals(ingestionFlowFile.getFileName() + "_" + debtPositionTypeOrg.getCode(), result.getAssessmentName());
+  }
+  @Test
+  void buildAssessmentNoIngestionFlowFileId_withValidInstallmentNoPIIResponse_returnsAssessment() {
+    String accessToken = "accessToken";
+    InstallmentNoPIIResponse installmentNoPIIResponse = InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse();
+    installmentNoPIIResponse.setIngestionFlowFileId(null);
+    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
+    debtPositionTypeOrg.setCode("testCode");
+    debtPositionTypeOrg.setDebtPositionTypeOrgId(2L);
+
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), accessToken))
+      .thenReturn(debtPositionTypeOrg);
+
+    Assessments result = service.buildAssessment(installmentNoPIIResponse, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(debtPositionTypeOrg.getOrganizationId(), result.getOrganizationId());
+    Assertions.assertEquals(debtPositionTypeOrg.getCode(), result.getDebtPositionTypeOrgCode());
+    Assertions.assertEquals(AssessmentStatus.NEW, result.getStatus());
+    Assertions.assertEquals("ACC" + LocalDate.now().format(AssessmentsServiceImpl.DATE_TIME_FORMATTER) + "_" + debtPositionTypeOrg.getCode(), result.getAssessmentName());
   }
 
   @Test
