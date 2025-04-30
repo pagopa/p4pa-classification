@@ -25,7 +25,7 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     "p.iuv=:iuv AND " +
     "p.iur=:iur AND " +
     "p.transferIndex=:transferIndex")
-  PaymentsReporting findBySemanticKey(Long organizationId, String iuv, String iur, int transferIndex);
+  List<PaymentsReporting> findByTransferSemanticKey (Long organizationId, String iuv, String iur, int transferIndex);
 
   @Query("""
     SELECT p
