@@ -272,7 +272,7 @@ paths:
       tags:
         - assessments-controller
       operationId: getAssessmentByIuf
-      description: "The API returns a list of assessments by IUF"
+      description: "The API returns a list of assessment balance by IUF"
       parameters:
         - name: organizationId
           in: path
@@ -289,7 +289,7 @@ paths:
           description: the unique identifier of the payments reporting
       responses:
         "200":
-          description: List of assessments
+          description: List of assessment balance
           content:
             application/json:
               schema:
@@ -307,7 +307,7 @@ paths:
       tags:
         - assessments-controller
       operationId: getAssessmentByBill
-      description: "The API returns a list of assessments by bill"
+      description: "The API returns a list of assessment balance by bill"
       parameters:
         - name: organizationId
           in: path
@@ -330,7 +330,7 @@ paths:
           description: The bill code number
       responses:
         "200":
-          description: List of assessments
+          description: List of assessment balance
           content:
             application/json:
               schema:
