@@ -187,7 +187,8 @@ openApiGenerate {
     "PaymentNotificationDTO" to "it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO",
     "PersonDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO",
     "FullClassificationView" to "it.gov.pagopa.pu.classification.dto.FullClassificationViewDTO",
-    "ClassificationsEnum" to "it.gov.pagopa.pu.classification.enums.ClassificationsEnum"
+    "ClassificationsEnum" to "it.gov.pagopa.pu.classification.enums.ClassificationsEnum",
+    "Balance" to "it.gov.pagopa.pu.classification.dto.assessments.BalanceDTO"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
