@@ -211,6 +211,44 @@
         }
       }
     },
+    "/crud/assessments-details/search/findByOrganizationIdAndIuds" : {
+      "get" : {
+        "tags" : [ "assessments-detail-search-controller" ],
+        "operationId" : "crud-assessments-details-findByOrganizationIdAndIuds",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iuds",
+          "in" : "query",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CollectionModelAssessmentsDetail"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        }
+      }
+    },
     "/crud/assessments-details/{id}" : {
       "get" : {
         "tags" : [ "assessments-detail-entity-controller" ],
@@ -3694,85 +3732,6 @@
           }
         }
       },
-      "AssessmentsDetail" : {
-        "type" : "object",
-        "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
-          "assessmentDetailId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "assessmentId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "debtPositionTypeOrgCode" : {
-            "type" : "string"
-          },
-          "iuv" : {
-            "type" : "string"
-          },
-          "iud" : {
-            "type" : "string"
-          },
-          "officeCode" : {
-            "type" : "string"
-          },
-          "sectionCode" : {
-            "type" : "string"
-          },
-          "assessmentCode" : {
-            "type" : "string"
-          },
-          "amountCents" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "amountSubmitted" : {
-            "type" : "boolean"
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "iud", "iuv", "organizationId", "sectionCode" ]
-      },
-      "PagedModelAssessmentsDetail" : {
-        "type" : "object",
-        "properties" : {
-          "_embedded" : {
-            "type" : "object",
-            "properties" : {
-              "assessmentsDetails" : {
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/AssessmentsDetail"
-                }
-              }
-            }
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          },
-          "page" : {
-            "$ref" : "#/components/schemas/PageMetadata"
-          }
-        }
-      },
       "AssessmentsRegistry" : {
         "type" : "object",
         "properties" : {
@@ -3908,6 +3867,104 @@
           },
           "page" : {
             "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "AssessmentsDetail" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "assessmentDetailId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "assessmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "officeCode" : {
+            "type" : "string"
+          },
+          "sectionCode" : {
+            "type" : "string"
+          },
+          "assessmentCode" : {
+            "type" : "string"
+          },
+          "amountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "amountSubmitted" : {
+            "type" : "boolean"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "iud", "iuv", "organizationId", "sectionCode" ]
+      },
+      "PagedModelAssessmentsDetail" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "assessmentsDetails" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "CollectionModelAssessmentsDetail" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "assessmentsDetails" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
