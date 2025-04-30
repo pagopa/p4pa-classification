@@ -3,14 +3,15 @@ package it.gov.pagopa.pu.classification.repository;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.model.PaymentsReporting;
-import java.time.LocalDate;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+import java.time.LocalDate;
+import java.util.List;
 
 
 @RepositoryRestResource(path = "payments-reporting")
@@ -25,7 +26,7 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     "p.iuv=:iuv AND " +
     "p.iur=:iur AND " +
     "p.transferIndex=:transferIndex")
-  PaymentsReporting findBySemanticKey(Long organizationId, String iuv, String iur, int transferIndex);
+  List<PaymentsReporting> findByTransferSemanticKey (Long organizationId, String iuv, String iur, int transferIndex);
 
   @Query("""
     SELECT p
