@@ -33,10 +33,11 @@ public class DataExportsController implements DataExportsApi {
   @Override
   public ResponseEntity<PagedClassificationView> exportClassifications(Long organizationId,
                                                                        String operatorExternalUserId,
-                                                                       ClassificationsEnum label, String iuf, String iud,
-                                                                       String iuv, String iur,
+                                                                       ClassificationsEnum label,
                                                                        OffsetDateTime lastClassificationDateFrom,
                                                                        OffsetDateTime lastClassificationDateTo,
+                                                                       String iuf, String iud,
+                                                                       String iuv, String iur,
                                                                        OffsetDateTime payDateFrom,
                                                                        OffsetDateTime payDateTo,
                                                                        OffsetDateTime paymentDateTimeFrom,
@@ -56,11 +57,11 @@ public class DataExportsController implements DataExportsApi {
                                                                        Pageable pageable) {
     String accessToken = SecurityUtils.getAccessToken();
     OffsetDateTimeIntervalFilter lastClassificationDate = validateInterval(lastClassificationDateFrom, lastClassificationDateTo);
-    OffsetDateTimeIntervalFilter payDate = validateInterval(payDateFrom, payDateTo);
-    OffsetDateTimeIntervalFilter paymentDate = validateInterval(paymentDateTimeFrom, paymentDateTimeTo);
-    OffsetDateTimeIntervalFilter regulationDate = validateInterval(regulationDateFrom, regulationDateTo);
-    OffsetDateTimeIntervalFilter billDate = validateInterval(billDateFrom, billDateTo);
-    OffsetDateTimeIntervalFilter regionValueDate = validateInterval(regionValueDateFrom, regionValueDateTo);
+    OffsetDateTimeIntervalFilter payDate = new OffsetDateTimeIntervalFilter(payDateFrom, payDateTo);
+    OffsetDateTimeIntervalFilter paymentDate = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
+    OffsetDateTimeIntervalFilter regulationDate = new OffsetDateTimeIntervalFilter(regulationDateFrom, regulationDateTo);
+    OffsetDateTimeIntervalFilter billDate = new OffsetDateTimeIntervalFilter(billDateFrom, billDateTo);
+    OffsetDateTimeIntervalFilter regionValueDate = new OffsetDateTimeIntervalFilter(regionValueDateFrom, regionValueDateTo);
 
     ExportClassificationsFilterDTO exportClassificationsFilterDTO =
       buildExportClassificationsFilterDTO(label, iuf, iud, iuv, iur, lastClassificationDate, payDate, paymentDate, regulationDate, billDate, regionValueDate, regulationUniqueIdentifier, accountRegistryCode, billAmountCents, remittanceInformation, pspCompanyName, pspLastName);
@@ -71,10 +72,11 @@ public class DataExportsController implements DataExportsApi {
   @Override
   public ResponseEntity<PagedFullClassificationView> exportFullClassifications(Long organizationId,
                                                                                String operatorExternalUserId,
-                                                                               ClassificationsEnum  label, String iuf, String iud,
-                                                                               String iuv, String iur,
+                                                                               ClassificationsEnum  label,
                                                                                OffsetDateTime lastClassificationDateFrom,
                                                                                OffsetDateTime lastClassificationDateTo,
+                                                                               String iuf, String iud,
+                                                                               String iuv, String iur,
                                                                                OffsetDateTime payDateFrom,
                                                                                OffsetDateTime payDateTo,
                                                                                OffsetDateTime paymentDateTimeFrom,
@@ -94,11 +96,11 @@ public class DataExportsController implements DataExportsApi {
                                                                                Pageable pageable) {
     String accessToken = SecurityUtils.getAccessToken();
     OffsetDateTimeIntervalFilter lastClassificationDate = validateInterval(lastClassificationDateFrom, lastClassificationDateTo);
-    OffsetDateTimeIntervalFilter payDate = validateInterval(payDateFrom, payDateTo);
-    OffsetDateTimeIntervalFilter paymentDate = validateInterval(paymentDateTimeFrom, paymentDateTimeTo);
-    OffsetDateTimeIntervalFilter regulationDate = validateInterval(regulationDateFrom, regulationDateTo);
-    OffsetDateTimeIntervalFilter billDate = validateInterval(billDateFrom, billDateTo);
-    OffsetDateTimeIntervalFilter regionValueDate = validateInterval(regionValueDateFrom, regionValueDateTo);
+    OffsetDateTimeIntervalFilter payDate = new OffsetDateTimeIntervalFilter(payDateFrom, payDateTo);
+    OffsetDateTimeIntervalFilter paymentDate = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
+    OffsetDateTimeIntervalFilter regulationDate = new OffsetDateTimeIntervalFilter(regulationDateFrom, regulationDateTo);
+    OffsetDateTimeIntervalFilter billDate = new OffsetDateTimeIntervalFilter(billDateFrom, billDateTo);
+    OffsetDateTimeIntervalFilter regionValueDate = new OffsetDateTimeIntervalFilter(regionValueDateFrom, regionValueDateTo);
 
     ExportClassificationsFilterDTO exportClassificationsFilterDTO =
       buildExportClassificationsFilterDTO(label, iuf, iud, iuv, iur, lastClassificationDate, payDate, paymentDate, regulationDate, billDate, regionValueDate, regulationUniqueIdentifier, accountRegistryCode, billAmountCents, remittanceInformation, pspCompanyName, pspLastName);
