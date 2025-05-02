@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.classification.util;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -15,6 +17,17 @@ public class Utilities {
   }
 
   public static boolean isValidIntervalBetweenOffsetDateTime(OffsetDateTime dateFrom, OffsetDateTime dateTo, ChronoUnit chronoUnit, long maxInterval) {
-    return chronoUnit.between(dateFrom, dateTo) <= maxInterval;
+    long result = chronoUnit.between(dateFrom, dateTo);
+    return result >= 0 && result <= maxInterval;
+  }
+
+  public static boolean isValidIntervalBetweenLocalDateTime(LocalDateTime dateFrom, LocalDateTime dateTo, ChronoUnit chronoUnit, long maxInterval) {
+    long result = chronoUnit.between(dateFrom, dateTo);
+    return result >= 0 && result <= maxInterval;
+  }
+
+  public static boolean isValidIntervalBetweenLocalDate(LocalDate dateFrom, LocalDate dateTo, ChronoUnit chronoUnit, long maxInterval) {
+    long result = chronoUnit.between(dateFrom, dateTo);
+    return result >= 0 && result <= maxInterval;
   }
 }

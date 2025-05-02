@@ -1,11 +1,14 @@
 package it.gov.pagopa.pu.classification.util;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
@@ -56,5 +59,23 @@ class UtilitiesTest {
       Arguments.of(now, now.plusMonths(5), ChronoUnit.MONTHS, 2L, false),
       Arguments.of(now, now.plusYears(3), ChronoUnit.YEARS,2L, false)
     );
+  }
+
+  @Test
+  void testIsValidIntervalBetweenLocalDateTime(){
+    LocalDateTime dateFrom = LocalDateTime.now();
+    LocalDateTime dateTo = dateFrom.plusMinutes(2);
+
+    Assertions.assertFalse(Utilities.isValidIntervalBetweenLocalDateTime(dateFrom, dateTo, ChronoUnit.MINUTES, 1));
+    Assertions.assertTrue(Utilities.isValidIntervalBetweenLocalDateTime(dateFrom, dateTo, ChronoUnit.MINUTES, 2));
+  }
+
+  @Test
+  void testIsValidIntervalBetweenLocalDate(){
+    LocalDate dateFrom = LocalDate.now();
+    LocalDate dateTo = dateFrom.plusDays(2);
+
+    Assertions.assertFalse(Utilities.isValidIntervalBetweenLocalDate(dateFrom, dateTo, ChronoUnit.DAYS, 1));
+    Assertions.assertTrue(Utilities.isValidIntervalBetweenLocalDate(dateFrom, dateTo, ChronoUnit.DAYS, 2));
   }
 }

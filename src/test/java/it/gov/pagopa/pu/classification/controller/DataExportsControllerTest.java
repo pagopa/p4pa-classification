@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
+import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -21,7 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -78,8 +80,8 @@ class DataExportsControllerTest {
       filterDTO.getIud(),
       filterDTO.getIuv(),
       filterDTO.getIur(),
-      filterDTO.getPayDate().getFrom(),
-      filterDTO.getPayDate().getTo(),
+      ZonedDateTime.of(filterDTO.getPayDate().getFrom(), Constants.ZONEID).toOffsetDateTime(),
+      ZonedDateTime.of(filterDTO.getPayDate().getTo(), Constants.ZONEID).toOffsetDateTime(),
       filterDTO.getPaymentDateTime().getFrom(),
       filterDTO.getPaymentDateTime().getTo(),
       filterDTO.getRegulationDate().getFrom(),
@@ -103,11 +105,10 @@ class DataExportsControllerTest {
 
   @Test
   void exportClassificationsThrowsInvalidDateTimeIntervalExceptionOnInvalidInterval() {
-    OffsetDateTime now = OffsetDateTime.now();
     Pageable pageable = PageRequest.of(0, 10);
 
-    OffsetDateTime invalidFrom = now.minusMonths(2);
-    OffsetDateTime invalidTo = now;
+    LocalDate invalidFrom = LocalDate.now();
+    LocalDate invalidTo = invalidFrom.plusMonths(2);
 
     assertThrows(InvalidDateTimeIntervalException.class, () ->
       controller.exportClassifications(
@@ -120,16 +121,16 @@ class DataExportsControllerTest {
         "iud_value",
         "iuv_value",
         "iur_value",
-        invalidFrom,
-        invalidTo,
-        invalidFrom,
-        invalidTo,
-        invalidFrom,
-        invalidTo,
-        invalidFrom,
-        invalidTo,
-        invalidFrom,
-        invalidTo,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         "regUniqueId",
         "accRegistryCode",
         1000L,
@@ -167,8 +168,8 @@ class DataExportsControllerTest {
       filterDTO.getIud(),
       filterDTO.getIuv(),
       filterDTO.getIur(),
-      filterDTO.getPayDate().getFrom(),
-      filterDTO.getPayDate().getTo(),
+      ZonedDateTime.of(filterDTO.getPayDate().getFrom(), Constants.ZONEID).toOffsetDateTime(),
+      ZonedDateTime.of(filterDTO.getPayDate().getTo(), Constants.ZONEID).toOffsetDateTime(),
       filterDTO.getPaymentDateTime().getFrom(),
       filterDTO.getPaymentDateTime().getTo(),
       filterDTO.getRegulationDate().getFrom(),
@@ -192,9 +193,9 @@ class DataExportsControllerTest {
 
   @Test
   void exportFullClassificationsThrowsInvalidDateTimeIntervalExceptionOnInvalidInterval() {
-    OffsetDateTime now = OffsetDateTime.now();
+    LocalDate now = LocalDate.now();
     Pageable pageable = PageRequest.of(0, 10);
-    OffsetDateTime invalidFrom = now.minusMonths(2);
+    LocalDate invalidFrom = now.minusMonths(2);
 
     assertThrows(InvalidDateTimeIntervalException.class, () ->
       controller.exportFullClassifications(
@@ -207,16 +208,16 @@ class DataExportsControllerTest {
         "iud_value",
         "iuv_value",
         "iur_value",
-        invalidFrom,
-        now,
-        invalidFrom,
-        now,
-        invalidFrom,
-        now,
-        invalidFrom,
-        now,
-        invalidFrom,
-        now,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         "regUniqueId",
         "accRegistryCode",
         1000L,

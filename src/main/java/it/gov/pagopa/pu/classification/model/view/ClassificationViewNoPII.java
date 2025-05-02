@@ -86,5 +86,5 @@ import java.time.OffsetDateTime;
     private String treasuryManagementProvisionalCode;
     @Enumerated(EnumType.STRING)
     private ClassificationsEnum classificationLabel;
-    private LocalDate classificationDate;
+    private LocalDate lastClassificationDate;
   }
