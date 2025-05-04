@@ -1,5 +1,7 @@
 package it.gov.pagopa.pu.classification.util;
 
+import org.slf4j.MDC;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,5 +31,9 @@ public class Utilities {
   public static boolean isValidIntervalBetweenLocalDate(LocalDate dateFrom, LocalDate dateTo, ChronoUnit chronoUnit, long maxInterval) {
     long result = chronoUnit.between(dateFrom, dateTo);
     return result >= 0 && result <= maxInterval;
+  }
+
+  public static String getTraceId(){
+    return MDC.get("traceId");
   }
 }

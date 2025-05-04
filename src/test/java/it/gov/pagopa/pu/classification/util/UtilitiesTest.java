@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.MDC;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -77,5 +78,26 @@ class UtilitiesTest {
 
     Assertions.assertFalse(Utilities.isValidIntervalBetweenLocalDate(dateFrom, dateTo, ChronoUnit.DAYS, 1));
     Assertions.assertTrue(Utilities.isValidIntervalBetweenLocalDate(dateFrom, dateTo, ChronoUnit.DAYS, 2));
+  }
+
+  @Test
+  void testGetTraceId(){
+    // Given
+    String expectedResult = "TRACEID";
+    setTraceId(expectedResult);
+
+    // When
+    String result = Utilities.getTraceId();
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
+    clearTraceIdContext();
+  }
+
+  public static void setTraceId(String traceId) {
+    MDC.put("traceId", traceId);
+  }
+  public static void clearTraceIdContext(){
+    MDC.clear();
   }
 }
