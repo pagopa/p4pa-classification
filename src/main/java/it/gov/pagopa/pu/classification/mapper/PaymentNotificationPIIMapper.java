@@ -36,6 +36,7 @@ public class PaymentNotificationPIIMapper extends BasePIIMapper<PaymentNotificat
     noPii.setCreationDate(fullDTO.getCreationDate());
     noPii.setUpdateDate(fullDTO.getUpdateDate());
     noPii.setUpdateOperatorExternalId(fullDTO.getUpdateOperatorExternalId());
+    noPii.setUpdateTraceId(fullDTO.getUpdateTraceId());
     noPii.setDebtorFiscalCodeHash(dataCipherService.hash(fullDTO.getDebtor().getFiscalCode()));
     noPii.setRemittanceInformationHash(dataCipherService.hash(fullDTO.getRemittanceInformation()));
     noPii.setPaymentNotificationId(fullDTO.getPaymentNotificationId());
@@ -72,6 +73,7 @@ public class PaymentNotificationPIIMapper extends BasePIIMapper<PaymentNotificat
       .creationDate(noPii.getCreationDate())
       .updateDate(noPii.getUpdateDate())
       .updateOperatorExternalId(noPii.getUpdateOperatorExternalId())
+      .updateTraceId(noPii.getUpdateTraceId())
       .noPII(noPii)
       .build();
   }

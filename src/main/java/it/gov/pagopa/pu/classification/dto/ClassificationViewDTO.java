@@ -203,9 +203,6 @@ public class ClassificationViewDTO {
   @JsonProperty("tres_managementProvisionalCode")
   private String treasuryManagementProvisionalCode;
 
-  @JsonProperty("classificationLabel")
   private ClassificationsEnum classificationLabel;
-
-  @JsonProperty("classificationDate")
-  private LocalDate classificationDate;
+  private LocalDate lastClassificationDate;
 }

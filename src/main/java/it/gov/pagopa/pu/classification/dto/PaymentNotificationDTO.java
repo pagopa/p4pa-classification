@@ -34,6 +34,7 @@ public class PaymentNotificationDTO implements FullPIIDTO<PaymentNotificationNoP
   private LocalDateTime creationDate;
   private LocalDateTime updateDate;
   private String updateOperatorExternalId;
+  private String updateTraceId;
 
   @JsonIgnore
   private PaymentNotificationNoPII noPII;
