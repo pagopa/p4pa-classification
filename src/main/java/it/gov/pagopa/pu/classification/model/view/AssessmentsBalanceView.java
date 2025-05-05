@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "assessment_detail")
+@Table(name = "assessments_detail")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class AssessmentBalanceView implements Serializable {
+public class AssessmentsBalanceView implements Serializable {
   @Id
   private String officeCode;
   private String debtPositionTypeOrgCode;

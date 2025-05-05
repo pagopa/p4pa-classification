@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.repository.view;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import it.gov.pagopa.pu.classification.model.view.AssessmentBalanceView;
+import it.gov.pagopa.pu.classification.model.view.AssessmentsBalanceView;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.Repository;
@@ -9,11 +9,11 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
-@RepositoryRestResource(path = "assessment-balance-view")
-public interface AssessmentBalanceViewRepository extends Repository<AssessmentBalanceView, String> {
+@RepositoryRestResource(path = "assessments-balance-view")
+public interface AssessmentsBalanceViewRepository extends Repository<AssessmentsBalanceView, String> {
 
   @Query("""
-          SELECT new AssessmentBalanceView(
+          SELECT new AssessmentsBalanceView(
             ad.officeCode,
             ad.debtPositionTypeOrgCode,
             ad.sectionCode,
@@ -35,7 +35,7 @@ public interface AssessmentBalanceViewRepository extends Repository<AssessmentBa
                     ad.sectionCode,
                     ad.assessmentCode
     """)
-  List<AssessmentBalanceView> findClosedByOrganizationIdAndIuds(
+  List<AssessmentsBalanceView> findClosedByOrganizationIdAndIuds(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Param("iuds") List<String> iuds);
 }
