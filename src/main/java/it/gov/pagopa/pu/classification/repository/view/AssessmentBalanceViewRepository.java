@@ -13,12 +13,13 @@ import java.util.List;
 public interface AssessmentBalanceViewRepository extends Repository<AssessmentBalanceView, String> {
 
   @Query("""
-          SELECT
+          SELECT new AssessmentBalanceView(
             ad.officeCode,
             ad.debtPositionTypeOrgCode,
             ad.sectionCode,
             ad.assessmentCode,
             SUM(ad.amountCents) AS amountCents
+          )
           FROM AssessmentsDetail ad
           JOIN Assessments a
             ON ad.assessmentId = a.assessmentId

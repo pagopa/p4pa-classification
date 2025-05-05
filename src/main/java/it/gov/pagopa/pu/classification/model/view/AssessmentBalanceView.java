@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "assessment-balance")
+@Table(name = "assessment_detail")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
