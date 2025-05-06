@@ -13,6 +13,7 @@ public class AssessmentsFaker {
       .status(AssessmentStatus.NEW)
       .assessmentName("assessmentName123")
       .printed(false)
+      .flagManualGeneration(false)
       .build();
   }
 
