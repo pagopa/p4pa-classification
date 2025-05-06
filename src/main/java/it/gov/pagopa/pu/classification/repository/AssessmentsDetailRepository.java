@@ -11,5 +11,4 @@ public interface AssessmentsDetailRepository extends JpaRepository<AssessmentsDe
 
   @RestResource(exported = false)
   AssessmentsDetail findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(String debtPositionTypeOrgCode, String iuv, String iud, String officeCode, String sectionCode, String assessmentCode);
-
 }

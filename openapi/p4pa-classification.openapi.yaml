@@ -311,14 +311,16 @@ paths:
             type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
+          required: true
           schema:
             type: string
-            format: date-time
+            format: date
         - name: lastClassificationDateTo
           in: query
+          required: true
           schema:
             type: string
-            format: date-time
+            format: date
         - name: payDateFrom
           in: query
           schema:
@@ -343,32 +345,32 @@ paths:
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: regulationDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: billDateFrom
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: billDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: regionValueDateFrom
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: regionValueDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: regulationUniqueIdentifier
           in: query
           schema:
@@ -467,14 +469,16 @@ paths:
             type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
+          required: true
           schema:
             type: string
-            format: date-time
+            format: date
         - name: lastClassificationDateTo
           in: query
+          required: true
           schema:
             type: string
-            format: date-time
+            format: date
         - name: payDateFrom
           in: query
           schema:
@@ -499,32 +503,32 @@ paths:
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: regulationDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: billDateFrom
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: billDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: regionValueDateFrom
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: regionValueDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: regulationUniqueIdentifier
           in: query
           schema:

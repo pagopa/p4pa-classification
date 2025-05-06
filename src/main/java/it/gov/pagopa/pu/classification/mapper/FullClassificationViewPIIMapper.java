@@ -96,7 +96,7 @@ public class FullClassificationViewPIIMapper {
       .treasuryActualSuspensionDate(noPii.getTreasuryActualSuspensionDate())
       .treasuryManagementProvisionalCode(noPii.getTreasuryManagementProvisionalCode())
       .classificationLabel(noPii.getClassificationLabel())
-      .classificationDate(noPii.getClassificationDate())
+      .lastClassificationDate(noPii.getLastClassificationDate())
       .build();
   }
 }

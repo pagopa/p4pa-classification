@@ -81,7 +81,7 @@ public class ClassificationViewPIIMapper {
       .treasuryActualSuspensionDate(noPii.getTreasuryActualSuspensionDate())
       .treasuryManagementProvisionalCode(noPii.getTreasuryManagementProvisionalCode())
       .classificationLabel(noPii.getClassificationLabel())
-      .classificationDate(noPii.getClassificationDate())
+      .lastClassificationDate(noPii.getLastClassificationDate())
       .build();
   }
 }

@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.dto;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
+import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.LocalDateIntervalFilter;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -20,12 +21,12 @@ public class ExportClassificationsFilterDTO {
   @NotNull
   private ClassificationsEnum label;
 
-  private OffsetDateTimeIntervalFilter lastClassificationDate;
-  private OffsetDateTimeIntervalFilter payDate;
+  private LocalDateIntervalFilter lastClassificationDate;
+  private LocalDateTimeIntervalFilter payDate;
   private OffsetDateTimeIntervalFilter paymentDateTime;
-  private OffsetDateTimeIntervalFilter regulationDate;
-  private OffsetDateTimeIntervalFilter billDate;
-  private OffsetDateTimeIntervalFilter regionValueDate;
+  private LocalDateIntervalFilter regulationDate;
+  private LocalDateIntervalFilter billDate;
+  private LocalDateIntervalFilter regionValueDate;
 
   private String regulationUniqueIdentifier;
   private String accountRegistryCode;
