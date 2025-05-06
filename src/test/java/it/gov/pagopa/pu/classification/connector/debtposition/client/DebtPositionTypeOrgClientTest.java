@@ -2,17 +2,23 @@ package it.gov.pagopa.pu.classification.connector.debtposition.client;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtposition.client.generated.DebtPositionTypeOrgSearchControllerApi;
-import it.gov.pagopa.pu.debtposition.dto.generated.*;
+import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtposition.dto.generated.PagedModelDebtPositionTypeOrgEmbedded;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgClientTest {
@@ -25,9 +31,13 @@ class DebtPositionTypeOrgClientTest {
   @InjectMocks
   private DebtPositionTypeOrgClient debtPositionTypeOrgClient;
 
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock, debtPositionTypeOrgSearchControllerApiMock);
+  }
 
   @Test
-  void getDebtPositionTypeOrgByInstallmentId_withValidInstallmentId_returnsDebtPositionTypeOrg() {
+  void whenGetDebtPositionTypeOrgByInstallmentIdThenReturnIt() {
     String accessToken = "ACCESSTOKEN";
     Long installmentId = 1L;
     DebtPositionTypeOrg expectedDebtPositionTypeOrg = new DebtPositionTypeOrg();
@@ -39,12 +49,26 @@ class DebtPositionTypeOrgClientTest {
 
     DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgByInstallmentId(installmentId, accessToken);
 
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals(expectedDebtPositionTypeOrg, result);
+    Assertions.assertSame(expectedDebtPositionTypeOrg, result);
   }
 
   @Test
-  void givenValidInputWhenFindDebtPositionTypeOrgsThenReturnsDebtPositionTypeOrgs() {
+  void givenNotExistentInstallmentIdWhenGetDebtPositionTypeOrgByInstallmentIdThenReturnNull() {
+    String accessToken = "ACCESSTOKEN";
+    Long installmentId = 1L;
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsGetDebtPositionTypeOrgByInstallmentId(installmentId))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgByInstallmentId(installmentId, accessToken);
+
+    Assertions.assertNull(result);
+  }
+
+  @Test
+  void whenFindDebtPositionTypeOrgsThenReturnIt() {
     String accessToken = "ACCESSTOKEN";
     Long organizationId = 1L;
     String operatorExternalUserId = "OPERATOR_EXTERNAL_USER_ID";
@@ -63,7 +87,6 @@ class DebtPositionTypeOrgClientTest {
 
     List<DebtPositionTypeOrg> result = debtPositionTypeOrgClient.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
 
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals(collectionModel.getEmbedded().getDebtPositionTypeOrgs(), result);
+    Assertions.assertSame(expectedDebtPositionTypeOrgs, result);
   }
 }
