@@ -1,26 +1,35 @@
 package it.gov.pagopa.pu.classification.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.classification.dto.ClassificationListDTO;
+import it.gov.pagopa.pu.classification.dto.ClassificationListFilterDTO;
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationListDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
+import it.gov.pagopa.pu.classification.mapper.PagedClassificationListMapper;
+import it.gov.pagopa.pu.classification.repository.view.ClassificationListRepository;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.FullClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationServiceTest {
@@ -30,6 +39,10 @@ class ClassificationServiceTest {
   private ClassificationViewPIIRepository classificationViewPIIRepositoryMock;
   @Mock
   private FullClassificationViewPIIRepository fullClassificationViewPIIRepositoryMock;
+  @Mock
+  private ClassificationListRepository classificationListRepositoryMock;
+  @Mock
+  private PagedClassificationListMapper pagedClassificationListMapperMock;
 
   private ClassificationService service;
 
@@ -37,7 +50,8 @@ class ClassificationServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock, classificationViewPIIRepositoryMock, fullClassificationViewPIIRepositoryMock);
+    service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock, classificationViewPIIRepositoryMock, fullClassificationViewPIIRepositoryMock,
+      classificationListRepositoryMock, pagedClassificationListMapperMock);
   }
 
   @Test
@@ -113,6 +127,37 @@ class ClassificationServiceTest {
       organizationId,
       filterDTO,
       debtPositionTypeOrgCodes,
+      pageable);
+  }
+
+
+  @Test
+  void whenGetPagedClassificationListThenOk() {
+    // given
+    Long organizationId = 1L;
+    Pageable pageable = PageRequest.of(0, 10);
+    ClassificationListFilterDTO filterDTO = podamFactory.manufacturePojo(ClassificationListFilterDTO.class);
+    Page<ClassificationListDTO> pagedClassificationListDTO = new PageImpl<>(List.of(podamFactory.manufacturePojo(ClassificationListDTO.class)));
+    PagedClassificationListDTO expectedResult = podamFactory.manufacturePojo(PagedClassificationListDTO.class);
+
+    when(classificationListRepositoryMock.getClassificationsList(
+      organizationId,
+      filterDTO,
+      pageable))
+      .thenReturn(pagedClassificationListDTO);
+    when(pagedClassificationListMapperMock.map2PagedClassificationListDTO(pagedClassificationListDTO))
+      .thenReturn(expectedResult);
+
+    // when
+    PagedClassificationListDTO result = service.getPagedClassificationList(organizationId, filterDTO, pageable);
+
+    // then
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
+
+    verify(classificationListRepositoryMock, times(1)).getClassificationsList(
+      organizationId,
+      filterDTO,
       pageable);
   }
 }

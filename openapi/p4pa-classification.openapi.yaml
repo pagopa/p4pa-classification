@@ -646,6 +646,142 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /organization/{organizationId}/classifications:
+    get:
+      tags:
+        - classifications
+      operationId: get-classifications
+      description: "The API returns a list of classifications."
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the organization
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: ClassificationsEnum
+        - name: iud
+          in: query
+          schema:
+            type: string
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iur
+          in: query
+          schema:
+            type: string
+        - name: lastClassificationDateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: lastClassificationDateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: payDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: payDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: regulationDateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: billDateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: billDateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: regionValueDateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: regionValueDateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: pspCompanyName
+          in: query
+          schema:
+            type: string
+        - name: pspLastName
+          in: query
+          schema:
+            type: string
+        - name: iuf
+          in: query
+          schema:
+            type: string
+        - name: regulationUniqueIdentifier
+          in: query
+          schema:
+            type: string
+        - name: accountRegistryCode
+          in: query
+          schema:
+            type: string
+        - name: billAmountCents
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: remittanceInformation
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedClassificationListDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+      x-spring-paginated: true
 components:
   securitySchemes:
     BearerAuth:
@@ -706,6 +842,31 @@ components:
           type: array
           items:
             type: 'ClassificationView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedClassificationListDTO:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'ClassificationListDTO'
         size:
           type: integer
           format: int64
