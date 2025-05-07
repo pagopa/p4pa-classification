@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ClassificationsController implements ClassificationsApi {
+public class ClassificationController implements ClassificationsApi {
 
   private final ClassificationService classificationService;
 
-  public ClassificationsController(ClassificationService classificationService) {
+  public ClassificationController(ClassificationService classificationService) {
     this.classificationService = classificationService;
   }
 

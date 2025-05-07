@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
@@ -20,7 +21,8 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +34,7 @@ class ClassificationServiceTest {
   @Mock
   private FullClassificationViewPIIRepository fullClassificationViewPIIRepositoryMock;
   @Mock
-  private ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository;
+  private ClassificationDetailViewPIIRepository classificationDetailViewPIIRepositoryMock;
 
   private ClassificationService service;
 
@@ -40,7 +42,7 @@ class ClassificationServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock, classificationViewPIIRepositoryMock, fullClassificationViewPIIRepositoryMock, classificationDetailViewPIIRepository);
+    service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock, classificationViewPIIRepositoryMock, fullClassificationViewPIIRepositoryMock, classificationDetailViewPIIRepositoryMock);
   }
 
   @Test
@@ -118,4 +120,22 @@ class ClassificationServiceTest {
       debtPositionTypeOrgCodes,
       pageable);
   }
+
+  @Test
+  void whenGetClassificationDetailViewThenOk() {
+    Long organizationId = 1L;
+    Long classificationId = 1L;
+    ClassificationDetailViewDTO classificationDetailViewDTO = podamFactory.manufacturePojo(ClassificationDetailViewDTO.class);
+
+    when(classificationDetailViewPIIRepositoryMock.getClassificationDetailView(organizationId, classificationId))
+      .thenReturn(classificationDetailViewDTO);
+
+    ClassificationDetailViewDTO result = service.getClassificationDetailView(organizationId, classificationId);
+
+    assertNotNull(result);
+    assertEquals(classificationDetailViewDTO, result);
+
+    verify(classificationDetailViewPIIRepositoryMock, times(1)).getClassificationDetailView(organizationId, classificationId);
+  }
+
 }
