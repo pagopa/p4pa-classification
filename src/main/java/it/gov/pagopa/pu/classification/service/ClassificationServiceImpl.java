@@ -1,9 +1,11 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
+import it.gov.pagopa.pu.classification.repository.view.ClassificationDetailViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.FullClassificationViewPIIRepository;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
@@ -19,13 +21,16 @@ public class ClassificationServiceImpl implements ClassificationService {
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final ClassificationViewPIIRepository classificationViewPIIRepository;
   private final FullClassificationViewPIIRepository fullClassificationViewPIIRepository;
+  private final ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository;
 
   public ClassificationServiceImpl(DebtPositionTypeOrgService debtPositionTypeOrgService,
                                    ClassificationViewPIIRepository classificationViewPIIRepository,
-                                   FullClassificationViewPIIRepository fullClassificationViewPIIRepository) {
+                                   FullClassificationViewPIIRepository fullClassificationViewPIIRepository,
+                                   ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.classificationViewPIIRepository = classificationViewPIIRepository;
     this.fullClassificationViewPIIRepository = fullClassificationViewPIIRepository;
+    this.classificationDetailViewPIIRepository = classificationDetailViewPIIRepository;
   }
 
   @Override
@@ -47,5 +52,10 @@ public class ClassificationServiceImpl implements ClassificationService {
     log.info("Fetching debt position type org codes for organizationId: {} and operatorExternalUserId: {}", organizationId, operatorExternalUserId);
     return debtPositionTypeOrgService.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken)
       .stream().map(DebtPositionTypeOrg::getCode).toList();
+  }
+
+  @Override
+  public ClassificationDetailViewDTO getClassificationDetailView(Long organizationId, Long classificationId) {
+    return classificationDetailViewPIIRepository.getClassificationDetailView(organizationId, classificationId);
   }
 }

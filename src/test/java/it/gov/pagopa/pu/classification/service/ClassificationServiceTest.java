@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOr
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
+import it.gov.pagopa.pu.classification.repository.view.ClassificationDetailViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.FullClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.util.TestUtils;
@@ -30,6 +31,8 @@ class ClassificationServiceTest {
   private ClassificationViewPIIRepository classificationViewPIIRepositoryMock;
   @Mock
   private FullClassificationViewPIIRepository fullClassificationViewPIIRepositoryMock;
+  @Mock
+  private ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository;
 
   private ClassificationService service;
 
@@ -37,7 +40,7 @@ class ClassificationServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock, classificationViewPIIRepositoryMock, fullClassificationViewPIIRepositoryMock);
+    service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock, classificationViewPIIRepositoryMock, fullClassificationViewPIIRepositoryMock, classificationDetailViewPIIRepository);
   }
 
   @Test
