@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -28,9 +29,9 @@ public class DebtPositionTypeOrgClient {
   }
 
   public List<DebtPositionTypeOrg> findDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
-      return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
-        .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId)
-        .getEmbedded()
+      return Objects.requireNonNull(debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+          .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId)
+          .getEmbedded())
         .getDebtPositionTypeOrgs();
   }
 }

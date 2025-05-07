@@ -1,13 +1,15 @@
 package it.gov.pagopa.pu.classification.service.assessments;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
-import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentNoPIIService;
+import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
+import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.processexecutions.IngestionFlowFileService;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +25,8 @@ import java.util.List;
 @Service
 public class AssessmentsServiceImpl implements AssessmentsService {
 
-  private final InstallmentNoPIIService installmentNoPIIService;
+  private final InstallmentService installmentService;
+  private final ReceiptService receiptService;
   private final IngestionFlowFileService ingestionFlowFileService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final AssessmentsRepository assessmentsRepository;
@@ -33,13 +36,14 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   /**
    * Constructs a new AssessmentsServiceImpl with the given dependencies.
    *
-   * @param installmentNoPIIService    the service for retrieving installment information
+   * @param installmentService         the service for retrieving installment information
    * @param ingestionFlowFileService   the service for retrieving ingestion flow files
    * @param debtPositionTypeOrgService the service for retrieving debt position type organization information
    * @param assessmentsRepository      the repository for managing assessments
    */
-  public AssessmentsServiceImpl(InstallmentNoPIIService installmentNoPIIService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository, AssessmentsDetailService assessmentsDetailService) {
-    this.installmentNoPIIService = installmentNoPIIService;
+  public AssessmentsServiceImpl(InstallmentService installmentService, ReceiptService receiptService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository, AssessmentsDetailService assessmentsDetailService) {
+    this.installmentService = installmentService;
+    this.receiptService = receiptService;
     this.ingestionFlowFileService = ingestionFlowFileService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.assessmentsRepository = assessmentsRepository;
@@ -53,7 +57,8 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   @Transactional
   @Override
   public List<Assessments> createAssesment(Long receiptId, String accessToken) {
-    List<InstallmentNoPIIResponse> installmentsList = installmentNoPIIService.getByReceiptId(receiptId, accessToken);
+    ReceiptNoPII receipt = receiptService.getById(receiptId, accessToken);
+    List<InstallmentNoPIIResponse> installmentsList = installmentService.getByReceiptId(receiptId, accessToken);
 
     return installmentsList.stream()
       .filter(i -> {
@@ -64,13 +69,13 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         return true;
       })
       .map(i -> {
-        Assessments a = this.buildAssessment(i, accessToken);
+        Assessments assessment = buildAssessment(i, accessToken);
         if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
-          a.getOrganizationId(), a.getDebtPositionTypeOrgCode(), a.getAssessmentName()) == null) {
-          a = assessmentsRepository.save(a);
+          assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), assessment.getAssessmentName()) == null) {
+          assessment = assessmentsRepository.save(assessment);
         }
-        assessmentsDetailService.createAssessmentDetail(a, i);
-        return a;
+        assessmentsDetailService.createAssessmentDetail(assessment, receipt, i);
+        return assessment;
       })
       .toList();
   }
@@ -79,15 +84,15 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   /**
    * Builds an assessment based on the given installment information and access token.
    *
-   * @param installmentNoPIIResponse the installment information
-   * @param accessToken              the access token for authentication
+   * @param installment the installment information
+   * @param accessToken the access token for authentication
    * @return the built assessment
    */
-  Assessments buildAssessment(InstallmentNoPIIResponse installmentNoPIIResponse, String accessToken) {
-    IngestionFlowFile ingestionFlowFile = installmentNoPIIResponse.getIngestionFlowFileId() != null
-      ? ingestionFlowFileService.getIngestionFlowFile(installmentNoPIIResponse.getIngestionFlowFileId(), accessToken)
+  Assessments buildAssessment(InstallmentNoPIIResponse installment, String accessToken) {
+    IngestionFlowFile ingestionFlowFile = installment.getIngestionFlowFileId() != null
+      ? ingestionFlowFileService.getIngestionFlowFile(installment.getIngestionFlowFileId(), accessToken)
       : null;
-    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), accessToken);
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installment.getInstallmentId(), accessToken);
     String debtPositionTypeOrgCode = debtPositionTypeOrg.getCode();
     String assessmentName;
 
