@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "assessments_detail")
@@ -28,6 +30,11 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   private String iuv;
   @NotNull
   private String iud;
+  @NotNull
+  private String iur;
+  @NotNull
+  private byte[] debtorFiscalCodeHash;
+  private OffsetDateTime paymentDateTime;
   private String officeCode;
   @NotNull
   private String sectionCode;

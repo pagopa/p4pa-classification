@@ -9,10 +9,10 @@ import java.util.List;
 
 @Service
 @Lazy
-public class InstallmentNoPIIServiceImpl implements InstallmentNoPIIService{
+public class InstallmentServiceImpl implements InstallmentService {
   private final InstallmentNoPIIClient installmentNoPIIClient;
 
-  public InstallmentNoPIIServiceImpl(InstallmentNoPIIClient installmentNoPIIClient) {
+  public InstallmentServiceImpl(InstallmentNoPIIClient installmentNoPIIClient) {
     this.installmentNoPIIClient = installmentNoPIIClient;
   }
 

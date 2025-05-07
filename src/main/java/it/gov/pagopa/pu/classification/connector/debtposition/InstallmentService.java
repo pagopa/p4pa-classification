@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Service for handling InstallmentNoPII operations.
  */
-public interface InstallmentNoPIIService {
+public interface InstallmentService {
 
   /**
    * Finds a list of InstallmentNoPII by the given receipt ID.

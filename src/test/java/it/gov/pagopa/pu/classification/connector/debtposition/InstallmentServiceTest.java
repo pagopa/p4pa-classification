@@ -2,40 +2,46 @@ package it.gov.pagopa.pu.classification.connector.debtposition;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.client.InstallmentNoPIIClient;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class InstallmentNoPIIServiceTest {
+class InstallmentServiceTest {
 
 	@Mock
-	private InstallmentNoPIIClient installmentNoPIIClientMock;
-	@InjectMocks
-	private InstallmentNoPIIServiceImpl installmentNoPIIService;
+	private InstallmentNoPIIClient clientMock;
 
+	@InjectMocks
+	private InstallmentServiceImpl service;
+
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(clientMock);
+  }
 
 	@Test
 	void whenGetByReceiptIdThenInvokeClient() {
 		// Given
 		String accessToken = "ACCESSTOKEN";
-		List<InstallmentNoPIIResponse> expected = mock(List.class);
 		Long receiptId = 1L;
+    List<InstallmentNoPIIResponse> expected = List.of();
 
-		when(installmentNoPIIClientMock.getByReceiptId(receiptId, accessToken)).thenReturn(expected);
+		when(clientMock.getByReceiptId(receiptId, accessToken)).thenReturn(expected);
 
 		// When
-		List<InstallmentNoPIIResponse> result = installmentNoPIIService.getByReceiptId(receiptId, accessToken);
+		List<InstallmentNoPIIResponse> result = service.getByReceiptId(receiptId, accessToken);
 
 		// Then
-		assertEquals(expected, result);
-		verify(installmentNoPIIClientMock, times(1)).getByReceiptId(receiptId, accessToken);
+		assertSame(expected, result);
 	}
 }
