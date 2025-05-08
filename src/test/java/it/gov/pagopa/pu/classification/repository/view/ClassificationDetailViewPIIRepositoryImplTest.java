@@ -12,9 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationDetailViewPIIRepositoryImplTest {
@@ -34,13 +32,13 @@ class ClassificationDetailViewPIIRepositoryImplTest {
   }
 
   @Test
-  void givenValidParamsWhenGetClassificationDetailViewThenReturnClassificationDetailViewDTO() {
+  void testGetClassificationDetailViewThenOk() {
     Long organizationId = 1L;
     Long classificationId = 1L;
     ClassificationDetailViewNoPII mockNoPII = new ClassificationDetailViewNoPII();
     ClassificationDetailViewDTO mockDTO = new ClassificationDetailViewDTO();
 
-    when(classificationDetailViewNoPIIRepositoryMock.findByOrganizationIdAndClassificationId(anyLong(), anyLong())).thenReturn(mockNoPII);
+    when(classificationDetailViewNoPIIRepositoryMock.findByOrganizationIdAndClassificationId(organizationId, classificationId)).thenReturn(mockNoPII);
     when(classificationDetailViewPIIMapperMock.map(mockNoPII)).thenReturn(mockDTO);
 
     ClassificationDetailViewDTO result = repository.getClassificationDetailView(organizationId, classificationId);
@@ -52,13 +50,14 @@ class ClassificationDetailViewPIIRepositoryImplTest {
   }
 
   @Test
-  void givenInvalidParamsWhenGetClassificationDetailViewThenThrowNotFoundException() {
+  void testGetClassificationDetailViewThenThrowException() {
     Long organizationId = 1L;
     Long classificationId = 1L;
 
-    when(classificationDetailViewNoPIIRepositoryMock.findByOrganizationIdAndClassificationId(anyLong(), anyLong())).thenReturn(null);
+    when(classificationDetailViewNoPIIRepositoryMock.findByOrganizationIdAndClassificationId(organizationId, classificationId)).thenReturn(null);
 
     assertThrows(NotFoundException.class, () -> repository.getClassificationDetailView(organizationId, classificationId));
     verify(classificationDetailViewNoPIIRepositoryMock).findByOrganizationIdAndClassificationId(organizationId, classificationId);
+    verifyNoInteractions(classificationDetailViewPIIMapperMock);
   }
 }

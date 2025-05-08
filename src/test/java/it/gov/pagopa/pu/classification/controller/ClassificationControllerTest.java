@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +40,7 @@ class ClassificationControllerTest {
     Long organizationId = 1L;
     Long classificationId = 1L;
     ClassificationDetailViewDTO mockDetailView = new ClassificationDetailViewDTO();
-    when(classificationServiceMock.getClassificationDetailView(anyLong(), anyLong())).thenReturn(mockDetailView);
+    when(classificationServiceMock.getClassificationDetailView(organizationId, classificationId)).thenReturn(mockDetailView);
 
     ResponseEntity<ClassificationDetailViewDTO> response = controller.getClassificationDetail(organizationId, classificationId);
 
