@@ -1,8 +1,10 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,6 +32,7 @@ class ClassificationControllerTest {
   @Mock
   private ClassificationService classificationServiceMock;
 
+  @InjectMocks
   private ClassificationController controller;
 
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
@@ -40,13 +44,13 @@ class ClassificationControllerTest {
   }
 
   @AfterEach
-  void verifyNoMoreInteractions(){
+  void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(classificationServiceMock);
     SecurityUtilsTest.clearSecurityContext();
   }
 
   @Test
-  void getClassificationsReturnsPagedClassificationList() {
+  void getClassificationsReturnsPagedTreasuredClassification() {
     Long organizationId = 1L;
     TreasuredClassificationFilterDTO filterDTO = podamFactory.manufacturePojo(
       TreasuredClassificationFilterDTO.class);
@@ -90,5 +94,19 @@ class ClassificationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(expectedResult, response.getBody());
+  }
+
+  @Test
+  void testGetClassificationDetail() {
+    Long organizationId = 1L;
+    Long classificationId = 1L;
+    ClassificationDetailViewDTO mockDetailView = new ClassificationDetailViewDTO();
+    when(classificationServiceMock.getClassificationDetailView(organizationId, classificationId)).thenReturn(mockDetailView);
+
+    ResponseEntity<ClassificationDetailViewDTO> response = controller.getClassificationDetail(organizationId, classificationId);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(mockDetailView, response.getBody());
+    verify(classificationServiceMock).getClassificationDetailView(organizationId, classificationId);
   }
 }

@@ -1,12 +1,14 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.mapper.TreasuredClassificationMapper;
+import it.gov.pagopa.pu.classification.repository.view.ClassificationDetailViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.FullClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.TreasuredClassificationRepository;
@@ -24,17 +26,21 @@ public class ClassificationServiceImpl implements ClassificationService {
   private final FullClassificationViewPIIRepository fullClassificationViewPIIRepository;
   private final TreasuredClassificationRepository treasuredClassificationRepository;
   private final TreasuredClassificationMapper treasuredClassificationMapper;
+  private final ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository;
 
-  public ClassificationServiceImpl(DebtPositionTypeOrgService debtPositionTypeOrgService,
-                                   ClassificationViewPIIRepository classificationViewPIIRepository,
-                                   FullClassificationViewPIIRepository fullClassificationViewPIIRepository,
+  public ClassificationServiceImpl(
+    DebtPositionTypeOrgService debtPositionTypeOrgService,
+    ClassificationViewPIIRepository classificationViewPIIRepository,
+    FullClassificationViewPIIRepository fullClassificationViewPIIRepository,
     TreasuredClassificationRepository treasuredClassificationRepository,
-    TreasuredClassificationMapper treasuredClassificationMapper) {
+    TreasuredClassificationMapper treasuredClassificationMapper,
+    ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.classificationViewPIIRepository = classificationViewPIIRepository;
     this.fullClassificationViewPIIRepository = fullClassificationViewPIIRepository;
     this.treasuredClassificationRepository = treasuredClassificationRepository;
     this.treasuredClassificationMapper = treasuredClassificationMapper;
+    this.classificationDetailViewPIIRepository = classificationDetailViewPIIRepository;
   }
 
   @Override
@@ -43,7 +49,6 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     return classificationViewPIIRepository.getPagedClassificationView(organizationId, exportClassificationsFilterDTO, debtPositionTypeOrgCodes, pageable);
   }
-
 
   @Override
   public PagedFullClassificationView getPagedFullClassificationView(Long organizationId, String operatorExternalUserId, ExportClassificationsFilterDTO exportClassificationsFilterDTO, Pageable pageable, String accessToken) {
@@ -61,6 +66,11 @@ public class ClassificationServiceImpl implements ClassificationService {
       treasuredClassificationRepository.getTreasuredClassifications(organizationId,
       treasuredClassificationFilterDTO, pageable));
   }
+
+    @Override
+    public ClassificationDetailViewDTO getClassificationDetailView(Long organizationId, Long classificationId) {
+      return classificationDetailViewPIIRepository.getClassificationDetailView(organizationId, classificationId);
+    }
 
   private List<String> fetchDebtPositionTypeOrgCodes(Long organizationId, String operatorExternalUserId, String accessToken) {
     log.info("Fetching debt position type org codes for organizationId: {} and operatorExternalUserId: {}", organizationId, operatorExternalUserId);

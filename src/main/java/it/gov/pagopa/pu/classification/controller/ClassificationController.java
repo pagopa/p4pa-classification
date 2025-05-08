@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.ClassificationsApi;
-import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
+import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
@@ -64,6 +65,11 @@ public class ClassificationController implements ClassificationsApi {
     return ResponseEntity.ok(
       classificationService.getPagedTreasuredClassification(organizationId, filter,
         pageable));
+  }
+
+  @Override
+  public ResponseEntity<ClassificationDetailViewDTO> getClassificationDetail(Long organizationId, Long classificationId) {
+    return ResponseEntity.ok(classificationService.getClassificationDetailView(organizationId, classificationId));
   }
 
   private TreasuredClassificationFilterDTO buildClassificationListFilterDTO(
