@@ -32,7 +32,7 @@ class ClassificationDetailViewPIIRepositoryImplTest {
   }
 
   @Test
-  void testGetClassificationDetailViewThenOk() {
+  void givenExistingClassificationWhenGetClassificationDetailViewThenReturnClassificationDetailViewDTO()  {
     Long organizationId = 1L;
     Long classificationId = 1L;
     ClassificationDetailViewNoPII mockNoPII = new ClassificationDetailViewNoPII();
@@ -50,7 +50,7 @@ class ClassificationDetailViewPIIRepositoryImplTest {
   }
 
   @Test
-  void testGetClassificationDetailViewThenThrowException() {
+  void givenNonExistingClassificationWhenGetClassificationDetailViewThenThrowNotFoundException() {
     Long organizationId = 1L;
     Long classificationId = 1L;
 
