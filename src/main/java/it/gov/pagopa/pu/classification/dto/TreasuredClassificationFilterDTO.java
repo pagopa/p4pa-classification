@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassificationListFilterDTO {
+public class TreasuredClassificationFilterDTO {
 
   @NotNull
   private ClassificationsEnum label;
@@ -27,7 +27,7 @@ public class ClassificationListFilterDTO {
   private LocalDateIntervalFilter billDate;
   private LocalDateIntervalFilter regionValueDate;
 
-//  TODO: will be added in Classification entity
+//  TODO: P4ADEV-2819 - will be added in Classification entity
 //  private String debtorFiscalCode;
 //  private String payerFiscalCode;
 //  private String debtPositionTypeOrgDescription;
@@ -40,7 +40,7 @@ public class ClassificationListFilterDTO {
   private Long billAmountCents;
   private String remittanceInformation;
 
-//  TODO: will be added in Classification entity
+//  TODO: P4ADEV-2819 - will be added in Classification entity
 //  private String billYear;
 //  private String billCode;
 //  private String documentYear;

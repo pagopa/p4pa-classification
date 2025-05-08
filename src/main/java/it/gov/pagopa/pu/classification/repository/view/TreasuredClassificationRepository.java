@@ -1,9 +1,8 @@
 package it.gov.pagopa.pu.classification.repository.view;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import it.gov.pagopa.pu.classification.dto.ClassificationListDTO;
-import it.gov.pagopa.pu.classification.dto.ClassificationListFilterDTO;
-import it.gov.pagopa.pu.classification.model.view.ClassificationList;
+import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
+import it.gov.pagopa.pu.classification.model.view.TreasuredClassification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -13,10 +12,10 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 @RepositoryRestResource(path = "classifications-list")
-public interface ClassificationListRepository extends Repository<ClassificationList, Long> {
+public interface TreasuredClassificationRepository extends Repository<TreasuredClassification, Long> {
   @RestResource(exported = false)
   @Query(value = """
-    SELECT new ClassificationList(
+    SELECT new TreasuredClassification(
        c.classificationId as classificationId,
        c.organizationId as organizationId,
        c.transferId as transferId,
@@ -125,8 +124,8 @@ public interface ClassificationListRepository extends Repository<ClassificationL
     AND (:#{#filter.billAmountCents} IS NULL OR c.billAmountCents = :#{#filter.billAmountCents})
     AND (:#{#filter.remittanceInformation} IS NULL OR c.remittanceInformation = :#{#filter.remittanceInformation})
     """)
-  Page<ClassificationListDTO> getClassificationsList(
+  Page<TreasuredClassification> getTreasuredClassifications(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
-    @Parameter(required = true) @Param("filter") ClassificationListFilterDTO classificationListFilterDTO,
+    @Parameter(required = true) @Param("filter") TreasuredClassificationFilterDTO treasuredClassificationFilterDTO,
     Pageable pageable);
 }

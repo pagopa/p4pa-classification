@@ -3,8 +3,8 @@ package it.gov.pagopa.pu.classification.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import it.gov.pagopa.pu.classification.dto.ClassificationListFilterDTO;
-import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationListDTO;
+import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
+import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
@@ -48,19 +48,19 @@ class ClassificationControllerTest {
   @Test
   void getClassificationsReturnsPagedClassificationList() {
     Long organizationId = 1L;
-    ClassificationListFilterDTO filterDTO = podamFactory.manufacturePojo(
-      ClassificationListFilterDTO.class);
+    TreasuredClassificationFilterDTO filterDTO = podamFactory.manufacturePojo(
+      TreasuredClassificationFilterDTO.class);
 
     Pageable pageable = PageRequest.of(0, 10);
 
-    PagedClassificationListDTO expectedResult = podamFactory.manufacturePojo(PagedClassificationListDTO.class);
-    when(classificationServiceMock.getPagedClassificationList(
+    PagedTreasuredClassification expectedResult = podamFactory.manufacturePojo(PagedTreasuredClassification.class);
+    when(classificationServiceMock.getPagedTreasuredClassification(
       organizationId,
       filterDTO,
       pageable)
     ).thenReturn(expectedResult);
 
-    ResponseEntity<PagedClassificationListDTO> response = controller.getClassifications(
+    ResponseEntity<PagedTreasuredClassification> response = controller.getClassifications(
       organizationId,
       filterDTO.getLabel(),
       filterDTO.getLastClassificationDate().getFrom(),

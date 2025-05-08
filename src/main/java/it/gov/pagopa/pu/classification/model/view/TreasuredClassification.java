@@ -22,7 +22,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class ClassificationList implements Serializable {
+public class TreasuredClassification implements Serializable {
   @Id
   private Long classificationId;
   private Long organizationId;

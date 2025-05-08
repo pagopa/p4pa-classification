@@ -1,21 +1,23 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.ClassificationsApi;
-import it.gov.pagopa.pu.classification.dto.ClassificationListFilterDTO;
+import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
-import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationListDTO;
+import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import it.gov.pagopa.pu.classification.util.DateConversionUtils;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.LocalDateIntervalFilter;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Slf4j
 public class ClassificationController implements ClassificationsApi {
 
   private final ClassificationService classificationService;
@@ -25,7 +27,7 @@ public class ClassificationController implements ClassificationsApi {
   }
 
   @Override
-  public ResponseEntity<PagedClassificationListDTO> getClassifications(
+  public ResponseEntity<PagedTreasuredClassification> getClassifications(
     Long organizationId,
     ClassificationsEnum label,
     LocalDate lastClassificationDateFrom, LocalDate lastClassificationDateTo,
@@ -37,6 +39,7 @@ public class ClassificationController implements ClassificationsApi {
     String pspCompanyName, String pspLastName, String iuf,
     String regulationUniqueIdentifier, String accountRegistryCode,
     Long billAmountCents, String remittanceInformation, Pageable pageable) {
+    log.info("Retrieving Classifications having organizationId: {}", organizationId);
 
     LocalDateIntervalFilter lastClassificationDate = new LocalDateIntervalFilter(
       lastClassificationDateFrom, lastClassificationDateTo);
@@ -52,18 +55,18 @@ public class ClassificationController implements ClassificationsApi {
     LocalDateIntervalFilter regionValueDate = new LocalDateIntervalFilter(
       regionValueDateFrom, regionValueDateTo);
 
-    ClassificationListFilterDTO filter = buildClassificationListFilterDTO(label,
+    TreasuredClassificationFilterDTO filter = buildClassificationListFilterDTO(label,
       iud, iuv, iur, lastClassificationDate, payDate, paymentDate,
       regulationDate, billDate, regionValueDate, pspCompanyName, pspLastName,
       iuf, regulationUniqueIdentifier, accountRegistryCode, billAmountCents,
       remittanceInformation);
 
     return ResponseEntity.ok(
-      classificationService.getPagedClassificationList(organizationId, filter,
+      classificationService.getPagedTreasuredClassification(organizationId, filter,
         pageable));
   }
 
-  private ClassificationListFilterDTO buildClassificationListFilterDTO(
+  private TreasuredClassificationFilterDTO buildClassificationListFilterDTO(
     ClassificationsEnum label,
     String iud, String iuv, String iur,
     LocalDateIntervalFilter lastClassificationDate,
@@ -75,7 +78,7 @@ public class ClassificationController implements ClassificationsApi {
     String pspCompanyName, String pspLastName, String iuf,
     String regulationUniqueIdentifier, String accountRegistryCode,
     Long billAmountCents, String remittanceInformation) {
-    return ClassificationListFilterDTO.builder()
+    return TreasuredClassificationFilterDTO.builder()
       .label(label)
       .iud(iud)
       .iuv(iuv)

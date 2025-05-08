@@ -774,7 +774,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedClassificationListDTO'
+                $ref: '#/components/schemas/PagedTreasuredClassification'
         '500':
           description: Server Error
           content:
@@ -854,7 +854,7 @@ components:
         number:
           type: integer
           format: int64
-    PagedClassificationListDTO:
+    PagedTreasuredClassification:
       type: object
       required:
         - content
@@ -866,7 +866,7 @@ components:
         content:
           type: array
           items:
-            type: 'ClassificationListDTO'
+            $ref: '#/components/schemas/TreasuredClassificationDTO'
         size:
           type: integer
           format: int64
@@ -906,4 +906,192 @@ components:
           type: string
         printed:
           type: boolean
-
+    TreasuredClassificationDTO:
+      type: object
+      properties:
+        classificationId:
+          type: integer
+          format: int64
+        organizationId:
+          type: integer
+          format: int64
+        transferId:
+          type: integer
+          format: int64
+        paymentNotificationId:
+          type: string
+        paymentsReportingId:
+          type: string
+        treasuryId:
+          type: string
+        iuf:
+          type: string
+        iud:
+          type: string
+        iuv:
+          type: string
+        iur:
+          type: string
+        transferIndex:
+          type: integer
+        label:
+          type: 'ClassificationsEnum'
+        lastClassificationDate:
+          type: string
+          format: date
+        payDate:
+          type: string
+          format: date
+        paymentDateTime:
+          type: string
+          format: date-time
+        regulationDate:
+          type: string
+          format: date
+        billDate:
+          type: string
+          format: date
+        regionValueDate:
+          type: string
+          format: date
+        regulationUniqueIdentifier:
+          type: string
+        accountRegistryCode:
+          type: string
+        billAmountCents:
+          type: integer
+          format: int64
+        remittanceInformation:
+          type: string
+        pspCompanyName:
+          type: string
+        pspLastName:
+          type: string
+        debtPositionTypeOrgCode:
+          type: string
+        debtPositionTypeOrgDescription:
+          type: string
+        installmentIngestionFlowFileName:
+          type: string
+        receiptOrgFiscalCode:
+          type: string
+        receiptPaymentReceiptId:
+          type: string
+        receiptPaymentDateTime:
+          type: string
+          format: date-time
+        receiptPaymentRequestId:
+          type: string
+        receiptIdPsp:
+          type: string
+        receiptPspCompanyName:
+          type: string
+        organizationEntityType:
+          type: string
+        organizationName:
+          type: string
+        receiptPersonalDataId:
+          type: integer
+          format: int64
+        receiptPaymentOutcomeCode:
+          type: string
+        receiptPaymentAmount:
+          type: integer
+          format: int64
+        receiptCreditorReferenceId:
+          type: string
+        transferAmount:
+          type: integer
+          format: int64
+        transferCategory:
+          type: string
+        receiptCreationDate:
+          type: string
+          format: date-time
+        installmentBalance:
+          type: string
+        treasuryBillYear:
+          type: string
+        treasuryBillCode:
+          type: string
+        treasuryIngestionFlowFileId:
+          type: integer
+          format: int64
+        treasuryIuf:
+          type: string
+        treasuryIuv:
+          type: string
+        treasuryAccountCode:
+          type: string
+        treasuryDomainIdCode:
+          type: string
+        treasuryTransactionTypeCode:
+          type: string
+        treasuryRemittanceCode:
+          type: string
+        treasuryRemittanceDescription:
+          type: string
+        treasuryBillAmountCents:
+          type: integer
+          format: int64
+        treasuryBillDate:
+          type: string
+          format: date
+        treasuryReceptionDate:
+          type: string
+          format: date-time
+        treasuryDocumentYear:
+          type: string
+        treasuryDocumentCode:
+          type: string
+        treasurySealCode:
+          type: string
+        treasuryPspLastName:
+          type: string
+        treasuryPspFirstName:
+          type: string
+        treasuryPspAddress:
+          type: string
+        treasuryPspPostalCode:
+          type: string
+        treasuryPspCity:
+          type: string
+        treasuryPspFiscalCode:
+          type: string
+        treasuryPspVatNumber:
+          type: string
+        treasuryAbiCode:
+          type: string
+        treasuryCabCode:
+          type: string
+        treasuryIbanCode:
+          type: string
+        treasuryAccountRegistryCode:
+          type: string
+        treasuryProvisionalAe:
+          type: string
+        treasuryProvisionalCode:
+          type: string
+        treasuryAccountTypeCode:
+          type: string
+        treasuryProcessCode:
+          type: string
+        treasuryExecutionPgCode:
+          type: string
+        treasuryTransferPgCode:
+          type: string
+        treasuryProcessPgNumber:
+          type: integer
+          format: int64
+        treasuryRegionValueDate:
+          type: string
+          format: date
+        treasuryIsRegularized:
+          type: boolean
+        treasuryActualSuspensionDate:
+          type: string
+          format: date
+        treasuryManagementProvisionalCode:
+          type: string
+        treasuryEndToEndId:
+          type: string
