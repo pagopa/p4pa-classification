@@ -11,7 +11,7 @@ import it.gov.pagopa.pu.classification.mapper.TreasuredClassificationMapper;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationDetailViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.FullClassificationViewPIIRepository;
-import it.gov.pagopa.pu.classification.repository.view.TreasuredClassificationRepository;
+import it.gov.pagopa.pu.classification.repository.view.TreasuredClassificationViewRepository;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class ClassificationServiceImpl implements ClassificationService {
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final ClassificationViewPIIRepository classificationViewPIIRepository;
   private final FullClassificationViewPIIRepository fullClassificationViewPIIRepository;
-  private final TreasuredClassificationRepository treasuredClassificationRepository;
+  private final TreasuredClassificationViewRepository treasuredClassificationViewRepository;
   private final TreasuredClassificationMapper treasuredClassificationMapper;
   private final ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository;
 
@@ -32,13 +32,13 @@ public class ClassificationServiceImpl implements ClassificationService {
     DebtPositionTypeOrgService debtPositionTypeOrgService,
     ClassificationViewPIIRepository classificationViewPIIRepository,
     FullClassificationViewPIIRepository fullClassificationViewPIIRepository,
-    TreasuredClassificationRepository treasuredClassificationRepository,
+    TreasuredClassificationViewRepository treasuredClassificationViewRepository,
     TreasuredClassificationMapper treasuredClassificationMapper,
     ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.classificationViewPIIRepository = classificationViewPIIRepository;
     this.fullClassificationViewPIIRepository = fullClassificationViewPIIRepository;
-    this.treasuredClassificationRepository = treasuredClassificationRepository;
+    this.treasuredClassificationViewRepository = treasuredClassificationViewRepository;
     this.treasuredClassificationMapper = treasuredClassificationMapper;
     this.classificationDetailViewPIIRepository = classificationDetailViewPIIRepository;
   }
@@ -63,7 +63,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     TreasuredClassificationFilterDTO treasuredClassificationFilterDTO,
     Pageable pageable) {
     return treasuredClassificationMapper.map2PagedTreasuredClassification(
-      treasuredClassificationRepository.getTreasuredClassifications(organizationId,
+      treasuredClassificationViewRepository.getTreasuredClassifications(organizationId,
       treasuredClassificationFilterDTO, pageable));
   }
 

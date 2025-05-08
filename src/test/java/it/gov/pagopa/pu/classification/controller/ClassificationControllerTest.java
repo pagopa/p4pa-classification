@@ -64,7 +64,7 @@ class ClassificationControllerTest {
       pageable)
     ).thenReturn(expectedResult);
 
-    ResponseEntity<PagedTreasuredClassification> response = controller.getClassifications(
+    ResponseEntity<PagedTreasuredClassification> response = controller.getTreasuredClassifications(
       organizationId,
       filterDTO.getLabel(),
       filterDTO.getLastClassificationDate().getFrom(),

@@ -14,11 +14,11 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.mapper.TreasuredClassificationMapper;
-import it.gov.pagopa.pu.classification.model.view.TreasuredClassification;
+import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationDetailViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.repository.view.FullClassificationViewPIIRepository;
-import it.gov.pagopa.pu.classification.repository.view.TreasuredClassificationRepository;
+import it.gov.pagopa.pu.classification.repository.view.TreasuredClassificationViewRepository;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import java.util.List;
@@ -42,7 +42,7 @@ class ClassificationServiceTest {
   @Mock
   private FullClassificationViewPIIRepository fullClassificationViewPIIRepositoryMock;
   @Mock
-  private TreasuredClassificationRepository treasuredClassificationRepositoryMock;
+  private TreasuredClassificationViewRepository treasuredClassificationViewRepositoryMock;
   @Mock
   private TreasuredClassificationMapper treasuredClassificationMapperMock;
   @Mock
@@ -57,7 +57,7 @@ class ClassificationServiceTest {
     service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock,
       classificationViewPIIRepositoryMock,
       fullClassificationViewPIIRepositoryMock,
-      treasuredClassificationRepositoryMock,
+      treasuredClassificationViewRepositoryMock,
       treasuredClassificationMapperMock,
       classificationDetailViewPIIRepositoryMock);
   }
@@ -146,10 +146,11 @@ class ClassificationServiceTest {
     Pageable pageable = PageRequest.of(0, 10);
     TreasuredClassificationFilterDTO filterDTO = podamFactory.manufacturePojo(
       TreasuredClassificationFilterDTO.class);
-    Page<TreasuredClassification> pagedTreasuredClassifications = new PageImpl<>(List.of(podamFactory.manufacturePojo(TreasuredClassification.class)));
+    Page<TreasuredClassificationView> pagedTreasuredClassifications = new PageImpl<>(List.of(podamFactory.manufacturePojo(
+      TreasuredClassificationView.class)));
     PagedTreasuredClassification expectedResult = podamFactory.manufacturePojo(PagedTreasuredClassification.class);
 
-    when(treasuredClassificationRepositoryMock.getTreasuredClassifications(
+    when(treasuredClassificationViewRepositoryMock.getTreasuredClassifications(
       organizationId,
       filterDTO,
       pageable))
@@ -164,7 +165,7 @@ class ClassificationServiceTest {
     assertNotNull(result);
     assertEquals(expectedResult, result);
 
-    verify(treasuredClassificationRepositoryMock, times(1)).getTreasuredClassifications(
+    verify(treasuredClassificationViewRepositoryMock, times(1)).getTreasuredClassifications(
       organizationId,
       filterDTO,
       pageable);

@@ -28,7 +28,7 @@ public class ClassificationController implements ClassificationsApi {
   }
 
   @Override
-  public ResponseEntity<PagedTreasuredClassification> getClassifications(
+  public ResponseEntity<PagedTreasuredClassification> getTreasuredClassifications(
     Long organizationId,
     ClassificationsEnum label,
     LocalDate lastClassificationDateFrom, LocalDate lastClassificationDateTo,

@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.classification.repository.view;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
-import it.gov.pagopa.pu.classification.model.view.TreasuredClassification;
+import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -11,11 +11,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-@RepositoryRestResource(path = "classifications-list")
-public interface TreasuredClassificationRepository extends Repository<TreasuredClassification, Long> {
+@RepositoryRestResource(path = "treasured-classifications")
+public interface TreasuredClassificationViewRepository extends Repository<TreasuredClassificationView, Long> {
   @RestResource(exported = false)
   @Query(value = """
-    SELECT new TreasuredClassification(
+    SELECT new TreasuredClassificationView(
        c.classificationId as classificationId,
        c.organizationId as organizationId,
        c.transferId as transferId,
@@ -124,7 +124,7 @@ public interface TreasuredClassificationRepository extends Repository<TreasuredC
     AND (:#{#filter.billAmountCents} IS NULL OR c.billAmountCents = :#{#filter.billAmountCents})
     AND (:#{#filter.remittanceInformation} IS NULL OR c.remittanceInformation = :#{#filter.remittanceInformation})
     """)
-  Page<TreasuredClassification> getTreasuredClassifications(
+  Page<TreasuredClassificationView> getTreasuredClassifications(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Parameter(required = true) @Param("filter") TreasuredClassificationFilterDTO treasuredClassificationFilterDTO,
     Pageable pageable);

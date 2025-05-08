@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
-import it.gov.pagopa.pu.classification.dto.generated.TreasuredClassificationDTO;
-import it.gov.pagopa.pu.classification.model.view.TreasuredClassification;
+import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import java.util.Collections;
 import java.util.List;
@@ -34,21 +33,17 @@ class TreasuredClassificationMapperTest {
 
   @Test
   void givenPagedTreasuredClassificationsDTOWhenMapThenCorrectMapping() {
-    List<TreasuredClassification> content = List.of(
-      podamFactory.manufacturePojo(TreasuredClassification.class));
+    List<TreasuredClassificationView> content = List.of(
+      podamFactory.manufacturePojo(TreasuredClassificationView.class));
     Pageable pageable = PageRequest.of(0, 10);
-    Page<TreasuredClassification> pagedTreasuredClassifications = new PageImpl<>(
+    Page<TreasuredClassificationView> pagedTreasuredClassifications = new PageImpl<>(
       content, pageable, 1);
-
-    List<TreasuredClassificationDTO> expectedContent = pagedTreasuredClassifications.stream()
-      .map(mapper::map2DTO)
-      .toList();
 
     PagedTreasuredClassification result = mapper.map2PagedTreasuredClassification(
       pagedTreasuredClassifications);
 
     assertNotNull(result);
-    assertEquals(expectedContent, result.getContent());
+    assertEquals(pagedTreasuredClassifications.getContent(), result.getContent());
     assertEquals(pagedTreasuredClassifications.getTotalPages(),
       result.getTotalPages());
     assertEquals(pagedTreasuredClassifications.getTotalElements(),
@@ -60,7 +55,7 @@ class TreasuredClassificationMapperTest {
   @Test
   void givenPagedTreasuredClassificationsEmptyContentWhenMapThenCorrectMapping() {
     Pageable pageable = PageRequest.of(0, 10);
-    Page<TreasuredClassification> pagedTreasuredClassifications = new PageImpl<>(
+    Page<TreasuredClassificationView> pagedTreasuredClassifications = new PageImpl<>(
       Collections.emptyList(), pageable, 0);
 
     PagedTreasuredClassification result = mapper.map2PagedTreasuredClassification(
@@ -87,20 +82,16 @@ class TreasuredClassificationMapperTest {
 
   @Test
   void givenUnpagedPagedTreasuredClassificationsWhenMapThenCorrectMapping() {
-    List<TreasuredClassification> content = List.of(
-      podamFactory.manufacturePojo(TreasuredClassification.class));
-    Page<TreasuredClassification> pagedTreasuredClassifications = new PageImpl<>(
+    List<TreasuredClassificationView> content = List.of(
+      podamFactory.manufacturePojo(TreasuredClassificationView.class));
+    Page<TreasuredClassificationView> pagedTreasuredClassifications = new PageImpl<>(
       content, Pageable.unpaged(), 0);
-
-    List<TreasuredClassificationDTO> expectedContent = pagedTreasuredClassifications.stream()
-      .map(mapper::map2DTO)
-      .toList();
 
     PagedTreasuredClassification result = mapper.map2PagedTreasuredClassification(
       pagedTreasuredClassifications);
 
     assertNotNull(result);
-    assertEquals(expectedContent, result.getContent());
+    assertEquals(pagedTreasuredClassifications.getContent(), result.getContent());
     assertNull(result.getTotalPages());
     assertNull(result.getTotalElements());
     assertNull(result.getNumber());
