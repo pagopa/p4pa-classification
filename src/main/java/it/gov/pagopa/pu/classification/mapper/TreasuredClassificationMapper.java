@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class TreasuredClassificationMapper {
 
-  public TreasuredClassificationMapper() {
-  }
-
   public TreasuredClassificationDTO map2DTO(TreasuredClassification entity) {
     return TreasuredClassificationDTO.builder()
       .classificationId(entity.getClassificationId())

@@ -33,7 +33,7 @@ class TreasuredClassificationMapperTest {
   }
 
   @Test
-  void givenPagedClassificationListDTOWhenMapThenCorrectMapping() {
+  void givenPagedTreasuredClassificationsDTOWhenMapThenCorrectMapping() {
     List<TreasuredClassification> content = List.of(
       podamFactory.manufacturePojo(TreasuredClassification.class));
     Pageable pageable = PageRequest.of(0, 10);
@@ -58,7 +58,7 @@ class TreasuredClassificationMapperTest {
   }
 
   @Test
-  void givenPagedClassificationListDTOEmptyContentWhenMapThenCorrectMapping() {
+  void givenPagedTreasuredClassificationsEmptyContentWhenMapThenCorrectMapping() {
     Pageable pageable = PageRequest.of(0, 10);
     Page<TreasuredClassification> pagedTreasuredClassifications = new PageImpl<>(
       Collections.emptyList(), pageable, 0);
@@ -77,7 +77,7 @@ class TreasuredClassificationMapperTest {
   }
 
   @Test
-  void givenNullPagedClassificationListDTOWhenMapThenCorrectMapping() {
+  void givenNullPagedTreasuredClassificationsWhenMapThenCorrectMapping() {
     PagedTreasuredClassification result = mapper.map2PagedTreasuredClassification(
       null);
 
@@ -86,7 +86,7 @@ class TreasuredClassificationMapperTest {
   }
 
   @Test
-  void givenUnpagedPagedClassificationListDTOWhenMapThenCorrectMapping() {
+  void givenUnpagedPagedTreasuredClassificationsWhenMapThenCorrectMapping() {
     List<TreasuredClassification> content = List.of(
       podamFactory.manufacturePojo(TreasuredClassification.class));
     Page<TreasuredClassification> pagedTreasuredClassifications = new PageImpl<>(
