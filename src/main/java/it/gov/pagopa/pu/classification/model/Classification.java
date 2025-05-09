@@ -70,4 +70,14 @@ public class Classification extends BaseEntity implements Serializable {
   private String transferCategory;
   private OffsetDateTime receiptCreationDate;
   private String installmentBalance;
+
+  private String provisionalAe;
+  private String provisionalCode;
+  private String documentYear;
+  private String documentCode;
+  private String billYear;
+  private String billCode;
+
+  private byte[] debtorFiscalCodeHash;
+  private byte[] payerFiscalCodeHash;
 }
