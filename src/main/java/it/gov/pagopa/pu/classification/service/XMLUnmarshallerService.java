@@ -3,16 +3,16 @@ package it.gov.pagopa.pu.classification.service;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.Schema;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -35,13 +35,18 @@ public class XMLUnmarshallerService {
 	 */
 	public <T> T unmarshal(String xmlString, Class<T> clazz, JAXBContext jaxbContext, Schema schema) {
 		try (InputStream is = new ByteArrayInputStream(xmlString.getBytes())) {
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			if (schema != null) {
-				unmarshaller.setSchema(schema);
-			}
-			JAXBElement<T> element = unmarshaller.unmarshal(new StreamSource(is), clazz);
-			return element.getValue();
-		} catch (IOException | JAXBException e) {
+      SAXParserFactory spf = SAXParserFactory.newInstance();
+      spf.setNamespaceAware(true);
+      SAXParser saxParser = spf.newSAXParser();
+      NamespaceFilter namespaceFilter = new NamespaceFilter();
+      namespaceFilter.setParent(saxParser.getXMLReader());
+
+      SAXSource saxSource = new SAXSource(namespaceFilter, new org.xml.sax.InputSource(is));
+
+      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+      JAXBElement<T> element = unmarshaller.unmarshal(saxSource, clazz);
+      return element.getValue();
+		} catch (Exception e) {
 			log.error("Error while parsing xml: {}", xmlString, e);
 			throw new InvalidValueException("Error while parsing xml: "+ xmlString);
 		}

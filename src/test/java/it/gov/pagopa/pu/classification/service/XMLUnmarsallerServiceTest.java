@@ -44,7 +44,7 @@ class XMLUnmarsallerServiceTest {
   }
   @Test
   void unmarshal_returnsObjectOnValidXml() {
-    String xmlString = "<bilancio  xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\">" +
+    String xmlString = "<bilancio>" +
       "<capitolo>" +
       "<codCapitolo>CAP1</codCapitolo>" +
       "<codUfficio>UFF1</codUfficio>" +

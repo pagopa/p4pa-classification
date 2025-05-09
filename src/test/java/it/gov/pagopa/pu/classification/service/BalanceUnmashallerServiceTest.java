@@ -25,7 +25,7 @@ class BalanceUnmashallerServiceTest {
   private Resource resource;
   private BalanceUnmashallerService handler;
   private XMLUnmarshallerService xmlUnmarshallerService;
-  private static final String XML_STRING = "<bilancio  xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\">" +
+  private static final String XML_STRING = "<bilancio>" +
     "<capitolo>" +
     "<codCapitolo>CAP1</codCapitolo>" +
     "<codUfficio>UFF1</codUfficio>" +
