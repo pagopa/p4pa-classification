@@ -1,7 +1,5 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.controller.generated.TreasuryEntityExtendedControllerApi;
 import it.gov.pagopa.pu.classification.model.Treasury;
 import it.gov.pagopa.pu.classification.repository.TreasuryRepository;
@@ -21,7 +19,7 @@ public class TreasuryEntityExtendedController implements TreasuryEntityExtendedC
   }
 
   @Override
-  public ResponseEntity<Integer> saveAll(@ArraySchema(schema = @Schema(ref = "EntityModelTreasury")) List<Treasury> treasuries){
+  public ResponseEntity<Integer> saveAll(List<Treasury> treasuries){
     return ResponseEntity.ok(repository.saveAll(treasuries).size());
   }
 
