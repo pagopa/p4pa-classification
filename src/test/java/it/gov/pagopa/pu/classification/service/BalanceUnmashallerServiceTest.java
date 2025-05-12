@@ -25,17 +25,23 @@ class BalanceUnmashallerServiceTest {
   private Resource resource;
   private BalanceUnmashallerService handler;
   private XMLUnmarshallerService xmlUnmarshallerService;
-  private static final String XML_STRING = "<bilancio>" +
-    "<capitolo>" +
+  private static final String XML_STRING_CAPITOLO =  "<capitolo>" +
     "<codCapitolo>CAP1</codCapitolo>" +
     "<codUfficio>UFF1</codUfficio>" +
     "<accertamento>" +
     "<codAccertamento>ACC1</codAccertamento>" +
     "<importo>100.00</importo>" +
     "</accertamento>" +
-    "</capitolo>" +
+    "</capitolo>";
+
+  private static final String XML_STRING_BILANCIO_WITHOUT_NAMESPACE = "<bilancio>" +
+    XML_STRING_CAPITOLO +
     "</bilancio>";
 
+
+  private static final String XML_STRING_BILANCIO_WITH_NAMESPACE = "<bilancio  xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\">" +
+    XML_STRING_CAPITOLO +
+    "</bilancio>";
 
   @BeforeEach
   void setUp() {
@@ -46,10 +52,22 @@ class BalanceUnmashallerServiceTest {
 
 
   @Test
-  void testHandleValidXml() {
+  void testHandleValidXmlWithNamespace() {
 
     //when
-    CtBilancio result = handler.unmarshal(XML_STRING);
+    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE);
+
+    // then
+    assertNotNull(result);
+    assertEquals("CAP1", result.getCapitolo().getFirst().getCodCapitolo());
+    assertEquals("UFF1", result.getCapitolo().getFirst().getCodUfficio());
+  }
+
+  @Test
+  void testHandleValidXmlWithoutNamespace() {
+
+    //when
+    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITHOUT_NAMESPACE);
 
     // then
     assertNotNull(result);

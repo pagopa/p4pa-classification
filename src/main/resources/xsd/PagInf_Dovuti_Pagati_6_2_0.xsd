@@ -2,7 +2,7 @@
 <xsd:schema
   xmlns:pay_i="http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/"
-  elementFormDefault="unqualified" attributeFormDefault="unqualified"
+  elementFormDefault="qualified" attributeFormDefault="unqualified"
   version="6.0.1">
   <xsd:annotation>
     <xsd:documentation>Dovuti e Pagati</xsd:documentation>
