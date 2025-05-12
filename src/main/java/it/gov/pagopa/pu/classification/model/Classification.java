@@ -79,5 +79,4 @@ public class Classification extends BaseEntity implements Serializable {
   private String billCode;
 
   private byte[] debtorFiscalCodeHash;
-  private byte[] payerFiscalCodeHash;
 }
