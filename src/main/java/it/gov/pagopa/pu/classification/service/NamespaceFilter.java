@@ -10,12 +10,16 @@ import org.xml.sax.helpers.XMLFilterImpl;
 @Slf4j
 public class NamespaceFilter extends XMLFilterImpl {
 
-  private static final String NAMESPACE = "http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/";
+  private String namespace;
+
+  NamespaceFilter(String namespace) {
+    this.namespace = namespace;
+  }
 
   @Override
   public void endElement(String uri, String localName, String qName)
           throws SAXException {
-    super.endElement(NAMESPACE, localName, qName);
+    super.endElement(namespace, localName, qName);
   }
 
   @Override
@@ -23,7 +27,7 @@ public class NamespaceFilter extends XMLFilterImpl {
     if (uri == null || uri.isEmpty()) {
       log.info("Adding namespace to element: {}", localName);
       AttributesImpl newAttrs = new AttributesImpl(atts);
-      super.startElement(NAMESPACE, localName, qName, newAttrs);
+      super.startElement(namespace, localName, qName, newAttrs);
     } else {
       super.startElement(uri, localName, qName, atts);
     }

@@ -43,7 +43,8 @@ public class BalanceUnmashallerService {
    * @return the unmarshalled CtFlussoRiversamento object
    */
   public CtBilancio unmarshal(String xmlString) {
-    return xmlUnmarshallerService.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema);
+    String namespace = "http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/";
+    return xmlUnmarshallerService.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema, namespace);
   }
 
 }

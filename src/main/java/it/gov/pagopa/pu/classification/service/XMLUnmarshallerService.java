@@ -36,9 +36,9 @@ public class XMLUnmarshallerService {
 	 * @param schema      the pre-configured Schema instance for validation (optional)
 	 * @return the unmarshalled Java object of type {@code T}
 	 */
-  public <T> T unmarshal(String xmlString, Class<T> clazz, JAXBContext jaxbContext, Schema schema) {
+  public <T> T unmarshal(String xmlString, Class<T> clazz, JAXBContext jaxbContext, Schema schema, String namespace) {
     try (InputStream is = new ByteArrayInputStream(xmlString.getBytes())) {
-      XMLFilter filter = new NamespaceFilter();
+      XMLFilter filter = new NamespaceFilter(namespace);
 
       SAXParserFactory spf = SAXParserFactory.newInstance();
       spf.setNamespaceAware(true);
