@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.repository.AssessmentsDetailRepository;
 import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
 import it.gov.pagopa.pu.classification.util.TestUtils;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
@@ -60,7 +60,7 @@ class AssessmentsDetailServiceImplTest {
 
   @Test
   void buildAssessmentDetail_returnsAssessmentDetails() {
-    InstallmentNoPIIResponse installment = TestUtils.getPodamFactory().manufacturePojo(InstallmentNoPIIResponse.class);
+    InstallmentNoPII installment = TestUtils.getPodamFactory().manufacturePojo(InstallmentNoPII.class);
     installment.setBalance(BALANCE);
     ReceiptNoPII receipt = new ReceiptNoPII();
     receipt.setPaymentDateTime(OffsetDateTime.now());
@@ -102,7 +102,7 @@ class AssessmentsDetailServiceImplTest {
 
   @Test
   void buildAssessmentDetail_returnsEmptyListOnEmptyCapitolo() {
-    InstallmentNoPIIResponse installment = new InstallmentNoPIIResponse();
+    InstallmentNoPII installment = new InstallmentNoPII();
     installment.setBalance(BALANCE);
     ReceiptNoPII receipt = new ReceiptNoPII();
     Assessments assessment = new Assessments();
@@ -119,7 +119,7 @@ class AssessmentsDetailServiceImplTest {
 
   @Test
   void createAssessmentDetail_savesNewDetails() {
-    InstallmentNoPIIResponse installment = new InstallmentNoPIIResponse();
+    InstallmentNoPII installment = new InstallmentNoPII();
     installment.setBalance(BALANCE);
     installment.setIuv("IUV");
     installment.setIud("IUD");
@@ -150,7 +150,7 @@ class AssessmentsDetailServiceImplTest {
 
   @Test
   void createAssessmentDetail_updatesExistingDetails() {
-    InstallmentNoPIIResponse installment = new InstallmentNoPIIResponse();
+    InstallmentNoPII installment = new InstallmentNoPII();
     installment.setBalance(BALANCE);
     installment.setIuv("IUV");
     installment.setIud("IUD");

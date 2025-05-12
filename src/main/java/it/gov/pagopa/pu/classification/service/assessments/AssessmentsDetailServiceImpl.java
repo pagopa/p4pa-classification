@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.repository.AssessmentsDetailRepository;
 import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
 import it.gov.pagopa.pu.classification.util.Utilities;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
@@ -32,8 +32,8 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
 
   @Transactional
   @Override
-  public void createAssessmentDetail(Assessments assessments, ReceiptNoPII receipt, InstallmentNoPIIResponse installment) {
-    List<AssessmentsDetail> assessmentsDetailList = buildAssessmentDetail(receipt, installment, assessments);
+  public void createAssessmentDetail(Assessments assessments, ReceiptNoPII receipt, InstallmentNoPII installmentNoPII) {
+    List<AssessmentsDetail> assessmentsDetailList = buildAssessmentDetail(receipt, installmentNoPII, assessments);
     assessmentsDetailList.forEach(assessmentDetail -> {
       AssessmentsDetail ad = assessmentsDetailRepository.findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
         assessmentDetail.getDebtPositionTypeOrgCode(), assessmentDetail.getIuv(), assessmentDetail.getIud(),
@@ -47,7 +47,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     });
   }
 
-  List<AssessmentsDetail> buildAssessmentDetail(ReceiptNoPII receipt, InstallmentNoPIIResponse installment, Assessments assessment) {
+  List<AssessmentsDetail> buildAssessmentDetail(ReceiptNoPII receipt, InstallmentNoPII installment, Assessments assessment) {
     CtBilancio balance = balanceUnmashallerService.unmarshal(installment.getBalance());
 
     List<CtCapitolo> capitoloList = balance.getCapitolo();

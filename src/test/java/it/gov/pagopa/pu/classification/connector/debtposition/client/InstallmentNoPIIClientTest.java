@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositio
 import it.gov.pagopa.pu.debtposition.client.generated.InstallmentNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelInstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelInstallmentNoPIIEmbedded;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +32,7 @@ class InstallmentNoPIIClientTest {
 	void getByReceiptId_withValidReceiptId_returnsInstallments() {
 		String accessToken = "ACCESSTOKEN";
 		Long receiptId = 1L;
-		List<InstallmentNoPIIResponse> expectedInstallments = List.of(new InstallmentNoPIIResponse());
+		List<InstallmentNoPII> expectedInstallments = List.of(new InstallmentNoPII());
 		CollectionModelInstallmentNoPIIEmbedded embedded = CollectionModelInstallmentNoPIIEmbedded.builder()
 				.installmentNoPIIs(expectedInstallments).build();
 		CollectionModelInstallmentNoPII collectionModel = CollectionModelInstallmentNoPII.builder()
@@ -44,7 +44,7 @@ class InstallmentNoPIIClientTest {
 		when(installmentNoPiiSearchControllerApiMock.crudInstallmentsFindByReceiptId(receiptId))
 				.thenReturn(collectionModel);
 
-		List<InstallmentNoPIIResponse> result = installmentNoPIIClient.getByReceiptId(receiptId, accessToken);
+		List<InstallmentNoPII> result = installmentNoPIIClient.getByReceiptId(receiptId, accessToken);
 
 		Assertions.assertEquals(expectedInstallments, result);
 		verify(debtPositionApisHolderMock, times(1)).getInstallmentNoPIISearchControllerApi(accessToken);
