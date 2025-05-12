@@ -27,7 +27,7 @@ public class FullClassificationViewPIIMapper {
       .paymentNotificationPaymentExecutionDate(noPii.getPaymentNotificationPaymentExecutionDate())
       .paymentNotificationPaymentType(noPii.getPaymentNotificationPaymentType())
       .paymentNotificationAmountPaidCents(noPii.getPaymentNotificationAmountPaidCents())
-      .paymentNotificationPaCommission(noPii.getPaymentNotificationPaCommissionCents())
+      .paymentNotificationPaCommissionCents(noPii.getPaymentNotificationPaCommissionCents())
       .paymentNotificationRemittanceInformation(noPii.getPaymentNotificationRemittanceInformation())
       .paymentNotificationTransferCategory(noPii.getPaymentNotificationTransferCategory())
       .paymentNotificationDebtPositionTypeOrgCode(noPii.getPaymentNotificationDebtPositionTypeOrgCode())
