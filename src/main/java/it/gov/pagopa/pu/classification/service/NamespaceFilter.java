@@ -11,13 +11,11 @@ public class NamespaceFilter extends XMLFilterImpl {
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-    // Usa il localName per ignorare il namespace
     super.startElement("", localName, localName, attributes);
   }
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    // Usa il localName per ignorare il namespace
     super.endElement("", localName, localName);
   }
 
