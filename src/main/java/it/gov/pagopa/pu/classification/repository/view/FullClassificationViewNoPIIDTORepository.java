@@ -88,7 +88,7 @@ public interface FullClassificationViewNoPIIDTORepository extends Repository<Ful
       pn.paymentExecutionDate as paymentNotificationPaymentExecutionDate,
       pn.paymentType as paymentNotificationPaymentType,
       pn.amountPaidCents as paymentNotificationAmountPaidCents,
-      pn.paCommission as paymentNotificationPaCommission,
+      pn.paCommissionCents as paymentNotificationPaCommissionCents,
       pn.remittanceInformation as paymentNotificationRemittanceInformation,
       pn.transferCategory as paymentNotificationTransferCategory,
       pn.debtPositionTypeOrgCode as paymentNotificationDebtPositionTypeOrgCode,
