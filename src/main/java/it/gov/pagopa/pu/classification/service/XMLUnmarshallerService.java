@@ -1,14 +1,17 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLFilter;
+import org.xml.sax.XMLReader;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import java.io.ByteArrayInputStream;
@@ -33,17 +36,32 @@ public class XMLUnmarshallerService {
 	 * @param schema      the pre-configured Schema instance for validation (optional)
 	 * @return the unmarshalled Java object of type {@code T}
 	 */
-	public <T> T unmarshal(String xmlString, Class<T> clazz, JAXBContext jaxbContext, Schema schema) {
-		try (InputStream is = new ByteArrayInputStream(xmlString.getBytes())) {
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			if (schema != null) {
-				unmarshaller.setSchema(schema);
-			}
-			JAXBElement<T> element = unmarshaller.unmarshal(new StreamSource(is), clazz);
-			return element.getValue();
-		} catch (IOException | JAXBException e) {
-			log.error("Error while parsing xml: {}", xmlString, e);
-			throw new InvalidValueException("Error while parsing xml: "+ xmlString);
-		}
-	}
+  public <T> T unmarshal(String xmlString, Class<T> clazz, JAXBContext jaxbContext, Schema schema, String namespace) {
+    try (InputStream is = new ByteArrayInputStream(xmlString.getBytes())) {
+      XMLFilter filter = new NamespaceFilter(namespace);
+
+      SAXParserFactory spf = SAXParserFactory.newInstance();
+      spf.setNamespaceAware(true);
+      if (schema != null) {
+        spf.setSchema(schema);
+      }
+      SAXParser sp = spf.newSAXParser();
+      XMLReader xr = sp.getXMLReader();
+      filter.setParent(xr);
+
+      InputSource inputSource = new InputSource(is);
+      SAXSource saxSource = new SAXSource(filter, inputSource);
+
+      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+      if (schema != null) {
+        unmarshaller.setSchema(schema);
+      }
+
+      JAXBElement<T> element = unmarshaller.unmarshal(saxSource, clazz);
+      return element.getValue();
+    } catch (Exception e) {
+      log.error("Error while parsing xml: {}", xmlString, e);
+      throw new InvalidValueException("Error while parsing xml: " + xmlString);
+    }
+  }
 }

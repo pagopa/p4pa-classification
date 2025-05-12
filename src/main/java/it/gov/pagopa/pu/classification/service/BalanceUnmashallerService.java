@@ -23,6 +23,7 @@ public class BalanceUnmashallerService {
   private final Schema schema;
   private final XMLUnmarshallerService xmlUnmarshallerService;
 
+  private static final String NAMESPACE = "http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/";
 
   public BalanceUnmashallerService(@Value("classpath:xsd/PagInf_Dovuti_Pagati_6_2_0.xsd") Resource paymetsReportingXsdResource,
                                    XMLUnmarshallerService xmlUnmarshallerService) {
@@ -43,7 +44,7 @@ public class BalanceUnmashallerService {
    * @return the unmarshalled CtFlussoRiversamento object
    */
   public CtBilancio unmarshal(String xmlString) {
-    return xmlUnmarshallerService.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema);
+    return xmlUnmarshallerService.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema, NAMESPACE);
   }
 
 }

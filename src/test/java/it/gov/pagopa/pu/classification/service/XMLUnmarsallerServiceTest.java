@@ -44,7 +44,7 @@ class XMLUnmarsallerServiceTest {
   }
   @Test
   void unmarshal_returnsObjectOnValidXml() {
-    String xmlString = "<bilancio  xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\">" +
+    String xmlString = "<bilancio>" +
       "<capitolo>" +
       "<codCapitolo>CAP1</codCapitolo>" +
       "<codUfficio>UFF1</codUfficio>" +
@@ -65,7 +65,7 @@ class XMLUnmarsallerServiceTest {
     capitolo.getAccertamento().add(accertamento);
     expectedBilancio.getCapitolo().add(capitolo);
 
-    CtBilancio result = service.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema);
+    CtBilancio result = service.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema,"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/");
 
     assertNotNull(result);
     assertEquals(expectedBilancio.getCapitolo().size(), result.getCapitolo().size());
@@ -81,7 +81,7 @@ class XMLUnmarsallerServiceTest {
     String xmlString = "invalid.xml";
 
     assertThrows(InvalidValueException.class, () -> {
-      service.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema);
+      service.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema, "http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/");
     });
   }
 
@@ -90,7 +90,7 @@ class XMLUnmarsallerServiceTest {
     String xmlString = "nonexistent.xml";
 
     assertThrows(InvalidValueException.class, () -> {
-      service.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema);
+      service.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema, "http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/");
     });
   }
 }
