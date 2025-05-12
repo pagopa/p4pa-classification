@@ -12,7 +12,7 @@ public class NamespaceFilter extends XMLFilterImpl {
 
   private String namespace;
 
-  NamespaceFilter(String namespace) {
+  public NamespaceFilter(String namespace) {
     this.namespace = namespace;
   }
 
