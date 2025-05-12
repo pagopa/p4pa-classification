@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.time.LocalDate;
 
 @Entity
@@ -40,7 +39,7 @@ public class PaymentNotificationNoPII extends BaseEntity implements Serializable
   private String paymentType;
   @NotNull
   private Long amountPaidCents;
-  private Long paCommission;
+  private Long paCommissionCents;
   @NotNull
   private String remittanceInformation;
   @NotNull

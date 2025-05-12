@@ -35,8 +35,8 @@ public class FullClassificationViewDTO extends ClassificationViewDTO {
   @JsonProperty("payNotice_amountPaidCents")
   private Long paymentNotificationAmountPaidCents;
 
-  @JsonProperty("payNotice_paCommission")
-  private Long paymentNotificationPaCommission;
+  @JsonProperty("payNotice_paCommissionCents")
+  private Long paymentNotificationPaCommissionCents;
 
   @JsonProperty("payNotice_remittanceInformation")
   private String paymentNotificationRemittanceInformation;
