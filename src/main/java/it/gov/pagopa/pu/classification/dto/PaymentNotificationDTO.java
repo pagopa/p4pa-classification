@@ -25,7 +25,7 @@ public class PaymentNotificationDTO implements FullPIIDTO<PaymentNotificationNoP
   private LocalDate paymentExecutionDate;
   private String paymentType;
   private Long amountPaidCents;
-  private Long paCommission;
+  private Long paCommissionCents;
   private String remittanceInformation;
   private String transferCategory;
   private String debtPositionTypeOrgCode;

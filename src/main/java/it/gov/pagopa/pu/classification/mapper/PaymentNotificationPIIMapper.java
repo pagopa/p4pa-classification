@@ -28,7 +28,7 @@ public class PaymentNotificationPIIMapper extends BasePIIMapper<PaymentNotificat
     noPii.setPaymentExecutionDate(fullDTO.getPaymentExecutionDate());
     noPii.setPaymentType(fullDTO.getPaymentType());
     noPii.setAmountPaidCents(fullDTO.getAmountPaidCents());
-    noPii.setPaCommission(fullDTO.getPaCommission());
+    noPii.setPaCommissionCents(fullDTO.getPaCommissionCents());
     noPii.setRemittanceInformation(fullDTO.getRemittanceInformation());
     noPii.setTransferCategory(fullDTO.getTransferCategory());
     noPii.setDebtPositionTypeOrgCode(fullDTO.getDebtPositionTypeOrgCode());
@@ -64,7 +64,7 @@ public class PaymentNotificationPIIMapper extends BasePIIMapper<PaymentNotificat
       .paymentExecutionDate(noPii.getPaymentExecutionDate())
       .paymentType(noPii.getPaymentType())
       .amountPaidCents(noPii.getAmountPaidCents())
-      .paCommission(noPii.getPaCommission())
+      .paCommissionCents(noPii.getPaCommissionCents())
       .remittanceInformation(noPii.getRemittanceInformation())
       .transferCategory(noPii.getTransferCategory())
       .debtPositionTypeOrgCode(noPii.getDebtPositionTypeOrgCode())
