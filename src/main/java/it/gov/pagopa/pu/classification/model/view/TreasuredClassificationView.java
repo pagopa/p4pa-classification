@@ -23,6 +23,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class TreasuredClassificationView implements Serializable {
+  //region Classification fields
   @Id
   private Long classificationId;
   private Long organizationId;
@@ -50,7 +51,8 @@ public class TreasuredClassificationView implements Serializable {
   private String pspCompanyName;
   private String pspLastName;
   private String debtPositionTypeOrgCode;
-  private String debtPositionTypeOrgDescription;
+  //TODO: P4ADEV-2918 will be added in Classification entity
+  //private String debtPositionTypeOrgDescription;
   private String installmentIngestionFlowFileName;
   private String receiptOrgFiscalCode;
   private String receiptPaymentReceiptId;
@@ -68,7 +70,9 @@ public class TreasuredClassificationView implements Serializable {
   private String transferCategory;
   private OffsetDateTime receiptCreationDate;
   private String installmentBalance;
+  //endregion
 
+  //region Treasury fields
   private String treasuryBillYear;
   private String treasuryBillCode;
   private Long treasuryIngestionFlowFileId;
@@ -108,5 +112,6 @@ public class TreasuredClassificationView implements Serializable {
   private LocalDate treasuryActualSuspensionDate;
   private String treasuryManagementProvisionalCode;
   private String treasuryEndToEndId;
+  //endregion
 
 }

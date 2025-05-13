@@ -30,8 +30,8 @@ public class ClassificationController implements ClassificationsApi {
   @Override
   public ResponseEntity<PagedTreasuredClassification> getTreasuredClassifications(
     Long organizationId,
-    ClassificationsEnum label,
     LocalDate lastClassificationDateFrom, LocalDate lastClassificationDateTo,
+    ClassificationsEnum label,
     String iud, String iuv, String iur, OffsetDateTime payDateFrom,
     OffsetDateTime payDateTo, OffsetDateTime paymentDateTimeFrom,
     OffsetDateTime paymentDateTimeTo, LocalDate regulationDateFrom,
@@ -40,7 +40,8 @@ public class ClassificationController implements ClassificationsApi {
     String pspCompanyName, String pspLastName, String iuf,
     String regulationUniqueIdentifier, String accountRegistryCode,
     Long billAmountCents, String remittanceInformation, Pageable pageable) {
-    log.info("Retrieving Classifications having organizationId: {}", organizationId);
+    log.info("Retrieving Classifications having organizationId: {}",
+      organizationId);
 
     LocalDateIntervalFilter lastClassificationDate = new LocalDateIntervalFilter(
       lastClassificationDateFrom, lastClassificationDateTo);
@@ -56,35 +57,7 @@ public class ClassificationController implements ClassificationsApi {
     LocalDateIntervalFilter regionValueDate = new LocalDateIntervalFilter(
       regionValueDateFrom, regionValueDateTo);
 
-    TreasuredClassificationFilterDTO filter = buildClassificationListFilterDTO(label,
-      iud, iuv, iur, lastClassificationDate, payDate, paymentDate,
-      regulationDate, billDate, regionValueDate, pspCompanyName, pspLastName,
-      iuf, regulationUniqueIdentifier, accountRegistryCode, billAmountCents,
-      remittanceInformation);
-
-    return ResponseEntity.ok(
-      classificationService.getPagedTreasuredClassification(organizationId, filter,
-        pageable));
-  }
-
-  @Override
-  public ResponseEntity<ClassificationDetailViewDTO> getClassificationDetail(Long organizationId, Long classificationId) {
-    return ResponseEntity.ok(classificationService.getClassificationDetailView(organizationId, classificationId));
-  }
-
-  private TreasuredClassificationFilterDTO buildClassificationListFilterDTO(
-    ClassificationsEnum label,
-    String iud, String iuv, String iur,
-    LocalDateIntervalFilter lastClassificationDate,
-    LocalDateTimeIntervalFilter payDate,
-    OffsetDateTimeIntervalFilter paymentDate,
-    LocalDateIntervalFilter regulationDate,
-    LocalDateIntervalFilter billDate,
-    LocalDateIntervalFilter regionValueDate,
-    String pspCompanyName, String pspLastName, String iuf,
-    String regulationUniqueIdentifier, String accountRegistryCode,
-    Long billAmountCents, String remittanceInformation) {
-    return TreasuredClassificationFilterDTO.builder()
+    TreasuredClassificationFilterDTO filter = TreasuredClassificationFilterDTO.builder()
       .label(label)
       .iud(iud)
       .iuv(iuv)
@@ -103,5 +76,19 @@ public class ClassificationController implements ClassificationsApi {
       .billAmountCents(billAmountCents)
       .remittanceInformation(remittanceInformation)
       .build();
+
+    return ResponseEntity.ok(
+      classificationService.getPagedTreasuredClassification(organizationId,
+        filter,
+        pageable));
   }
+
+  @Override
+  public ResponseEntity<ClassificationDetailViewDTO> getClassificationDetail(
+    Long organizationId, Long classificationId) {
+    return ResponseEntity.ok(
+      classificationService.getClassificationDetailView(organizationId,
+        classificationId));
+  }
+
 }
