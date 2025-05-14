@@ -39,44 +39,44 @@ public class ClassificationExceptionHandler {
 
   @ExceptionHandler({ExportTooManyRecordsException.class})
   public ResponseEntity<ClassificationErrorDTO> handleExportTooManyRecordsException(RuntimeException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST);
   }
 
   @ExceptionHandler({InvalidDateTimeIntervalException.class})
   public ResponseEntity<ClassificationErrorDTO> handleInvalidDateTimeIntervalException(RuntimeException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST);
   }
 
   @ExceptionHandler({InvalidValueException.class})
   public ResponseEntity<ClassificationErrorDTO> handleInternalError(RuntimeException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST);
   }
 
   @ExceptionHandler({NotFoundException.class, ResourceNotFoundException.class})
   public ResponseEntity<ClassificationErrorDTO> handleNotFoundError(RuntimeException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.NOT_FOUND, ClassificationErrorDTO.CodeEnum.NOT_FOUND);
+    return handleException(ex, request, HttpStatus.NOT_FOUND, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_NOT_FOUND);
   }
 
   @ExceptionHandler({DataIntegrityViolationException.class})
   public ResponseEntity<ClassificationErrorDTO> handleDataIntegrityViolationException(Exception ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.CONFLICT, ClassificationErrorDTO.CodeEnum.CONFLICT);
+    return handleException(ex, request, HttpStatus.CONFLICT, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_CONFLICT);
   }
 
   @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class})
   public ResponseEntity<ClassificationErrorDTO> handleViolationException(Exception ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST);
   }
 
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})
   public ResponseEntity<ClassificationErrorDTO> handleServletException(Exception ex, HttpServletRequest request) {
     HttpStatusCode httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-    ClassificationErrorDTO.CodeEnum errorCode = ClassificationErrorDTO.CodeEnum.GENERIC_ERROR;
+    ClassificationErrorDTO.CodeEnum errorCode = ClassificationErrorDTO.CodeEnum.CLASSIFICATION_GENERIC_ERROR;
     if (ex instanceof ErrorResponse errorResponse) {
       httpStatus = errorResponse.getStatusCode();
       if(httpStatus.isSameCodeAs(HttpStatus.NOT_FOUND)) {
-        errorCode = ClassificationErrorDTO.CodeEnum.NOT_FOUND;
+        errorCode = ClassificationErrorDTO.CodeEnum.CLASSIFICATION_NOT_FOUND;
       } else if (httpStatus.is4xxClientError()) {
-        errorCode = ClassificationErrorDTO.CodeEnum.BAD_REQUEST;
+        errorCode = ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST;
       }
     }
     return handleException(ex, request, httpStatus, errorCode);
@@ -93,7 +93,7 @@ public class ClassificationExceptionHandler {
 
   @ExceptionHandler({RuntimeException.class})
   public ResponseEntity<ClassificationErrorDTO> handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, ClassificationErrorDTO.CodeEnum.GENERIC_ERROR);
+    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_GENERIC_ERROR);
   }
 
   static ResponseEntity<ClassificationErrorDTO> handleException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus, ClassificationErrorDTO.CodeEnum errorEnum) {
