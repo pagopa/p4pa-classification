@@ -126,6 +126,6 @@ public interface TreasuredClassificationViewRepository extends Repository<Treasu
     """)
   Page<TreasuredClassificationView> getTreasuredClassifications(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
-    @Param("filter") TreasuredClassificationFilterDTO treasuredClassificationFilterDTO,
+    @Parameter(required = true) @Param("filter") TreasuredClassificationFilterDTO treasuredClassificationFilterDTO,
     Pageable pageable);
 }
