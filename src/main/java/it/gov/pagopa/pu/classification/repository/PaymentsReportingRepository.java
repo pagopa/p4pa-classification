@@ -32,14 +32,14 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     SELECT p
     FROM PaymentsReporting p
     WHERE p.organizationId = :organizationId
-      AND p.iuf = :iuf
+      AND (:iuf IS NULL OR p.iuf = :iuf)
       AND (:iuv IS NULL OR p.iuv = :iuv)
       AND (cast(:payDateFrom AS DATE) IS NULL OR p.payDate >= :payDateFrom)
       AND (cast(:payDateTo AS DATE) IS NULL OR p.payDate <= :payDateTo)
     """)
   Page<PaymentsReporting> findPaymentsReportingByFilters(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
-    @Parameter(required = true) @Param("iuf") String iuf,
+    @Param("iuf") String iuf,
     String iuv,
     LocalDate payDateFrom,
     LocalDate payDateTo,
