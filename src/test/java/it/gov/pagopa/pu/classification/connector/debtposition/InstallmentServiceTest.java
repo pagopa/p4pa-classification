@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.debtposition;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.client.InstallmentNoPIIClient;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,12 +34,12 @@ class InstallmentServiceTest {
 		// Given
 		String accessToken = "ACCESSTOKEN";
 		Long receiptId = 1L;
-    List<InstallmentNoPIIResponse> expected = List.of();
+    List<InstallmentNoPII> expected = List.of();
 
 		when(clientMock.getByReceiptId(receiptId, accessToken)).thenReturn(expected);
 
 		// When
-		List<InstallmentNoPIIResponse> result = service.getByReceiptId(receiptId, accessToken);
+		List<InstallmentNoPII> result = service.getByReceiptId(receiptId, accessToken);
 
 		// Then
 		assertSame(expected, result);

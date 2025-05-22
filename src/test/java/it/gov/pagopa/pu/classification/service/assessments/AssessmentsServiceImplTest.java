@@ -8,9 +8,9 @@ import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.classification.util.TestUtils;
-import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIResponseFaker;
+import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIFaker;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import org.junit.jupiter.api.AfterEach;
@@ -68,9 +68,9 @@ class AssessmentsServiceImplTest {
   }
 
   @Test
-  void buildAssessment_withValidInstallmentNoPIIResponse_returnsAssessment() {
+  void buildAssessment_withValidInstallmentNoPII_returnsAssessment() {
     String accessToken = "accessToken";
-    InstallmentNoPIIResponse installment = InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse();
+    InstallmentNoPII installment = InstallmentNoPIIFaker.buildInstallmentNoPII();
     IngestionFlowFile ingestionFlowFile = TestUtils.getPodamFactory().manufacturePojo(IngestionFlowFile.class);
     ingestionFlowFile.setOrganizationId(1L);
     ingestionFlowFile.setFileName("testFile");
@@ -95,18 +95,18 @@ class AssessmentsServiceImplTest {
   }
 
   @Test
-  void buildAssessmentNoIngestionFlowFileId_withValidInstallmentNoPIIResponse_returnsAssessment() {
+  void buildAssessmentNoIngestionFlowFileId_withValidInstallmentNoPII_returnsAssessment() {
     String accessToken = "accessToken";
-    InstallmentNoPIIResponse installmentNoPIIResponse = InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse();
-    installmentNoPIIResponse.setIngestionFlowFileId(null);
+    InstallmentNoPII installmentNoPII = InstallmentNoPIIFaker.buildInstallmentNoPII();
+    installmentNoPII.setIngestionFlowFileId(null);
     DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
     debtPositionTypeOrg.setCode("testCode");
     debtPositionTypeOrg.setDebtPositionTypeOrgId(2L);
 
-    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installmentNoPIIResponse.getInstallmentId(), accessToken))
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installmentNoPII.getInstallmentId(), accessToken))
       .thenReturn(debtPositionTypeOrg);
 
-    Assessments result = service.buildAssessment(installmentNoPIIResponse, accessToken);
+    Assessments result = service.buildAssessment(installmentNoPII, accessToken);
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(debtPositionTypeOrg.getOrganizationId(), result.getOrganizationId());
@@ -121,7 +121,7 @@ class AssessmentsServiceImplTest {
   void createAssessment_withValidReceiptId_returnsAssessments() {
     Long receiptId = 1L;
     String accessToken = "accessToken";
-    List<InstallmentNoPIIResponse> installments = List.of(InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse());
+    List<InstallmentNoPII> installments = List.of(InstallmentNoPIIFaker.buildInstallmentNoPII());
     ReceiptNoPII receipt = new ReceiptNoPII();
     Assessments assessment = new Assessments();
     IngestionFlowFile ingestionFlowFile = new IngestionFlowFile();
@@ -155,7 +155,7 @@ class AssessmentsServiceImplTest {
     Long receiptId = 1L;
     String accessToken = "accessToken";
     ReceiptNoPII receipt = new ReceiptNoPII();
-    InstallmentNoPIIResponse installment = InstallmentNoPIIResponseFaker.buildInstallmentNoPIIResponse();
+    InstallmentNoPII installment = InstallmentNoPIIFaker.buildInstallmentNoPII();
     installment.setBalance(null);
 
     when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);

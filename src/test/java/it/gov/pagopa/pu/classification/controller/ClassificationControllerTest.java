@@ -66,9 +66,9 @@ class ClassificationControllerTest {
 
     ResponseEntity<PagedTreasuredClassification> response = controller.getTreasuredClassifications(
       organizationId,
-      filterDTO.getLabel(),
       filterDTO.getLastClassificationDate().getFrom(),
       filterDTO.getLastClassificationDate().getTo(),
+      filterDTO.getLabel(),
       filterDTO.getIud(),
       filterDTO.getIuv(),
       filterDTO.getIur(),

@@ -692,7 +692,6 @@ paths:
           description: The ID of the organization
         - name: label
           in: query
-          required: true
           schema:
             type: ClassificationsEnum
         - name: iud

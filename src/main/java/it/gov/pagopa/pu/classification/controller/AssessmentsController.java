@@ -1,9 +1,5 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsControllerApi;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.service.assessments.AssessmentsService;
@@ -25,8 +21,6 @@ public class AssessmentsController implements AssessmentsControllerApi {
     this.assessmentsService = assessmentsService;
   }
 
-
-  @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(ref = "EntityModelAssessments"))))
   @Override
   public ResponseEntity<List<Assessments>> createAssessmentByReceiptId(Long receiptId) {
     String accessToken = SecurityUtils.getAccessToken();

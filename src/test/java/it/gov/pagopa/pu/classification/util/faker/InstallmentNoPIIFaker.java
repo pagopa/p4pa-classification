@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.util.faker;
 
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentSyncStatus;
 import it.gov.pagopa.pu.debtposition.dto.generated.PersonEntityType;
@@ -8,10 +8,10 @@ import it.gov.pagopa.pu.debtposition.dto.generated.PersonEntityType;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-public class InstallmentNoPIIResponseFaker {
+public class InstallmentNoPIIFaker {
 
-    public static InstallmentNoPIIResponse buildInstallmentNoPIIResponse(){
-        return InstallmentNoPIIResponse.builder()
+    public static InstallmentNoPII buildInstallmentNoPII(){
+        return InstallmentNoPII.builder()
                 .creationDate(OffsetDateTime.now())
                 .updateDate(OffsetDateTime.now())
                 .updateOperatorExternalId("operator123")

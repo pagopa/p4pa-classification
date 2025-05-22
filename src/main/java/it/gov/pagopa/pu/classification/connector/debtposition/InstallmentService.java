@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.connector.debtposition;
 
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 
 import java.util.List;
 
@@ -15,6 +15,6 @@ public interface InstallmentService {
    * @param receiptId the unique identifier of the receipt.
    * @return a list of InstallmentNoPII associated with the given receipt ID.
    */
-  List<InstallmentNoPIIResponse> getByReceiptId(Long receiptId, String accessToken);
+  List<InstallmentNoPII> getByReceiptId(Long receiptId, String accessToken);
 
 }

@@ -8,7 +8,7 @@ import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPIIResponse;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import jakarta.transaction.Transactional;
@@ -58,7 +58,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   @Override
   public List<Assessments> createAssesment(Long receiptId, String accessToken) {
     ReceiptNoPII receipt = receiptService.getById(receiptId, accessToken);
-    List<InstallmentNoPIIResponse> installmentsList = installmentService.getByReceiptId(receiptId, accessToken);
+    List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(receiptId, accessToken);
 
     return installmentsList.stream()
       .filter(i -> {
@@ -88,7 +88,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    * @param accessToken the access token for authentication
    * @return the built assessment
    */
-  Assessments buildAssessment(InstallmentNoPIIResponse installment, String accessToken) {
+  Assessments buildAssessment(InstallmentNoPII installment, String accessToken) {
     IngestionFlowFile ingestionFlowFile = installment.getIngestionFlowFileId() != null
       ? ingestionFlowFileService.getIngestionFlowFile(installment.getIngestionFlowFileId(), accessToken)
       : null;

@@ -19,7 +19,7 @@ public class FullClassificationViewNoPII extends ClassificationViewNoPII {
   private LocalDate paymentNotificationPaymentExecutionDate;
   private String paymentNotificationPaymentType;
   private Long paymentNotificationAmountPaidCents;
-  private Long paymentNotificationPaCommission;
+  private Long paymentNotificationPaCommissionCents;
   private String paymentNotificationRemittanceInformation;
   private String paymentNotificationTransferCategory;
   private String paymentNotificationDebtPositionTypeOrgCode;

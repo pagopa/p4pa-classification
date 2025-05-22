@@ -93,7 +93,7 @@ public interface TreasuredClassificationViewRepository extends Repository<Treasu
        t.transferPgCode as treasuryTransferPgCode,
        t.processPgNumber as treasuryProcessPgNumber,
        t.regionValueDate as treasuryRegionValueDate,
-       t.isRegularized as treasuryIsRegularized,
+       COALESCE(t.isRegularized, false) as treasuryIsRegularized,
        t.actualSuspensionDate as treasuryActualSuspensionDate,
        t.managementProvisionalCode as treasuryManagementProvisionalCode,
        t.endToEndId as treasuryEndToEndId
