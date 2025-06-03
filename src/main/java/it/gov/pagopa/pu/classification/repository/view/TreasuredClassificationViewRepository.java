@@ -123,6 +123,14 @@ public interface TreasuredClassificationViewRepository extends Repository<Treasu
     AND (:#{#filter.accountRegistryCode} IS NULL OR c.accountRegistryCode = :#{#filter.accountRegistryCode})
     AND (:#{#filter.billAmountCents} IS NULL OR c.billAmountCents = :#{#filter.billAmountCents})
     AND (:#{#filter.remittanceInformation} IS NULL OR c.remittanceInformation = :#{#filter.remittanceInformation})
+    AND (:#{#filter.billYear} IS NULL OR c.billYear = :#{#filter.billYear})
+    AND (:#{#filter.billCode} IS NULL OR c.billCode = :#{#filter.billCode})
+    AND (:#{#filter.documentYear} IS NULL OR c.documentYear = :#{#filter.documentYear})
+    AND (:#{#filter.documentCode} IS NULL OR c.documentCode = :#{#filter.documentCode})
+    AND (:#{#filter.provisionalAe} IS NULL OR c.provisionalAe = :#{#filter.provisionalAe})
+    AND (:#{#filter.provisionalCode} IS NULL OR c.provisionalCode = :#{#filter.provisionalCode})
+    AND (:#{#filter.debtPositionTypeOrgCode} IS NULL OR c.debtPositionTypeOrgCode = :#{#filter.debtPositionTypeOrgCode})
+    AND (:#{#filter.debtorFiscalCode} IS NULL OR c.debtorFiscalCodeHash = :#{@dataCipherService.hash(#filter.debtorFiscalCode)})
     """)
   Page<TreasuredClassificationView> getTreasuredClassifications(
     @Parameter(required = true) @Param("organizationId") Long organizationId,

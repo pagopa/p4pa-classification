@@ -27,11 +27,6 @@ public class TreasuredClassificationFilterDTO {
   private LocalDateIntervalFilter billDate;
   private LocalDateIntervalFilter regionValueDate;
 
-//  TODO: P4ADEV-2819 - will be added in Classification entity
-//  private String debtorFiscalCode;
-//  private String payerFiscalCode;
-//  private String debtPositionTypeOrgDescription;
-
   private String pspCompanyName;
   private String pspLastName;
   private String iuf;
@@ -40,12 +35,13 @@ public class TreasuredClassificationFilterDTO {
   private Long billAmountCents;
   private String remittanceInformation;
 
-//  TODO: P4ADEV-2819 - will be added in Classification entity
-//  private String billYear;
-//  private String billCode;
-//  private String documentYear;
-//  private String documentCode;
-//  private String provisionalCodeYear;
-//  private String provisionalCode;
+  private String debtorFiscalCode;
+  private String debtPositionTypeOrgCode;
 
+  private String billYear;
+  private String billCode;
+  private String documentYear;
+  private String documentCode;
+  private String provisionalAe;
+  private String provisionalCode;
 }
