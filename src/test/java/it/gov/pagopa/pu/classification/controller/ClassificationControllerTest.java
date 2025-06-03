@@ -66,12 +66,12 @@ class ClassificationControllerTest {
 
     ResponseEntity<PagedTreasuredClassification> response = controller.getTreasuredClassifications(
       organizationId,
-      filterDTO.getLastClassificationDate().getFrom(),
-      filterDTO.getLastClassificationDate().getTo(),
       filterDTO.getLabel(),
       filterDTO.getIud(),
       filterDTO.getIuv(),
       filterDTO.getIur(),
+      filterDTO.getLastClassificationDate().getFrom(),
+      filterDTO.getLastClassificationDate().getTo(),
       ZonedDateTime.of(filterDTO.getPayDate().getFrom(), Constants.ZONEID).toOffsetDateTime(),
       ZonedDateTime.of(filterDTO.getPayDate().getTo(), Constants.ZONEID).toOffsetDateTime(),
       filterDTO.getPaymentDateTime().getFrom(),
@@ -89,6 +89,14 @@ class ClassificationControllerTest {
       filterDTO.getAccountRegistryCode(),
       filterDTO.getBillAmountCents(),
       filterDTO.getRemittanceInformation(),
+      filterDTO.getDebtorFiscalCode(),
+      filterDTO.getDebtPositionTypeOrgCode(),
+      filterDTO.getBillYear(),
+      filterDTO.getBillCode(),
+      filterDTO.getDocumentYear(),
+      filterDTO.getDocumentCode(),
+      filterDTO.getProvisionalAe(),
+      filterDTO.getProvisionalCode(),
       pageable
     );
 
