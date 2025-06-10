@@ -12,14 +12,16 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
 
   @Query(value = """
     WITH input_values AS (
-      SELECT NEXTVAL('assessment_registry_id_seq') AS assessment_registry_id, :sectionCode AS section_code, :officeCode AS office_code,
-      :assessmentCode AS assessment_code, :debtPositionTypeOrgCode AS debt_position_type_org_code, :organizationId AS organization_id, :operatingYear AS operating_year,
+      SELECT NEXTVAL('assessment_registry_id_seq') AS assessment_registry_id, :sectionCode AS section_code, :sectionDescription AS section_description,
+      :officeCode AS office_code, :officeDescription AS office_description, :assessmentCode AS assessment_code, :assessmentDescription AS assessment_description,
+      :debtPositionTypeOrgCode AS debt_position_type_org_code, :organizationId AS organization_id, :operatingYear AS operating_year,
       :userExternalId AS update_operator_external_id
      ), ins AS (
-      INSERT INTO assessments_registry (assessment_registry_id, section_code, office_code, assessment_code,
-       debt_position_type_org_code, organization_id, operating_year, status, update_operator_external_id)
+      INSERT INTO assessments_registry (assessment_registry_id, section_code, section_description, office_code, office_description,
+       assessment_code, assessment_description, debt_position_type_org_code, organization_id, operating_year, status, update_operator_external_id)
       SELECT
-        i.assessment_registry_id, i.section_code, i.office_code, i.assessment_code, i.debt_position_type_org_code, i.organization_id, i.operating_year,
+        i.assessment_registry_id, i.section_code, i.section_description, i.office_code, i.office_description, i.assessment_code, i.assessment_description,
+        i.debt_position_type_org_code, i.organization_id, i.operating_year,
         CASE WHEN NOT EXISTS (SELECT 1 FROM assessments_registry a
                                WHERE a.debt_position_type_org_code = i.debt_position_type_org_code
                                AND a.organization_id = i.organization_id
