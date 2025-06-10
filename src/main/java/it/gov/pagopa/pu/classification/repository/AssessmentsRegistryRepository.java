@@ -12,11 +12,10 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
 
   @Query(value = """
     INSERT INTO assessments_registry (
-        assessment_registry_id, section_code, section_description, office_code, office_description,
+        section_code, section_description, office_code, office_description,
         assessment_code, assessment_description, debt_position_type_org_code,
-        organization_id, operating_year, status, update_operator_external_id)
+        organization_id, operating_year, status, update_operator_external_id, update_trace_id)
     SELECT
-        NEXTVAL('assessment_registry_id_seq'),
         :sectionCode, :sectionDescription, :officeCode, :officeDescription,
         :assessmentCode, :assessmentDescription, :debtPositionTypeOrgCode,
         :organizationId, :operatingYear,
@@ -27,7 +26,7 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
               AND a.operating_year = :operatingYear
               AND a.status = 'ACTIVE'
         ) THEN 'ACTIVE' ELSE 'INACTIVE' END,
-        :userExternalId
+        :userExternalId, :traceId
     WHERE NOT EXISTS (
         SELECT 1 FROM assessments_registry a2
         WHERE a2.organization_id = :organizationId
@@ -49,6 +48,7 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
     @Param("assessmentCode") String assessmentCode,
     @Param("assessmentDescription") String assessmentDescription,
     @Param("operatingYear") String operatingYear,
-    @Param("userExternalId") String userExternalId
+    @Param("userExternalId") String userExternalId,
+    @Param("traceId") String traceId
   );
 }

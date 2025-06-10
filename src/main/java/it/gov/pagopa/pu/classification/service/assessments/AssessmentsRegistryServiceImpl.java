@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.service.assessments;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsRegistryRequest;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
+import it.gov.pagopa.pu.classification.util.Utilities;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +28,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
       request.getAssessmentCode(),
       request.getAssessmentDescription(),
       request.getOperatingYear(),
-      SecurityUtils.getCurrentUserExternalId());
+      SecurityUtils.getCurrentUserExternalId(),
+      Utilities.getTraceId());
   }
 }
