@@ -297,6 +297,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /assessments-registry:
+    post:
+      tags:
+        - assessments-registry
+      operationId: createAssessmentsRegistry
+      description: "Create Assessments Registry"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAssessmentsRegistryRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
   /export/organization/{organizationId}/full-classifications:
     get:
       tags:
@@ -965,3 +991,30 @@ components:
           type: string
         printed:
           type: boolean
+    CreateAssessmentsRegistryRequest:
+      type: object
+      required:
+        - organizationId
+        - debtPositionTypeOrgCode
+        - sectionCode
+        - operatingYear
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        debtPositionTypeOrgCode:
+          type: string
+        sectionCode:
+          type: string
+        sectionDescription:
+          type: string
+        officeCode:
+          type: string
+        officeDescription:
+          type: string
+        assessmentCode:
+          type: string
+        assessmentDescription:
+          type: string
+        operatingYear:
+          type: string
