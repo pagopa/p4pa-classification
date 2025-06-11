@@ -38,7 +38,7 @@ class AssessmentsRegistryControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertEquals(response.getBody().longValue(), 1L);
+    assertEquals(1L, response.getBody().longValue());
     Mockito.verify(serviceMock).createAssessmentsRegistry(request);
   }
 
