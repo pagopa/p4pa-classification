@@ -21,6 +21,7 @@ public class AssessmentsRegistryController implements AssessmentsRegistryApi {
   @Override
   public ResponseEntity<Long> createAssessmentsRegistry(CreateAssessmentsRegistryRequest createAssessmentsRegistryRequest) {
     log.info("Request for create assessment registry if not exists");
+    log.debug("Create Assessment Registry with request params {}",createAssessmentsRegistryRequest);
     return ResponseEntity.ok(assessmentsRegistryService.createAssessmentsRegistry(createAssessmentsRegistryRequest));
   }
 }
