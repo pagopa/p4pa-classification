@@ -297,27 +297,78 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
-  /assessments-registry/create-by-debtpositiondto-and-iudlist:
+  /assessments-registry:
     post:
       tags:
         - assessments-registry
-      operationId: createAssessmentsRegistryByDebtPositionDTOAndIud
-      description: "Create Assessments Registry by DebtPositionDTO and list of iud"
+      operationId: createAssessmentsRegistry
+      description: "Create Assessments Registry"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest"
+              $ref: "#/components/schemas/CreateAssessmentsRegistryRequest"
         required: true
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
         '500':
           description: Server Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /assessments:
+    get:
+      tags:
+        - assessments-controller
+      operationId: getPagedAssessmentsList
+      parameters:
+        - name: assessmentName
+          in: query
+          schema:
+            type: string
+        - name: updateDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: 'AssessmentsStatusEnum'
+      responses:
+        "200":
+          description: List of assessments
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedAssessmentsView"
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+      x-spring-paginated: true
   /export/organization/{organizationId}/full-classifications:
     get:
       tags:
@@ -986,15 +1037,55 @@ components:
           type: string
         printed:
           type: boolean
-    CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest:
+    PagedAssessmentsView:
       type: object
       required:
-        - debtPositionDTO
-        - iudList
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
       properties:
-        debtPositionDTO:
-          type: "DebtPositionDTO"
-        iudList:
+        content:
           type: array
           items:
-            type: string
+            type: 'Assessments'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+      format: int64
+    CreateAssessmentsRegistryRequest:
+      type: object
+      required:
+        - organizationId
+        - debtPositionTypeOrgCode
+        - sectionCode
+        - operatingYear
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        debtPositionTypeOrgCode:
+          type: string
+        sectionCode:
+          type: string
+        sectionDescription:
+          type: string
+        officeCode:
+          type: string
+        officeDescription:
+          type: string
+        assessmentCode:
+          type: string
+        assessmentDescription:
+          type: string
+        operatingYear:
+          type: string
