@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
@@ -33,20 +34,23 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
   @Override
   public void createAssessmentsRegistryByDebtPositionDTOAndIud(
     CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest request, String accessToken) {
-    request.getDebtPositionDTO().getPaymentOptions().stream()
+    DebtPositionDTO debtPositionDTO = request.getDebtPositionDTO();
+    Long organizationId = debtPositionDTO.getOrganizationId();
+
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService
+      .getDebtPositionTypeOrgByDebtPositionTypeOrgId(organizationId, debtPositionDTO.getDebtPositionTypeOrgId(), accessToken);
+
+    debtPositionDTO.getPaymentOptions().stream()
       .flatMap(paymentOptionDTO -> paymentOptionDTO.getInstallments().stream())
       .filter(installmentDTO -> request.getIudList().contains(installmentDTO.getIud()))
       .forEach(i -> {
-        DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService
-          .getDebtPositionTypeOrgByInstallmentId(i.getInstallmentId(), accessToken);
-
         CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance());
         List<CtCapitolo> capitoloList = balance.getCapitolo();
 
         capitoloList.forEach(capitolo ->
           capitolo.getAccertamento().forEach(accertamento ->
             assessmentsRegistryRepository.insertIfNotExists(
-            request.getDebtPositionDTO().getOrganizationId(),
+            organizationId,
             debtPositionTypeOrg.getCode(),
             capitolo.getCodCapitolo(),
             null,
