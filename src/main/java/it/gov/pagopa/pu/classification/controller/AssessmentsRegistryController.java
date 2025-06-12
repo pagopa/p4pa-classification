@@ -1,9 +1,11 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsRegistryApi;
-import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsRegistryRequest;
+import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest;
 import it.gov.pagopa.pu.classification.service.assessments.AssessmentsRegistryService;
+import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,8 +21,11 @@ public class AssessmentsRegistryController implements AssessmentsRegistryApi {
   }
 
   @Override
-  public ResponseEntity<Long> createAssessmentsRegistry(CreateAssessmentsRegistryRequest createAssessmentsRegistryRequest) {
-    log.debug("Create Assessment Registry with request params {}",createAssessmentsRegistryRequest);
-    return ResponseEntity.ok(assessmentsRegistryService.createAssessmentsRegistry(createAssessmentsRegistryRequest));
+  public ResponseEntity<Void> createAssessmentsRegistryByDebtPositionDTOAndIud(CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest request) {
+    log.debug("Create Assessment Registry with request params {}",request);
+    String accessToken = SecurityUtils.getAccessToken();
+    assessmentsRegistryService.createAssessmentsRegistryByDebtPositionDTOAndIud(request, accessToken);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
+
 }

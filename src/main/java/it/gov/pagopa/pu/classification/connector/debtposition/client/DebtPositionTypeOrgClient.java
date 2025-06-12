@@ -34,4 +34,9 @@ public class DebtPositionTypeOrgClient {
           .getEmbedded())
         .getDebtPositionTypeOrgs();
   }
+
+  public DebtPositionTypeOrg getDebtPositionTypeOrgByDebtPositionTypeOrgId(Long organizationId, Long debtPositionTypeOrgId, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+      .crudDebtPositionTypeOrgsFindByOrganizationIdAndDebtPositionTypeOrgId(organizationId, debtPositionTypeOrgId);
+  }
 }

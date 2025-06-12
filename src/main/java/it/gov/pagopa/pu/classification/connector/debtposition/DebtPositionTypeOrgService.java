@@ -27,4 +27,14 @@ public interface DebtPositionTypeOrgService {
    * @return a list of DebtPositionTypeOrg associated with the given organization ID
    */
   List<DebtPositionTypeOrg> findDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken);
+
+  /**
+   * Retrieves a DebtPositionTypeOrg by the given organizationId and debtPositionTypeOrgId.
+   *
+   * @param organizationId       the ID of the organization
+   * @param debtPositionTypeOrgId the debtPositionTypeOrgId
+   * @param accessToken          the access token for authentication
+   * @return the DebtPositionTypeOrg associated with the given organizationId and debtPositionTypeOrgId
+   */
+  DebtPositionTypeOrg getDebtPositionTypeOrgByDebtPositionTypeOrgId(Long organizationId, Long debtPositionTypeOrgId, String accessToken);
 }
