@@ -323,6 +323,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /assessments:
+    get:
+      tags:
+        - assessments-controller
+      operationId: getPagedAssessmentsList
+      parameters:
+        - name: assessmentName
+          in: query
+          schema:
+            type: string
+        - name: updateDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: 'AssessmentsStatusEnum'
+      responses:
+        "200":
+          description: List of assessments
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedAssessmentsView"
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+      x-spring-paginated: true
   /export/organization/{organizationId}/full-classifications:
     get:
       tags:
@@ -991,6 +1037,31 @@ components:
           type: string
         printed:
           type: boolean
+    PagedAssessmentsView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'Assessments'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+      format: int64
     CreateAssessmentsRegistryRequest:
       type: object
       required:
