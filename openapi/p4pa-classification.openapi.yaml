@@ -297,26 +297,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
-  /assessments-registry:
+  /assessments-registry/create-by-debtpositiondto-and-iudlist:
     post:
       tags:
         - assessments-registry
-      operationId: createAssessmentsRegistry
-      description: "Create Assessments Registry"
+      operationId: createAssessmentsRegistryByDebtPositionDTOAndIud
+      description: "Create Assessments Registry by DebtPositionDTO and list of iud"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateAssessmentsRegistryRequest"
+              $ref: "#/components/schemas/CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest"
         required: true
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                type: integer
-                format: int64
         '500':
           description: Server Error
           content:
@@ -991,30 +986,15 @@ components:
           type: string
         printed:
           type: boolean
-    CreateAssessmentsRegistryRequest:
+    CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest:
       type: object
       required:
-        - organizationId
-        - debtPositionTypeOrgCode
-        - sectionCode
-        - operatingYear
+        - debtPositionDTO
+        - iudList
       properties:
-        organizationId:
-          type: integer
-          format: int64
-        debtPositionTypeOrgCode:
-          type: string
-        sectionCode:
-          type: string
-        sectionDescription:
-          type: string
-        officeCode:
-          type: string
-        officeDescription:
-          type: string
-        assessmentCode:
-          type: string
-        assessmentDescription:
-          type: string
-        operatingYear:
-          type: string
+        debtPositionDTO:
+          type: "DebtPositionDTO"
+        iudList:
+          type: array
+          items:
+            type: string

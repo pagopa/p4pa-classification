@@ -74,9 +74,8 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
             AND ((a2.assessment_code IS NULL AND :assessmentCode IS NULL) OR (a2.assessment_code = :assessmentCode))
             AND a2.operating_year = :operatingYear
       )
-      RETURNING assessment_registry_id
     """, nativeQuery = true)
-    Long insertIfNotExists(
+    void insertIfNotExists(
       @Param("organizationId") Long organizationId,
       @Param("debtPositionTypeOrgCode") String debtPositionTypeOrgCode,
       @Param("sectionCode") String sectionCode,
