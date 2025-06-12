@@ -43,23 +43,21 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
         CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance());
         List<CtCapitolo> capitoloList = balance.getCapitolo();
 
-        capitoloList.forEach(capitolo -> {
-          capitolo.getAccertamento().forEach(accertamento -> {
+        capitoloList.forEach(capitolo ->
+          capitolo.getAccertamento().forEach(accertamento ->
             assessmentsRegistryRepository.insertIfNotExists(
-              request.getDebtPositionDTO().getOrganizationId(),
-              debtPositionTypeOrg.getCode(),
-              capitolo.getCodCapitolo(),
-              null,
-              capitolo.getCodUfficio(),
-              null,
-              accertamento.getCodAccertamento(),
-              null,
-              String.valueOf(i.getCreationDate().getYear()),
-              SecurityUtils.getCurrentUserExternalId(),
-              Utilities.getTraceId()
-            );
-          });
-        });
+            request.getDebtPositionDTO().getOrganizationId(),
+            debtPositionTypeOrg.getCode(),
+            capitolo.getCodCapitolo(),
+            null,
+            capitolo.getCodUfficio(),
+            null,
+            accertamento.getCodAccertamento(),
+            null,
+            String.valueOf(i.getCreationDate().getYear()),
+            SecurityUtils.getCurrentUserExternalId(),
+            Utilities.getTraceId()
+        )));
       });
   }
 }
