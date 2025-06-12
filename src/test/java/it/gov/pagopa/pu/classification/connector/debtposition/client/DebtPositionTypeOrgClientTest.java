@@ -89,4 +89,21 @@ class DebtPositionTypeOrgClientTest {
 
     Assertions.assertSame(expectedDebtPositionTypeOrgs, result);
   }
+
+  @Test
+  void whenGetDebtPositionTypeOrgByDebtPositionTypeOrgIdThenReturnDebtPositionTypeOrg() {
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    Long debtPositionTypeOrgId = 3L;
+    DebtPositionTypeOrg expectedDebtPositionTypeOrg = new DebtPositionTypeOrg();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByOrganizationIdAndDebtPositionTypeOrgId(organizationId, debtPositionTypeOrgId))
+      .thenReturn(expectedDebtPositionTypeOrg);
+
+    DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgByDebtPositionTypeOrgId(organizationId, debtPositionTypeOrgId, accessToken);
+
+    Assertions.assertSame(expectedDebtPositionTypeOrg, result);
+  }
 }

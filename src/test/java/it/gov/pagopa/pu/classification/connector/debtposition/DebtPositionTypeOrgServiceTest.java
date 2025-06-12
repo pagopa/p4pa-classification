@@ -60,4 +60,21 @@ class DebtPositionTypeOrgServiceTest {
     // Then
     assertSame(expected, result);
   }
+
+  @Test
+  void whenGetDebtPositionTypeOrgByDebtPositionTypeOrgIdThenInvokeClient() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    Long debtPositionTypeOrgId = 3L;
+    DebtPositionTypeOrg expected = new DebtPositionTypeOrg();
+
+    when(clientMock.getDebtPositionTypeOrgByDebtPositionTypeOrgId(organizationId, debtPositionTypeOrgId, accessToken)).thenReturn(expected);
+
+    // When
+    DebtPositionTypeOrg result = service.getDebtPositionTypeOrgByDebtPositionTypeOrgId(organizationId, debtPositionTypeOrgId, accessToken);
+
+    // Then
+    assertSame(expected, result);
+  }
 }
