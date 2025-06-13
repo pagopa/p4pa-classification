@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsRegistryApi;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest;
+import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.service.assessments.AssessmentsRegistryService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -28,4 +29,9 @@ public class AssessmentsRegistryController implements AssessmentsRegistryApi {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @Override
+  public ResponseEntity<AssessmentsRegistry> createAssessmentsRegistry(AssessmentsRegistry assessmentsRegistry) {
+    log.debug("Create Assessment Registry with organizationId {}, debtPositionTypeOrgCode {} and operatingYear {}",assessmentsRegistry.getOrganizationId(),assessmentsRegistry.getDebtPositionTypeOrgCode(),assessmentsRegistry.getOperatingYear());
+    return new ResponseEntity<>(assessmentsRegistryService.createAssessmentsRegistry(assessmentsRegistry),HttpStatus.CREATED);
+  }
 }

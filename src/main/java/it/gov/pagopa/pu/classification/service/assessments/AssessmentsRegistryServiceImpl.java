@@ -2,6 +2,9 @@ package it.gov.pagopa.pu.classification.service.assessments;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest;
+import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
+import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
@@ -11,8 +14,9 @@ import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryService{
@@ -63,5 +67,20 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
             Utilities.getTraceId()
         )));
       });
+  }
+
+  @Transactional
+  @Override
+  public AssessmentsRegistry createAssessmentsRegistry(AssessmentsRegistry assessmentsRegistry) {
+    validateAssessmentRegistry(assessmentsRegistry);
+    assessmentsRegistry.setStatus(AssessmentsRegistryStatus.ACTIVE);
+    assessmentsRegistryRepository.updateStatus(AssessmentsRegistryStatus.INACTIVE,assessmentsRegistry.getDebtPositionTypeOrgCode(), assessmentsRegistry.getOperatingYear());
+    return assessmentsRegistryRepository.save(assessmentsRegistry);
+  }
+
+  private static void validateAssessmentRegistry(AssessmentsRegistry assessmentsRegistry) {
+    if(assessmentsRegistry.getAssessmentRegistryId()!=null){
+      throw new InvalidRequestBodyException("assessmentRegistryId should not be provided");
+    }
   }
 }

@@ -2,10 +2,7 @@ package it.gov.pagopa.pu.classification.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.classification.config.json.JsonConfig;
-import it.gov.pagopa.pu.classification.exception.custom.ExportTooManyRecordsException;
-import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
-import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
-import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
+import it.gov.pagopa.pu.classification.exception.custom.*;
 import jakarta.persistence.RollbackException;
 import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
@@ -285,6 +282,16 @@ class ClassificationExceptionHandlerTest {
   @Test
   void handleInvalidDateTimeIntervalException() throws Exception {
     doThrow(new InvalidDateTimeIntervalException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"));
+  }
+
+  @Test
+  void handleInvalidRequestBodyException() throws Exception {
+    doThrow(new InvalidRequestBodyException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())

@@ -192,7 +192,7 @@ openApiGenerate {
     "ClassificationDetailViewDTO" to "it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO",
     "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.enums.AssessmentStatus",
     "DebtPositionDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO",
-    "AssessmentsRegistryStatus" to "it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus"
+    "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.model.AssessmentsRegistry"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
