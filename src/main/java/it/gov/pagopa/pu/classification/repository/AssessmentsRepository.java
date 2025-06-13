@@ -1,8 +1,5 @@
 package it.gov.pagopa.pu.classification.repository;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
@@ -39,7 +36,7 @@ public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
     @Param("assessmentName") String assessmentName,
     @Param("updateDateTimeIntervalFilter") LocalDateTimeIntervalFilter updateDateTimeIntervalFilter,
     @Param("iuv") String iuv,
-    @Parameter(required = true, array = @ArraySchema(uniqueItems = true, schema = @Schema(type = "String"))) @Param("debtPositionTypeOrgCodes") Set<String> debtPositionTypeOrgCodes,
+    @Param("debtPositionTypeOrgCodes") Set<String> debtPositionTypeOrgCodes,
     @Param("status") AssessmentStatus status,
     Pageable pageable
   );
