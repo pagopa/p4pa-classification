@@ -1,5 +1,8 @@
 package it.gov.pagopa.pu.classification.repository;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
@@ -10,6 +13,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
+
+import java.util.Set;
 
 
 @RepositoryRestResource(path = "assessments")
@@ -27,14 +32,14 @@ public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
       AND (cast(:#{#updateDateTimeIntervalFilter.from} AS STRING) IS NULL OR a.updateDate >= :#{#updateDateTimeIntervalFilter.from})
       AND (cast(:#{#updateDateTimeIntervalFilter.to} AS STRING) IS NULL OR a.updateDate <= :#{#updateDateTimeIntervalFilter.to})
       AND (:iuv IS NULL OR ad.iuv = :iuv)
-      AND (:debtPositionTypeOrgCode IS NULL OR a.debtPositionTypeOrgCode = :debtPositionTypeOrgCode)
+      AND (:debtPositionTypeOrgCodes IS NULL OR a.debtPositionTypeOrgCode IN :debtPositionTypeOrgCodes)
       AND (:status IS NULL OR a.status = :status)
     """)
   Page<Assessments> findPagedAssessments(
     @Param("assessmentName") String assessmentName,
     @Param("updateDateTimeIntervalFilter") LocalDateTimeIntervalFilter updateDateTimeIntervalFilter,
     @Param("iuv") String iuv,
-    @Param("debtPositionTypeOrgCode") String debtPositionTypeOrgCode,
+    @Parameter(required = true, array = @ArraySchema(uniqueItems = true, schema = @Schema(type = "String"))) @Param("debtPositionTypeOrgCodes") Set<String> debtPositionTypeOrgCodes,
     @Param("status") AssessmentStatus status,
     Pageable pageable
   );
