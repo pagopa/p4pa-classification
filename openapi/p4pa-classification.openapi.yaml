@@ -270,6 +270,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/assments-registry/by-debtPositionTypeOrgCode-operatingYear:
+    put:
+      tags:
+        - assessments-registry-entity-extended-controller
+      operationId: updateStatus
+      parameters:
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: 'AssessmentsRegistryStatus'
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: operatingYear
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
   /assessments/create-by-receipt-id:
     post:
       tags:

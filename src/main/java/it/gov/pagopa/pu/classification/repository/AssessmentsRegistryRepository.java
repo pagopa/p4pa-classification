@@ -8,9 +8,12 @@ import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -88,4 +91,10 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
       @Param("userExternalId") String userExternalId,
       @Param("traceId") String traceId
     );
+
+    @RestResource(exported = false)
+    @Modifying
+    @Transactional
+    @Query("UPDATE AssessmentsRegistry a SET a.status = :status WHERE a.debtPositionTypeOrgCode = :debtPositionTypeOrgCode and a.operatingYear = :operatingYear")
+    void updateStatus(AssessmentsRegistryStatus status, String debtPositionTypeOrgCode, String operatingYear);
 }
