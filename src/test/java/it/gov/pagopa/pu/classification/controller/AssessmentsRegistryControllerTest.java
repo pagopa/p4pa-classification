@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.service.assessments.AssessmentsRegistryService;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import it.gov.pagopa.pu.classification.util.TestUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,11 @@ class AssessmentsRegistryControllerTest {
 
   @InjectMocks
   private AssessmentsRegistryController assessmentsRegistryController;
+
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
+  }
 
   @Test
   void whenCreateAssessmentRegistryByDebtPositionDTOAndIudWithValidRequestThenReturnSuccess() {
