@@ -69,19 +69,19 @@ class AssessmentsControllerTest {
     OffsetDateTime from = OffsetDateTime.now();
     OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
     String iuv = "IUV";
-    String debtPositionTypeOrg = "DEBT_POSITION_TYPE_ORG";
+    List<String> debtPositionTypeOrgCodes = List.of("DEBT_POSITION_TYPE_ORG_CODE", "DEBT_POSITION_TYPE_ORG_CODE1");
     String accessToken = "accessToken";
     LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(from.toLocalDateTime(), to.toLocalDateTime());
     SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
 
     PagedAssessmentsView pagedAssessmentsView = podamFactory.manufacturePojo(PagedAssessmentsView.class);
-    Mockito.when(serviceMock.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrg, AssessmentStatus.NEW, Pageable.ofSize(1), accessToken)).thenReturn(pagedAssessmentsView);
+    Mockito.when(serviceMock.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1), accessToken)).thenReturn(pagedAssessmentsView);
     //when
-    ResponseEntity<PagedAssessmentsView> result = controller.getPagedAssessmentsList(assessmentName, from, to, iuv, debtPositionTypeOrg, AssessmentStatus.NEW, Pageable.ofSize(1));
+    ResponseEntity<PagedAssessmentsView> result = controller.getPagedAssessmentsList(assessmentName, from, to, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1));
     //then
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertEquals(5, result.getBody().getContent().size());
-    Mockito.verify(serviceMock).getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrg, AssessmentStatus.NEW, Pageable.ofSize(1), accessToken);
+    Mockito.verify(serviceMock).getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1), accessToken);
   }
 }

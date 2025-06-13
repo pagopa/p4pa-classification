@@ -35,13 +35,12 @@ public class AssessmentsController implements AssessmentsControllerApi {
   }
 
   @Override
-  public ResponseEntity<PagedAssessmentsView> getPagedAssessmentsList(String assessmentName, OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, String iuv, String debtPositionTypeOrgCode, AssessmentStatus status, Pageable pageable) {
+  public ResponseEntity<PagedAssessmentsView> getPagedAssessmentsList(String assessmentName, OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable) {
     String accessToken = SecurityUtils.getAccessToken();
     LocalDateTimeIntervalFilter updateDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(
       DateConversionUtils.offsetDateTime2LocalDateTime(updateDateFrom),
       DateConversionUtils.offsetDateTime2LocalDateTime(updateDateTo));
 
-    return ResponseEntity.ok(assessmentsService.getPagedAssessmentsView(assessmentName, updateDateTimeIntervalFilter, iuv, debtPositionTypeOrgCode, status, pageable, accessToken));
+    return ResponseEntity.ok(assessmentsService.getPagedAssessmentsView(assessmentName, updateDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, status, pageable, accessToken));
   }
-
 }
