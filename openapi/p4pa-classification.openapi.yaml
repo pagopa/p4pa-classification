@@ -345,7 +345,9 @@ paths:
         - name: debtPositionTypeOrgCode
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: status
           in: query
           schema:
@@ -866,7 +868,7 @@ paths:
           in: query
           schema:
             type: string
-        - name: debtPositionTypeOrgCode
+        - name: debtPositionTypeOrgCodes
           in: query
           schema:
             type: string

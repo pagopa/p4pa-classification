@@ -33,7 +33,9 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -190,7 +192,7 @@ class AssessmentsServiceImplTest {
     OffsetDateTime from = OffsetDateTime.now();
     OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
     String iuv = "IUV";
-    String debtPositionTypeOrg = "DEBT_POSITION_TYPE_ORG";
+    List<String> debtPositionTypeOrgCodes = List.of("DEBT_POSITION_TYPE_ORG_CODE", "DEBT_POSITION_TYPE_ORG_CODE1");
     String accessToken = "accessToken";
     LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(from.toLocalDateTime(), to.toLocalDateTime());
 
@@ -202,12 +204,91 @@ class AssessmentsServiceImplTest {
 
     PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
-    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrg, AssessmentStatus.NEW, Pageable.ofSize(1))).thenReturn(pagedAssessments);
+    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(assessmentName, localDateTimeIntervalFilter, iuv, new HashSet<>(debtPositionTypeOrgCodes), AssessmentStatus.NEW, Pageable.ofSize(1))).thenReturn(pagedAssessments);
     Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
     //when
-    PagedAssessmentsView result = service.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrg, AssessmentStatus.NEW, Pageable.ofSize(1), accessToken);
+    PagedAssessmentsView result = service.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1), accessToken);
     //then
     assertNotNull(result);
     assertEquals(expected, result);
   }
+
+  @Test
+  void givenNullDebtPositionTypeOrgCodesWhenGetPagedAssessmentsViewThenReturnPagedAssessmentsView() {
+    // given
+    String assessmentName = "ASSESSMENT_NAME";
+    OffsetDateTime from = OffsetDateTime.now();
+    OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
+    String iuv = "IUV";
+    List<String> debtPositionTypeOrgCodes = null;
+    String accessToken = "accessToken";
+    LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(from.toLocalDateTime(), to.toLocalDateTime());
+    Pageable pageable = PageRequest.of(0, 10);
+    List<Assessments> content = List.of(podamFactory.manufacturePojo(Assessments.class));
+    Page<Assessments> pagedAssessments = new PageImpl<>(content, pageable, 1);
+    PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
+
+    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.NEW, pageable)).thenReturn(pagedAssessments);
+    Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
+
+    // when
+    PagedAssessmentsView result = service.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, pageable, accessToken);
+
+    // then
+    assertNotNull(result);
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void givenEmptyDebtPositionTypeOrgCodesWhenGetPagedAssessmentsViewThenReturnPagedAssessmentsView() {
+    // given
+    String assessmentName = "ASSESSMENT_NAME";
+    OffsetDateTime from = OffsetDateTime.now();
+    OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
+    String iuv = "IUV";
+    List<String> debtPositionTypeOrgCodes = List.of();
+    String accessToken = "accessToken";
+    LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(from.toLocalDateTime(), to.toLocalDateTime());
+    Pageable pageable = PageRequest.of(0, 10);
+    List<Assessments> content = List.of(podamFactory.manufacturePojo(Assessments.class));
+    Page<Assessments> pagedAssessments = new PageImpl<>(content, pageable, 1);
+    PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
+
+    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.NEW, pageable)).thenReturn(pagedAssessments);
+    Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
+
+    // when
+    PagedAssessmentsView result = service.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, pageable, accessToken);
+
+    // then
+    assertNotNull(result);
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgCodesWithBlankValuesWhenGetPagedAssessmentsViewThenReturnPagedAssessmentsView() {
+    // given
+    String assessmentName = "ASSESSMENT_NAME";
+    OffsetDateTime from = OffsetDateTime.now();
+    OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
+    String iuv = "IUV";
+    List<String> debtPositionTypeOrgCodes = List.of("  ", "VALID_CODE", "");
+    String accessToken = "accessToken";
+    LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(from.toLocalDateTime(), to.toLocalDateTime());
+    Pageable pageable = PageRequest.of(0, 10);
+    List<Assessments> content = List.of(podamFactory.manufacturePojo(Assessments.class));
+    Page<Assessments> pagedAssessments = new PageImpl<>(content, pageable, 1);
+    PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
+
+    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(assessmentName, localDateTimeIntervalFilter, iuv, Set.of("VALID_CODE"), AssessmentStatus.NEW, pageable)).thenReturn(pagedAssessments);
+    Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
+
+    // when
+    PagedAssessmentsView result = service.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, pageable, accessToken);
+
+    // then
+    assertNotNull(result);
+    assertEquals(expected, result);
+  }
+
 }
