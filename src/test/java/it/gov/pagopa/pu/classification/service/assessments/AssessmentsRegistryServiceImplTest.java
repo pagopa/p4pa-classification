@@ -1,15 +1,10 @@
 package it.gov.pagopa.pu.classification.service.assessments;
 
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest;
+import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
+import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
@@ -22,10 +17,8 @@ import it.gov.pagopa.pu.debtposition.dto.generated.PaymentOptionDTO;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,6 +26,14 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsRegistryServiceImplTest {
@@ -146,5 +147,29 @@ class AssessmentsRegistryServiceImplTest {
           eq(traceId)
         );
     }
+  }
+
+  @Test
+  void givenValidRequestWhenCreateAssessmentsRegistryThenOk(){
+    AssessmentsRegistry assessmentsRegistry = TestUtils.getPodamFactory().manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setAssessmentRegistryId(null);
+    AssessmentsRegistry expectedResponse = TestUtils.getPodamFactory().manufacturePojo(AssessmentsRegistry.class);
+
+    doNothing().when(assessmentsRegistryRepositoryMock).updateStatus(AssessmentsRegistryStatus.INACTIVE,assessmentsRegistry.getOrganizationId(),assessmentsRegistry.getDebtPositionTypeOrgCode(),assessmentsRegistry.getOperatingYear());
+    when(assessmentsRegistryRepositoryMock.save(assessmentsRegistry)).thenReturn(expectedResponse);
+
+    AssessmentsRegistry response = assessmentsRegistryService.createAssessmentsRegistry(assessmentsRegistry);
+
+    Assertions.assertNotNull(response);
+    Assertions.assertEquals(expectedResponse,response);
+  }
+
+  @Test
+  void givenInvalidRequestWhenCreateAssessmentsRegistryThenInvalidRequestBodyException(){
+    AssessmentsRegistry assessmentsRegistry = TestUtils.getPodamFactory().manufacturePojo(AssessmentsRegistry.class);
+
+    Assertions.assertThrows(InvalidRequestBodyException.class, () -> assessmentsRegistryService.createAssessmentsRegistry(assessmentsRegistry));
+
+    verifyNoInteractions(assessmentsRegistryRepositoryMock);
   }
 }
