@@ -74,7 +74,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
   public AssessmentsRegistry createAssessmentsRegistry(AssessmentsRegistry assessmentsRegistry) {
     validateAssessmentRegistry(assessmentsRegistry);
     assessmentsRegistry.setStatus(AssessmentsRegistryStatus.ACTIVE);
-    assessmentsRegistryRepository.updateStatus(AssessmentsRegistryStatus.INACTIVE,assessmentsRegistry.getDebtPositionTypeOrgCode(), assessmentsRegistry.getOperatingYear());
+    assessmentsRegistryRepository.updateStatus(AssessmentsRegistryStatus.INACTIVE, assessmentsRegistry.getOrganizationId(),assessmentsRegistry.getDebtPositionTypeOrgCode(), assessmentsRegistry.getOperatingYear());
     return assessmentsRegistryRepository.save(assessmentsRegistry);
   }
 

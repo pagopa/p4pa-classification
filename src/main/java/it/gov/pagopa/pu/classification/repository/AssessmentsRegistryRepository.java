@@ -95,6 +95,6 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
     @RestResource(exported = false)
     @Modifying
     @Transactional
-    @Query("UPDATE AssessmentsRegistry a SET a.status = :status WHERE a.debtPositionTypeOrgCode = :debtPositionTypeOrgCode and a.operatingYear = :operatingYear")
-    void updateStatus(AssessmentsRegistryStatus status, String debtPositionTypeOrgCode, String operatingYear);
+    @Query("UPDATE AssessmentsRegistry a SET a.status = :status WHERE a.organizationId = :organizationId and a.debtPositionTypeOrgCode = :debtPositionTypeOrgCode and a.operatingYear = :operatingYear")
+    void updateStatus(AssessmentsRegistryStatus status, Long organizationId, String debtPositionTypeOrgCode, String operatingYear);
 }

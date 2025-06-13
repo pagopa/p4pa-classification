@@ -155,7 +155,7 @@ class AssessmentsRegistryServiceImplTest {
     assessmentsRegistry.setAssessmentRegistryId(null);
     AssessmentsRegistry expectedResponse = TestUtils.getPodamFactory().manufacturePojo(AssessmentsRegistry.class);
 
-    doNothing().when(assessmentsRegistryRepositoryMock).updateStatus(AssessmentsRegistryStatus.INACTIVE,assessmentsRegistry.getDebtPositionTypeOrgCode(),assessmentsRegistry.getOperatingYear());
+    doNothing().when(assessmentsRegistryRepositoryMock).updateStatus(AssessmentsRegistryStatus.INACTIVE,assessmentsRegistry.getOrganizationId(),assessmentsRegistry.getDebtPositionTypeOrgCode(),assessmentsRegistry.getOperatingYear());
     when(assessmentsRegistryRepositoryMock.save(assessmentsRegistry)).thenReturn(expectedResponse);
 
     AssessmentsRegistry response = assessmentsRegistryService.createAssessmentsRegistry(assessmentsRegistry);
