@@ -16,6 +16,10 @@ See [PU Microservice Architecture](https://pagopa.atlassian.net/wiki/spaces/SPAC
 See [OpenAPI](openapi/generated.openapi.json), exposed through the following path:
 * `/swagger-ui/index.html`
 
+### 📌 Relevant APIs
+* `GET /export/organization/{organizationId}/full-classifications`: To export classifications;
+* `GET /export/organization/{organizationId}/classifications`: To export classifications (no payment notifications).
+
 ## 🔎 Monitoring
 See available actuator endpoints through the following path:
 * `/actuator`
