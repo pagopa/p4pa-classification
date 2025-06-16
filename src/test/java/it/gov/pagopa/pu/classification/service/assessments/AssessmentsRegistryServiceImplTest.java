@@ -48,6 +48,10 @@ class AssessmentsRegistryServiceImplTest {
   @InjectMocks
   private AssessmentsRegistryServiceImpl assessmentsRegistryService;
 
+  private static final String IUD = "IUD";
+
+  private static final OffsetDateTime creationDate = OffsetDateTime.now();
+
   private static final String BALANCE =
     "<bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\">>" +
       "<capitolo>" +
@@ -70,35 +74,19 @@ class AssessmentsRegistryServiceImplTest {
   }
 
   @Test
-  void givenValidRequestWhenCreateAssessmentsRegistryByDebtPositionDTOAndIudThenOk() {
+  void givenValidRequestWithIudListWhenCreateAssessmentsRegistryByDebtPositionDTOAndIudThenOk() {
     // Given
     String externalUserId = "USERID";
     String traceId = "TRACEID";
     String accessToken = "token";
-    String iud = "IUD";
-    OffsetDateTime creationDate = OffsetDateTime.now();
 
-    // Mock InstallmentDTO
-    InstallmentDTO installmentDTO = TestUtils.getPodamFactory().manufacturePojo(InstallmentDTO.class);
-    installmentDTO.setBalance(BALANCE);
-    installmentDTO.setIud(iud);
-    installmentDTO.setCreationDate(creationDate);
-
-    // Mock PaymentOptionDTO
-    PaymentOptionDTO paymentOptionDTO = TestUtils.getPodamFactory().manufacturePojo(PaymentOptionDTO.class);
-    paymentOptionDTO.setInstallments(List.of(installmentDTO));
-
-    // Mock DebtPositionDTO
-    DebtPositionDTO debtPositionDTO = TestUtils.getPodamFactory().manufacturePojo(DebtPositionDTO.class);
-    debtPositionDTO.setPaymentOptions(List.of(paymentOptionDTO));
-    debtPositionDTO.setOrganizationId(1L);
-    debtPositionDTO.setDebtPositionTypeOrgId(2L);
+    DebtPositionDTO debtPositionDTO = buildDebtPositionDTO();
 
     // Mock request
     CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest request =
       TestUtils.getPodamFactory().manufacturePojo(CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest.class);
     request.setDebtPositionDTO(debtPositionDTO);
-    request.setIudList(List.of(iud));
+    request.setIudList(List.of(IUD));
 
     DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
     debtPositionTypeOrg.setCode("CODE01");
@@ -142,7 +130,71 @@ class AssessmentsRegistryServiceImplTest {
           isNull(),
           eq(accertamento.getCodAccertamento()),
           isNull(),
-          eq(String.valueOf(installmentDTO.getCreationDate().getYear())),
+          eq(String.valueOf(creationDate.getYear())),
+          eq(externalUserId),
+          eq(traceId)
+        );
+    }
+  }
+
+  @Test
+  void givenValidRequestWithoutIudListWhenCreateAssessmentsRegistryByDebtPositionDTOAndIudThenOk() {
+    // Given
+    String externalUserId = "USERID";
+    String traceId = "TRACEID";
+    String accessToken = "token";
+
+    DebtPositionDTO debtPositionDTO = buildDebtPositionDTO();
+
+    // Mock request
+    CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest request =
+      TestUtils.getPodamFactory().manufacturePojo(CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest.class);
+    request.setDebtPositionDTO(debtPositionDTO);
+    request.setIudList(null);
+
+    DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
+    debtPositionTypeOrg.setCode("CODE01");
+
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByDebtPositionTypeOrgId(debtPositionDTO.getOrganizationId(),
+      debtPositionDTO.getDebtPositionTypeOrgId(), accessToken)).thenReturn(debtPositionTypeOrg);
+
+    CtBilancio bilancio = new CtBilancio();
+
+    CtCapitolo capitolo = new CtCapitolo();
+    capitolo.setCodCapitolo("CAP1");
+    capitolo.setCodUfficio("UFF1");
+
+    CtAccertamento accertamento = new CtAccertamento();
+    accertamento.setCodAccertamento("ACC1");
+    accertamento.setImporto(new BigDecimal("100.00"));
+
+    capitolo.getAccertamento().add(accertamento);
+    bilancio.getCapitolo().add(capitolo);
+
+    when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
+
+
+    try (MockedStatic<SecurityUtils> securityUtilsMockedStatic = mockStatic(SecurityUtils.class);
+      MockedStatic<Utilities> utilMock = mockStatic(Utilities.class)) {
+
+      securityUtilsMockedStatic.when(SecurityUtils::getCurrentUserExternalId).thenReturn(externalUserId);
+      utilMock.when(Utilities::getTraceId).thenReturn(traceId);
+
+      // When
+      assessmentsRegistryService.createAssessmentsRegistryByDebtPositionDTOAndIud(request, accessToken);
+
+      // Then
+      verify(assessmentsRegistryRepositoryMock, times(1))
+        .insertIfNotExists(
+          eq(debtPositionDTO.getOrganizationId()),
+          eq(debtPositionTypeOrg.getCode()),
+          eq(capitolo.getCodCapitolo()),
+          isNull(),
+          eq(capitolo.getCodUfficio()),
+          isNull(),
+          eq(accertamento.getCodAccertamento()),
+          isNull(),
+          eq(String.valueOf(creationDate.getYear())),
           eq(externalUserId),
           eq(traceId)
         );
@@ -171,5 +223,26 @@ class AssessmentsRegistryServiceImplTest {
     Assertions.assertThrows(InvalidRequestBodyException.class, () -> assessmentsRegistryService.createAssessmentsRegistry(assessmentsRegistry));
 
     verifyNoInteractions(assessmentsRegistryRepositoryMock);
+  }
+
+  private DebtPositionDTO buildDebtPositionDTO() {
+    // Mock InstallmentDTO
+    InstallmentDTO installmentDTO = TestUtils.getPodamFactory().manufacturePojo(InstallmentDTO.class);
+    installmentDTO.setBalance(BALANCE);
+    installmentDTO.setIud(IUD);
+    installmentDTO.setCreationDate(creationDate);
+
+    // Mock PaymentOptionDTO
+    PaymentOptionDTO paymentOptionDTO = TestUtils.getPodamFactory().manufacturePojo(PaymentOptionDTO.class);
+    paymentOptionDTO.setInstallments(List.of(installmentDTO));
+
+
+    // Mock DebtPositionDTO
+    DebtPositionDTO debtPositionDTO = TestUtils.getPodamFactory().manufacturePojo(DebtPositionDTO.class);
+    debtPositionDTO.setPaymentOptions(List.of(paymentOptionDTO));
+    debtPositionDTO.setOrganizationId(1L);
+    debtPositionDTO.setDebtPositionTypeOrgId(2L);
+
+    return debtPositionDTO;
   }
 }
