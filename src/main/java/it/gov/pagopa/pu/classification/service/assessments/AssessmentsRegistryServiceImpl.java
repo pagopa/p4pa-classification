@@ -46,7 +46,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
 
     debtPositionDTO.getPaymentOptions().stream()
       .flatMap(paymentOptionDTO -> paymentOptionDTO.getInstallments().stream())
-      .filter(installmentDTO -> request.getIudList().contains(installmentDTO.getIud()))
+      .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
       .forEach(i -> {
         CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance());
         List<CtCapitolo> capitoloList = balance.getCapitolo();
