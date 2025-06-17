@@ -20,6 +20,10 @@ See [OpenAPI](openapi/generated.openapi.json), exposed through the following pat
 * `GET /export/organization/{organizationId}/full-classifications`: To export classifications;
 * `GET /export/organization/{organizationId}/classifications`: To export classifications (no payment notifications).
 
+### 📌 Common HTTP status returned:
+* `401`: Invalid access token provided, thus a new login is required;
+* `403`: Trying to access a not authorized resource.
+
 ## 🔎 Monitoring
 See available actuator endpoints through the following path:
 * `/actuator`
