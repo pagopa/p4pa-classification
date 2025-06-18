@@ -48,24 +48,26 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
       .flatMap(paymentOptionDTO -> paymentOptionDTO.getInstallments().stream())
       .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
       .forEach(i -> {
-        CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance());
-        List<CtCapitolo> capitoloList = balance.getCapitolo();
+        if(i.getBalance()!=null){
+          CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance());
+          List<CtCapitolo> capitoloList = balance.getCapitolo();
 
-        capitoloList.forEach(capitolo ->
-          capitolo.getAccertamento().forEach(accertamento ->
-            assessmentsRegistryRepository.insertIfNotExists(
-            organizationId,
-            debtPositionTypeOrg.getCode(),
-            capitolo.getCodCapitolo(),
-            null,
-            capitolo.getCodUfficio(),
-            null,
-            accertamento.getCodAccertamento(),
-            null,
-            String.valueOf(i.getCreationDate().getYear()),
-            SecurityUtils.getCurrentUserExternalId(),
-            Utilities.getTraceId()
-        )));
+          capitoloList.forEach(capitolo ->
+            capitolo.getAccertamento().forEach(accertamento ->
+              assessmentsRegistryRepository.insertIfNotExists(
+                organizationId,
+                debtPositionTypeOrg.getCode(),
+                capitolo.getCodCapitolo(),
+                null,
+                capitolo.getCodUfficio(),
+                null,
+                accertamento.getCodAccertamento(),
+                null,
+                String.valueOf(i.getCreationDate().getYear()),
+                SecurityUtils.getCurrentUserExternalId(),
+                Utilities.getTraceId()
+              )));
+        }
       });
   }
 
