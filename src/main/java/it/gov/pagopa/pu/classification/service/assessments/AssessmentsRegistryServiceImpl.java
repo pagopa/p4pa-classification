@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.util.StringUtils;
 
 @Service
 public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryService{
@@ -48,24 +49,26 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
       .flatMap(paymentOptionDTO -> paymentOptionDTO.getInstallments().stream())
       .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
       .forEach(i -> {
-        CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance());
-        List<CtCapitolo> capitoloList = balance.getCapitolo();
+        if(StringUtils.hasLength(i.getBalance())) {
+          CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance());
+          List<CtCapitolo> capitoloList = balance.getCapitolo();
 
-        capitoloList.forEach(capitolo ->
-          capitolo.getAccertamento().forEach(accertamento ->
-            assessmentsRegistryRepository.insertIfNotExists(
-            organizationId,
-            debtPositionTypeOrg.getCode(),
-            capitolo.getCodCapitolo(),
-            null,
-            capitolo.getCodUfficio(),
-            null,
-            accertamento.getCodAccertamento(),
-            null,
-            String.valueOf(i.getCreationDate().getYear()),
-            SecurityUtils.getCurrentUserExternalId(),
-            Utilities.getTraceId()
-        )));
+          capitoloList.forEach(capitolo ->
+            capitolo.getAccertamento().forEach(accertamento ->
+              assessmentsRegistryRepository.insertIfNotExists(
+                organizationId,
+                debtPositionTypeOrg.getCode(),
+                capitolo.getCodCapitolo(),
+                null,
+                capitolo.getCodUfficio(),
+                null,
+                accertamento.getCodAccertamento(),
+                null,
+                String.valueOf(i.getCreationDate().getYear()),
+                SecurityUtils.getCurrentUserExternalId(),
+                Utilities.getTraceId()
+              )));
+        }
       });
   }
 
