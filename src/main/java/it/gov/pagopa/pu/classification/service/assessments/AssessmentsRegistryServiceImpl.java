@@ -48,7 +48,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
       .flatMap(paymentOptionDTO -> paymentOptionDTO.getInstallments().stream())
       .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
       .forEach(i -> {
-        if(i.getBalance()!=null){
+        if(i.getBalance()!=null && !i.getBalance().isEmpty()){
           CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance());
           List<CtCapitolo> capitoloList = balance.getCapitolo();
 
