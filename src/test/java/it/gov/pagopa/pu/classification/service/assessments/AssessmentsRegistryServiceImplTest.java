@@ -202,6 +202,45 @@ class AssessmentsRegistryServiceImplTest {
   }
 
   @Test
+  void givenRequestWithNullBalanceWhenCreateAssessmentsRegistryByDebtPositionDTOAndIudThenVerifyNoExecute() {
+    // Given
+    String externalUserId = "USERID";
+    String traceId = "TRACEID";
+    String accessToken = "token";
+
+    DebtPositionDTO debtPositionDTO = buildDebtPositionDTO();
+
+    // Mock request
+    CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest request =
+      TestUtils.getPodamFactory().manufacturePojo(CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest.class);
+    request.setDebtPositionDTO(debtPositionDTO);
+    request.setIudList(List.of(IUD));
+
+    DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
+    debtPositionTypeOrg.setCode("CODE01");
+
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByDebtPositionTypeOrgId(debtPositionDTO.getOrganizationId(),
+      debtPositionDTO.getDebtPositionTypeOrgId(), accessToken)).thenReturn(debtPositionTypeOrg);
+
+    debtPositionDTO.getPaymentOptions().forEach(
+      paymentOptionDTO -> paymentOptionDTO.getInstallments()
+        .forEach(installmentDTO -> installmentDTO.setBalance(null)));
+
+    try (MockedStatic<SecurityUtils> securityUtilsMockedStatic = mockStatic(SecurityUtils.class);
+      MockedStatic<Utilities> utilMock = mockStatic(Utilities.class)) {
+
+      securityUtilsMockedStatic.when(SecurityUtils::getCurrentUserExternalId).thenReturn(externalUserId);
+      utilMock.when(Utilities::getTraceId).thenReturn(traceId);
+
+      // When
+      assessmentsRegistryService.createAssessmentsRegistryByDebtPositionDTOAndIud(request, accessToken);
+
+      verifyNoInteractions(assessmentsRegistryRepositoryMock);
+      // Then
+    }
+  }
+
+  @Test
   void givenValidRequestWhenCreateAssessmentsRegistryThenOk(){
     AssessmentsRegistry assessmentsRegistry = TestUtils.getPodamFactory().manufacturePojo(AssessmentsRegistry.class);
     assessmentsRegistry.setAssessmentRegistryId(null);
