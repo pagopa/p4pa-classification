@@ -235,8 +235,8 @@ class AssessmentsRegistryServiceImplTest {
       // When
       assessmentsRegistryService.createAssessmentsRegistryByDebtPositionDTOAndIud(request, accessToken);
 
-      verifyNoInteractions(assessmentsRegistryRepositoryMock);
       // Then
+      verifyNoInteractions(assessmentsRegistryRepositoryMock);
     }
   }
 
