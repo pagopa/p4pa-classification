@@ -104,7 +104,12 @@ public interface ClassificationDetailViewNoPIIRepository extends Repository<Clas
       pn.paymentType as paymentType,
       pn.balance as balance,
       pn.remittanceInformationHash as remittanceInformationHash,
-      pn.debtorFiscalCodeHash as debtorFiscalCodeHash
+      pn.debtorFiscalCodeHash as debtorFiscalCodeHash,
+      pn.personalDataId as paymentNotificationPersonalDataId,
+      pn.remittanceInformation as paymentNotificationRemittanceInformation,
+      pn.iud as paymentNotificationIud,
+      pn.amountPaidCents as paymentNotificationAmountPaidCents,
+      pn.debtPositionTypeOrgCode as paymentNotificationDebtPositionTypeOrgCode
     )
     FROM Classification c
     LEFT JOIN Treasury t ON c.treasuryId = t.treasuryId

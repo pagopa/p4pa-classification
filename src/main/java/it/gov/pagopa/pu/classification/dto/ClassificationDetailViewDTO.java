@@ -116,4 +116,9 @@ public class ClassificationDetailViewDTO {
   private String balance;
   private byte[] remittanceInformationHash;
   private byte[] debtorFiscalCodeHash;
+  private Person paymentNotificationDebtor;
+  private String paymentNotificationRemittanceInformation;
+  private String paymentNotificationIud;
+  private Long paymentNotificationAmountPaidCents;
+  private String paymentNotificationDebtPositionTypeOrgCode;
 }

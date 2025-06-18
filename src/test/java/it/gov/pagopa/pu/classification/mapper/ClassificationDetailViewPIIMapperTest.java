@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.mapper;
 
 import it.gov.pagopa.pu.classification.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.dto.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.ClassificationDetailViewNoPII;
 import it.gov.pagopa.pu.classification.util.TestUtils;
@@ -32,9 +33,12 @@ class ClassificationDetailViewPIIMapperTest {
   void testMapper() {
     ClassificationDetailViewNoPII classificationDetailViewNoPII = podamFactory.manufacturePojo(ClassificationDetailViewNoPII.class);
     ReceiptPIIDTO receiptPIIDTO = podamFactory.manufacturePojo(ReceiptPIIDTO.class);
+    PaymentNotificationPIIDTO paymentNotificationPIIDTO = podamFactory.manufacturePojo(PaymentNotificationPIIDTO.class);
 
     when(personalDataServiceMock.get(classificationDetailViewNoPII.getReceiptPersonalDataId(), ReceiptPIIDTO.class))
       .thenReturn(receiptPIIDTO);
+    when(personalDataServiceMock.get(classificationDetailViewNoPII.getPaymentNotificationPersonalDataId(), PaymentNotificationPIIDTO.class))
+      .thenReturn(paymentNotificationPIIDTO);
 
     ClassificationDetailViewDTO result = mapper.map(classificationDetailViewNoPII);
 
