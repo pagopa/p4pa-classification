@@ -140,4 +140,13 @@ public class ClassificationDetailViewNoPII implements Serializable {
   private String balance;
   private byte[] remittanceInformationHash;
   private byte[] debtorFiscalCodeHash;
+  private Long paymentNotificationPersonalDataId;
+  @NotNull
+  private String paymentNotificationRemittanceInformation;
+  @NotNull
+  private String paymentNotificationIud;
+  @NotNull
+  private Long paymentNotificationAmountPaidCents;
+  @NotNull
+  private String paymentNotificationDebtPositionTypeOrgCode;
 }

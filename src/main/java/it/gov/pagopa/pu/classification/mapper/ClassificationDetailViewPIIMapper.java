@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.mapper;
 
 import it.gov.pagopa.pu.classification.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.dto.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.ClassificationDetailViewNoPII;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,10 @@ public class ClassificationDetailViewPIIMapper {
 
   public ClassificationDetailViewDTO map(ClassificationDetailViewNoPII noPii) {
     ReceiptPIIDTO pii = personalDataService.get(noPii.getReceiptPersonalDataId(), ReceiptPIIDTO.class);
+    PaymentNotificationPIIDTO paymentNotificationPIIDTO = null;
+    if(noPii.getPaymentNotificationPersonalDataId()!=null) {
+       paymentNotificationPIIDTO = personalDataService.get(noPii.getPaymentNotificationPersonalDataId(), PaymentNotificationPIIDTO.class);
+    }
 
     return ClassificationDetailViewDTO.builder()
       .receiptDebtor(pii.getDebtor())
@@ -111,6 +116,11 @@ public class ClassificationDetailViewPIIMapper {
       .balance(noPii.getBalance())
       .remittanceInformationHash(noPii.getRemittanceInformationHash())
       .debtorFiscalCodeHash(noPii.getDebtorFiscalCodeHash())
+      .paymentNotificationDebtor(paymentNotificationPIIDTO!=null?paymentNotificationPIIDTO.getDebtor():null)
+      .paymentNotificationRemittanceInformation(noPii.getPaymentNotificationRemittanceInformation())
+      .paymentNotificationIud(noPii.getPaymentNotificationIud())
+      .paymentNotificationAmountPaidCents(noPii.getPaymentNotificationAmountPaidCents())
+      .paymentNotificationDebtPositionTypeOrgCode(noPii.getPaymentNotificationDebtPositionTypeOrgCode())
       .build();
   }
 }
