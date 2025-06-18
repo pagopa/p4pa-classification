@@ -51,6 +51,7 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
     );
 
     @SuppressWarnings("squid:S107")// Suppressing too many parameters warning: it's allowed in query methods
+    @Modifying
     @Query(value = """
       INSERT INTO assessments_registry (
           section_code, section_description, office_code, office_description,
