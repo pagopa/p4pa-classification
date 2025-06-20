@@ -8,9 +8,12 @@ import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -48,6 +51,7 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
     );
 
     @SuppressWarnings("squid:S107")// Suppressing too many parameters warning: it's allowed in query methods
+    @Modifying
     @Query(value = """
       INSERT INTO assessments_registry (
           section_code, section_description, office_code, office_description,
@@ -74,9 +78,8 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
             AND ((a2.assessment_code IS NULL AND :assessmentCode IS NULL) OR (a2.assessment_code = :assessmentCode))
             AND a2.operating_year = :operatingYear
       )
-      RETURNING assessment_registry_id
     """, nativeQuery = true)
-    Long insertIfNotExists(
+    void insertIfNotExists(
       @Param("organizationId") Long organizationId,
       @Param("debtPositionTypeOrgCode") String debtPositionTypeOrgCode,
       @Param("sectionCode") String sectionCode,
@@ -89,4 +92,10 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
       @Param("userExternalId") String userExternalId,
       @Param("traceId") String traceId
     );
+
+    @RestResource(exported = false)
+    @Modifying
+    @Transactional
+    @Query("UPDATE AssessmentsRegistry a SET a.status = :status WHERE a.organizationId = :organizationId and a.debtPositionTypeOrgCode = :debtPositionTypeOrgCode and a.operatingYear = :operatingYear")
+    void updateStatus(AssessmentsRegistryStatus status, Long organizationId, String debtPositionTypeOrgCode, String operatingYear);
 }

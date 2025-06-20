@@ -302,27 +302,100 @@ paths:
       tags:
         - assessments-registry
       operationId: createAssessmentsRegistry
-      description: "Create Assessments Registry"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateAssessmentsRegistryRequest"
+              type: 'AssessmentsRegistry'
         required: true
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Created
           content:
             application/json:
               schema:
-                type: integer
-                format: int64
+                type: 'AssessmentsRegistry'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /assessments-registry/create-by-debtpositiondto-and-iudlist:
+    post:
+      tags:
+        - assessments-registry
+      operationId: createAssessmentsRegistryByDebtPositionDTOAndIud
+      description: "Create Assessments Registry by DebtPositionDTO and list of iud"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /assessments:
+    get:
+      tags:
+        - assessments-controller
+      operationId: getPagedAssessmentsList
+      parameters:
+        - name: assessmentName
+          in: query
+          schema:
+            type: string
+        - name: updateDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: status
+          in: query
+          schema:
+            type: 'AssessmentsStatusEnum'
+      responses:
+        "200":
+          description: List of assessments
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedAssessmentsView"
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+      x-spring-paginated: true
   /export/organization/{organizationId}/full-classifications:
     get:
       tags:
@@ -825,7 +898,7 @@ paths:
           in: query
           schema:
             type: string
-        - name: debtPositionTypeOrgCode
+        - name: debtPositionTypeOrgCodes
           in: query
           schema:
             type: string
@@ -991,30 +1064,39 @@ components:
           type: string
         printed:
           type: boolean
-    CreateAssessmentsRegistryRequest:
+    PagedAssessmentsView:
       type: object
       required:
-        - organizationId
-        - debtPositionTypeOrgCode
-        - sectionCode
-        - operatingYear
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
       properties:
-        organizationId:
+        content:
+          type: array
+          items:
+            type: 'Assessments'
+        size:
           type: integer
           format: int64
-        debtPositionTypeOrgCode:
-          type: string
-        sectionCode:
-          type: string
-        sectionDescription:
-          type: string
-        officeCode:
-          type: string
-        officeDescription:
-          type: string
-        assessmentCode:
-          type: string
-        assessmentDescription:
-          type: string
-        operatingYear:
-          type: string
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+      format: int64
+    CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest:
+      type: object
+      required:
+        - debtPositionDTO
+      properties:
+        debtPositionDTO:
+          type: "DebtPositionDTO"
+        iudList:
+          type: array
+          items:
+            type: string

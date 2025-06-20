@@ -1,10 +1,14 @@
 package it.gov.pagopa.pu.classification.service.assessments;
 
+import io.micrometer.common.util.StringUtils;
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.processexecutions.IngestionFlowFileService;
+import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
+import it.gov.pagopa.pu.classification.mapper.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
@@ -13,14 +17,16 @@ import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@Lazy
 @Slf4j
 @Service
 public class AssessmentsServiceImpl implements AssessmentsService {
@@ -31,6 +37,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final AssessmentsRepository assessmentsRepository;
   private final AssessmentsDetailService assessmentsDetailService;
+  public final PagedAssessmentsViewMapper pagedAssessmentsViewMapper;
   public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
   /**
@@ -41,13 +48,14 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    * @param debtPositionTypeOrgService the service for retrieving debt position type organization information
    * @param assessmentsRepository      the repository for managing assessments
    */
-  public AssessmentsServiceImpl(InstallmentService installmentService, ReceiptService receiptService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository, AssessmentsDetailService assessmentsDetailService) {
+  public AssessmentsServiceImpl(InstallmentService installmentService, ReceiptService receiptService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository, AssessmentsDetailService assessmentsDetailService, PagedAssessmentsViewMapper pagedAssessmentsViewMapper) {
     this.installmentService = installmentService;
     this.receiptService = receiptService;
     this.ingestionFlowFileService = ingestionFlowFileService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.assessmentsRepository = assessmentsRepository;
     this.assessmentsDetailService = assessmentsDetailService;
+    this.pagedAssessmentsViewMapper = pagedAssessmentsViewMapper;
   }
 
 
@@ -107,6 +115,23 @@ public class AssessmentsServiceImpl implements AssessmentsService {
       .status(AssessmentStatus.NEW)
       .assessmentName(assessmentName)
       .build();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PagedAssessmentsView getPagedAssessmentsView(String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable, String accessToken) {
+    Set<String> setDebtPositionTypeOrgCodes = null;
+
+    if (debtPositionTypeOrgCodes != null && !debtPositionTypeOrgCodes.isEmpty()) {
+      setDebtPositionTypeOrgCodes = debtPositionTypeOrgCodes.stream()
+        .filter(StringUtils::isNotBlank)
+        .collect(Collectors.toSet());
+    }
+
+    Page<Assessments> pagedAssessments = assessmentsRepository.findPagedAssessments(assessmentName, updateDateTimeIntervalFilter, iuv, setDebtPositionTypeOrgCodes, status, pageable);
+    return pagedAssessmentsViewMapper.map(pagedAssessments);
   }
 
 }

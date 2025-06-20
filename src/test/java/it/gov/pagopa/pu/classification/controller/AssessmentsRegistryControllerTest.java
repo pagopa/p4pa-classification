@@ -1,17 +1,21 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsRegistryRequest;
+import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest;
+import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.service.assessments.AssessmentsRegistryService;
+import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
+import it.gov.pagopa.pu.classification.util.TestUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsRegistryControllerTest {
@@ -21,25 +25,38 @@ class AssessmentsRegistryControllerTest {
   @InjectMocks
   private AssessmentsRegistryController assessmentsRegistryController;
 
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
+  }
+
   @Test
-  void whenCreateAssessmentRegistryWithValidRequestThenReturnSuccess() {
-    CreateAssessmentsRegistryRequest request = CreateAssessmentsRegistryRequest.builder()
-      .organizationId(1L)
-      .debtPositionTypeOrgCode("debtPositionTypeOrgCode")
-      .sectionCode("sectionCode")
-      .officeCode("officeCode")
-      .assessmentCode("assessmentCode")
-      .operatingYear("2025")
+  void whenCreateAssessmentRegistryByDebtPositionDTOAndIudWithValidRequestThenReturnSuccess() {
+    String accessToken = "accessToken";
+    CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest request =
+      CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest.builder()
       .build();
 
-    Mockito.when(serviceMock.createAssessmentsRegistry(request)).thenReturn(1L);
+    SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
 
-    ResponseEntity<Long> response = assessmentsRegistryController.createAssessmentsRegistry(request);
+    ResponseEntity<Void> response = assessmentsRegistryController.createAssessmentsRegistryByDebtPositionDTOAndIud(request);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertNotNull(response.getBody());
-    assertEquals(1L, response.getBody().longValue());
-    Mockito.verify(serviceMock).createAssessmentsRegistry(request);
+  }
+
+  @Test
+  void whenCreateAssessmentRegistryWithValidRequestThenReturnSuccess() {
+    String accessToken = "accessToken";
+    AssessmentsRegistry assessmentsRegistry = TestUtils.getPodamFactory().manufacturePojo(AssessmentsRegistry.class);
+    AssessmentsRegistry expectedResponse = TestUtils.getPodamFactory().manufacturePojo(AssessmentsRegistry.class);
+    SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
+
+    when(serviceMock.createAssessmentsRegistry(assessmentsRegistry)).thenReturn(expectedResponse);
+
+    ResponseEntity<AssessmentsRegistry> response = assessmentsRegistryController.createAssessmentsRegistry(assessmentsRegistry);
+
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    assertEquals(expectedResponse, response.getBody());
   }
 
 }
