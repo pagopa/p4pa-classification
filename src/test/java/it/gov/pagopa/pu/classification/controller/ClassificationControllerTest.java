@@ -1,17 +1,11 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
-import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import it.gov.pagopa.pu.classification.util.TestUtils;
-import java.time.ZonedDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationControllerTest {
@@ -72,8 +70,8 @@ class ClassificationControllerTest {
       filterDTO.getIur(),
       filterDTO.getLastClassificationDate().getFrom(),
       filterDTO.getLastClassificationDate().getTo(),
-      ZonedDateTime.of(filterDTO.getPayDate().getFrom(), Constants.ZONEID).toOffsetDateTime(),
-      ZonedDateTime.of(filterDTO.getPayDate().getTo(), Constants.ZONEID).toOffsetDateTime(),
+      filterDTO.getPayDate().getFrom(),
+      filterDTO.getPayDate().getTo(),
       filterDTO.getPaymentDateTime().getFrom(),
       filterDTO.getPaymentDateTime().getTo(),
       filterDTO.getRegulationDate().getFrom(),
