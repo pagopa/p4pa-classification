@@ -4,7 +4,7 @@ package it.gov.pagopa.pu.classification.util.faker;
 import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.PersonEntityType;
 
-public class PersonFaker {
+public class PersonDTOFaker {
 
   public static PersonDTO buildPerson(){
     return PersonDTO.builder()

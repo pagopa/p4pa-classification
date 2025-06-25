@@ -28,7 +28,7 @@ public class PaymentNotificationFaker {
       .transferCategory("transferCategory")
       .debtPositionTypeOrgCode("debtPositionTypeOrgCode")
       .balance("balance")
-      .debtor(PersonFaker.buildPerson())
+      .debtor(PersonDTOFaker.buildPerson())
       .creationDate(DATETIME.toLocalDateTime())
       .updateDate(DATETIME.toLocalDateTime())
       .updateOperatorExternalId("updateOperatorExternalId")
@@ -64,7 +64,7 @@ public class PaymentNotificationFaker {
 
   public static PaymentNotificationPIIDTO buildPaymentNotificationPIIDTO() {
     return PaymentNotificationPIIDTO.builder()
-      .debtor(PersonFaker.buildPerson())
+      .debtor(PersonDTOFaker.buildPerson())
       .build();
   }
 
@@ -84,7 +84,7 @@ public class PaymentNotificationFaker {
       .transferCategory("transferCategory")
       .debtPositionTypeOrgCode("debtPositionTypeOrgCode")
       .balance("balance")
-      .debtor(PersonFaker.buildPerson())
+      .debtor(PersonDTOFaker.buildPerson())
       .creationDate(DATETIME.toLocalDateTime())
       .updateDate(DATETIME.toLocalDateTime())
       .updateTraceId("traceId")
