@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import it.gov.pagopa.pu.debtposition.dto.generated.Person;
+import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -51,5 +51,5 @@ public class FullClassificationViewDTO extends ClassificationViewDTO {
   private String paymentNotificationBalance;
 
   @JsonProperty("payNotice_debtor")
-  private Person paymentNotificationDebtor;
+  private PersonDTO paymentNotificationDebtor;
 }

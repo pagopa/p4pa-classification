@@ -21,7 +21,7 @@ public class TreasuredClassificationFilterDTO {
   private String iur;
 
   private LocalDateIntervalFilter lastClassificationDate;
-  private LocalDateTimeIntervalFilter payDate;
+  private LocalDateIntervalFilter payDate;
   private OffsetDateTimeIntervalFilter paymentDateTime;
   private LocalDateIntervalFilter regulationDate;
   private LocalDateIntervalFilter billDate;
