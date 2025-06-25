@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.classification.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
-import it.gov.pagopa.pu.debtposition.dto.generated.Person;
+import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +30,7 @@ public class PaymentNotificationDTO implements FullPIIDTO<PaymentNotificationNoP
   private String transferCategory;
   private String debtPositionTypeOrgCode;
   private String balance;
-  private Person debtor;
+  private PersonDTO debtor;
   private LocalDateTime creationDate;
   private LocalDateTime updateDate;
   private String updateOperatorExternalId;

@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.dto;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
-import it.gov.pagopa.pu.debtposition.dto.generated.Person;
+import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,8 +51,8 @@ public class ClassificationDetailViewDTO {
   private String receiptPspCompanyName;
   private String organizationEntityType;
   private String organizationName;
-  private Person receiptPayer;
-  private Person receiptDebtor;
+  private PersonDTO receiptPayer;
+  private PersonDTO receiptDebtor;
   private String receiptPaymentOutcomeCode;
   private Long receiptPaymentAmount;
   private String receiptCreditorReferenceId;
@@ -116,7 +116,7 @@ public class ClassificationDetailViewDTO {
   private String balance;
   private byte[] remittanceInformationHash;
   private byte[] debtorFiscalCodeHash;
-  private Person paymentNotificationDebtor;
+  private PersonDTO paymentNotificationDebtor;
   private String paymentNotificationRemittanceInformation;
   private String paymentNotificationIud;
   private Long paymentNotificationAmountPaidCents;
