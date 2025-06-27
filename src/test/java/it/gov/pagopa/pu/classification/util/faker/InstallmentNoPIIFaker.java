@@ -34,6 +34,7 @@ public class InstallmentNoPIIFaker {
                 .debtorFiscalCodeHash("fiscalCodeHash".getBytes())
                 .syncStatus(new InstallmentSyncStatus())
                 .notificationDate(OffsetDateTime.now())
+                .sourceFlowName("sourceFlowName")
                 .ingestionFlowFileId(1L)
                 .ingestionFlowFileLineNumber(1L)
                 .receiptId(1L)

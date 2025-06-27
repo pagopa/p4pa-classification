@@ -3,7 +3,6 @@ package it.gov.pagopa.pu.classification.service.assessments;
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
-import it.gov.pagopa.pu.classification.connector.processexecutions.IngestionFlowFileService;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
@@ -15,7 +14,6 @@ import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIFaker;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
-import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +29,6 @@ import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -46,8 +43,6 @@ class AssessmentsServiceImplTest {
   private InstallmentService installmentServiceMock;
   @Mock
   private ReceiptService receiptServiceMock;
-  @Mock
-  private IngestionFlowFileService ingestionFlowFileServiceMock;
   @Mock
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
   @Mock
@@ -65,7 +60,6 @@ class AssessmentsServiceImplTest {
     service = new AssessmentsServiceImpl(
       installmentServiceMock,
       receiptServiceMock,
-      ingestionFlowFileServiceMock,
       debtPositionTypeOrgServiceMock,
       assessmentsRepositoryMock,
       assessmentsDetailServiceMock,
@@ -78,7 +72,6 @@ class AssessmentsServiceImplTest {
     Mockito.verifyNoMoreInteractions(
       installmentServiceMock,
       receiptServiceMock,
-      ingestionFlowFileServiceMock,
       debtPositionTypeOrgServiceMock,
       assessmentsRepositoryMock,
       assessmentsDetailServiceMock,
@@ -89,15 +82,10 @@ class AssessmentsServiceImplTest {
   void buildAssessment_withValidInstallmentNoPII_returnsAssessment() {
     String accessToken = "accessToken";
     InstallmentNoPII installment = InstallmentNoPIIFaker.buildInstallmentNoPII();
-    IngestionFlowFile ingestionFlowFile = TestUtils.getPodamFactory().manufacturePojo(IngestionFlowFile.class);
-    ingestionFlowFile.setOrganizationId(1L);
-    ingestionFlowFile.setFileName("testFile");
     DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
     debtPositionTypeOrg.setCode("testCode");
     debtPositionTypeOrg.setDebtPositionTypeOrgId(2L);
 
-    when(ingestionFlowFileServiceMock.getIngestionFlowFile(installment.getIngestionFlowFileId(), accessToken))
-      .thenReturn(ingestionFlowFile);
     when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installment.getInstallmentId(), accessToken))
       .thenReturn(debtPositionTypeOrg);
 
@@ -107,7 +95,7 @@ class AssessmentsServiceImplTest {
     Assertions.assertEquals(debtPositionTypeOrg.getOrganizationId(), result.getOrganizationId());
     Assertions.assertEquals(debtPositionTypeOrg.getCode(), result.getDebtPositionTypeOrgCode());
     Assertions.assertEquals(AssessmentStatus.NEW, result.getStatus());
-    Assertions.assertEquals(ingestionFlowFile.getFileName() + "_" + debtPositionTypeOrg.getCode(), result.getAssessmentName());
+    Assertions.assertEquals(installment.getSourceFlowName(), result.getAssessmentName());
 
     TestUtils.checkNotNullFields(result, "assessmentId","creationDate","updateDate","updateOperatorExternalId","updateTraceId");
   }
@@ -130,7 +118,7 @@ class AssessmentsServiceImplTest {
     Assertions.assertEquals(debtPositionTypeOrg.getOrganizationId(), result.getOrganizationId());
     Assertions.assertEquals(debtPositionTypeOrg.getCode(), result.getDebtPositionTypeOrgCode());
     Assertions.assertEquals(AssessmentStatus.NEW, result.getStatus());
-    Assertions.assertEquals("ACC" + LocalDate.now().format(AssessmentsServiceImpl.DATE_TIME_FORMATTER) + "_" + debtPositionTypeOrg.getCode(), result.getAssessmentName());
+    Assertions.assertEquals(installmentNoPII.getSourceFlowName(), result.getAssessmentName());
 
     TestUtils.checkNotNullFields(result, "assessmentId","creationDate","updateDate","updateOperatorExternalId","updateTraceId");
   }
@@ -142,20 +130,15 @@ class AssessmentsServiceImplTest {
     List<InstallmentNoPII> installments = List.of(InstallmentNoPIIFaker.buildInstallmentNoPII());
     ReceiptNoPII receipt = new ReceiptNoPII();
     Assessments assessment = new Assessments();
-    IngestionFlowFile ingestionFlowFile = new IngestionFlowFile();
-    ingestionFlowFile.setOrganizationId(1L);
-    ingestionFlowFile.setFileName("testFile");
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
     debtPositionTypeOrg.setCode("testCode");
     debtPositionTypeOrg.setOrganizationId(3L);
 
     when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
     when(installmentServiceMock.getByReceiptId(receiptId, accessToken)).thenReturn(installments);
-    when(ingestionFlowFileServiceMock.getIngestionFlowFile(installments.getFirst().getIngestionFlowFileId(), accessToken))
-            .thenReturn(ingestionFlowFile);
     when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), accessToken)).thenReturn(debtPositionTypeOrg);
     when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
-            debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getCode(), "testFile_testCode"))
+            debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getCode(), "sourceFlowName"))
             .thenReturn(null);
     when(assessmentsRepositoryMock.save(Mockito.any(Assessments.class))).thenReturn(assessment);
 
