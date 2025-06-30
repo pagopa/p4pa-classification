@@ -4,7 +4,6 @@ import io.micrometer.common.util.StringUtils;
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
-import it.gov.pagopa.pu.classification.connector.processexecutions.IngestionFlowFileService;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
@@ -14,15 +13,12 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
-import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,25 +29,21 @@ public class AssessmentsServiceImpl implements AssessmentsService {
 
   private final InstallmentService installmentService;
   private final ReceiptService receiptService;
-  private final IngestionFlowFileService ingestionFlowFileService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final AssessmentsRepository assessmentsRepository;
   private final AssessmentsDetailService assessmentsDetailService;
   public final PagedAssessmentsViewMapper pagedAssessmentsViewMapper;
-  public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
   /**
    * Constructs a new AssessmentsServiceImpl with the given dependencies.
    *
    * @param installmentService         the service for retrieving installment information
-   * @param ingestionFlowFileService   the service for retrieving ingestion flow files
    * @param debtPositionTypeOrgService the service for retrieving debt position type organization information
    * @param assessmentsRepository      the repository for managing assessments
    */
-  public AssessmentsServiceImpl(InstallmentService installmentService, ReceiptService receiptService, IngestionFlowFileService ingestionFlowFileService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository, AssessmentsDetailService assessmentsDetailService, PagedAssessmentsViewMapper pagedAssessmentsViewMapper) {
+  public AssessmentsServiceImpl(InstallmentService installmentService, ReceiptService receiptService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository, AssessmentsDetailService assessmentsDetailService, PagedAssessmentsViewMapper pagedAssessmentsViewMapper) {
     this.installmentService = installmentService;
     this.receiptService = receiptService;
-    this.ingestionFlowFileService = ingestionFlowFileService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.assessmentsRepository = assessmentsRepository;
     this.assessmentsDetailService = assessmentsDetailService;
@@ -97,23 +89,14 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    * @return the built assessment
    */
   Assessments buildAssessment(InstallmentNoPII installment, String accessToken) {
-    IngestionFlowFile ingestionFlowFile = installment.getIngestionFlowFileId() != null
-      ? ingestionFlowFileService.getIngestionFlowFile(installment.getIngestionFlowFileId(), accessToken)
-      : null;
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installment.getInstallmentId(), accessToken);
     String debtPositionTypeOrgCode = debtPositionTypeOrg.getCode();
-    String assessmentName;
-
-    if (ingestionFlowFile != null)
-      assessmentName = ingestionFlowFile.getFileName().replaceFirst("[.][^.]+$", "") + "_" + debtPositionTypeOrgCode;
-    else
-      assessmentName = "ACC" + LocalDate.now().format(DATE_TIME_FORMATTER) + "_" + debtPositionTypeOrgCode;
 
     return Assessments.builder()
       .organizationId(debtPositionTypeOrg.getOrganizationId())
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .status(AssessmentStatus.NEW)
-      .assessmentName(assessmentName)
+      .assessmentName(installment.getSourceFlowName())
       .build();
   }
 

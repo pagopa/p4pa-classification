@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.classification.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
-import it.gov.pagopa.pu.debtposition.dto.generated.Person;
+import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,10 +54,10 @@ public class ClassificationViewDTO {
   private String receiptBeneficiaryOrgName;
 
   @JsonProperty("rec_payer")
-  private Person receiptPayer;
+  private PersonDTO receiptPayer;
 
   @JsonProperty("rec_debtor")
-  private Person receiptDebtor;
+  private PersonDTO receiptDebtor;
 
   @JsonProperty("rec_paymentOutcomeCode")
   private String receiptPaymentOutcomeCode;
