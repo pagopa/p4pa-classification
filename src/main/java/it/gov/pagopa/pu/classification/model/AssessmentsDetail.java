@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -43,4 +42,5 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   private Long amountCents;
   @NotNull
   private boolean amountSubmitted = true;
+  private Long receiptId;
 }
