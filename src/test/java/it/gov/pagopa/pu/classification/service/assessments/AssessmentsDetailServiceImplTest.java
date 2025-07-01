@@ -64,6 +64,7 @@ class AssessmentsDetailServiceImplTest {
     installment.setBalance(BALANCE);
     ReceiptNoPII receipt = new ReceiptNoPII();
     receipt.setPaymentDateTime(OffsetDateTime.now());
+    receipt.setReceiptId(9999L);
     Assessments assessment = new Assessments();
     assessment.setAssessmentId(1L);
     assessment.setOrganizationId(1L);
@@ -93,6 +94,7 @@ class AssessmentsDetailServiceImplTest {
     assertEquals("UFF1", detail.getOfficeCode());
     assertEquals("ACC1", detail.getAssessmentCode());
     assertEquals(10000L, detail.getAmountCents());
+    assertEquals(9999L, detail.getReceiptId());
     assertSame(installment.getIur(), detail.getIur());
     assertSame(installment.getDebtorFiscalCodeHash(), detail.getDebtorFiscalCodeHash());
     assertSame(receipt.getPaymentDateTime(), detail.getPaymentDateTime());

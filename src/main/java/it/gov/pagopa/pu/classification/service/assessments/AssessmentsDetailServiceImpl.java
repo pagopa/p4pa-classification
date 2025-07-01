@@ -66,6 +66,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
           .sectionCode(capitolo.getCodCapitolo())
           .assessmentCode(accertamento.getCodAccertamento())
           .amountCents(Utilities.bigDecimalEuroToLongCentsAmount(accertamento.getImporto()))
+          .receiptId(receipt.getReceiptId())
           .build())
       ).toList();
   }
