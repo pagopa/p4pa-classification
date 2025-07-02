@@ -39,7 +39,6 @@ public class PaymentNotificationPIIMapper extends BasePIIMapper<PaymentNotificat
     noPii.setUpdateTraceId(fullDTO.getUpdateTraceId());
     noPii.setDebtorFiscalCodeHash(dataCipherService.hash(fullDTO.getDebtor().getFiscalCode()));
     noPii.setRemittanceInformationHash(dataCipherService.hash(fullDTO.getRemittanceInformation()));
-    noPii.setPaymentNotificationId(fullDTO.getPaymentNotificationId());
 
 
     return noPii;
