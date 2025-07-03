@@ -2,13 +2,11 @@ package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.ClassificationsApi;
 import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
-import it.gov.pagopa.pu.classification.util.DateConversionUtils;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.LocalDateIntervalFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Set;
 
 @RestController
 @Slf4j
@@ -30,14 +29,14 @@ public class ClassificationController implements ClassificationsApi {
 
   @Override
   public ResponseEntity<PagedTreasuredClassification> getTreasuredClassifications(
-    Long organizationId, ClassificationsEnum label, String iud, String iuv, String iur,
+    Long organizationId, Set<String> debtPositionTypeOrgCodes, ClassificationsEnum label, String iud, String iuv, String iur,
     LocalDate lastClassificationDateFrom, LocalDate lastClassificationDateTo,
     LocalDate payDateFrom, LocalDate payDateTo, OffsetDateTime paymentDateTimeFrom,
     OffsetDateTime paymentDateTimeTo, LocalDate regulationDateFrom, LocalDate regulationDateTo,
     LocalDate billDateFrom, LocalDate billDateTo, LocalDate regionValueDateFrom,
     LocalDate regionValueDateTo, String pspCompanyName, String pspLastName, String iuf,
     String regulationUniqueIdentifier, String accountRegistryCode, Long billAmountCents,
-    String remittanceInformation, String debtorFiscalCode, String debtPositionTypeOrgCode,
+    String remittanceInformation, String debtorFiscalCode,
     String billYear, String billCode, String documentYear, String documentCode,
     String provisionalAe, String provisionalCode, Pageable pageable) {
     log.info("Retrieving Classifications having organizationId: {}",
@@ -74,7 +73,7 @@ public class ClassificationController implements ClassificationsApi {
       .billAmountCents(billAmountCents)
       .remittanceInformation(remittanceInformation)
       .debtorFiscalCode(debtorFiscalCode)
-      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+      .debtPositionTypeOrgCodes(debtPositionTypeOrgCodes)
       .billYear(billYear)
       .billCode(billCode)
       .documentYear(documentYear)

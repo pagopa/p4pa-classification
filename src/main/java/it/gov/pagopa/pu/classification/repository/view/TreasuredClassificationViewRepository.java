@@ -129,7 +129,7 @@ public interface TreasuredClassificationViewRepository extends Repository<Treasu
     AND (:#{#filter.documentCode} IS NULL OR c.documentCode = :#{#filter.documentCode})
     AND (:#{#filter.provisionalAe} IS NULL OR c.provisionalAe = :#{#filter.provisionalAe})
     AND (:#{#filter.provisionalCode} IS NULL OR c.provisionalCode = :#{#filter.provisionalCode})
-    AND (:#{#filter.debtPositionTypeOrgCode} IS NULL OR c.debtPositionTypeOrgCode = :#{#filter.debtPositionTypeOrgCode})
+    AND (c.debtPositionTypeOrgCode IS NULL OR c.debtPositionTypeOrgCode IN :#{#filter.debtPositionTypeOrgCodes})
     AND (:#{#filter.debtorFiscalCode} IS NULL OR c.debtorFiscalCodeHash = :#{@dataCipherService.hash(#filter.debtorFiscalCode)})
     """)
   Page<TreasuredClassificationView> getTreasuredClassifications(
