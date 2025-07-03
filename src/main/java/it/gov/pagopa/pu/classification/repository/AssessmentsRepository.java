@@ -17,7 +17,6 @@ import java.util.Set;
 @RepositoryRestResource(path = "assessments")
 public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
 
-  @RestResource(exported = false)
   Assessments findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(Long organizationId, String debtPositionTypeOrgCode, String assessmentName);
 
   @RestResource(exported = false)
@@ -40,6 +39,5 @@ public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
     @Param("status") AssessmentStatus status,
     Pageable pageable
   );
-
 
 }

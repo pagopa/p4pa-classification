@@ -109,7 +109,7 @@ public interface ClassificationViewNoPIIDTORepository extends Repository<Classif
     AND (:#{#filter.remittanceInformation} IS NULL OR c.remittanceInformation = :#{#filter.remittanceInformation})
     AND (:#{#filter.pspCompanyName} IS NULL OR c.receiptPspCompanyName = :#{#filter.pspCompanyName})
     AND (:#{#filter.pspLastName} IS NULL OR c.pspLastName = :#{#filter.pspLastName})
-    AND c.debtPositionTypeOrgCode IN (:debtPositionTypeOrgCodes)
+    AND (c.debtPositionTypeOrgCode IS NULL OR c.debtPositionTypeOrgCode IN (:debtPositionTypeOrgCodes))
     """)
   Page<ClassificationViewNoPII> findClassificationViewNoPIIDTO(
     @Parameter(required = true) @Param("organizationId") Long organizationId,

@@ -900,8 +900,12 @@ paths:
             type: string
         - name: debtPositionTypeOrgCodes
           in: query
+          required: true
           schema:
-            type: string
+            type: array
+            uniqueItems: true
+            items:
+              type: string
         - name: billYear
           in: query
           schema:

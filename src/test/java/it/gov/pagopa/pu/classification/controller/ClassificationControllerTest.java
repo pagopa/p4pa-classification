@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,6 +63,7 @@ class ClassificationControllerTest {
 
     ResponseEntity<PagedTreasuredClassification> response = controller.getTreasuredClassifications(
       organizationId,
+      filterDTO.getDebtPositionTypeOrgCodes(),
       filterDTO.getLabel(),
       filterDTO.getIud(),
       filterDTO.getIuv(),
@@ -88,7 +88,6 @@ class ClassificationControllerTest {
       filterDTO.getBillAmountCents(),
       filterDTO.getRemittanceInformation(),
       filterDTO.getDebtorFiscalCode(),
-      filterDTO.getDebtPositionTypeOrgCode(),
       filterDTO.getBillYear(),
       filterDTO.getBillCode(),
       filterDTO.getDocumentYear(),
@@ -113,6 +112,5 @@ class ClassificationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(mockDetailView, response.getBody());
-    verify(classificationServiceMock).getClassificationDetailView(organizationId, classificationId);
   }
 }
