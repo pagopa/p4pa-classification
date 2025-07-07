@@ -396,6 +396,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
       x-spring-paginated: true
+    post:
+      tags:
+        - assessments-controller
+      operationId: createAssessment
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Assessment
+          content:
+            application/json:
+              schema:
+                type: 'Assessments'
+        "409":
+          description: The name of assessment already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
   /export/organization/{organizationId}/full-classifications:
     get:
       tags:
