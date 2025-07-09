@@ -312,6 +312,6 @@ class AssessmentsServiceImplTest {
     //when
 
     AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode));
-    Assertions.assertEquals("Assessment with the same name already exists", ex.getMessage());
+    Assertions.assertEquals("Assessment with the same name ASSESSMENT_NAME already exists for the current organizationId 3", ex.getMessage());
   }
 }
