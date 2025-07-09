@@ -122,7 +122,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode) {
 
     if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName) != null) {
-     throw new AssessmentConflictException("Assessment with the same name %s already exists for the current organizationId %d".formatted(assessmentName, organizationId));
+     throw new AssessmentConflictException("Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
     }
 
     return assessmentsRepository.save(
