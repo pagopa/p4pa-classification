@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
-import it.gov.pagopa.pu.classification.exception.custom.InvalidNameException;
+import it.gov.pagopa.pu.classification.exception.custom.AssessmentConflictException;
 import it.gov.pagopa.pu.classification.mapper.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
@@ -284,7 +284,7 @@ class AssessmentsServiceImplTest {
               .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
                 .flagManualGeneration(true)
                   .printed(false).build();
-    Mockito.when(assessmentsRepositoryMock.findByAssessmentName(assessmentName)).thenReturn(null);
+    Mockito.when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(null);
     Mockito.when(assessmentsRepositoryMock.save(assessments)).thenReturn(assessments);
     //when
 
@@ -308,10 +308,10 @@ class AssessmentsServiceImplTest {
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .flagManualGeneration(true)
       .printed(false).build();
-    Mockito.when(assessmentsRepositoryMock.findByAssessmentName(assessmentName)).thenReturn(assessments);
+    Mockito.when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(assessments);
     //when
 
-    InvalidNameException ex = assertThrows(InvalidNameException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode));
+    AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode));
     Assertions.assertEquals("Assessment with the same name already exists", ex.getMessage());
   }
 }

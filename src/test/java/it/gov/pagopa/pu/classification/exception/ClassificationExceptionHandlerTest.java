@@ -300,8 +300,8 @@ class ClassificationExceptionHandlerTest {
   }
 
   @Test
-  void handleInvalidNameException() throws Exception {
-    doThrow(new InvalidNameException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+  void handleAssessmentConflictException() throws Exception {
+    doThrow(new AssessmentConflictException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isConflict())

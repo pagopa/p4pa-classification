@@ -7,7 +7,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
-import it.gov.pagopa.pu.classification.exception.custom.InvalidNameException;
+import it.gov.pagopa.pu.classification.exception.custom.AssessmentConflictException;
 import it.gov.pagopa.pu.classification.mapper.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
@@ -121,8 +121,8 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   @Override
   public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode) {
 
-    if (assessmentsRepository.findByAssessmentName(assessmentName) != null) {
-     throw new InvalidNameException("Assessment with the same name already exists");
+    if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName) != null) {
+     throw new AssessmentConflictException("Assessment with the same name already exists");
     }
 
     return assessmentsRepository.save(

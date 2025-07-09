@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.service.assessments.AssessmentsService;
 import it.gov.pagopa.pu.classification.util.DateConversionUtils;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * Controller to host spring-data-rest directly not supported methods
  */
+@Slf4j
 @RestController
 public class AssessmentsController implements AssessmentsControllerApi {
 
@@ -45,7 +47,7 @@ public class AssessmentsController implements AssessmentsControllerApi {
 
   @Override
   public ResponseEntity<Assessments> createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode) {
-
+    log.info("User requested createAssessment with assessmentName {} and debtPositionTypeOrgCode {} for organization {}", organizationId, assessmentName, debtPositionTypeOrgCode);
     return ResponseEntity.ok(assessmentsService.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode));
   }
 
