@@ -290,7 +290,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Assessments"
+                  type: "Assessments"
         '500':
           description: Server Error
           content:
@@ -1081,33 +1081,6 @@ components:
         number:
           type: integer
           format: int64
-    Assessments:
-      type: object
-      required:
-        - organizationId
-        - debtPositionTypeOrgCode
-        - status
-        - assessmentName
-        - printed
-      properties:
-        assessmentId:
-          type: integer
-          format: int64
-        organizationId:
-          type: integer
-          format: int64
-        debtPositionTypeOrgCode:
-          type: string
-        status:
-          type: string
-          enum:
-            - NEW
-            - IN_PROGRESS
-            - COMPLETED
-        assessmentName:
-          type: string
-        printed:
-          type: boolean
     PagedAssessmentsView:
       type: object
       required:
