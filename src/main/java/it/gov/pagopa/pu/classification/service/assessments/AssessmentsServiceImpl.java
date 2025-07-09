@@ -96,7 +96,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     return Assessments.builder()
       .organizationId(debtPositionTypeOrg.getOrganizationId())
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
-      .status(AssessmentStatus.NEW)
+      .status(AssessmentStatus.ACTIVE)
       .assessmentName(installment.getSourceFlowName())
       .build();
   }

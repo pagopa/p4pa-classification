@@ -73,14 +73,14 @@ class AssessmentsControllerTest {
     LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(from.toLocalDateTime(), to.toLocalDateTime());
 
     PagedAssessmentsView pagedAssessmentsView = podamFactory.manufacturePojo(PagedAssessmentsView.class);
-    Mockito.when(serviceMock.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1))).thenReturn(pagedAssessmentsView);
+    Mockito.when(serviceMock.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1))).thenReturn(pagedAssessmentsView);
     //when
-    ResponseEntity<PagedAssessmentsView> result = controller.getPagedAssessmentsList(assessmentName, from, to, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1));
+    ResponseEntity<PagedAssessmentsView> result = controller.getPagedAssessmentsList(assessmentName, from, to, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
     //then
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertEquals(5, result.getBody().getContent().size());
-    Mockito.verify(serviceMock).getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1));
+    Mockito.verify(serviceMock).getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
   }
 
   @Test
