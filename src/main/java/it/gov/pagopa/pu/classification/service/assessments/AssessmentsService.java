@@ -31,9 +31,17 @@ public interface AssessmentsService {
    * @param debtPositionTypeOrgCodes list of organization code of the debt position type to filter by; if {@code null}, this filter is ignored
    * @param status the status of the assessment to filter by; if {@code null}, this filter is ignored
    * @param pageable the pagination and sorting information
-   * @param accessToken the access token used for authentication and authorization
    * @return a paginated view of assessments matching the specified filters
    */
 
-  PagedAssessmentsView getPagedAssessmentsView(String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable, String accessToken);
+  PagedAssessmentsView getPagedAssessmentsView(String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable);
+
+
+  /**
+   * Creates assessment based on the given assessmentName, debtPositionTypeOrgCode and access token.
+   *
+   * @param assessmentName the name of assessment
+   * @param debtPositionTypeOrgCode debtPositionTypeOrgCode
+   */
+  Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode);
 }

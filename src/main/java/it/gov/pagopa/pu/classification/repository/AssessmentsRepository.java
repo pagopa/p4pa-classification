@@ -17,6 +17,7 @@ import java.util.Set;
 @RepositoryRestResource(path = "assessments")
 public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
 
+  Assessments findByAssessmentName(String assessmentName);
   Assessments findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(Long organizationId, String debtPositionTypeOrgCode, String assessmentName);
 
   @RestResource(exported = false)
