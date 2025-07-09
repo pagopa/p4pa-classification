@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
+import it.gov.pagopa.pu.classification.exception.custom.AssessmentConflictException;
 import it.gov.pagopa.pu.classification.mapper.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
@@ -95,7 +96,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     return Assessments.builder()
       .organizationId(debtPositionTypeOrg.getOrganizationId())
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
-      .status(AssessmentStatus.NEW)
+      .status(AssessmentStatus.ACTIVE)
       .assessmentName(installment.getSourceFlowName())
       .build();
   }
@@ -104,7 +105,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    * {@inheritDoc}
    */
   @Override
-  public PagedAssessmentsView getPagedAssessmentsView(String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable, String accessToken) {
+  public PagedAssessmentsView getPagedAssessmentsView(String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable) {
     Set<String> setDebtPositionTypeOrgCodes = null;
 
     if (debtPositionTypeOrgCodes != null && !debtPositionTypeOrgCodes.isEmpty()) {
@@ -115,6 +116,24 @@ public class AssessmentsServiceImpl implements AssessmentsService {
 
     Page<Assessments> pagedAssessments = assessmentsRepository.findPagedAssessments(assessmentName, updateDateTimeIntervalFilter, iuv, setDebtPositionTypeOrgCodes, status, pageable);
     return pagedAssessmentsViewMapper.map(pagedAssessments);
+  }
+
+  @Override
+  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode) {
+
+    if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName) != null) {
+     throw new AssessmentConflictException("Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
+    }
+
+    return assessmentsRepository.save(
+      Assessments.builder()
+      .assessmentName(assessmentName)
+      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+      .flagManualGeneration(true)
+      .status(AssessmentStatus.ACTIVE)
+      .printed(false)
+      .organizationId(organizationId)
+      .build());
   }
 
 }

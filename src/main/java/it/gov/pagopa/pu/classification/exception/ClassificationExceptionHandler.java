@@ -99,6 +99,11 @@ public class ClassificationExceptionHandler {
     return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_GENERIC_ERROR);
   }
 
+  @ExceptionHandler({AssessmentConflictException.class})
+  public ResponseEntity<ClassificationErrorDTO> handleInvalidNameException(RuntimeException ex, HttpServletRequest request){
+    return handleException(ex, request, HttpStatus.CONFLICT, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_CONFLICT);
+  }
+
   static ResponseEntity<ClassificationErrorDTO> handleException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus, ClassificationErrorDTO.CodeEnum errorEnum) {
     logException(ex, request, httpStatus);
 
