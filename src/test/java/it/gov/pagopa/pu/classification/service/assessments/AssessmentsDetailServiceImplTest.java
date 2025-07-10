@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.service.assessments;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -29,10 +30,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -325,6 +323,30 @@ class AssessmentsDetailServiceImplTest {
             createAssessmentsDetail, accessToken));
 
     verifyNoInteractions(assessmentsDetailRepositoryMock);
+  }
+
+  @Test
+  void givenInstallmentWithNoReceiptWhenCreateAssessmentsDetailThenInvalidRequestBodyException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    InstallmentNoPII installment = podamFactory.manufacturePojo(InstallmentNoPII.class);
+    installment.setReceiptId(null);
+    Set<String> iudSet = Collections.singleton(installment.getIud());
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId, iudSet);
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, iudSet, accessToken))
+            .thenReturn(Collections.singletonList(installment));
+
+    assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
   }
 
   @Test

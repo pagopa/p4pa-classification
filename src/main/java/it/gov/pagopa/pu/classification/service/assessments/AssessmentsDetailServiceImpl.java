@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.service.assessments;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -105,17 +106,15 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     List<InstallmentNoPII> installments = installmentService.findByOrganizationIdAndIuds(organizationId, createAssessmentsDetail.getIudSet(), accessToken);
     List<AssessmentsDetail> assessmentsDetails = new ArrayList<>();
     for (InstallmentNoPII installment : installments) {
-      if(installment.getReceiptId()!=null){
-        ReceiptNoPII receipt = receiptService.getById(installment.getReceiptId(), accessToken);
-        if(receipt!=null){
-          assessmentsDetails.add(saveAssessmentsDetail(organizationId, createAssessmentsDetail.getAssessmentRegistryId(),
-                  installment, receipt, assessments));
-        }else{
-          throw new ResourceNotFoundException("Receipt having id "+installment.getReceiptId()+" not found");
-        }
-      }else{
-        log.debug("Installment having iud {} does not have a receiptId", installment.getIud());
+      if(installment.getReceiptId()==null){
+        throw new InvalidRequestBodyException("Installment having iud "+installment.getIud()+" does not have a receiptId");
       }
+      ReceiptNoPII receipt = receiptService.getById(installment.getReceiptId(), accessToken);
+      if(receipt==null) {
+        throw new ResourceNotFoundException("Receipt having id " + installment.getReceiptId() + " not found");
+      }
+      assessmentsDetails.add(saveAssessmentsDetail(organizationId, createAssessmentsDetail.getAssessmentRegistryId(),
+                installment, receipt, assessments));
     }
     return assessmentsDetails;
   }
