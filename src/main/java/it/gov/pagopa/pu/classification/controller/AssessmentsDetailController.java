@@ -22,7 +22,7 @@ public class AssessmentsDetailController implements AssessmentsDetailApi {
 
     @Override
     public ResponseEntity<List<AssessmentsDetail>> createAssessmentsDetail(Long organizationId, Long assessmentId, CreateAssessmentsDetail createAssessmentsDetail) {
-        log.debug("Create AssessmentsDetail having organizationId {} assessmentId {} request body {}",organizationId,assessmentId,createAssessmentsDetail);
+        log.info("Create AssessmentsDetail having organizationId {} assessmentId {} request body {}",organizationId,assessmentId,createAssessmentsDetail);
         return ResponseEntity.ok(assessmentsDetailService.createAssessmentsDetail(organizationId,assessmentId,createAssessmentsDetail, SecurityUtils.getAccessToken()));
     }
 }

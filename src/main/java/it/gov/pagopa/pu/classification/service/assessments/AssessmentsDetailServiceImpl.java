@@ -103,7 +103,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
             .filter(a-> organizationId.equals(a.getOrganizationId()))
             .orElseThrow(()->
               new ResourceNotFoundException("Assessments having id "+assessmentId+" not found"));
-    List<InstallmentNoPII> installments = installmentService.findByOrganizationIdAndIuds(organizationId, createAssessmentsDetail.getIudSet(), accessToken);
+    List<InstallmentNoPII> installments = installmentService.findByOrganizationIdAndIuds(organizationId, createAssessmentsDetail.getIuds(), accessToken);
     List<AssessmentsDetail> assessmentsDetails = new ArrayList<>();
     for (InstallmentNoPII installment : installments) {
       if(installment.getReceiptId()==null){

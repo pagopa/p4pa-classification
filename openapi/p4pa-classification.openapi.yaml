@@ -1174,12 +1174,12 @@ components:
       type: object
       required:
         - assessmentRegistryId
-        - iudSet
+        - iuds
       properties:
         assessmentRegistryId:
           type: integer
           format: int64
-        iudSet:
+        iuds:
           type: array
           uniqueItems: true
           items:

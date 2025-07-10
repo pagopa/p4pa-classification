@@ -48,7 +48,7 @@ class AssessmentsDetailControllerTest {
     String accessToken = "accessToken";
     CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail();
     createAssessmentsDetail.setAssessmentRegistryId(assessmentsRegistryId);
-    createAssessmentsDetail.setIudSet(iudSet);
+    createAssessmentsDetail.setIuds(iudSet);
     Mockito.when(assessmentsDetailServiceMock.createAssessmentsDetail(
             organizationId,assessmentsId,createAssessmentsDetail,accessToken))
       .thenReturn(expectedResult);
