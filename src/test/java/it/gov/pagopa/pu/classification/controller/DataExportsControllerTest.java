@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -110,8 +111,7 @@ class DataExportsControllerTest {
 
     LocalDate invalidFrom = LocalDate.now();
     LocalDate invalidTo = invalidFrom.plusMonths(2);
-
-    assertThrows(InvalidDateTimeIntervalException.class, () ->
+    Executable executable = () ->
       controller.exportClassifications(
         1L,
         "operator123",
@@ -140,8 +140,9 @@ class DataExportsControllerTest {
         "pspLastName",
         Set.of("code"),
         pageable
-      )
-    );
+      );
+
+    assertThrows(InvalidDateTimeIntervalException.class, executable);
   }
 
   @Test
@@ -200,8 +201,7 @@ class DataExportsControllerTest {
     Pageable pageable = PageRequest.of(0, 10);
     LocalDate invalidFrom = now.minusMonths(2);
 
-    assertThrows(InvalidDateTimeIntervalException.class, () ->
-      controller.exportFullClassifications(
+    Executable executable = () -> controller.exportFullClassifications(
         1L,
         "operator123",
         Set.of(ClassificationsEnum.TES_NO_MATCH),
@@ -228,8 +228,8 @@ class DataExportsControllerTest {
         "pspCompany",
         "pspLastName",
         Set.of("code"),
-        pageable
-      )
-    );
+        pageable);
+
+    assertThrows(InvalidDateTimeIntervalException.class, executable);
   }
 }
