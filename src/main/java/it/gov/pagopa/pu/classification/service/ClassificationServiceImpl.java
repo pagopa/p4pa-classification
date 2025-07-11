@@ -1,6 +1,5 @@
 package it.gov.pagopa.pu.classification.service;
 
-import io.micrometer.common.util.StringUtils;
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.dto.*;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -89,15 +87,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
   @Override
   public PagedClassificationPaidInstallmentsView getPaidInstallmentsView(Long organizationId, String iuv, OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, Set<String> iuds, Pageable pageable) {
-    Set<String> setIuds = null;
-
-    if (iuds != null && !iuds.isEmpty()) {
-      setIuds = iuds.stream()
-        .filter(StringUtils::isNotBlank)
-        .collect(Collectors.toSet());
-    }
-
-    Page<ClassificationPaidInstallmentsView> pagedPaidInstallments = classificationPaidInstallmentsViewRepository.findPaidInstallments(organizationId, iuv, paymentDateTimeIntervalFilter, updateDateTimeIntervalFilter, setIuds, pageable);
+    Page<ClassificationPaidInstallmentsView> pagedPaidInstallments = classificationPaidInstallmentsViewRepository.findPaidInstallments(organizationId, iuv, paymentDateTimeIntervalFilter, updateDateTimeIntervalFilter, iuds, pageable);
     return pagedClassificationPaidInstallmentsViewMapper.map(pagedPaidInstallments);
   }
 }

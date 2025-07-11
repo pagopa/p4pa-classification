@@ -156,29 +156,19 @@ class ClassificationControllerTest {
       pageable
     )).thenReturn(expectedView);
 
-    ResponseEntity<PagedClassificationPaidInstallmentsView> result =
-      controller.getPaidInstallments(
-        organizationId,
-        iuv,
-        paymentDateTimeFrom,
-        paymentDateTimeTo,
-        updateDateFrom,
-        updateDateTo,
-        iuds,
-        pageable
-      );
+    ResponseEntity<PagedClassificationPaidInstallmentsView> result = controller.getPaidInstallments(
+      organizationId,
+      iuv,
+      paymentDateTimeFrom,
+      paymentDateTimeTo,
+      updateDateFrom,
+      updateDateTo,
+      iuds,
+      pageable
+    );
 
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertEquals(expectedView, result.getBody());
-
-    Mockito.verify(classificationServiceMock).getPaidInstallmentsView(
-      organizationId,
-      iuv,
-      paymentInterval,
-      updateInterval,
-      iuds,
-      pageable
-    );
   }
 }

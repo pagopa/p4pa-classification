@@ -11,10 +11,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.Set;
 
 @RepositoryRestResource(path = "classifications-paid-installments-view")
+@RestResource(exported = false)
 public interface ClassificationPaidInstallmentsViewRepository extends Repository<ClassificationPaidInstallmentsView, String> {
   @Query("""
     SELECT distinct new ClassificationPaidInstallmentsView(c.iud,c.iuv,c.paymentDateTime, c.updateDate, c.receiptPaymentRequestId, c.organizationId)
