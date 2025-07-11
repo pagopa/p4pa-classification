@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
-import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -23,7 +22,8 @@ import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -80,8 +80,8 @@ class DataExportsControllerTest {
       filterDTO.getIud(),
       filterDTO.getIuv(),
       filterDTO.getIur(),
-      ZonedDateTime.of(filterDTO.getPayDate().getFrom(), Constants.ZONEID).toOffsetDateTime(),
-      ZonedDateTime.of(filterDTO.getPayDate().getTo(), Constants.ZONEID).toOffsetDateTime(),
+      filterDTO.getPayDate().getFrom(),
+      filterDTO.getPayDate().getTo(),
       filterDTO.getPaymentDateTime().getFrom(),
       filterDTO.getPaymentDateTime().getTo(),
       filterDTO.getRegulationDate().getFrom(),
@@ -96,6 +96,7 @@ class DataExportsControllerTest {
       filterDTO.getRemittanceInformation(),
       filterDTO.getPspCompanyName(),
       filterDTO.getPspLastName(),
+      filterDTO.getDebtPositionTypeOrgCodes(),
       pageable
     );
 
@@ -114,13 +115,13 @@ class DataExportsControllerTest {
       controller.exportClassifications(
         1L,
         "operator123",
-        ClassificationsEnum.TES_NO_MATCH,
+        Set.of(ClassificationsEnum.TES_NO_MATCH),
         invalidFrom,
         invalidTo,
         "iuf_value",
         "iud_value",
-        "iuv_value",
-        "iur_value",
+        List.of("iuv_value"),
+        List.of("iur_value"),
         null,
         null,
         null,
@@ -137,6 +138,7 @@ class DataExportsControllerTest {
         "remittanceInfo",
         "pspCompany",
         "pspLastName",
+        Set.of("code"),
         pageable
       )
     );
@@ -168,8 +170,8 @@ class DataExportsControllerTest {
       filterDTO.getIud(),
       filterDTO.getIuv(),
       filterDTO.getIur(),
-      ZonedDateTime.of(filterDTO.getPayDate().getFrom(), Constants.ZONEID).toOffsetDateTime(),
-      ZonedDateTime.of(filterDTO.getPayDate().getTo(), Constants.ZONEID).toOffsetDateTime(),
+      filterDTO.getPayDate().getFrom(),
+      filterDTO.getPayDate().getTo(),
       filterDTO.getPaymentDateTime().getFrom(),
       filterDTO.getPaymentDateTime().getTo(),
       filterDTO.getRegulationDate().getFrom(),
@@ -184,6 +186,7 @@ class DataExportsControllerTest {
       filterDTO.getRemittanceInformation(),
       filterDTO.getPspCompanyName(),
       filterDTO.getPspLastName(),
+      filterDTO.getDebtPositionTypeOrgCodes(),
       pageable
     );
 
@@ -201,13 +204,13 @@ class DataExportsControllerTest {
       controller.exportFullClassifications(
         1L,
         "operator123",
-        ClassificationsEnum.TES_NO_MATCH,
+        Set.of(ClassificationsEnum.TES_NO_MATCH),
         invalidFrom,
         now,
         "iuf_value",
         "iud_value",
-        "iuv_value",
-        "iur_value",
+        List.of("iuv_value"),
+        List.of("iur_value"),
         null,
         null,
         null,
@@ -224,6 +227,7 @@ class DataExportsControllerTest {
         "remittanceInfo",
         "pspCompany",
         "pspLastName",
+        Set.of("code"),
         pageable
       )
     );

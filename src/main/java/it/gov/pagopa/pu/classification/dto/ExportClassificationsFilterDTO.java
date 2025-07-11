@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
+
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
@@ -16,13 +19,13 @@ public class ExportClassificationsFilterDTO {
 
   private String iuf;
   private String iud;
-  private String iuv;
-  private String iur;
+  private List<String> iuv;
+  private List<String> iur;
   @NotNull
-  private ClassificationsEnum label;
+  private Set<ClassificationsEnum> label;
 
   private LocalDateIntervalFilter lastClassificationDate;
-  private LocalDateTimeIntervalFilter payDate;
+  private LocalDateIntervalFilter payDate;
   private OffsetDateTimeIntervalFilter paymentDateTime;
   private LocalDateIntervalFilter regulationDate;
   private LocalDateIntervalFilter billDate;
@@ -34,4 +37,5 @@ public class ExportClassificationsFilterDTO {
   private String remittanceInformation;
   private String pspCompanyName;
   private String pspLastName;
+  private Set<String> debtPositionTypeOrgCodes;
 }
