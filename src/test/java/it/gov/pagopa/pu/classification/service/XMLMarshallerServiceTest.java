@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtCapitoloDefault;
@@ -15,8 +16,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.net.URL;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class XMLMarshallerServiceTest {
@@ -69,6 +69,15 @@ class XMLMarshallerServiceTest {
 
     assertNotNull(result);
     assertEquals(xmlString, result);
+  }
+
+  @Test
+  void marshalWithNoNamespaceAndRootElementThenException() {
+    CtBilancioDefault bilancio = new CtBilancioDefault();
+
+    assertThrows(InvalidValueException.class, () -> {
+      service.marshal(bilancio, CtBilancioDefault.class, jaxbContext, schema, null, null);
+    });
   }
 
 }

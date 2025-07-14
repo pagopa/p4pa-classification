@@ -19,7 +19,6 @@ import java.util.Set;
 @Slf4j
 public class BalanceService {
 
-  private static final String OPERATING_YEAR = String.valueOf(LocalDate.now().getYear());
   private static final AssessmentsRegistryStatus ASSESSMENTS_REGISTRY_STATUS = AssessmentsRegistryStatus.ACTIVE;
   private static final String BALANCE_AMOUNT_DEFAULT_VALUE = "TOTALE";
 
@@ -55,19 +54,20 @@ public class BalanceService {
   }
 
   public String getBalanceByAssessmentRegistry(Long organizationId, String debtPositionTypeOrgCode) {
+    String operatingYear = String.valueOf(LocalDate.now().getYear());
     log.info("Retrieving balance from AssessmentsRegistry with orgId[{}], debtPositionTypeCode[{}], operatingYear [{}], status [{}]",
-      organizationId, debtPositionTypeOrgCode, OPERATING_YEAR, ASSESSMENTS_REGISTRY_STATUS);
+      organizationId, debtPositionTypeOrgCode, operatingYear, ASSESSMENTS_REGISTRY_STATUS);
     Page<AssessmentsRegistry> assessmentsRegistries = assessmentsRegistryRepository.findAssessmentsRegistriesByFilters(
       organizationId,
       Set.of(debtPositionTypeOrgCode),
       null, null, null, null, null, null,
-      OPERATING_YEAR,
+      operatingYear,
       ASSESSMENTS_REGISTRY_STATUS,
       PageRequest.of(0, 5));
 
-    int size = assessmentsRegistries.getSize();
-    if (size > 1) {
-      throw new IllegalStateException("Expected exactly one assessment registry result, but found " + size + ".");
+    long assessmentRegistriesSize = assessmentsRegistries.getTotalElements();
+    if (assessmentRegistriesSize > 1) {
+      throw new IllegalStateException("Expected exactly one assessment registry result, but found " + assessmentRegistriesSize + ".");
     }
 
     AssessmentsRegistry assessmentRegistry = assessmentsRegistries.get().findFirst().orElse(null);
