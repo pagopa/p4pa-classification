@@ -8,7 +8,6 @@ import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertam
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtCapitoloDefault;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,13 +21,13 @@ public class BalanceService {
 
   private static final String OPERATING_YEAR = String.valueOf(LocalDate.now().getYear());
   private static final AssessmentsRegistryStatus ASSESSMENTS_REGISTRY_STATUS = AssessmentsRegistryStatus.ACTIVE;
-  private static final String BALANCE_DEFAULT_VALUE = "TOTALE";
+  private static final String BALANCE_AMOUNT_DEFAULT_VALUE = "TOTALE";
 
-  private final BalanceUnmashallerService balanceUnmashallerService;
+  private final BalanceUnmarshallerService balanceUnmashallerService;
   private final BalanceDefaultMarshallingService balanceDefaultMarshallingService;
   private final AssessmentsRegistryRepository assessmentsRegistryRepository;
 
-  public BalanceService(BalanceUnmashallerService balanceUnmashallerService, BalanceDefaultMarshallingService balanceDefaultMarshallingService, AssessmentsRegistryRepository assessmentsRegistryRepository) {
+  public BalanceService(BalanceUnmarshallerService balanceUnmashallerService, BalanceDefaultMarshallingService balanceDefaultMarshallingService, AssessmentsRegistryRepository assessmentsRegistryRepository) {
     this.balanceUnmashallerService = balanceUnmashallerService;
     this.balanceDefaultMarshallingService = balanceDefaultMarshallingService;
     this.assessmentsRegistryRepository = assessmentsRegistryRepository;
@@ -64,7 +63,7 @@ public class BalanceService {
       null, null, null, null, null, null,
       OPERATING_YEAR,
       ASSESSMENTS_REGISTRY_STATUS,
-      PageRequest.of(0, 1));
+      PageRequest.of(0, 5));
 
     int size = assessmentsRegistries.getSize();
     if (size > 1) {
@@ -83,19 +82,15 @@ public class BalanceService {
 
   private static CtBilancioDefault getCtBilancioDefault(AssessmentsRegistry assessmentRegistry) {
     CtBilancioDefault bilancio = new CtBilancioDefault();
+
     CtCapitoloDefault capitolo = new CtCapitoloDefault();
-    CtAccertamentoDefault accertamento = new CtAccertamentoDefault();
-
     capitolo.setCodCapitolo(assessmentRegistry.getSectionCode());
+    capitolo.setCodUfficio(assessmentRegistry.getOfficeCode());
 
-    if(StringUtils.isNotBlank(assessmentRegistry.getOfficeCode())) {
-      capitolo.setCodUfficio(assessmentRegistry.getOfficeCode());
-    }
+    CtAccertamentoDefault accertamento = new CtAccertamentoDefault();
+    accertamento.setCodAccertamento(assessmentRegistry.getAssessmentCode());
+    accertamento.setImporto(BALANCE_AMOUNT_DEFAULT_VALUE);
 
-    if (StringUtils.isNotBlank(assessmentRegistry.getAssessmentCode())) {
-      accertamento.setCodAccertamento(assessmentRegistry.getAssessmentCode());
-    }
-    accertamento.setImporto(BALANCE_DEFAULT_VALUE);
     capitolo.getAccertamento().add(accertamento);
 
     bilancio.getCapitolo().add(capitolo);

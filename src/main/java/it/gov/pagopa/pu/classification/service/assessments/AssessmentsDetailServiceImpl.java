@@ -10,7 +10,7 @@ import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsDetailRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
-import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
+import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
@@ -31,14 +31,14 @@ import java.util.List;
 public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
 
   private final AssessmentsDetailRepository assessmentsDetailRepository;
-  private final BalanceUnmashallerService balanceUnmashallerService;
+  private final BalanceUnmarshallerService balanceUnmashallerService;
   private final AssessmentsRepository assessmentsRepository;
   private final AssessmentsRegistryRepository assessmentsRegistryRepository;
   private final InstallmentService installmentService;
   private final ReceiptService receiptService;
 
 
-  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmashallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService) {
+  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
       this.balanceUnmashallerService = balanceUnmashallerService;
       this.assessmentsRepository = assessmentsRepository;
