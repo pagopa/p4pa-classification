@@ -99,6 +99,63 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /organization/{organizationId}/classifications/paid-installments:
+    get:
+      tags:
+        - Classifications
+      operationId: getPaidInstallments
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: iuds
+          in: query
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
+      responses:
+        "200":
+          description: List of paid installments
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedClassificationPaidInstallmentsView"
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+      x-spring-paginated: true
   /organization/{organizationId}/classifications/{classificationId}:
     get:
       tags:
@@ -1150,6 +1207,31 @@ components:
           type: array
           items:
             type: 'TreasuredClassificationDTO'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedClassificationPaidInstallmentsView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'ClassificationPaidInstallmentsView'
         size:
           type: integer
           format: int64
