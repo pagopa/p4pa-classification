@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,12 +17,16 @@ class BalanceServiceTest {
 
   @Mock
   private BalanceUnmashallerService balanceUnmashallerServiceMock;
+  @Mock
+  private BalanceDefaultMarshallingService balanceMarshallerServiceMock;
+  @Mock
+  private AssessmentsRegistryRepository assessmentsRegistryRepositoryMock;
 
   private BalanceService balanceService;
 
   @BeforeEach
   void init() {
-    balanceService = new BalanceService(balanceUnmashallerServiceMock);
+    balanceService = new BalanceService(balanceUnmashallerServiceMock, balanceMarshallerServiceMock, assessmentsRegistryRepositoryMock);
   }
 
   @Test
