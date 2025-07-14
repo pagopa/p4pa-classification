@@ -47,7 +47,7 @@ public class AssessmentsController implements AssessmentsControllerApi {
 
   @Override
   public ResponseEntity<Assessments> createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode) {
-    log.info("User requested createAssessment with assessmentName {} and debtPositionTypeOrgCode {} for organization {}", organizationId, assessmentName, debtPositionTypeOrgCode);
+    log.info("User requested createAssessment with assessmentName {} and debtPositionTypeOrgCode {} for organization {}", assessmentName, debtPositionTypeOrgCode, organizationId);
     return ResponseEntity.ok(assessmentsService.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode));
   }
 
