@@ -578,16 +578,23 @@ paths:
         - name: iuv
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: iur
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: label
           in: query
           required: true
           schema:
-            type: ClassificationsEnum
+            type: array
+            uniqueItems: true
+            items:
+              type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
           required: true
@@ -604,12 +611,12 @@ paths:
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: payDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: paymentDateTimeFrom
           in: query
           schema:
@@ -675,6 +682,13 @@ paths:
           in: query
           schema:
             type: string
+        - name: debtPositionTypeOrgCodes
+          in: query
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
       responses:
         "200":
           description: Ok
@@ -736,16 +750,23 @@ paths:
         - name: iuv
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: iur
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: label
           in: query
           required: true
           schema:
-            type: ClassificationsEnum
+            type: array
+            uniqueItems: true
+            items:
+              type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
           required: true
@@ -762,12 +783,12 @@ paths:
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: payDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: paymentDateTimeFrom
           in: query
           schema:
@@ -833,6 +854,13 @@ paths:
           in: query
           schema:
             type: string
+        - name: debtPositionTypeOrgCodes
+          in: query
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
       responses:
         "200":
           description: Ok
