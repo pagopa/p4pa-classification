@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class ClassificationViewPIIRepositoryImpl implements ClassificationViewPIIRepository {
   private final int maxTotalElements;
@@ -27,9 +25,9 @@ public class ClassificationViewPIIRepositoryImpl implements ClassificationViewPI
   }
 
   @Override
-  public PagedClassificationView getPagedClassificationView(Long organizationId, ExportClassificationsFilterDTO exportClassificationsFilterDTO, List<String> debtPositionTypeOrgCodes, Pageable pageable) {
+  public PagedClassificationView getPagedClassificationView(Long organizationId, ExportClassificationsFilterDTO exportClassificationsFilterDTO, Pageable pageable) {
 
-    Page<ClassificationViewNoPII> pagedClassificationViewNoPIIDTO = classificationViewNoPIIDTORepository.findClassificationViewNoPIIDTO(organizationId, exportClassificationsFilterDTO, debtPositionTypeOrgCodes, pageable);
+    Page<ClassificationViewNoPII> pagedClassificationViewNoPIIDTO = classificationViewNoPIIDTORepository.findClassificationViewNoPIIDTO(organizationId, exportClassificationsFilterDTO, pageable);
 
     if (pagedClassificationViewNoPIIDTO.getTotalElements() > maxTotalElements) {
       throw new ExportTooManyRecordsException("The number of elements returned: %d exceeds the maximum limit of %d".formatted(pagedClassificationViewNoPIIDTO.getTotalElements(), maxTotalElements));

@@ -11,8 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import java.util.List;
-
 @RepositoryRestResource(path = "classifications-export-view")
 public interface ClassificationViewNoPIIDTORepository extends Repository<ClassificationViewNoPII, Long> {
   @RestResource(exported = false)
@@ -87,10 +85,11 @@ public interface ClassificationViewNoPIIDTORepository extends Repository<Classif
     LEFT JOIN PaymentsReporting pr ON c.paymentsReportingId = pr.paymentsReportingId
     LEFT JOIN Treasury t ON c.treasuryId = t.treasuryId
     WHERE c.organizationId = :organizationId
+    AND (:#{#filter.label} IS NULL OR c.label IN (:#{#filter.label}))
     AND (:#{#filter.iud} IS NULL OR c.iud = :#{#filter.iud})
-    AND (:#{#filter.iuv} IS NULL OR c.iuv = :#{#filter.iuv})
+    AND (:#{#filter.iuv} IS NULL OR c.iuv IN :#{#filter.iuv})
     AND (:#{#filter.iuf} IS NULL OR c.iuf = :#{#filter.iuf})
-    AND (:#{#filter.iur} IS NULL OR c.iur = :#{#filter.iur})
+    AND (:#{#filter.iur} IS NULL OR c.iur IN :#{#filter.iur})
     AND (CAST(:#{#filter.paymentDateTime.from} AS STRING) IS NULL OR c.receiptPaymentDateTime >= :#{#filter.paymentDateTime.from})
     AND (CAST(:#{#filter.paymentDateTime.to} AS STRING) IS NULL OR c.receiptPaymentDateTime <= :#{#filter.paymentDateTime.to})
     AND (CAST(:#{#filter.regulationDate.from} AS STRING) IS NULL OR pr.regulationDate >= :#{#filter.regulationDate.from})
@@ -101,19 +100,18 @@ public interface ClassificationViewNoPIIDTORepository extends Repository<Classif
     AND (CAST(:#{#filter.regionValueDate.to} AS STRING) IS NULL OR t.regionValueDate <= :#{#filter.regionValueDate.to})
     AND (CAST(:#{#filter.payDate.from} AS STRING) IS NULL OR pr.payDate >= :#{#filter.payDate.from})
     AND (CAST(:#{#filter.payDate.to} AS STRING) IS NULL OR pr.payDate <= :#{#filter.payDate.to})
-    AND (CAST(:#{#filter.lastClassificationDate.from} AS STRING) IS NULL OR c.lastClassificationDate >= :#{#filter.lastClassificationDate.from})
-    AND (CAST(:#{#filter.lastClassificationDate.to} AS STRING) IS NULL OR c.lastClassificationDate <= :#{#filter.lastClassificationDate.to})
+    AND (CAST(:#{#filter.lastClassificationDate.from} AS DATE) IS NULL OR c.lastClassificationDate >= :#{#filter.lastClassificationDate.from})
+    AND (CAST(:#{#filter.lastClassificationDate.to} AS DATE) IS NULL OR c.lastClassificationDate <= :#{#filter.lastClassificationDate.to})
     AND (:#{#filter.regulationUniqueIdentifier} IS NULL OR pr.regulationUniqueIdentifier = :#{#filter.regulationUniqueIdentifier})
     AND (:#{#filter.accountRegistryCode} IS NULL OR t.accountRegistryCode = :#{#filter.accountRegistryCode})
     AND (:#{#filter.billAmountCents} IS NULL OR t.billAmountCents = :#{#filter.billAmountCents})
     AND (:#{#filter.remittanceInformation} IS NULL OR c.remittanceInformation = :#{#filter.remittanceInformation})
     AND (:#{#filter.pspCompanyName} IS NULL OR c.receiptPspCompanyName = :#{#filter.pspCompanyName})
     AND (:#{#filter.pspLastName} IS NULL OR c.pspLastName = :#{#filter.pspLastName})
-    AND (c.debtPositionTypeOrgCode IS NULL OR c.debtPositionTypeOrgCode IN (:debtPositionTypeOrgCodes))
+    AND (:#{#filter.debtPositionTypeOrgCodes} IS NULL OR c.debtPositionTypeOrgCode IN (:#{#filter.debtPositionTypeOrgCodes}))
     """)
   Page<ClassificationViewNoPII> findClassificationViewNoPIIDTO(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Parameter(required = true) @Param("filter") ExportClassificationsFilterDTO exportClassificationsFilterDTO,
-    @Parameter(required = true) @Param("debtPositionTypeOrgCodes") List<String> debtPositionTypeOrgCodes,
     Pageable pageable);
 }
