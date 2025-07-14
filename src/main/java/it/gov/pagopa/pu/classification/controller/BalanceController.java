@@ -19,4 +19,9 @@ public class BalanceController implements BalanceApi {
   public ResponseEntity<Boolean> validateBalance(ValidateBalanceRequest balanceRequest) {
     return ResponseEntity.ok(balanceService.isBalanceValid(balanceRequest.getBalance()));
   }
+
+  @Override
+  public ResponseEntity<String> getBalanceByAssessmentRegistry(Long organizationId, String debtPositionTypeOrgCode) {
+    return ResponseEntity.ok(balanceService.getBalanceByAssessmentRegistry(organizationId, debtPositionTypeOrgCode));
+  }
 }

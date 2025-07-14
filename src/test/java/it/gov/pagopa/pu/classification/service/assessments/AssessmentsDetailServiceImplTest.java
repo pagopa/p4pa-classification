@@ -10,7 +10,7 @@ import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsDetailRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
-import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
+import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
@@ -43,7 +43,7 @@ class AssessmentsDetailServiceImplTest {
   @Mock
   private AssessmentsDetailRepository assessmentsDetailRepositoryMock;
   @Mock
-  private BalanceUnmashallerService balanceUnmashallerServiceMock;
+  private BalanceUnmarshallerService balanceUnmashallerServiceMock;
   @Mock
   private AssessmentsRepository assessmentsRepositoryMock;
   @Mock

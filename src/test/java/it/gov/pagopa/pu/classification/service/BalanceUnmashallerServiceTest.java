@@ -23,7 +23,7 @@ class BalanceUnmashallerServiceTest {
 
 
   private Resource resource;
-  private BalanceUnmashallerService handler;
+  private BalanceUnmarshallerService handler;
   private XMLUnmarshallerService xmlUnmarshallerService;
   private static final String XML_STRING_CAPITOLO =  "<capitolo>" +
     "<codCapitolo>CAP1</codCapitolo>" +
@@ -47,7 +47,7 @@ class BalanceUnmashallerServiceTest {
   void setUp() {
     xmlUnmarshallerService = new XMLUnmarshallerService();
     resource = new ClassPathResource("xsd/PagInf_Dovuti_Pagati_6_2_0.xsd");
-    handler = new BalanceUnmashallerService(resource, xmlUnmarshallerService);
+    handler = new BalanceUnmarshallerService(resource, xmlUnmarshallerService);
   }
 
 
@@ -80,7 +80,7 @@ class BalanceUnmashallerServiceTest {
     try(MockedStatic<JAXBContext> mockedStaticJAXBContext = Mockito.mockStatic(JAXBContext.class)) {
       mockedStaticJAXBContext.when(() -> JAXBContext.newInstance(CtBilancio.class))
         .thenThrow(new JAXBException("Simulated JAXBException"));
-      assertThrows(IllegalStateException.class, () -> new BalanceUnmashallerService(resource, null));
+      assertThrows(IllegalStateException.class, () -> new BalanceUnmarshallerService(resource, null));
     }
   }
 
@@ -91,7 +91,7 @@ class BalanceUnmashallerServiceTest {
     when(mockResource.getURL()).thenThrow(new IOException("Simulated IOException"));
 
     // when then
-    assertThrows(IllegalStateException.class, () -> new BalanceUnmashallerService(mockResource, null));
+    assertThrows(IllegalStateException.class, () -> new BalanceUnmarshallerService(mockResource, null));
   }
 
 

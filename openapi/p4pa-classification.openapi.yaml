@@ -925,6 +925,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /organization/{organizationId}/debt-position-type-org/{debtPositionTypeOrgCode}/balance:
+    get:
+      tags:
+        - balance
+      operationId: getBalanceByAssessmentRegistry
+      description: "The API retrieve balance based on assessment registry"
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the organization
+        - name: debtPositionTypeOrgCode
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The code of debt position type org
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "Balance based on assessment registry"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
   /payment-notification:
     post:
       tags:

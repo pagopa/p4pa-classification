@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
-import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
+import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
@@ -41,7 +41,7 @@ class AssessmentsRegistryServiceImplTest {
   @Mock
   private AssessmentsRegistryRepository assessmentsRegistryRepositoryMock;
   @Mock
-  private BalanceUnmashallerService balanceUnmashallerServiceMock;
+  private BalanceUnmarshallerService balanceUnmashallerServiceMock;
   @Mock
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
 
