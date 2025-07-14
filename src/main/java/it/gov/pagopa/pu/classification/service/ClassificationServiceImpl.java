@@ -1,9 +1,5 @@
 package it.gov.pagopa.pu.classification.service;
 
-import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
-import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
-import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.dto.*;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
@@ -11,19 +7,13 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.mapper.PagedClassificationPaidInstallmentsViewMapper;
 import it.gov.pagopa.pu.classification.mapper.TreasuredClassificationMapper;
-import it.gov.pagopa.pu.classification.repository.view.ClassificationDetailViewPIIRepository;
-import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
-import it.gov.pagopa.pu.classification.repository.view.FullClassificationViewPIIRepository;
-import it.gov.pagopa.pu.classification.repository.view.TreasuredClassificationViewRepository;
 import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.repository.view.*;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -45,7 +35,6 @@ public class ClassificationServiceImpl implements ClassificationService {
     ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository,
     ClassificationPaidInstallmentsViewRepository classificationPaidInstallmentsViewRepository,
     PagedClassificationPaidInstallmentsViewMapper pagedClassificationPaidInstallmentsViewMapper) {
-    this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.classificationViewPIIRepository = classificationViewPIIRepository;
     this.fullClassificationViewPIIRepository = fullClassificationViewPIIRepository;
     this.treasuredClassificationViewRepository = treasuredClassificationViewRepository;
