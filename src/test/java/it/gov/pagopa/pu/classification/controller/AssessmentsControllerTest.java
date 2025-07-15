@@ -49,7 +49,7 @@ class AssessmentsControllerTest {
   void whenCreateAssessmentByReceiptIdWithValidReceiptIdThenReturnAssessments() {
     Long receiptId = 1L;
     String accessToken = "accessToken";
-    Mockito.when(serviceMock.createAssesment(receiptId, accessToken))
+    Mockito.when(serviceMock.createAssessment(receiptId, accessToken))
       .thenReturn(List.of(new Assessments()));
     SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
 
@@ -58,7 +58,7 @@ class AssessmentsControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(1, response.getBody().size());
-    Mockito.verify(serviceMock).createAssesment(receiptId, accessToken);
+    Mockito.verify(serviceMock).createAssessment(receiptId, accessToken);
   }
 
 

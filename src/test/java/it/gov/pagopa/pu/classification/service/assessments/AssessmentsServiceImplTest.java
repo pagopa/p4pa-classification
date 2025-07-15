@@ -10,7 +10,6 @@ import it.gov.pagopa.pu.classification.exception.custom.AssessmentConflictExcept
 import it.gov.pagopa.pu.classification.mapper.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
-import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIFaker;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
@@ -80,51 +79,6 @@ class AssessmentsServiceImplTest {
   }
 
   @Test
-  void buildAssessment_withValidInstallmentNoPII_returnsAssessment() {
-    String accessToken = "accessToken";
-    InstallmentNoPII installment = InstallmentNoPIIFaker.buildInstallmentNoPII();
-    DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
-    debtPositionTypeOrg.setCode("testCode");
-    debtPositionTypeOrg.setDebtPositionTypeOrgId(2L);
-
-    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installment.getInstallmentId(), accessToken))
-      .thenReturn(debtPositionTypeOrg);
-
-    Assessments result = service.buildAssessment(installment, accessToken);
-
-    assertNotNull(result);
-    Assertions.assertEquals(debtPositionTypeOrg.getOrganizationId(), result.getOrganizationId());
-    Assertions.assertEquals(debtPositionTypeOrg.getCode(), result.getDebtPositionTypeOrgCode());
-    Assertions.assertEquals(AssessmentStatus.ACTIVE, result.getStatus());
-    Assertions.assertEquals(installment.getSourceFlowName(), result.getAssessmentName());
-
-    TestUtils.checkNotNullFields(result, "assessmentId","creationDate","updateDate","updateOperatorExternalId","updateTraceId");
-  }
-
-  @Test
-  void buildAssessmentNoIngestionFlowFileId_withValidInstallmentNoPII_returnsAssessment() {
-    String accessToken = "accessToken";
-    InstallmentNoPII installmentNoPII = InstallmentNoPIIFaker.buildInstallmentNoPII();
-    installmentNoPII.setIngestionFlowFileId(null);
-    DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
-    debtPositionTypeOrg.setCode("testCode");
-    debtPositionTypeOrg.setDebtPositionTypeOrgId(2L);
-
-    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installmentNoPII.getInstallmentId(), accessToken))
-      .thenReturn(debtPositionTypeOrg);
-
-    Assessments result = service.buildAssessment(installmentNoPII, accessToken);
-
-    assertNotNull(result);
-    Assertions.assertEquals(debtPositionTypeOrg.getOrganizationId(), result.getOrganizationId());
-    Assertions.assertEquals(debtPositionTypeOrg.getCode(), result.getDebtPositionTypeOrgCode());
-    Assertions.assertEquals(AssessmentStatus.ACTIVE, result.getStatus());
-    Assertions.assertEquals(installmentNoPII.getSourceFlowName(), result.getAssessmentName());
-
-    TestUtils.checkNotNullFields(result, "assessmentId","creationDate","updateDate","updateOperatorExternalId","updateTraceId");
-  }
-
-  @Test
   void createAssessment_withValidReceiptId_returnsAssessments() {
     Long receiptId = 1L;
     String accessToken = "accessToken";
@@ -143,7 +97,7 @@ class AssessmentsServiceImplTest {
             .thenReturn(null);
     when(assessmentsRepositoryMock.save(Mockito.any(Assessments.class))).thenReturn(assessment);
 
-    List<Assessments> result = service.createAssesment(receiptId, accessToken);
+    List<Assessments> result = service.createAssessment(receiptId, accessToken);
 
     assertEquals(1, result.size());
     assertEquals(assessment, result.getFirst());
@@ -163,7 +117,7 @@ class AssessmentsServiceImplTest {
     when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
     when(installmentServiceMock.getByReceiptId(receiptId, accessToken)).thenReturn(List.of(installment));
 
-    List<Assessments> result = service.createAssesment(receiptId, accessToken);
+    List<Assessments> result = service.createAssessment(receiptId, accessToken);
 
     assertEquals(0, result.size());
   }

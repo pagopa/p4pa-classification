@@ -33,7 +33,7 @@ public class AssessmentsController implements AssessmentsControllerApi {
   public ResponseEntity<List<Assessments>> createAssessmentByReceiptId(Long receiptId) {
     String accessToken = SecurityUtils.getAccessToken();
 
-    return ResponseEntity.ok(assessmentsService.createAssesment(receiptId, accessToken));
+    return ResponseEntity.ok(assessmentsService.createAssessment(receiptId, accessToken));
   }
 
   @Override
