@@ -135,6 +135,11 @@ paths:
           schema:
             type: string
             format: date-time
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: true
+          schema:
+            type: string
         - name: iuds
           in: query
           schema:
