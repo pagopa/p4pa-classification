@@ -57,7 +57,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    */
   @Transactional
   @Override
-  public List<Assessments> createAssesment(Long receiptId, String accessToken) {
+  public List<Assessments> createAssessment(Long receiptId, String accessToken) {
     ReceiptNoPII receipt = receiptService.getById(receiptId, accessToken);
     List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(receiptId, accessToken);
 
@@ -70,11 +70,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         return true;
       })
       .map(i -> {
-        Assessments assessment = buildAssessment(i, accessToken);
-        if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
-          assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), assessment.getAssessmentName()) == null) {
-          assessment = assessmentsRepository.save(assessment);
-        }
+        Assessments assessment = buildAssessmentFromReceipt(i, accessToken);
         assessmentsDetailService.createAssessmentDetail(assessment, receipt, i);
         return assessment;
       })
@@ -89,16 +85,25 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    * @param accessToken the access token for authentication
    * @return the built assessment
    */
-  Assessments buildAssessment(InstallmentNoPII installment, String accessToken) {
+  Assessments buildAssessmentFromReceipt(InstallmentNoPII installment, String accessToken) {
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installment.getInstallmentId(), accessToken);
     String debtPositionTypeOrgCode = debtPositionTypeOrg.getCode();
 
-    return Assessments.builder()
-      .organizationId(debtPositionTypeOrg.getOrganizationId())
-      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
-      .status(AssessmentStatus.ACTIVE)
-      .assessmentName(installment.getSourceFlowName())
-      .build();
+    Assessments assessment = assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
+      debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrgCode, installment.getSourceFlowName());
+
+    if (assessment == null) {
+      Assessments newAssessment = Assessments.builder()
+        .organizationId(debtPositionTypeOrg.getOrganizationId())
+        .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+        .status(AssessmentStatus.CLOSED)
+        .assessmentName(installment.getSourceFlowName())
+        .build();
+
+      assessment = assessmentsRepository.save(newAssessment);
+    }
+
+    return assessment;
   }
 
   /**
