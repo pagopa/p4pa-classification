@@ -1,10 +1,7 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.ClassificationsApi;
-import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
-import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
-import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
+import it.gov.pagopa.pu.classification.dto.*;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
@@ -100,12 +97,24 @@ public class ClassificationController implements ClassificationsApi {
   }
 
   @Override
-  public ResponseEntity<PagedClassificationPaidInstallmentsView> getPaidInstallments(Long organizationId, String iuv, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, Set<String> iuds, Pageable pageable) {
+  public ResponseEntity<PagedClassificationPaidInstallmentsView> getPaidInstallments(
+    Long organizationId, String debtPositionTypeOrgCode, String iuv, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, Set<String> iuds, Pageable pageable) {
+
     log.info("User requested getPaidInstallments having organizationId {}", organizationId);
+
     OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
     LocalDateTimeIntervalFilter updateDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(
       DateConversionUtils.offsetDateTime2LocalDateTime(updateDateFrom),
       DateConversionUtils.offsetDateTime2LocalDateTime(updateDateTo));
-    return ResponseEntity.ok(classificationService.getPaidInstallmentsView(organizationId, iuv, paymentDateTimeIntervalFilter, updateDateTimeIntervalFilter, iuds, pageable));
+
+    ClassificationPaidInstallmentsFilterDTO filter = ClassificationPaidInstallmentsFilterDTO.builder()
+      .iuv(iuv)
+      .paymentDateTimeIntervalFilter(paymentDateTimeIntervalFilter)
+      .updateDateTimeIntervalFilter(updateDateTimeIntervalFilter)
+      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+      .iuds(iuds)
+      .build();
+
+    return ResponseEntity.ok(classificationService.getPaidInstallmentsView(organizationId, filter, pageable));
   }
 }
