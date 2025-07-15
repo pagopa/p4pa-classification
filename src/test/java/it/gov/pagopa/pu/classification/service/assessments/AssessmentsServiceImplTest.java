@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,6 +104,33 @@ class AssessmentsServiceImplTest {
     assertEquals(assessment, result.getFirst());
 
     Mockito.verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
+  }
+
+  @Test
+  void createAssessment_withValidReceiptId_withExistingAssessment_returnsAssessments() {
+    Long receiptId = 1L;
+    String accessToken = "accessToken";
+    List<InstallmentNoPII> installments = List.of(InstallmentNoPIIFaker.buildInstallmentNoPII());
+    ReceiptNoPII receipt = new ReceiptNoPII();
+    Assessments assessment = podamFactory.manufacturePojo(Assessments.class);
+    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
+    debtPositionTypeOrg.setCode("testCode");
+    debtPositionTypeOrg.setOrganizationId(3L);
+
+    when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
+    when(installmentServiceMock.getByReceiptId(receiptId, accessToken)).thenReturn(installments);
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), accessToken)).thenReturn(debtPositionTypeOrg);
+    when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
+      debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getCode(), "sourceFlowName"))
+      .thenReturn(assessment);
+
+    List<Assessments> result = service.createAssessment(receiptId, accessToken);
+
+    assertEquals(1, result.size());
+    assertEquals(assessment, result.getFirst());
+
+    Mockito.verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
+    Mockito.verify(assessmentsRepositoryMock, times(0)).save(Mockito.any());
   }
 
 
