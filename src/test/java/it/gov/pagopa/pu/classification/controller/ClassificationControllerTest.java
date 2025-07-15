@@ -1,9 +1,6 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
-import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
-import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
+import it.gov.pagopa.pu.classification.dto.*;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
@@ -126,6 +123,7 @@ class ClassificationControllerTest {
   void givenParamsWhenGetPaidInstallmentsThenReturnPagedClassificationPaidInstallmentsView() {
     Long organizationId = 1L;
     String iuv = "IUV123";
+    String debtPositionTypeOrgCode = "ORG_CODE";
 
     OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
@@ -147,17 +145,23 @@ class ClassificationControllerTest {
         DateConversionUtils.offsetDateTime2LocalDateTime(updateDateTo)
       );
 
+    ClassificationPaidInstallmentsFilterDTO filter = ClassificationPaidInstallmentsFilterDTO.builder()
+      .iuv(iuv)
+      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+      .paymentDateTimeIntervalFilter(paymentInterval)
+      .updateDateTimeIntervalFilter(updateInterval)
+      .iuds(iuds)
+      .build();
+
     Mockito.when(classificationServiceMock.getPaidInstallmentsView(
       organizationId,
-      iuv,
-      paymentInterval,
-      updateInterval,
-      iuds,
+      filter,
       pageable
     )).thenReturn(expectedView);
 
     ResponseEntity<PagedClassificationPaidInstallmentsView> result = controller.getPaidInstallments(
       organizationId,
+      debtPositionTypeOrgCode,
       iuv,
       paymentDateTimeFrom,
       paymentDateTimeTo,
