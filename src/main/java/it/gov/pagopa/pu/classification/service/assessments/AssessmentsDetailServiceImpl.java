@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,12 +105,16 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
             .orElseThrow(()->
               new ResourceNotFoundException("Assessments having id "+assessmentId+" not found"));
     List<InstallmentNoPII> installments = installmentService.findByOrganizationIdAndIuds(organizationId, createAssessmentsDetail.getIuds(), accessToken);
+    if(!CollectionUtils.isEmpty(createAssessmentsDetail.getIuds())
+            && (CollectionUtils.isEmpty(installments) || createAssessmentsDetail.getIuds().size()!=installments.size())){
+      throw new InvalidRequestBodyException("One or more iud is invalid. [organizationId: "+organizationId+" iuds:"+createAssessmentsDetail.getIuds()+"]");
+    }
     List<AssessmentsDetail> assessmentsDetails = new ArrayList<>();
     for (InstallmentNoPII installment : installments) {
       if(installment.getReceiptId()==null){
         throw new InvalidRequestBodyException("Installment having iud "+installment.getIud()+" does not have a receiptId");
       }
-      ReceiptNoPII receipt = receiptService.getById(installment.getReceiptId(), accessToken);
+      ReceiptNoPII receipt = receiptService.getByReceiptIdAndDebtPositionTypeOrgCode(installment.getReceiptId(),assessments.getDebtPositionTypeOrgCode(), accessToken);
       if(receipt==null) {
         throw new ResourceNotFoundException("Receipt having id " + installment.getReceiptId() + " not found");
       }
