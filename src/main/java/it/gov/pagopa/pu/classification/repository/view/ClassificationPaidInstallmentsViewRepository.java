@@ -23,8 +23,9 @@ public interface ClassificationPaidInstallmentsViewRepository extends Repository
     c.updateDate,
     c.receiptPaymentRequestId,
     c.organizationId,
-    c.debtPositionTypeOrgCode)
-    FROM ClassificationPaidInstallmentsView c
+    c.debtPositionTypeOrgCode,
+    c.transferAmount AS amount)
+    FROM Classification c
     WHERE c.organizationId = :organizationId
     AND (:#{#filter.iuv} IS NULL OR c.iuv = :#{#filter.iuv})
     AND (CAST(:#{#filter.paymentDateTimeIntervalFilter.from} AS STRING) IS NULL OR c.paymentDateTime >= :#{#filter.paymentDateTimeIntervalFilter.from})
