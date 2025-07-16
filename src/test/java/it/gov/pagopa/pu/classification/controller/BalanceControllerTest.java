@@ -37,4 +37,18 @@ class BalanceControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(Boolean.TRUE, response.getBody());
   }
+
+  @Test
+  void givenAssessmentRegistryThenReturnBalance() {
+    String debtPositionTypeOrgCode = "DPTO_CODE";
+    Long orgId = 1L;
+    String balance = "balance";
+
+    Mockito.when(balanceServiceMock.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode)).thenReturn(balance);
+
+    ResponseEntity<String> response = balanceController.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(balance, response.getBody());
+  }
 }

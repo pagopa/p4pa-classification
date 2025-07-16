@@ -2,8 +2,7 @@ package it.gov.pagopa.pu.classification.repository.view;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
-import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
-import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.ClassificationPaidInstallmentsFilterDTO;
 import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,21 +12,28 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import java.util.Set;
-
 @RepositoryRestResource(path = "classifications-paid-installments-view")
-@RestResource(exported = false)
 public interface ClassificationPaidInstallmentsViewRepository extends Repository<ClassificationPaidInstallmentsView, String> {
+  @RestResource(exported = false)
   @Query("""
-    SELECT distinct new ClassificationPaidInstallmentsView(c.iud,c.iuv,c.paymentDateTime, c.updateDate, c.receiptPaymentRequestId, c.organizationId)
-    FROM ClassificationPaidInstallmentsView c
+    SELECT distinct new ClassificationPaidInstallmentsView(
+    c.iud,
+    c.iuv,
+    c.paymentDateTime,
+    c.updateDate,
+    c.receiptPaymentRequestId,
+    c.organizationId,
+    c.debtPositionTypeOrgCode,
+    c.transferAmount AS amount)
+    FROM Classification c
     WHERE c.organizationId = :organizationId
-    AND (:iuv IS NULL OR c.iuv = :iuv)
-    AND (cast(:#{#paymentDateTimeIntervalFilter.from} AS STRING) IS NULL OR c.paymentDateTime >= :#{#paymentDateTimeIntervalFilter.from})
-    AND (cast(:#{#paymentDateTimeIntervalFilter.to} AS STRING) IS NULL OR c.paymentDateTime <= :#{#paymentDateTimeIntervalFilter.to})
-    AND (cast(:#{#updateDateTimeIntervalFilter.from} AS STRING) IS NULL OR c.updateDate >= :#{#updateDateTimeIntervalFilter.from})
-    AND (cast(:#{#updateDateTimeIntervalFilter.to} AS STRING) IS NULL OR c.updateDate <= :#{#updateDateTimeIntervalFilter.to})
-    AND (:iuds IS NULL OR c.iud NOT IN :iuds)
+    AND (:#{#filter.iuv} IS NULL OR c.iuv = :#{#filter.iuv})
+    AND (CAST(:#{#filter.paymentDateTimeIntervalFilter.from} AS STRING) IS NULL OR c.paymentDateTime >= :#{#filter.paymentDateTimeIntervalFilter.from})
+    AND (CAST(:#{#filter.paymentDateTimeIntervalFilter.to} AS STRING) IS NULL OR c.paymentDateTime <= :#{#filter.paymentDateTimeIntervalFilter.to})
+    AND (CAST(:#{#filter.updateDateTimeIntervalFilter.from} AS STRING) IS NULL OR c.updateDate >= :#{#filter.updateDateTimeIntervalFilter.from})
+    AND (CAST(:#{#filter.updateDateTimeIntervalFilter.to} AS STRING) IS NULL OR c.updateDate <= :#{#filter.updateDateTimeIntervalFilter.to})
+    AND (c.debtPositionTypeOrgCode = :#{#filter.debtPositionTypeOrgCode})
+    AND (:#{#filter.iuds} IS NULL OR c.iud NOT IN :#{#filter.iuds})
     AND c.iud IS NOT NULL
     AND c.iuv IS NOT NULL
     AND c.paymentDateTime IS NOT NULL
@@ -36,10 +42,7 @@ public interface ClassificationPaidInstallmentsViewRepository extends Repository
     """)
   Page<ClassificationPaidInstallmentsView> findPaidInstallments(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
-    @Param("iuv") String iuv,
-    @Param("paymentDateTimeIntervalFilter") OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter,
-    @Param("updateDateTimeIntervalFilter") LocalDateTimeIntervalFilter updateDateTimeIntervalFilter,
-    @Param("iuds") Set<String> iuds,
+    @Parameter(required = true) @Param("filter")ClassificationPaidInstallmentsFilterDTO filter,
     Pageable pageable
   );
 }

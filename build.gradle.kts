@@ -134,6 +134,12 @@ jaxb {
       outputDir = file("$projectDir/build/generated/jaxb/java")
       schema = file("src/main/resources/xsd/PagInf_Dovuti_Pagati_6_2_0.xsd")
     }
+    register("bilancio") {
+      extension = true
+      args = listOf("-xmlschema")
+      outputDir = file("$projectDir/build/generated/jaxb/java")
+      schema = file("src/main/resources/xsd/bilancioDefault.xsd")
+    }
   }
 }
 

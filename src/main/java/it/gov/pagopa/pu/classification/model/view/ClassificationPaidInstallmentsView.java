@@ -32,4 +32,6 @@ public class ClassificationPaidInstallmentsView {
   private String receiptPaymentRequestId;
   @NotNull
   private Long organizationId;
+  private String debtPositionTypeOrgCode;
+  private Long amount;
 }

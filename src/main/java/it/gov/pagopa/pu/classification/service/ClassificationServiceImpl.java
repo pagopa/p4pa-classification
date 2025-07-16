@@ -1,6 +1,9 @@
 package it.gov.pagopa.pu.classification.service;
 
-import it.gov.pagopa.pu.classification.dto.*;
+import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.ClassificationPaidInstallmentsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
@@ -13,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -70,8 +71,8 @@ public class ClassificationServiceImpl implements ClassificationService {
   }
 
   @Override
-  public PagedClassificationPaidInstallmentsView getPaidInstallmentsView(Long organizationId, String iuv, OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, Set<String> iuds, Pageable pageable) {
-    Page<ClassificationPaidInstallmentsView> pagedPaidInstallments = classificationPaidInstallmentsViewRepository.findPaidInstallments(organizationId, iuv, paymentDateTimeIntervalFilter, updateDateTimeIntervalFilter, iuds, pageable);
+  public PagedClassificationPaidInstallmentsView getPaidInstallmentsView(Long organizationId, ClassificationPaidInstallmentsFilterDTO filter, Pageable pageable) {
+    Page<ClassificationPaidInstallmentsView> pagedPaidInstallments = classificationPaidInstallmentsViewRepository.findPaidInstallments(organizationId, filter, pageable);
     return pagedClassificationPaidInstallmentsViewMapper.map(pagedPaidInstallments);
   }
 }

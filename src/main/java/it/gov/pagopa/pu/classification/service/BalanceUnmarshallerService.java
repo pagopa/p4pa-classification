@@ -18,15 +18,15 @@ import java.io.IOException;
 @Lazy
 @Component
 @Slf4j
-public class BalanceUnmashallerService {
+public class BalanceUnmarshallerService {
   private final JAXBContext jaxbContext;
   private final Schema schema;
   private final XMLUnmarshallerService xmlUnmarshallerService;
 
   private static final String NAMESPACE = "http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/";
 
-  public BalanceUnmashallerService(@Value("classpath:xsd/PagInf_Dovuti_Pagati_6_2_0.xsd") Resource paymetsReportingXsdResource,
-                                   XMLUnmarshallerService xmlUnmarshallerService) {
+  public BalanceUnmarshallerService(@Value("classpath:xsd/PagInf_Dovuti_Pagati_6_2_0.xsd") Resource paymetsReportingXsdResource,
+                                    XMLUnmarshallerService xmlUnmarshallerService) {
     try {
       this.jaxbContext = JAXBContext.newInstance(CtBilancio.class);
       SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

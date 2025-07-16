@@ -179,6 +179,7 @@ class ClassificationServiceTest {
   @Test
   void givenParamsWhenGetClassificationPaidInstallmentsViewThenReturnView() {
     Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "ORG_CODE";
     String iuv = "IUV123";
     OffsetDateTime paymentFrom = OffsetDateTime.now().minusDays(1);
     OffsetDateTime paymentTo = OffsetDateTime.now();
@@ -192,6 +193,14 @@ class ClassificationServiceTest {
     LocalDateTimeIntervalFilter updateInterval =
       new LocalDateTimeIntervalFilter(updateFrom, updateTo);
 
+    ClassificationPaidInstallmentsFilterDTO filter = ClassificationPaidInstallmentsFilterDTO.builder()
+      .iuv(iuv)
+      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+      .paymentDateTimeIntervalFilter(paymentInterval)
+      .updateDateTimeIntervalFilter(updateInterval)
+      .iuds(iuds)
+      .build();
+
     List<ClassificationPaidInstallmentsView> content =
       List.of(podamFactory.manufacturePojo(ClassificationPaidInstallmentsView.class));
 
@@ -202,14 +211,14 @@ class ClassificationServiceTest {
       podamFactory.manufacturePojo(PagedClassificationPaidInstallmentsView.class);
 
     Mockito.when(classificationPaidInstallmentsViewRepositoryMock.findPaidInstallments(
-        organizationId, iuv, paymentInterval, updateInterval, iuds, pageable))
+        organizationId, filter, pageable))
       .thenReturn(paged);
 
     Mockito.when(pagedClassificationPaidInstallmentsViewMapperMock.map(paged))
       .thenReturn(expected);
 
     PagedClassificationPaidInstallmentsView result = service.getPaidInstallmentsView(
-      organizationId, iuv, paymentInterval, updateInterval, iuds, pageable);
+      organizationId, filter, pageable);
 
     assertNotNull(result);
     assertEquals(expected, result);
