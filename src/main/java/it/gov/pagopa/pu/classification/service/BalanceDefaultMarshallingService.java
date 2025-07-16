@@ -1,5 +1,8 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -14,6 +17,7 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Lazy
 @Component
@@ -57,7 +61,26 @@ public class BalanceDefaultMarshallingService {
    * @return the unmarshalled CtBilancioDefault
    */
   public CtBilancioDefault unmarshal(String xmlString) {
-    return xmlUnmarshallerService.unmarshal(xmlString, CtBilancioDefault.class, jaxbContext, schema, NAMESPACE);
+    CtBilancioDefault ctBilancioDefault = xmlUnmarshallerService.unmarshal(xmlString, CtBilancioDefault.class, jaxbContext, schema, NAMESPACE);
+    if(!isValidBalanceAmountTypes(ctBilancioDefault)){
+      throw new InvalidValueException("Function type to calculate amount balance not supported");
+    }
+    return ctBilancioDefault;
   }
 
+  private boolean isValidBalanceAmountTypes(CtBilancioDefault ctBilancioDefault) {
+    return ctBilancioDefault.getCapitolo().stream()
+      .flatMap(capitolo -> capitolo.getAccertamento().stream())
+      .map(CtAccertamentoDefault::getImporto)
+      .allMatch(this::containsValidAmountType);
+  }
+
+  private boolean containsValidAmountType(String amountType) {
+    if (amountType == null || amountType.trim().isEmpty()) {
+      return false;
+    }
+
+    return Arrays.stream(BalanceDefaultAmountType.values())
+      .map(BalanceDefaultAmountType::getType).anyMatch(amountType::contains);
+  }
 }

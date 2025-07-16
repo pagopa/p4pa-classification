@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
+import it.gov.pagopa.pu.classification.service.BalanceAmountService;
 import it.gov.pagopa.pu.classification.service.BalanceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,12 +19,14 @@ class BalanceControllerTest {
 
   @Mock
   private BalanceService balanceServiceMock;
+  @Mock
+  private BalanceAmountService balanceAmountServiceMock;
 
   private BalanceController balanceController;
 
   @BeforeEach
   void init() {
-    balanceController = new BalanceController(balanceServiceMock);
+    balanceController = new BalanceController(balanceServiceMock, balanceAmountServiceMock);
   }
 
   @Test
