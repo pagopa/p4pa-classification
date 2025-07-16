@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 
@@ -37,8 +38,8 @@ public interface AssessmentsDetailRepository extends JpaRepository<AssessmentsDe
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("assessmentId") Long assessmentId,
     @Param("iud") String iud,
     @Param("iuv") String iuv,
-    @Param("updateDateTimeFrom") OffsetDateTime updateDateTimeFrom,
-    @Param("updateDateTimeTo") OffsetDateTime updateDateTimeTo,
+    @Param("updateDateTimeFrom") LocalDateTime updateDateTimeFrom,
+    @Param("updateDateTimeTo") LocalDateTime updateDateTimeTo,
     @Param("paymentDateTimeFrom") OffsetDateTime paymentDateTimeFrom,
     @Param("paymentDateTimeTo") OffsetDateTime paymentDateTimeTo,
     @Param("fiscalCode") String fiscalCode,
