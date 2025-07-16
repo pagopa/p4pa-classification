@@ -35,4 +35,21 @@ class ReceiptServiceTest {
 		// Then
 		assertSame(expected, result);
 	}
+
+	@Test
+	void whengetByReceiptIdAndDebtPositionTypeOrgCodeThenInvokeClient() {
+		// Given
+		String accessToken = "ACCESSTOKEN";
+		Long receiptId = 1L;
+		String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    	ReceiptNoPII expected = new ReceiptNoPII();
+
+		when(clientMock.getByReceiptIdAndDebtPositionTypeOrgCode(receiptId, debtPositionTypeOrgCode, accessToken)).thenReturn(expected);
+
+		// When
+		ReceiptNoPII result = service.getByReceiptIdAndDebtPositionTypeOrgCode(receiptId, debtPositionTypeOrgCode, accessToken);
+
+		// Then
+		assertSame(expected, result);
+	}
 }

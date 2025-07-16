@@ -33,6 +33,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -234,7 +235,7 @@ class AssessmentsDetailServiceImplTest {
             .thenReturn(Optional.of(assessments));
     when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
             .thenReturn(installments);
-    when(receiptServiceMock.getById(receipt.getReceiptId(), accessToken))
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(), accessToken))
             .thenReturn(receipt);
     when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
             .thenReturn(Optional.of(assessmentsRegistry));
@@ -284,7 +285,7 @@ class AssessmentsDetailServiceImplTest {
             .thenReturn(Optional.of(assessments));
     when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
             .thenReturn(installments);
-    when(receiptServiceMock.getById(receipt.getReceiptId(), accessToken))
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(),accessToken))
             .thenReturn(receipt);
     when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistryId))
             .thenReturn(Optional.empty());
@@ -314,7 +315,7 @@ class AssessmentsDetailServiceImplTest {
             .thenReturn(Optional.of(assessments));
     when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
             .thenReturn(installments);
-    when(receiptServiceMock.getById(receipt.getReceiptId(), accessToken))
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(),accessToken))
             .thenReturn(receipt);
     when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
             .thenReturn(Optional.of(assessmentsRegistry));
@@ -367,7 +368,7 @@ class AssessmentsDetailServiceImplTest {
             .thenReturn(Optional.of(assessments));
     when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
             .thenReturn(installments);
-    when(receiptServiceMock.getById(receiptId, accessToken))
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receiptId, assessments.getDebtPositionTypeOrgCode(),accessToken))
             .thenReturn(null);
 
 
@@ -378,7 +379,56 @@ class AssessmentsDetailServiceImplTest {
   }
 
   @Test
-  void givenNoInstallmentsWhenCreateAssessmentsDetailThenEmptyList(){
+  void givenInvalidIudWhenCreateAssessmentsDetailThenInvalidRequestBodyException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    Long receiptId = 3L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
+    installments.forEach(i->i.setReceiptId(receiptId));
+    Set<String> iuds = Stream.concat(installmentsMap.keySet().stream(), Stream.of("iud")).collect(Collectors.toSet());
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId,
+            iuds);
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, iuds, accessToken))
+            .thenReturn(installments);
+
+    assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock);
+  }
+
+  @Test
+  void givenNoInstallmentsWhenCreateAssessmentsDetailThenInvalidRequestBodyException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    Set<String> iuds = Collections.singleton("iud");
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId, iuds);
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, iuds, accessToken))
+            .thenReturn(Collections.emptyList());
+
+    assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock);
+  }
+
+  @Test
+  void givenNoInstallmentsAndNoIudsWhenCreateAssessmentsDetailThenEmptyList(){
     Long organizationId = 1L;
     Long assessmentsRegistryId = 2L;
     String accessToken = "accessToken";

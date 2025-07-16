@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.connector.debtposition.client;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtposition.client.generated.ReceiptNoPiiEntityControllerApi;
+import it.gov.pagopa.pu.debtposition.client.generated.ReceiptNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -23,13 +24,15 @@ class ReceiptNoPIIClientTest {
   private DebtPositionApisHolder debtPositionApisHolderMock;
   @Mock
   private ReceiptNoPiiEntityControllerApi receiptNoPiiEntityControllerApiMock;
+  @Mock
+  private ReceiptNoPiiSearchControllerApi receiptNoPiiSearchControllerApiMock;
 
   @InjectMocks
   private ReceiptNoPIIClient client;
 
   @AfterEach
   void verifyNoMoreInteractions(){
-    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock, receiptNoPiiEntityControllerApiMock);
+    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock, receiptNoPiiEntityControllerApiMock, receiptNoPiiSearchControllerApiMock);
   }
 
   @Test
@@ -59,6 +62,39 @@ class ReceiptNoPIIClientTest {
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     ReceiptNoPII result = client.getById(receiptId, accessToken);
+
+    Assertions.assertNull(result);
+  }
+
+  @Test
+  void whenGetByReceiptIdAndDebtPositionTypeOrgCodeThenOk() {
+    String accessToken = "ACCESSTOKEN";
+    long receiptId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    ReceiptNoPII expectedResult = new ReceiptNoPII();
+
+    when(debtPositionApisHolderMock.getReceiptNoPiiSearchControllerApi(accessToken))
+      .thenReturn(receiptNoPiiSearchControllerApiMock);
+    when(receiptNoPiiSearchControllerApiMock.crudReceiptsGetByReceiptIdAndDebtPositionTypeOrgCode(receiptId,debtPositionTypeOrgCode))
+      .thenReturn(expectedResult);
+
+    ReceiptNoPII result = client.getByReceiptIdAndDebtPositionTypeOrgCode(receiptId, debtPositionTypeOrgCode, accessToken);
+
+    Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenNotExistentReceiptWhenGetByReceiptIdAndDebtPositionTypeOrgCodeThenReturnNull() {
+    String accessToken = "ACCESSTOKEN";
+    long receiptId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+
+    when(debtPositionApisHolderMock.getReceiptNoPiiSearchControllerApi(accessToken))
+            .thenReturn(receiptNoPiiSearchControllerApiMock);
+    when(receiptNoPiiSearchControllerApiMock.crudReceiptsGetByReceiptIdAndDebtPositionTypeOrgCode(receiptId,debtPositionTypeOrgCode))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    ReceiptNoPII result = client.getByReceiptIdAndDebtPositionTypeOrgCode(receiptId, debtPositionTypeOrgCode, accessToken);
 
     Assertions.assertNull(result);
   }
