@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.classification.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.debtposition.client.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.client.generated.InstallmentNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.client.generated.ReceiptNoPiiEntityControllerApi;
+import it.gov.pagopa.pu.debtposition.client.generated.ReceiptNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.generated.ApiClient;
 import it.gov.pagopa.pu.debtposition.generated.BaseApi;
 import jakarta.annotation.PreDestroy;
@@ -19,6 +20,7 @@ public class DebtPositionApisHolder {
   private final InstallmentNoPiiSearchControllerApi installmentNoPiiSearchControllerApi;
   private final ReceiptNoPiiEntityControllerApi receiptNoPiiEntityControllerApi;
   private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
+  private final ReceiptNoPiiSearchControllerApi receiptNoPiiSearchControllerApi;
 
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
@@ -39,6 +41,7 @@ public class DebtPositionApisHolder {
     this.installmentNoPiiSearchControllerApi = new InstallmentNoPiiSearchControllerApi(apiClient);
     this.receiptNoPiiEntityControllerApi = new ReceiptNoPiiEntityControllerApi(apiClient);
     this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
+    this.receiptNoPiiSearchControllerApi = new ReceiptNoPiiSearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -56,6 +59,10 @@ public class DebtPositionApisHolder {
 
   public DebtPositionTypeOrgSearchControllerApi getDebtPositionTypeOrgSearchControllerApi(String accessToken) {
     return getApi(accessToken, debtPositionTypeOrgSearchControllerApi);
+  }
+
+  public ReceiptNoPiiSearchControllerApi getReceiptNoPiiSearchControllerApi(String accessToken) {
+    return getApi(accessToken, receiptNoPiiSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {
