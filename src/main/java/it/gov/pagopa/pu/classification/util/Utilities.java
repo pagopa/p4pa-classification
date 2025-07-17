@@ -5,18 +5,23 @@ import org.slf4j.MDC;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 
 public class Utilities {
 
   private Utilities(){}
 
   public static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
-  public static final ThreadLocal<NumberFormat> DECIMAL_FORMAT = ThreadLocal.withInitial(() -> new DecimalFormat("#.00"));
+  public static final ThreadLocal<NumberFormat> DECIMAL_FORMAT = ThreadLocal.withInitial(() -> {
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ITALIAN);
+    return new DecimalFormat("#0.00", symbols);
+  });
 
   public static Long bigDecimalEuroToLongCentsAmount(BigDecimal euroAmount) {
     return euroAmount != null ? euroAmount.multiply(HUNDRED).longValue() : null;
