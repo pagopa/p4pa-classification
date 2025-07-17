@@ -77,6 +77,17 @@ class BalanceServiceTest {
   }
 
   @Test
+  void givenNullObjectBalanceWhenValidateThenUnsuccessful(){
+    String balance = "balanceNotValid";
+
+    when(balanceDefaultMarshallingServiceMock.unmarshal(balance)).thenReturn(null);
+
+    Boolean result = balanceService.isBalanceValid(balance);
+
+    assertEquals(Boolean.FALSE, result);
+  }
+
+  @Test
   void givenNoAssessmentRegistryWhenGetBalanceThenNull(){
     Long orgId = 1L;
     String debtPositionTypeOrgCode = "CODE";
@@ -132,7 +143,7 @@ class BalanceServiceTest {
 
     String result = balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode);
 
-    assertEquals(result, balance);
+    assertEquals(balance, result);
   }
 
 }

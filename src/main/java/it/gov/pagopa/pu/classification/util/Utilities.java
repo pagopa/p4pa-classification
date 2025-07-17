@@ -45,16 +45,15 @@ public class Utilities {
     return MDC.get("traceId");
   }
 
-  public static String amountToString(BigDecimal importo) {
-    String importoString = NUMBER_FORMAT_IT.get().format(importo);
-    if (!importoString.contains(",")) {
-      importoString = importoString + ",00";
+  public static String amountToString(BigDecimal amount) {
+    String amountString = NUMBER_FORMAT_IT.get().format(amount);
+    if (!amountString.contains(",")) {
+      amountString = amountString + ",00";
     } else {
-      if (importoString.split(",")[1].length() == 1) {
-        importoString = importoString + "0";
+      if (amountString.split(",")[1].length() == 1) {
+        amountString = amountString + "0";
       }
     }
-    return importoString;
-
+    return amountString;
   }
 }

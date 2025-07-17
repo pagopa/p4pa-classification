@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum BalanceDefaultAmountType {
 
-  BALANCE_DEFAULT_TOTAL("TOTALE"),
-  BILANCE_DEFAULT_EXTRACT_AMOUNT("estrai_importo"),
-  BILANCE_DEFAULT_CALCULATE_AMOUNT("calcola_importo");
+  TOTAL("TOTALE"),
+  EXTRACT_AMOUNT("estrai_importo"),
+  CALCULATE_AMOUNT("calcola_importo");
 
   private final String type;
 

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.MDC;
 
@@ -33,6 +34,19 @@ public class UtilitiesTest {
     // When
     Long result = Utilities.bigDecimalEuroToLongCentsAmount(null);
     // Then
+    assertNull(result);
+  }
+
+  @Test
+  void testLongCentsToBigDecimalEuro() {
+    Long amountCents = 10000L;
+    BigDecimal result = Utilities.longCentsToBigDecimalEuro(amountCents);
+    assertEquals(new BigDecimal("100.00"), result);
+  }
+
+  @Test
+  void testLongCentsToBigDecimalEuroWithNull() {
+    BigDecimal result = Utilities.longCentsToBigDecimalEuro(null);
     assertNull(result);
   }
 
@@ -100,4 +114,17 @@ public class UtilitiesTest {
   public static void clearTraceIdContext(){
     MDC.clear();
   }
+
+  @ParameterizedTest
+  @CsvSource(value = {
+    "100|100,00",
+    "123.45|123,45",
+    "99.9|99,90"
+  }, delimiter = '|')
+  void testAmountToString(String input, String expected) {
+    BigDecimal amount = new BigDecimal(input);
+    String result = Utilities.amountToString(amount);
+    assertEquals(expected, result);
+  }
+
 }

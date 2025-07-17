@@ -1,12 +1,14 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
+import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtCapitoloDefault;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.script.Invocable;
@@ -15,11 +17,8 @@ import javax.script.ScriptEngineManager;
 import java.math.BigDecimal;
 
 @Service
+@Slf4j
 public class BalanceAmountService {
-
-  public static final String BILANCIO_DEFAULT_TOTALE = "TOTALE";
-  public static final String BILANCIO_DEFAULT_ESTRAI_IMPORTO = "estrai_importo";
-  public static final String BILANCIO_DEFAULT_CALCOLA_IMPORTO = "calcola_importo";
 
   private final BalanceService balanceService;
   private final BalanceDefaultMarshallingService balanceDefaultMarshallingService;
@@ -38,31 +37,34 @@ public class BalanceAmountService {
     Object balanceXML = balanceService.unmarshalBalance(balance);
 
     if (balanceXML instanceof CtBilancio) {
+      log.info("The balance amount is already calculated");
       return balance;
     }
 
     try {
       CtBilancioDefault ctBilancioDefault = (CtBilancioDefault) balanceXML;
+      log.info("Calculating balance amount resolving default type");
       for (CtCapitoloDefault capitolo : ctBilancioDefault.getCapitolo()) {
         for (CtAccertamentoDefault ctAccertamentoDefault : capitolo.getAccertamento()) {
           BigDecimal calculatedAmount;
-          if (ctAccertamentoDefault.getImporto().equals(BILANCIO_DEFAULT_TOTALE)) {
+          if (ctAccertamentoDefault.getImporto().equals(BalanceDefaultAmountType.TOTAL.getType())) {
             calculatedAmount = amountInstallment;
-          } else if (ctAccertamentoDefault.getImporto().contains(BILANCIO_DEFAULT_ESTRAI_IMPORTO)) {
+          } else if (ctAccertamentoDefault.getImporto().contains(BalanceDefaultAmountType.EXTRACT_AMOUNT.getType())) {
             engine.eval(ctAccertamentoDefault.getImporto());
             Invocable invocable = (Invocable) engine;
-            String result = String.valueOf(invocable.invokeFunction(BILANCIO_DEFAULT_ESTRAI_IMPORTO, calculateAmountBalanceRequest.getRemittanceInformation()));
+            String result = String.valueOf(invocable.invokeFunction(BalanceDefaultAmountType.EXTRACT_AMOUNT.getType(),
+              calculateAmountBalanceRequest.getRemittanceInformation()));
             double resultDouble = Double.parseDouble(result);
             calculatedAmount = BigDecimal.valueOf(resultDouble);
-          } else if (ctAccertamentoDefault.getImporto().contains(BILANCIO_DEFAULT_CALCOLA_IMPORTO)) {
+          } else if (ctAccertamentoDefault.getImporto().contains(BalanceDefaultAmountType.CALCULATE_AMOUNT.getType())) {
             engine.eval(ctAccertamentoDefault.getImporto());
             Invocable invocable = (Invocable) engine;
             String result = String.valueOf(
-              invocable.invokeFunction(BILANCIO_DEFAULT_CALCOLA_IMPORTO, amountInstallment));
+              invocable.invokeFunction(BalanceDefaultAmountType.CALCULATE_AMOUNT.getType(), amountInstallment));
             double resultDouble = Double.parseDouble(result);
             calculatedAmount = BigDecimal.valueOf(resultDouble);
           } else {
-            throw new InvalidValueException("Function type to calculate amount balance not supported: " + ctAccertamentoDefault.getImporto());
+            throw new InvalidValueException(ctAccertamentoDefault.getImporto() + " as function type to calculate amount balance not supported");
           }
           String amountString = Utilities.amountToString(calculatedAmount);
           String amountWithoutSeparator = amountString.replace("\\.", "");

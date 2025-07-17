@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.controller;
 
+import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.service.BalanceAmountService;
 import it.gov.pagopa.pu.classification.service.BalanceService;
@@ -53,5 +54,22 @@ class BalanceControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(balance, response.getBody());
+  }
+
+  @Test
+  void givenCalculateAmountBalanceRequestWhenCalculateThenReturnBalance(){
+    CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
+      .balance("balance")
+      .amountCents(100L)
+      .remittanceInformation("remittanceInformation")
+      .build();
+    String balanceExpected = "balanceCalculated";
+
+    Mockito.when(balanceAmountServiceMock.calculateAmountBalance(request)).thenReturn(balanceExpected);
+
+    ResponseEntity<String> response = balanceController.calculateAmountBalance(request);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(balanceExpected, response.getBody());
   }
 }
