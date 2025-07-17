@@ -46,14 +46,6 @@ public class Utilities {
   }
 
   public static String amountToString(BigDecimal amount) {
-    String amountString = DECIMAL_FORMAT.get().format(amount);
-    if (!amountString.contains(",")) {
-      amountString = amountString + ",00";
-    } else {
-      if (amountString.split(",")[1].length() == 1) {
-        amountString = amountString + "0";
-      }
-    }
-    return amountString;
+    return DECIMAL_FORMAT.get().format(amount);
   }
 }
