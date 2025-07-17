@@ -54,15 +54,13 @@ public class BalanceAmountService {
             Invocable invocable = (Invocable) engine;
             String result = String.valueOf(invocable.invokeFunction(BalanceDefaultAmountType.EXTRACT_AMOUNT.getType(),
               calculateAmountBalanceRequest.getRemittanceInformation()));
-            double resultDouble = Double.parseDouble(result);
-            calculatedAmount = BigDecimal.valueOf(resultDouble);
+            calculatedAmount = new BigDecimal(result);
           } else if (ctAccertamentoDefault.getImporto().contains(BalanceDefaultAmountType.CALCULATE_AMOUNT.getType())) {
             engine.eval(ctAccertamentoDefault.getImporto());
             Invocable invocable = (Invocable) engine;
             String result = String.valueOf(
               invocable.invokeFunction(BalanceDefaultAmountType.CALCULATE_AMOUNT.getType(), amountInstallment));
-            double resultDouble = Double.parseDouble(result);
-            calculatedAmount = BigDecimal.valueOf(resultDouble);
+            calculatedAmount = new BigDecimal(result);
           } else {
             throw new InvalidValueException(ctAccertamentoDefault.getImporto() + " as function type to calculate amount balance not supported");
           }

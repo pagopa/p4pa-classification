@@ -8,7 +8,6 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
@@ -19,7 +18,6 @@ import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Lazy
 @Component
 @Slf4j
 public class BalanceDefaultMarshallingService {

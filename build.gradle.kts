@@ -45,7 +45,7 @@ val jaxbVersion = "4.0.5"
 val jaxbApiVersion = "4.0.2"
 val xmlSchemaVersion = "2.3.1"
 val podamVersion = "8.0.2.RELEASE"
-val rhinoScriptVersion="1.7.15"
+val rhinoScriptVersion="1.8.0"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")

@@ -4,19 +4,19 @@ import org.slf4j.MDC;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Locale;
 
 public class Utilities {
 
   private Utilities(){}
 
   public static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
-  public static final ThreadLocal<NumberFormat> NUMBER_FORMAT_IT = ThreadLocal.withInitial(() -> NumberFormat.getNumberInstance(Locale.ITALIAN));
+  public static final ThreadLocal<NumberFormat> DECIMAL_FORMAT = ThreadLocal.withInitial(() -> new DecimalFormat("#.00"));
 
   public static Long bigDecimalEuroToLongCentsAmount(BigDecimal euroAmount) {
     return euroAmount != null ? euroAmount.multiply(HUNDRED).longValue() : null;
@@ -46,7 +46,7 @@ public class Utilities {
   }
 
   public static String amountToString(BigDecimal amount) {
-    String amountString = NUMBER_FORMAT_IT.get().format(amount);
+    String amountString = DECIMAL_FORMAT.get().format(amount);
     if (!amountString.contains(",")) {
       amountString = amountString + ",00";
     } else {
