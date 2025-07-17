@@ -4,10 +4,10 @@ import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceReque
 import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.util.Utilities;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtCapitoloDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +18,14 @@ import java.math.BigDecimal;
 
 @Service
 @Slf4j
-public class BalanceAmountService {
+public class BalanceTemplateResolverService {
 
   private final BalanceService balanceService;
   private final BalanceDefaultMarshallingService balanceDefaultMarshallingService;
   private final ScriptEngineManager factory = new ScriptEngineManager();
   private final ScriptEngine engine = factory.getEngineByName("rhino");
 
-  public BalanceAmountService(BalanceService balanceService, BalanceDefaultMarshallingService balanceDefaultMarshallingService) {
+  public BalanceTemplateResolverService(BalanceService balanceService, BalanceDefaultMarshallingService balanceDefaultMarshallingService) {
     this.balanceService = balanceService;
     this.balanceDefaultMarshallingService = balanceDefaultMarshallingService;
   }
@@ -65,10 +65,8 @@ public class BalanceAmountService {
             throw new InvalidValueException(ctAccertamentoDefault.getImporto() + " as function type to calculate amount balance not supported");
           }
           String amountString = Utilities.amountToString(calculatedAmount);
-          String amountWithoutSeparator = amountString.replace("\\.", "");
-          String amountWithSeparatorAndDecimal = amountWithoutSeparator.replace(",", ".");
 
-          ctAccertamentoDefault.setImporto(amountWithSeparatorAndDecimal);
+          ctAccertamentoDefault.setImporto(amountString);
         }
       }
       return balanceDefaultMarshallingService.marshal(ctBilancioDefault);

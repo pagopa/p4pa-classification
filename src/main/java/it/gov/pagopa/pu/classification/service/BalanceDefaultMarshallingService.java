@@ -2,8 +2,8 @@ package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class BalanceDefaultMarshallingService {
   private final XMLMarshallerService xmlMarshallerService;
   private final XMLUnmarshallerService xmlUnmarshallerService;
 
-  private static final String NAMESPACE = "http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/BilancioDefault/";
+  private static final String NAMESPACE = "http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/";
   private static final String ROOT_ELEMENT = "bilancio";
 
   public BalanceDefaultMarshallingService(@Value("classpath:xsd/bilancioDefault.xsd") Resource xsdResource,

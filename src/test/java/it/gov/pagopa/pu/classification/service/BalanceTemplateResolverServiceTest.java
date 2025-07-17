@@ -2,31 +2,29 @@ package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtCapitoloDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BalanceAmountServiceTest {
+class BalanceTemplateResolverServiceTest {
 
   @Mock
   private BalanceService balanceServiceMock;
-  @Mock
-  private BalanceDefaultMarshallingService balanceDefaultMarshallingServiceMock;
   @Mock
   private ScriptEngineManager scriptEngineManagerMock;
   @Mock
@@ -34,11 +32,18 @@ class BalanceAmountServiceTest {
   @Mock
   private Invocable invocableMock;
 
-  private BalanceAmountService service;
+  private BalanceUnmarshallerService handler;
+
+  private BalanceTemplateResolverService service;
 
   @BeforeEach
   void init() {
-    service = new BalanceAmountService(balanceServiceMock, balanceDefaultMarshallingServiceMock);
+    XMLUnmarshallerService xmlUnmarshallerService = new XMLUnmarshallerService();
+    XMLMarshallerService xmlMarshallerService = new XMLMarshallerService();
+    BalanceDefaultMarshallingService balanceDefaultMarshallingService = new BalanceDefaultMarshallingService(new ClassPathResource("xsd/bilancioDefault.xsd"), xmlMarshallerService, xmlUnmarshallerService);
+    service = new BalanceTemplateResolverService(balanceServiceMock, balanceDefaultMarshallingService);
+
+    handler = new BalanceUnmarshallerService(new ClassPathResource("xsd/PagInf_Dovuti_Pagati_6_2_0.xsd"),  new XMLUnmarshallerService());
   }
 
   @Test
@@ -58,7 +63,7 @@ class BalanceAmountServiceTest {
 
   @Test
   void givenBalanceDefaultWhenCalculateTotalThenReturnCalculatedBalance() {
-    String balance = "<bilancio><capitolo><accertamento><importo>TOTALE</importo></accertamento></capitolo></bilancio>";
+    String balance = "<bilancio><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>TOTALE</importo></accertamento></capitolo></bilancio>";
     CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
       .balance(balance)
       .amountCents(10000L)
@@ -66,19 +71,27 @@ class BalanceAmountServiceTest {
       .build();
 
     CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
+    CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
+    ctCapitoloDefault.setCodCapitolo("CAP1");
+    CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
+    ctAccertamentoDefault.setImporto("TOTALE");
+    ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
+    ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
 
-    String balanceExpected = "<bilancio><capitolo><accertamento><importo>100.00</importo></accertamento></capitolo></bilancio>";
+    String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>100.00</importo></accertamento></capitolo></bilancio>";
 
     when(balanceServiceMock.unmarshalBalance(request.getBalance())).thenReturn(ctBilancioDefault);
-    when(balanceDefaultMarshallingServiceMock.marshal(ctBilancioDefault)).thenReturn(balanceExpected);
     String result = service.calculateAmountBalance(request);
 
     assertEquals(balanceExpected, result);
+    assertDoesNotThrow(() -> handler.unmarshal(result));
   }
 
   @Test
   void givenBalanceDefaultWhenCalculateThenReturnCalculatedBalance() {
-    String balance = "<bilancio><capitolo><accertamento><importo>function calcola_importo(IMPORTO) { return '90.00'; }</importo></accertamento></capitolo></bilancio>";
+    String balance = "<bilancio><capitolo><codCapitolo>CAP1</codCapitolo><accertamento>" +
+      "<importo>function calcola_importo(IMPORTO) {var importo = Number(IMPORTO);var risultato = importo * 0.80;return (Math.ceil(risultato * 100) / 100).toString();}</importo>" +
+      "</accertamento></capitolo></bilancio>";
     CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
       .balance(balance)
       .amountCents(10000L)
@@ -87,24 +100,25 @@ class BalanceAmountServiceTest {
 
     CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
     CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
+    ctCapitoloDefault.setCodCapitolo("CAP1");
     CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
-    ctAccertamentoDefault.setImporto("function calcola_importo(IMPORTO){ return '90.00'; }");
+    ctAccertamentoDefault.setImporto("function calcola_importo(IMPORTO){var importo = Number(IMPORTO);var risultato = importo * 0.80;return (Math.ceil(risultato * 100) / 100).toString();}");
     ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
     ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
 
-    String balanceExpected = "<bilancio><capitolo><accertamento><importo>90.00</importo></accertamento></capitolo></bilancio>";
+    String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>80.00</importo></accertamento></capitolo></bilancio>";
 
     when(balanceServiceMock.unmarshalBalance(request.getBalance())).thenReturn(ctBilancioDefault);
 
-    when(balanceDefaultMarshallingServiceMock.marshal(ctBilancioDefault)).thenReturn(balanceExpected);
     String result = service.calculateAmountBalance(request);
 
     assertEquals(balanceExpected, result);
+    assertDoesNotThrow(() -> handler.unmarshal(result));
   }
 
   @Test
   void givenBalanceDefaultWhenCalculateExtractThenReturnCalculatedBalance() {
-    String balance = "<bilancio><capitolo><accertamento><importo>function estrai_importo(IMPORTO) { return '90.00'; }</importo></accertamento></capitolo></bilancio>";
+    String balance = "<bilancio><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>function estrai_importo(IMPORTO) { return '90.00'; }</importo></accertamento></capitolo></bilancio>";
     CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
       .balance(balance)
       .amountCents(10000L)
@@ -113,19 +127,20 @@ class BalanceAmountServiceTest {
 
     CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
     CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
+    ctCapitoloDefault.setCodCapitolo("CAP1");
     CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
     ctAccertamentoDefault.setImporto("function estrai_importo(IMPORTO){ return '90.00'; }");
     ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
     ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
 
-    String balanceExpected = "<bilancio><capitolo><accertamento><importo>90.00</importo></accertamento></capitolo></bilancio>";
+    String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>90.00</importo></accertamento></capitolo></bilancio>";
 
     when(balanceServiceMock.unmarshalBalance(request.getBalance())).thenReturn(ctBilancioDefault);
 
-    when(balanceDefaultMarshallingServiceMock.marshal(ctBilancioDefault)).thenReturn(balanceExpected);
     String result = service.calculateAmountBalance(request);
 
     assertEquals(balanceExpected, result);
+    assertDoesNotThrow(() -> handler.unmarshal(result));
   }
 
   @Test

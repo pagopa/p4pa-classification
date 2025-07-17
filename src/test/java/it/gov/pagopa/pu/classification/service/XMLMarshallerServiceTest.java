@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtCapitoloDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ class XMLMarshallerServiceTest {
 
   @Test
   void marshalCtBilancioDefaultToXmlString() {
-    String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/BilancioDefault/\">" +
+    String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\">" +
       "<capitolo>" +
       "<codCapitolo>CAP1</codCapitolo>" +
       "<codUfficio>UFF1</codUfficio>" +
@@ -65,7 +65,7 @@ class XMLMarshallerServiceTest {
     capitolo.getAccertamento().add(accertamento);
     bilancio.getCapitolo().add(capitolo);
 
-    String result = service.marshal(bilancio, CtBilancioDefault.class, jaxbContext, schema,"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/BilancioDefault/", "bilancio");
+    String result = service.marshal(bilancio, CtBilancioDefault.class, jaxbContext, schema,"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/", "bilancio");
 
     assertNotNull(result);
     assertEquals(xmlString, result);

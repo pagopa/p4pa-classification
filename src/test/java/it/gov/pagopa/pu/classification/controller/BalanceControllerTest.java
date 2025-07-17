@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
-import it.gov.pagopa.pu.classification.service.BalanceAmountService;
+import it.gov.pagopa.pu.classification.service.BalanceTemplateResolverService;
 import it.gov.pagopa.pu.classification.service.BalanceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +21,13 @@ class BalanceControllerTest {
   @Mock
   private BalanceService balanceServiceMock;
   @Mock
-  private BalanceAmountService balanceAmountServiceMock;
+  private BalanceTemplateResolverService balanceTemplateResolverServiceMock;
 
   private BalanceController balanceController;
 
   @BeforeEach
   void init() {
-    balanceController = new BalanceController(balanceServiceMock, balanceAmountServiceMock);
+    balanceController = new BalanceController(balanceServiceMock, balanceTemplateResolverServiceMock);
   }
 
   @Test
@@ -65,7 +65,7 @@ class BalanceControllerTest {
       .build();
     String balanceExpected = "balanceCalculated";
 
-    Mockito.when(balanceAmountServiceMock.calculateAmountBalance(request)).thenReturn(balanceExpected);
+    Mockito.when(balanceTemplateResolverServiceMock.calculateAmountBalance(request)).thenReturn(balanceExpected);
 
     ResponseEntity<String> response = balanceController.calculateAmountBalance(request);
 

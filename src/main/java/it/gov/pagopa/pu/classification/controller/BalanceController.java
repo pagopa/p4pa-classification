@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.classification.controller;
 import it.gov.pagopa.pu.classification.controller.generated.BalanceApi;
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
-import it.gov.pagopa.pu.classification.service.BalanceAmountService;
+import it.gov.pagopa.pu.classification.service.BalanceTemplateResolverService;
 import it.gov.pagopa.pu.classification.service.BalanceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class BalanceController implements BalanceApi {
 
   private final BalanceService balanceService;
-  private final BalanceAmountService balanceAmountService;
+  private final BalanceTemplateResolverService balanceAmountService;
 
-  public BalanceController(BalanceService balanceService, BalanceAmountService balanceAmountService) {
+  public BalanceController(BalanceService balanceService, BalanceTemplateResolverService balanceAmountService) {
     this.balanceService = balanceService;
     this.balanceAmountService = balanceAmountService;
   }
