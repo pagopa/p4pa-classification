@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtCapitoloDefault;
@@ -8,6 +9,8 @@ import jakarta.xml.bind.JAXBException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -68,6 +71,23 @@ class BalanceDefaultMarshallingServiceTest {
 
     assertNotNull(result);
     assertEquals(XML_STRING_BILANCIO_WITH_NAMESPACE, result);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"NOT_VALID", ""})
+  void testUnmarshalNotValidCtBilancioDefaultWithNamespace(String amountValueType) {
+    String balance = "<bilancio>" +
+      "<capitolo>" +
+      "<codCapitolo>CAP1</codCapitolo>" +
+      "<accertamento>" +
+      "<importo>" + amountValueType + "</importo>" +
+      "</accertamento>" +
+      "</capitolo>" +
+      "</bilancio>" ;
+
+    InvalidValueException exception = assertThrows(InvalidValueException.class, () -> service.unmarshal(balance));
+
+    assertEquals("Function type to calculate amount balance not supported", exception.getMessage());
   }
 
   @Test
