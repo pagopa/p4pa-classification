@@ -32,7 +32,7 @@ class BalanceTemplateResolverServiceTest {
   @Mock
   private Invocable invocableMock;
 
-  private BalanceUnmarshallerService handler;
+  private BalanceUnmarshallerService balanceUnmarshallerService;
 
   private BalanceTemplateResolverService service;
 
@@ -43,7 +43,7 @@ class BalanceTemplateResolverServiceTest {
     BalanceDefaultMarshallingService balanceDefaultMarshallingService = new BalanceDefaultMarshallingService(new ClassPathResource("xsd/bilancioDefault.xsd"), xmlMarshallerService, xmlUnmarshallerService);
     service = new BalanceTemplateResolverService(balanceServiceMock, balanceDefaultMarshallingService);
 
-    handler = new BalanceUnmarshallerService(new ClassPathResource("xsd/PagInf_Dovuti_Pagati_6_2_0.xsd"),  new XMLUnmarshallerService());
+    balanceUnmarshallerService = new BalanceUnmarshallerService(new ClassPathResource("xsd/PagInf_Dovuti_Pagati_6_2_0.xsd"),  new XMLUnmarshallerService());
   }
 
   @Test
@@ -84,7 +84,7 @@ class BalanceTemplateResolverServiceTest {
     String result = service.calculateAmountBalance(request);
 
     assertEquals(balanceExpected, result);
-    assertDoesNotThrow(() -> handler.unmarshal(result));
+    assertDoesNotThrow(() -> balanceUnmarshallerService.unmarshal(result));
   }
 
   @Test
@@ -113,7 +113,7 @@ class BalanceTemplateResolverServiceTest {
     String result = service.calculateAmountBalance(request);
 
     assertEquals(balanceExpected, result);
-    assertDoesNotThrow(() -> handler.unmarshal(result));
+    assertDoesNotThrow(() -> balanceUnmarshallerService.unmarshal(result));
   }
 
   @Test
@@ -140,7 +140,7 @@ class BalanceTemplateResolverServiceTest {
     String result = service.calculateAmountBalance(request);
 
     assertEquals(balanceExpected, result);
-    assertDoesNotThrow(() -> handler.unmarshal(result));
+    assertDoesNotThrow(() -> balanceUnmarshallerService.unmarshal(result));
   }
 
   @Test
