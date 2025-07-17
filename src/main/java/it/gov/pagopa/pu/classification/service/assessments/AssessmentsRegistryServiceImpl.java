@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
-import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
+import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO;
@@ -23,12 +23,12 @@ import org.springframework.util.StringUtils;
 public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryService{
 
   private final AssessmentsRegistryRepository assessmentsRegistryRepository;
-  private final BalanceUnmashallerService balanceUnmashallerService;
+  private final BalanceUnmarshallerService balanceUnmashallerService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
 
   public AssessmentsRegistryServiceImpl(
     AssessmentsRegistryRepository assessmentsRegistryRepository,
-    BalanceUnmashallerService balanceUnmashallerService,
+    BalanceUnmarshallerService balanceUnmashallerService,
     DebtPositionTypeOrgService debtPositionTypeOrgService) {
     this.assessmentsRegistryRepository = assessmentsRegistryRepository;
     this.balanceUnmashallerService = balanceUnmashallerService;

@@ -99,6 +99,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /organization/{organizationId}/classifications/paid-installments:
+    get:
+      tags:
+        - Classifications
+      operationId: getPaidInstallments
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: iuds
+          in: query
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
+      responses:
+        "200":
+          description: List of paid installments
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedClassificationPaidInstallmentsView"
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+      x-spring-paginated: true
   /organization/{organizationId}/classifications/{classificationId}:
     get:
       tags:
@@ -290,7 +352,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Assessments"
+                  type: "Assessments"
         '500':
           description: Server Error
           content:
@@ -396,6 +458,99 @@ paths:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
       x-spring-paginated: true
+    post:
+      tags:
+        - assessments-controller
+      operationId: createAssessment
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Assessment
+          content:
+            application/json:
+              schema:
+                type: 'Assessments'
+        "409":
+          description: The name of assessment already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /organization/{organizationId}/assessments/{assessmentId}/assessments-details:
+    post:
+      tags:
+        - assessments-detail
+      operationId: createAssessmentsDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the organization
+        - name: assessmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the assessment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAssessmentsDetail"
+        required: true
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: 'AssessmentsDetail'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
   /export/organization/{organizationId}/full-classifications:
     get:
       tags:
@@ -428,16 +583,23 @@ paths:
         - name: iuv
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: iur
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: label
           in: query
           required: true
           schema:
-            type: ClassificationsEnum
+            type: array
+            uniqueItems: true
+            items:
+              type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
           required: true
@@ -454,12 +616,12 @@ paths:
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: payDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: paymentDateTimeFrom
           in: query
           schema:
@@ -525,6 +687,13 @@ paths:
           in: query
           schema:
             type: string
+        - name: debtPositionTypeOrgCodes
+          in: query
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
       responses:
         "200":
           description: Ok
@@ -586,16 +755,23 @@ paths:
         - name: iuv
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: iur
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: label
           in: query
           required: true
           schema:
-            type: ClassificationsEnum
+            type: array
+            uniqueItems: true
+            items:
+              type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
           required: true
@@ -612,12 +788,12 @@ paths:
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: payDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: paymentDateTimeFrom
           in: query
           schema:
@@ -683,6 +859,13 @@ paths:
           in: query
           schema:
             type: string
+        - name: debtPositionTypeOrgCodes
+          in: query
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
       responses:
         "200":
           description: Ok
@@ -735,6 +918,46 @@ paths:
               schema:
                 type: boolean
                 description: "Indicates whether the balance field is valid or not"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /organization/{organizationId}/debt-position-type-org/{debtPositionTypeOrgCode}/balance:
+    get:
+      tags:
+        - balance
+      operationId: getBalanceByAssessmentRegistry
+      description: "The API retrieve balance based on assessment registry"
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the organization
+        - name: debtPositionTypeOrgCode
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The code of debt position type org
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "Balance based on assessment registry"
         "400":
           description: Invalid request
           content:
@@ -1041,33 +1264,31 @@ components:
         number:
           type: integer
           format: int64
-    Assessments:
+    PagedClassificationPaidInstallmentsView:
       type: object
       required:
-        - organizationId
-        - debtPositionTypeOrgCode
-        - status
-        - assessmentName
-        - printed
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
       properties:
-        assessmentId:
+        content:
+          type: array
+          items:
+            type: 'ClassificationPaidInstallmentsView'
+        size:
           type: integer
           format: int64
-        organizationId:
+        totalElements:
           type: integer
           format: int64
-        debtPositionTypeOrgCode:
-          type: string
-        status:
-          type: string
-          enum:
-            - NEW
-            - IN_PROGRESS
-            - COMPLETED
-        assessmentName:
-          type: string
-        printed:
-          type: boolean
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
     PagedAssessmentsView:
       type: object
       required:
@@ -1102,5 +1323,19 @@ components:
           type: "DebtPositionDTO"
         iudList:
           type: array
+          items:
+            type: string
+    CreateAssessmentsDetail:
+      type: object
+      required:
+        - assessmentRegistryId
+        - iuds
+      properties:
+        assessmentRegistryId:
+          type: integer
+          format: int64
+        iuds:
+          type: array
+          uniqueItems: true
           items:
             type: string

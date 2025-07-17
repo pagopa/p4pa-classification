@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.debtposition.client;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.client.generated.InstallmentNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelInstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelInstallmentNoPIIEmbedded;
@@ -11,8 +12,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
@@ -27,6 +31,7 @@ class InstallmentNoPIIClientTest {
   @InjectMocks
   private InstallmentNoPIIClient installmentNoPIIClient;
 
+  private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
 	@Test
 	void getByReceiptId_withValidReceiptId_returnsInstallments() {
@@ -51,4 +56,36 @@ class InstallmentNoPIIClientTest {
 		verify(installmentNoPiiSearchControllerApiMock, times(1)).crudInstallmentsFindByReceiptId(receiptId);
 	}
 
+	@Test
+	void whenFindByOrganizationIdAndIudsThenOk(){
+		String accessToken = "ACCESSTOKEN";
+		Long organizationId = 1L;
+		Set<String> iudSet = Collections.singleton("iud");
+		CollectionModelInstallmentNoPII collectionModelInstallmentNoPII = podamFactory.manufacturePojo(CollectionModelInstallmentNoPII.class);
+
+		when(debtPositionApisHolderMock.getInstallmentNoPIISearchControllerApi(accessToken))
+				.thenReturn(installmentNoPiiSearchControllerApiMock);
+		when(installmentNoPiiSearchControllerApiMock.crudInstallmentsFindByOrganizationIdAndIuds(organizationId,iudSet))
+				.thenReturn(collectionModelInstallmentNoPII);
+
+		List<InstallmentNoPII> result = installmentNoPIIClient.findByOrganizationIdAndIuds(organizationId,iudSet,accessToken);
+
+		Assertions.assertEquals(collectionModelInstallmentNoPII.getEmbedded().getInstallmentNoPIIs(),result);
+	}
+
+	@Test
+	void givenNoInstallmentsWhenFindByOrganizationIdAndIudsThenEmptyList(){
+		String accessToken = "ACCESSTOKEN";
+		Long organizationId = 1L;
+		Set<String> iudSet = Collections.singleton("iud");
+
+		when(debtPositionApisHolderMock.getInstallmentNoPIISearchControllerApi(accessToken))
+				.thenReturn(installmentNoPiiSearchControllerApiMock);
+		when(installmentNoPiiSearchControllerApiMock.crudInstallmentsFindByOrganizationIdAndIuds(organizationId,iudSet))
+				.thenReturn(null);
+
+		List<InstallmentNoPII> result = installmentNoPIIClient.findByOrganizationIdAndIuds(organizationId,iudSet,accessToken);
+		
+		Assertions.assertTrue(result.isEmpty());
+	}
 }

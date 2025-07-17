@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
+import it.gov.pagopa.pu.classification.dto.*;
+import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
+import it.gov.pagopa.pu.classification.util.DateConversionUtils;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.time.OffsetDateTime;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -112,5 +117,62 @@ class ClassificationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(mockDetailView, response.getBody());
+  }
+
+  @Test
+  void givenParamsWhenGetPaidInstallmentsThenReturnPagedClassificationPaidInstallmentsView() {
+    Long organizationId = 1L;
+    String iuv = "IUV123";
+    String debtPositionTypeOrgCode = "ORG_CODE";
+
+    OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
+    OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
+    OffsetDateTime updateDateFrom = OffsetDateTime.now().minusDays(2);
+    OffsetDateTime updateDateTo = OffsetDateTime.now();
+
+    Set<String> iuds = Set.of("IUD1", "IUD2");
+    Pageable pageable = PageRequest.of(0, 5);
+
+    PagedClassificationPaidInstallmentsView expectedView =
+      podamFactory.manufacturePojo(PagedClassificationPaidInstallmentsView.class);
+
+    OffsetDateTimeIntervalFilter paymentInterval =
+      new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
+
+    LocalDateTimeIntervalFilter updateInterval =
+      new LocalDateTimeIntervalFilter(
+        DateConversionUtils.offsetDateTime2LocalDateTime(updateDateFrom),
+        DateConversionUtils.offsetDateTime2LocalDateTime(updateDateTo)
+      );
+
+    ClassificationPaidInstallmentsFilterDTO filter = ClassificationPaidInstallmentsFilterDTO.builder()
+      .iuv(iuv)
+      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+      .paymentDateTimeIntervalFilter(paymentInterval)
+      .updateDateTimeIntervalFilter(updateInterval)
+      .iuds(iuds)
+      .build();
+
+    Mockito.when(classificationServiceMock.getPaidInstallmentsView(
+      organizationId,
+      filter,
+      pageable
+    )).thenReturn(expectedView);
+
+    ResponseEntity<PagedClassificationPaidInstallmentsView> result = controller.getPaidInstallments(
+      organizationId,
+      debtPositionTypeOrgCode,
+      iuv,
+      paymentDateTimeFrom,
+      paymentDateTimeTo,
+      updateDateFrom,
+      updateDateTo,
+      iuds,
+      pageable
+    );
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals(expectedView, result.getBody());
   }
 }

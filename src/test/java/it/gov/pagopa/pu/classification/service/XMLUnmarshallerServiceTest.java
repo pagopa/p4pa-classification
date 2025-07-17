@@ -20,7 +20,7 @@ import java.net.URL;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class XMLUnmarsallerServiceTest {
+class XMLUnmarshallerServiceTest {
 
   private XMLUnmarshallerService service;
   private JAXBContext jaxbContext;

@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.connector.debtposition;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service for handling InstallmentNoPII operations.
@@ -17,4 +18,5 @@ public interface InstallmentService {
    */
   List<InstallmentNoPII> getByReceiptId(Long receiptId, String accessToken);
 
+  List<InstallmentNoPII> findByOrganizationIdAndIuds(Long organizationId, Set<String> iuds, String accessToken);
 }

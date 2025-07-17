@@ -24,4 +24,14 @@ public class ReceiptNoPIIClient {
         return null;
       }
     }
+
+    public ReceiptNoPII getByReceiptIdAndDebtPositionTypeOrgCode(Long receiptId, String debtPositionTypeOrgCode, String accessToken) {
+      try{
+        return debtPositionApisHolder.getReceiptNoPiiSearchControllerApi(accessToken)
+          .crudReceiptsGetByReceiptIdAndDebtPositionTypeOrgCode(receiptId,debtPositionTypeOrgCode);
+      } catch (HttpClientErrorException.NotFound e) {
+        log.info("Cannot find ReceiptNoPII having id {} and debtPositionTypeOrgCode {}", receiptId, debtPositionTypeOrgCode);
+        return null;
+      }
+    }
 }

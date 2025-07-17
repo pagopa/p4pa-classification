@@ -22,7 +22,7 @@ public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
   @RestResource(exported = false)
   @Query("""
     FROM Assessments a
-    JOIN AssessmentsDetail ad ON a.assessmentId = ad.assessmentId
+    LEFT JOIN AssessmentsDetail ad ON a.assessmentId = ad.assessmentId
     WHERE
       (:assessmentName IS NULL OR a.assessmentName = :assessmentName)
       AND (cast(:#{#updateDateTimeIntervalFilter.from} AS STRING) IS NULL OR a.updateDate >= :#{#updateDateTimeIntervalFilter.from})

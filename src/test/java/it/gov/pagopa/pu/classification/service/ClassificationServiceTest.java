@@ -1,31 +1,21 @@
 package it.gov.pagopa.pu.classification.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
-import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
-import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
+import it.gov.pagopa.pu.classification.dto.*;
+import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
+import it.gov.pagopa.pu.classification.mapper.PagedClassificationPaidInstallmentsViewMapper;
 import it.gov.pagopa.pu.classification.mapper.TreasuredClassificationMapper;
+import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
-import it.gov.pagopa.pu.classification.repository.view.ClassificationDetailViewPIIRepository;
-import it.gov.pagopa.pu.classification.repository.view.ClassificationViewPIIRepository;
-import it.gov.pagopa.pu.classification.repository.view.FullClassificationViewPIIRepository;
-import it.gov.pagopa.pu.classification.repository.view.TreasuredClassificationViewRepository;
+import it.gov.pagopa.pu.classification.repository.view.*;
 import it.gov.pagopa.pu.classification.util.TestUtils;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,10 +23,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class ClassificationServiceTest {
-  @Mock
-  private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
+
   @Mock
   private ClassificationViewPIIRepository classificationViewPIIRepositoryMock;
   @Mock
@@ -47,6 +45,10 @@ class ClassificationServiceTest {
   private TreasuredClassificationMapper treasuredClassificationMapperMock;
   @Mock
   private ClassificationDetailViewPIIRepository classificationDetailViewPIIRepositoryMock;
+  @Mock
+  private ClassificationPaidInstallmentsViewRepository classificationPaidInstallmentsViewRepositoryMock;
+  @Mock
+  private PagedClassificationPaidInstallmentsViewMapper pagedClassificationPaidInstallmentsViewMapperMock;
 
   private ClassificationService service;
 
@@ -54,12 +56,14 @@ class ClassificationServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new ClassificationServiceImpl(debtPositionTypeOrgServiceMock,
+    service = new ClassificationServiceImpl(
       classificationViewPIIRepositoryMock,
       fullClassificationViewPIIRepositoryMock,
       treasuredClassificationViewRepositoryMock,
       treasuredClassificationMapperMock,
-      classificationDetailViewPIIRepositoryMock);
+      classificationDetailViewPIIRepositoryMock,
+      classificationPaidInstallmentsViewRepositoryMock,
+      pagedClassificationPaidInstallmentsViewMapperMock);
   }
 
   @Test
@@ -67,20 +71,14 @@ class ClassificationServiceTest {
     // Arrange
     Long organizationId = 1L;
     String operatorExternalUserId = "operator123";
-    List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
-    List<String> debtPositionTypeOrgCodes = debtPositionTypeOrgs.stream()
-      .map(DebtPositionTypeOrg::getCode)
-      .toList();
+
     Pageable pageable = PageRequest.of(0, 10);
     ExportClassificationsFilterDTO filterDTO = podamFactory.manufacturePojo(ExportClassificationsFilterDTO.class);
     PagedClassificationView pagedClassificationView = podamFactory.manufacturePojo(PagedClassificationView.class);
 
-    when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null))
-      .thenReturn(debtPositionTypeOrgs);
     when(classificationViewPIIRepositoryMock.getPagedClassificationView(
       organizationId,
       filterDTO,
-      debtPositionTypeOrgCodes,
       pageable))
       .thenReturn(pagedClassificationView);
 
@@ -92,11 +90,9 @@ class ClassificationServiceTest {
     assertEquals(pagedClassificationView, result);
 
     // Verify that the method was called with the correct parameters
-    verify(debtPositionTypeOrgServiceMock, times(1)).findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null);
     verify(classificationViewPIIRepositoryMock, times(1)).getPagedClassificationView(
       organizationId,
       filterDTO,
-      debtPositionTypeOrgCodes,
       pageable);
   }
 
@@ -105,20 +101,14 @@ class ClassificationServiceTest {
     // Arrange
     Long organizationId = 1L;
     String operatorExternalUserId = "operator123";
-    List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
-    List<String> debtPositionTypeOrgCodes = debtPositionTypeOrgs.stream()
-      .map(DebtPositionTypeOrg::getCode)
-      .toList();
+
     Pageable pageable = PageRequest.of(0, 10);
     ExportClassificationsFilterDTO filterDTO = podamFactory.manufacturePojo(ExportClassificationsFilterDTO.class);
     PagedFullClassificationView pagedFullClassificationView = podamFactory.manufacturePojo(PagedFullClassificationView.class);
 
-    when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null))
-      .thenReturn(debtPositionTypeOrgs);
     when(fullClassificationViewPIIRepositoryMock.getPagedFullClassificationView(
       organizationId,
       filterDTO,
-      debtPositionTypeOrgCodes,
       pageable))
       .thenReturn(pagedFullClassificationView);
 
@@ -130,11 +120,9 @@ class ClassificationServiceTest {
     assertEquals(pagedFullClassificationView, result);
 
     // Verify that the method was called with the correct parameters
-    verify(debtPositionTypeOrgServiceMock, times(1)).findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, null);
     verify(fullClassificationViewPIIRepositoryMock, times(1)).getPagedFullClassificationView(
       organizationId,
       filterDTO,
-      debtPositionTypeOrgCodes,
       pageable);
   }
 
@@ -186,5 +174,53 @@ class ClassificationServiceTest {
     assertEquals(classificationDetailViewDTO, result);
 
     verify(classificationDetailViewPIIRepositoryMock, times(1)).getClassificationDetailView(organizationId, classificationId);
+  }
+
+  @Test
+  void givenParamsWhenGetClassificationPaidInstallmentsViewThenReturnView() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "ORG_CODE";
+    String iuv = "IUV123";
+    OffsetDateTime paymentFrom = OffsetDateTime.now().minusDays(1);
+    OffsetDateTime paymentTo = OffsetDateTime.now();
+    LocalDateTime updateFrom = LocalDateTime.now().minusDays(2);
+    LocalDateTime updateTo = LocalDateTime.now();
+    Set<String> iuds = Set.of("IUD1", "IUD2");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    OffsetDateTimeIntervalFilter paymentInterval =
+      new OffsetDateTimeIntervalFilter(paymentFrom, paymentTo);
+    LocalDateTimeIntervalFilter updateInterval =
+      new LocalDateTimeIntervalFilter(updateFrom, updateTo);
+
+    ClassificationPaidInstallmentsFilterDTO filter = ClassificationPaidInstallmentsFilterDTO.builder()
+      .iuv(iuv)
+      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+      .paymentDateTimeIntervalFilter(paymentInterval)
+      .updateDateTimeIntervalFilter(updateInterval)
+      .iuds(iuds)
+      .build();
+
+    List<ClassificationPaidInstallmentsView> content =
+      List.of(podamFactory.manufacturePojo(ClassificationPaidInstallmentsView.class));
+
+    Page<ClassificationPaidInstallmentsView> paged =
+      new PageImpl<>(content, pageable, 1);
+
+    PagedClassificationPaidInstallmentsView expected =
+      podamFactory.manufacturePojo(PagedClassificationPaidInstallmentsView.class);
+
+    Mockito.when(classificationPaidInstallmentsViewRepositoryMock.findPaidInstallments(
+        organizationId, filter, pageable))
+      .thenReturn(paged);
+
+    Mockito.when(pagedClassificationPaidInstallmentsViewMapperMock.map(paged))
+      .thenReturn(expected);
+
+    PagedClassificationPaidInstallmentsView result = service.getPaidInstallmentsView(
+      organizationId, filter, pageable);
+
+    assertNotNull(result);
+    assertEquals(expected, result);
   }
 }

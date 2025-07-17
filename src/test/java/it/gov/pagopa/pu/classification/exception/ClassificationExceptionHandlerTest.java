@@ -298,4 +298,14 @@ class ClassificationExceptionHandlerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"));
   }
+
+  @Test
+  void handleAssessmentConflictException() throws Exception {
+    doThrow(new AssessmentConflictException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isConflict())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_CONFLICT"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"));
+  }
 }

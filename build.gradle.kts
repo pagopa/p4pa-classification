@@ -134,6 +134,12 @@ jaxb {
       outputDir = file("$projectDir/build/generated/jaxb/java")
       schema = file("src/main/resources/xsd/PagInf_Dovuti_Pagati_6_2_0.xsd")
     }
+    register("bilancio") {
+      extension = true
+      args = listOf("-xmlschema")
+      outputDir = file("$projectDir/build/generated/jaxb/java")
+      schema = file("src/main/resources/xsd/bilancioDefault.xsd")
+    }
   }
 }
 
@@ -192,7 +198,9 @@ openApiGenerate {
     "ClassificationDetailViewDTO" to "it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO",
     "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.enums.AssessmentStatus",
     "DebtPositionDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO",
-    "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.model.AssessmentsRegistry"
+    "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.model.AssessmentsRegistry",
+    "AssessmentsDetail" to "it.gov.pagopa.pu.classification.model.AssessmentsDetail",
+    "ClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -232,6 +240,8 @@ tasks.register<GenerateTask>("openApiGenerateDEBTPOSITIONS") {
     "serializableModel" to "true",
     "useSpringBoot3" to "true",
     "useJakartaEe" to "true",
+    "useOneOfInterfaces" to "true",
+    "useBeanValidation" to "true",
     "serializationLibrary" to "jackson",
     "generateSupportingFiles" to "true",
     "generateConstructorWithAllArgs" to "true",
@@ -259,8 +269,11 @@ tasks.register<GenerateTask>("openApiGeneratePROCESSEXECUTION") {
     "swaggerAnnotations" to "false",
     "openApiNullable" to "false",
     "dateLibrary" to "java8",
+    "serializableModel" to "true",
     "useSpringBoot3" to "true",
     "useJakartaEe" to "true",
+    "useOneOfInterfaces" to "true",
+    "useBeanValidation" to "true",
     "serializationLibrary" to "jackson",
     "generateSupportingFiles" to "true",
     "generateConstructorWithAllArgs" to "true",

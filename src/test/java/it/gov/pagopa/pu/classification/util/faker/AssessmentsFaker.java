@@ -10,7 +10,7 @@ public class AssessmentsFaker {
       .assessmentId(1L)
       .organizationId(2L)
       .debtPositionTypeOrgCode("code123")
-      .status(AssessmentStatus.NEW)
+      .status(AssessmentStatus.ACTIVE)
       .assessmentName("assessmentName123")
       .printed(false)
       .flagManualGeneration(false)

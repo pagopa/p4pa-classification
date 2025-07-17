@@ -6,13 +6,13 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
-import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,7 +23,8 @@ import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -80,8 +81,8 @@ class DataExportsControllerTest {
       filterDTO.getIud(),
       filterDTO.getIuv(),
       filterDTO.getIur(),
-      ZonedDateTime.of(filterDTO.getPayDate().getFrom(), Constants.ZONEID).toOffsetDateTime(),
-      ZonedDateTime.of(filterDTO.getPayDate().getTo(), Constants.ZONEID).toOffsetDateTime(),
+      filterDTO.getPayDate().getFrom(),
+      filterDTO.getPayDate().getTo(),
       filterDTO.getPaymentDateTime().getFrom(),
       filterDTO.getPaymentDateTime().getTo(),
       filterDTO.getRegulationDate().getFrom(),
@@ -96,6 +97,7 @@ class DataExportsControllerTest {
       filterDTO.getRemittanceInformation(),
       filterDTO.getPspCompanyName(),
       filterDTO.getPspLastName(),
+      filterDTO.getDebtPositionTypeOrgCodes(),
       pageable
     );
 
@@ -109,18 +111,17 @@ class DataExportsControllerTest {
 
     LocalDate invalidFrom = LocalDate.now();
     LocalDate invalidTo = invalidFrom.plusMonths(2);
-
-    assertThrows(InvalidDateTimeIntervalException.class, () ->
+    Executable executable = () ->
       controller.exportClassifications(
         1L,
         "operator123",
-        ClassificationsEnum.TES_NO_MATCH,
+        Set.of(ClassificationsEnum.TES_NO_MATCH),
         invalidFrom,
         invalidTo,
         "iuf_value",
         "iud_value",
-        "iuv_value",
-        "iur_value",
+        List.of("iuv_value"),
+        List.of("iur_value"),
         null,
         null,
         null,
@@ -137,9 +138,11 @@ class DataExportsControllerTest {
         "remittanceInfo",
         "pspCompany",
         "pspLastName",
+        Set.of("code"),
         pageable
-      )
-    );
+      );
+
+    assertThrows(InvalidDateTimeIntervalException.class, executable);
   }
 
   @Test
@@ -168,8 +171,8 @@ class DataExportsControllerTest {
       filterDTO.getIud(),
       filterDTO.getIuv(),
       filterDTO.getIur(),
-      ZonedDateTime.of(filterDTO.getPayDate().getFrom(), Constants.ZONEID).toOffsetDateTime(),
-      ZonedDateTime.of(filterDTO.getPayDate().getTo(), Constants.ZONEID).toOffsetDateTime(),
+      filterDTO.getPayDate().getFrom(),
+      filterDTO.getPayDate().getTo(),
       filterDTO.getPaymentDateTime().getFrom(),
       filterDTO.getPaymentDateTime().getTo(),
       filterDTO.getRegulationDate().getFrom(),
@@ -184,6 +187,7 @@ class DataExportsControllerTest {
       filterDTO.getRemittanceInformation(),
       filterDTO.getPspCompanyName(),
       filterDTO.getPspLastName(),
+      filterDTO.getDebtPositionTypeOrgCodes(),
       pageable
     );
 
@@ -197,17 +201,16 @@ class DataExportsControllerTest {
     Pageable pageable = PageRequest.of(0, 10);
     LocalDate invalidFrom = now.minusMonths(2);
 
-    assertThrows(InvalidDateTimeIntervalException.class, () ->
-      controller.exportFullClassifications(
+    Executable executable = () -> controller.exportFullClassifications(
         1L,
         "operator123",
-        ClassificationsEnum.TES_NO_MATCH,
+        Set.of(ClassificationsEnum.TES_NO_MATCH),
         invalidFrom,
         now,
         "iuf_value",
         "iud_value",
-        "iuv_value",
-        "iur_value",
+        List.of("iuv_value"),
+        List.of("iur_value"),
         null,
         null,
         null,
@@ -224,8 +227,9 @@ class DataExportsControllerTest {
         "remittanceInfo",
         "pspCompany",
         "pspLastName",
-        pageable
-      )
-    );
+        Set.of("code"),
+        pageable);
+
+    assertThrows(InvalidDateTimeIntervalException.class, executable);
   }
 }

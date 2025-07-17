@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
+import it.gov.pagopa.pu.classification.exception.custom.AssessmentConflictException;
 import it.gov.pagopa.pu.classification.mapper.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
@@ -56,7 +57,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    */
   @Transactional
   @Override
-  public List<Assessments> createAssesment(Long receiptId, String accessToken) {
+  public List<Assessments> createAssessment(Long receiptId, String accessToken) {
     ReceiptNoPII receipt = receiptService.getById(receiptId, accessToken);
     List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(receiptId, accessToken);
 
@@ -69,11 +70,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         return true;
       })
       .map(i -> {
-        Assessments assessment = buildAssessment(i, accessToken);
-        if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
-          assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), assessment.getAssessmentName()) == null) {
-          assessment = assessmentsRepository.save(assessment);
-        }
+        Assessments assessment = buildAssessmentFromReceipt(i, accessToken);
         assessmentsDetailService.createAssessmentDetail(assessment, receipt, i);
         return assessment;
       })
@@ -88,23 +85,32 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    * @param accessToken the access token for authentication
    * @return the built assessment
    */
-  Assessments buildAssessment(InstallmentNoPII installment, String accessToken) {
+  Assessments buildAssessmentFromReceipt(InstallmentNoPII installment, String accessToken) {
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installment.getInstallmentId(), accessToken);
     String debtPositionTypeOrgCode = debtPositionTypeOrg.getCode();
 
-    return Assessments.builder()
-      .organizationId(debtPositionTypeOrg.getOrganizationId())
-      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
-      .status(AssessmentStatus.NEW)
-      .assessmentName(installment.getSourceFlowName())
-      .build();
+    Assessments assessment = assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
+      debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrgCode, installment.getSourceFlowName());
+
+    if (assessment == null) {
+      Assessments newAssessment = Assessments.builder()
+        .organizationId(debtPositionTypeOrg.getOrganizationId())
+        .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+        .status(AssessmentStatus.CLOSED)
+        .assessmentName(installment.getSourceFlowName())
+        .build();
+
+      assessment = assessmentsRepository.save(newAssessment);
+    }
+
+    return assessment;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public PagedAssessmentsView getPagedAssessmentsView(String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable, String accessToken) {
+  public PagedAssessmentsView getPagedAssessmentsView(String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable) {
     Set<String> setDebtPositionTypeOrgCodes = null;
 
     if (debtPositionTypeOrgCodes != null && !debtPositionTypeOrgCodes.isEmpty()) {
@@ -115,6 +121,24 @@ public class AssessmentsServiceImpl implements AssessmentsService {
 
     Page<Assessments> pagedAssessments = assessmentsRepository.findPagedAssessments(assessmentName, updateDateTimeIntervalFilter, iuv, setDebtPositionTypeOrgCodes, status, pageable);
     return pagedAssessmentsViewMapper.map(pagedAssessments);
+  }
+
+  @Override
+  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode) {
+
+    if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName) != null) {
+     throw new AssessmentConflictException("Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
+    }
+
+    return assessmentsRepository.save(
+      Assessments.builder()
+      .assessmentName(assessmentName)
+      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+      .flagManualGeneration(true)
+      .status(AssessmentStatus.ACTIVE)
+      .printed(false)
+      .organizationId(organizationId)
+      .build());
   }
 
 }

@@ -49,7 +49,7 @@ class AssessmentsControllerTest {
   void whenCreateAssessmentByReceiptIdWithValidReceiptIdThenReturnAssessments() {
     Long receiptId = 1L;
     String accessToken = "accessToken";
-    Mockito.when(serviceMock.createAssesment(receiptId, accessToken))
+    Mockito.when(serviceMock.createAssessment(receiptId, accessToken))
       .thenReturn(List.of(new Assessments()));
     SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
 
@@ -58,7 +58,7 @@ class AssessmentsControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(1, response.getBody().size());
-    Mockito.verify(serviceMock).createAssesment(receiptId, accessToken);
+    Mockito.verify(serviceMock).createAssessment(receiptId, accessToken);
   }
 
 
@@ -70,18 +70,35 @@ class AssessmentsControllerTest {
     OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
     String iuv = "IUV";
     List<String> debtPositionTypeOrgCodes = List.of("DEBT_POSITION_TYPE_ORG_CODE", "DEBT_POSITION_TYPE_ORG_CODE1");
-    String accessToken = "accessToken";
     LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(from.toLocalDateTime(), to.toLocalDateTime());
-    SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
 
     PagedAssessmentsView pagedAssessmentsView = podamFactory.manufacturePojo(PagedAssessmentsView.class);
-    Mockito.when(serviceMock.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1), accessToken)).thenReturn(pagedAssessmentsView);
+    Mockito.when(serviceMock.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1))).thenReturn(pagedAssessmentsView);
     //when
-    ResponseEntity<PagedAssessmentsView> result = controller.getPagedAssessmentsList(assessmentName, from, to, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1));
+    ResponseEntity<PagedAssessmentsView> result = controller.getPagedAssessmentsList(assessmentName, from, to, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
     //then
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertEquals(5, result.getBody().getContent().size());
-    Mockito.verify(serviceMock).getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.NEW, Pageable.ofSize(1), accessToken);
+    Mockito.verify(serviceMock).getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
   }
+
+  @Test
+  void givenParamsWhenCreateAssessmentThenReturnAssessments() {
+    //given
+    Long organizationId = 3L;
+    String assessmentName = "ASSESSMENT_NAME";
+    String debtPositionTypeOrgCode = "CODE";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    Mockito.when(serviceMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode)).thenReturn(assessments);
+
+    //when
+    ResponseEntity<Assessments> result = controller.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
+
+    //then
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals(assessments, result.getBody());
+  }
+
 }

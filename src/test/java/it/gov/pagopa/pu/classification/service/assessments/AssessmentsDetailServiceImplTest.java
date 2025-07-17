@@ -1,9 +1,16 @@
 package it.gov.pagopa.pu.classification.service.assessments;
 
+import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
+import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
+import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
+import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
+import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsDetailRepository;
-import it.gov.pagopa.pu.classification.service.BalanceUnmashallerService;
+import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
+import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
+import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
@@ -14,13 +21,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import uk.co.jemos.podam.api.PodamFactory;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -31,8 +44,16 @@ class AssessmentsDetailServiceImplTest {
   @Mock
   private AssessmentsDetailRepository assessmentsDetailRepositoryMock;
   @Mock
-  private BalanceUnmashallerService balanceUnmashallerServiceMock;
-
+  private BalanceUnmarshallerService balanceUnmashallerServiceMock;
+  @Mock
+  private AssessmentsRepository assessmentsRepositoryMock;
+  @Mock
+  private AssessmentsRegistryRepository assessmentsRegistryRepositoryMock;
+  @Mock
+  private InstallmentService installmentServiceMock;
+  @Mock
+  private ReceiptService receiptServiceMock;
+  private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   private AssessmentsDetailServiceImpl assessmentsDetailService;
 
@@ -50,12 +71,14 @@ class AssessmentsDetailServiceImplTest {
 
   @BeforeEach
   void init() {
-    assessmentsDetailService = new AssessmentsDetailServiceImpl(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock);
+    assessmentsDetailService = new AssessmentsDetailServiceImpl(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
-    Mockito.verifyNoMoreInteractions(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock);
+    Mockito.verifyNoMoreInteractions(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock);
   }
 
   @Test
@@ -192,5 +215,273 @@ class AssessmentsDetailServiceImplTest {
 
     verify(assessmentsDetailRepositoryMock, times(1)).save(existingDetail);
     assertEquals(10000L, existingDetail.getAmountCents());
+  }
+
+  @Test
+  void whenCreateAssessmentsDetailThenOk(){
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setOrganizationId(organizationId);
+    List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
+    ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
+    installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistry.getAssessmentRegistryId(), installmentsMap.keySet());
+
+    when(assessmentsRepositoryMock.findById(assessments.getAssessmentId()))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
+            .thenReturn(installments);
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(), accessToken))
+            .thenReturn(receipt);
+    when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
+            .thenReturn(Optional.of(assessmentsRegistry));
+    ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
+    when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
+            .thenReturn(new AssessmentsDetail());
+
+    List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
+            createAssessmentsDetail, accessToken);
+
+    assertNotNull(result);
+    assertEquals(installmentsMap.size(),result.size());
+    List<AssessmentsDetail> assessmentsDetails = assessmentsDetailArgumentCaptor.getAllValues();
+    for (AssessmentsDetail assessmentsDetail : assessmentsDetails) {
+      InstallmentNoPII installment = installmentsMap.get(assessmentsDetail.getIud());
+      assertEquals(assessments.getAssessmentId(),assessmentsDetail.getAssessmentId());
+      assertEquals(assessments.getOrganizationId(),assessmentsDetail.getOrganizationId());
+      assertEquals(assessments.getDebtPositionTypeOrgCode(),assessmentsDetail.getDebtPositionTypeOrgCode());
+      assertEquals(installment.getIuv(),assessmentsDetail.getIuv());
+      assertEquals(installment.getIud(),assessmentsDetail.getIud());
+      assertEquals(installment.getIur(),assessmentsDetail.getIur());
+      assertEquals(installment.getDebtorFiscalCodeHash(),assessmentsDetail.getDebtorFiscalCodeHash());
+      assertEquals(receipt.getPaymentDateTime(),assessmentsDetail.getPaymentDateTime());
+      assertEquals(assessmentsRegistry.getOfficeCode(),assessmentsDetail.getOfficeCode());
+      assertEquals(assessmentsRegistry.getSectionCode(),assessmentsDetail.getSectionCode());
+      assertEquals(assessmentsRegistry.getAssessmentCode(),assessmentsDetail.getAssessmentCode());
+      assertEquals(installment.getAmountCents(),assessmentsDetail.getAmountCents());
+      assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
+    }
+  }
+
+  @Test
+  void givenNoAssessmentsRegistryWhenCreateAssessmentsDetailThenResourceNotFoundException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
+    ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
+    installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId, installmentsMap.keySet());
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
+            .thenReturn(installments);
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(),accessToken))
+            .thenReturn(receipt);
+    when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistryId))
+            .thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(assessmentsDetailRepositoryMock);
+  }
+
+  @Test
+  void givenAssessmentsRegistryWithWrongOrganizationIdWhenCreateAssessmentsDetailThenResourceNotFoundException(){
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
+    ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
+    installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setOrganizationId(organizationId+1);
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistry.getAssessmentRegistryId(), installmentsMap.keySet());
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
+            .thenReturn(installments);
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(),accessToken))
+            .thenReturn(receipt);
+    when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
+            .thenReturn(Optional.of(assessmentsRegistry));
+
+    assertThrows(ResourceNotFoundException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(assessmentsDetailRepositoryMock);
+  }
+
+  @Test
+  void givenInstallmentWithNoReceiptWhenCreateAssessmentsDetailThenInvalidRequestBodyException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    InstallmentNoPII installment = podamFactory.manufacturePojo(InstallmentNoPII.class);
+    installment.setReceiptId(null);
+    Set<String> iudSet = Collections.singleton(installment.getIud());
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId, iudSet);
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, iudSet, accessToken))
+            .thenReturn(Collections.singletonList(installment));
+
+    assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
+  }
+
+  @Test
+  void givenNoReceiptWhenCreateAssessmentsDetailThenResourceNotFoundException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    Long receiptId = 3L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
+    installments.forEach(i->i.setReceiptId(receiptId));
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId,installmentsMap.keySet());
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
+            .thenReturn(installments);
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receiptId, assessments.getDebtPositionTypeOrgCode(),accessToken))
+            .thenReturn(null);
+
+
+    assertThrows(ResourceNotFoundException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
+  }
+
+  @Test
+  void givenInvalidIudWhenCreateAssessmentsDetailThenInvalidRequestBodyException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    Long receiptId = 3L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
+    installments.forEach(i->i.setReceiptId(receiptId));
+    Set<String> iuds = Stream.concat(installmentsMap.keySet().stream(), Stream.of("iud")).collect(Collectors.toSet());
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId,
+            iuds);
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, iuds, accessToken))
+            .thenReturn(installments);
+
+    assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock);
+  }
+
+  @Test
+  void givenNoInstallmentsWhenCreateAssessmentsDetailThenInvalidRequestBodyException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    Set<String> iuds = Collections.singleton("iud");
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId, iuds);
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, iuds, accessToken))
+            .thenReturn(Collections.emptyList());
+
+    assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock);
+  }
+
+  @Test
+  void givenNoInstallmentsAndNoIudsWhenCreateAssessmentsDetailThenEmptyList(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId, Collections.emptySet());
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, Collections.emptySet(), accessToken))
+            .thenReturn(Collections.emptyList());
+
+    List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken);
+
+    assertTrue(result.isEmpty());
+    verifyNoInteractions(receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
+  }
+
+  @Test
+  void givenAssessmentsWithWrongOrganizationIdWhenCreateAssessmentsDetailThenResourceNotFoundException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId+1);
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId, Collections.emptySet());
+    Long assessmentId = assessments.getAssessmentId();
+
+    when(assessmentsRepositoryMock.findById(assessmentId))
+            .thenReturn(Optional.of(assessments));
+
+    assertThrows(ResourceNotFoundException.class,()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(installmentServiceMock,receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
+  }
+
+  @Test
+  void givenNoAssessmentsWhenCreateAssessmentsDetailThenResourceNotFoundException(){
+    Long organizationId = 1L;
+    Long assessmentsRegistryId = 2L;
+    Long assessmentsId = 3L;
+    String accessToken = "accessToken";
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId, Collections.emptySet());
+
+    when(assessmentsRepositoryMock.findById(assessmentsId))
+            .thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class,()->assessmentsDetailService.createAssessmentsDetail(organizationId,assessmentsId,
+            createAssessmentsDetail, accessToken));
+
+    verifyNoInteractions(installmentServiceMock,receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
   }
 }
