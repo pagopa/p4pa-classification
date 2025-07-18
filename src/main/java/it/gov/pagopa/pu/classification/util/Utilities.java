@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 
 public class Utilities {
 
@@ -19,7 +20,7 @@ public class Utilities {
   public static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
 
   public static final ThreadLocal<NumberFormat> DECIMAL_FORMAT = ThreadLocal.withInitial(() -> {
-    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
     return new DecimalFormat("###0.00", symbols);
   });
 
