@@ -116,9 +116,16 @@ public class UtilitiesTest {
 
   @Test
   void testAmountToString() {
-    BigDecimal amount = new BigDecimal(12);
+    BigDecimal amount = new BigDecimal(1000);
     String result = Utilities.amountToString(amount);
-    assertEquals("12.00", result);
+    assertEquals("1000.00", result);
+  }
+
+  @Test
+  void testAmountZeroToString() {
+    BigDecimal amount = new BigDecimal(0);
+    String result = Utilities.amountToString(amount);
+    assertEquals("0.00", result);
   }
 
 }

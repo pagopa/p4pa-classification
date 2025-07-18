@@ -66,7 +66,7 @@ class BalanceTemplateResolverServiceTest {
     String balance = "<bilancio><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>TOTALE</importo></accertamento></capitolo></bilancio>";
     CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
       .balance(balance)
-      .amountCents(10000L)
+      .amountCents(100_00L)
       .remittanceInformation("remittanceInformation")
       .build();
 
@@ -94,7 +94,7 @@ class BalanceTemplateResolverServiceTest {
       "</accertamento></capitolo></bilancio>";
     CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
       .balance(balance)
-      .amountCents(10000L)
+      .amountCents(100_00L)
       .remittanceInformation("remittanceInformation")
       .build();
 
@@ -121,7 +121,7 @@ class BalanceTemplateResolverServiceTest {
     String balance = "<bilancio><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>function estrai_importo(IMPORTO) { return '90.00'; }</importo></accertamento></capitolo></bilancio>";
     CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
       .balance(balance)
-      .amountCents(10000L)
+      .amountCents(100_00L)
       .remittanceInformation("remittanceInformation")
       .build();
 
@@ -148,7 +148,7 @@ class BalanceTemplateResolverServiceTest {
     String balance = "<bilancio><capitolo><accertamento><importo>NOT_VALID</importo></accertamento></capitolo></bilancio>";
     CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
       .balance(balance)
-      .amountCents(10000L)
+      .amountCents(100_00L)
       .remittanceInformation("remittanceInformation")
       .build();
 
