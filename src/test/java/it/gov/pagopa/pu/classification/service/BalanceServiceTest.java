@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,6 +77,17 @@ class BalanceServiceTest {
   }
 
   @Test
+  void givenNullObjectBalanceWhenValidateThenUnsuccessful(){
+    String balance = "balanceNotValid";
+
+    when(balanceDefaultMarshallingServiceMock.unmarshal(balance)).thenReturn(null);
+
+    Boolean result = balanceService.isBalanceValid(balance);
+
+    assertEquals(Boolean.FALSE, result);
+  }
+
+  @Test
   void givenNoAssessmentRegistryWhenGetBalanceThenNull(){
     Long orgId = 1L;
     String debtPositionTypeOrgCode = "CODE";
@@ -132,7 +143,7 @@ class BalanceServiceTest {
 
     String result = balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode);
 
-    assertEquals(result, balance);
+    assertEquals(balance, result);
   }
 
 }

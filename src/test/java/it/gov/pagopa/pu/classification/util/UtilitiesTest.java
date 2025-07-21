@@ -36,6 +36,19 @@ public class UtilitiesTest {
     assertNull(result);
   }
 
+  @Test
+  void testLongCentsToBigDecimalEuro() {
+    Long amountCents = 10000L;
+    BigDecimal result = Utilities.longCentsToBigDecimalEuro(amountCents);
+    assertEquals(new BigDecimal("100.00"), result);
+  }
+
+  @Test
+  void testLongCentsToBigDecimalEuroWithNull() {
+    BigDecimal result = Utilities.longCentsToBigDecimalEuro(null);
+    assertNull(result);
+  }
+
   @ParameterizedTest
   @MethodSource("valueSource")
   void testIsValidIntervalBetweenOffsetDateTime(OffsetDateTime dateFrom, OffsetDateTime dateTo, ChronoUnit chronoUnit, Long maxInterval, Boolean expectedResult){
@@ -100,4 +113,19 @@ public class UtilitiesTest {
   public static void clearTraceIdContext(){
     MDC.clear();
   }
+
+  @Test
+  void testAmountToString() {
+    BigDecimal amount = new BigDecimal(1000);
+    String result = Utilities.amountToString(amount);
+    assertEquals("1000.00", result);
+  }
+
+  @Test
+  void testAmountZeroToString() {
+    BigDecimal amount = new BigDecimal(0);
+    String result = Utilities.amountToString(amount);
+    assertEquals("0.00", result);
+  }
+
 }

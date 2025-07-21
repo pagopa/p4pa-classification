@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.classification.controller;
 
+import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
+import it.gov.pagopa.pu.classification.service.BalanceTemplateResolverService;
 import it.gov.pagopa.pu.classification.service.BalanceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,12 +20,14 @@ class BalanceControllerTest {
 
   @Mock
   private BalanceService balanceServiceMock;
+  @Mock
+  private BalanceTemplateResolverService balanceTemplateResolverServiceMock;
 
   private BalanceController balanceController;
 
   @BeforeEach
   void init() {
-    balanceController = new BalanceController(balanceServiceMock);
+    balanceController = new BalanceController(balanceServiceMock, balanceTemplateResolverServiceMock);
   }
 
   @Test
@@ -50,5 +54,22 @@ class BalanceControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(balance, response.getBody());
+  }
+
+  @Test
+  void givenCalculateAmountBalanceRequestWhenCalculateThenReturnBalance(){
+    CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
+      .balance("balance")
+      .amountCents(100L)
+      .remittanceInformation("remittanceInformation")
+      .build();
+    String balanceExpected = "balanceCalculated";
+
+    Mockito.when(balanceTemplateResolverServiceMock.calculateAmountBalance(request)).thenReturn(balanceExpected);
+
+    ResponseEntity<String> response = balanceController.calculateAmountBalance(request);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(balanceExpected, response.getBody());
   }
 }
