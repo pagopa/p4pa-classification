@@ -43,4 +43,5 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   @NotNull
   private boolean amountSubmitted = true;
   private Long receiptId;
+  private boolean flagManualGeneration;
 }
