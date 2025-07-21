@@ -50,6 +50,8 @@ See [log configured pattern](/src/main/resources/logback-spring.xml).
 * [p4pa-debt-positions](https://github.com/pagopa/p4pa-debt-positions):
   * To retrieve DebtPositionTypeOrg entities when creating `assessment_registry` and `assessments`;
   * To apply the right visibility during classifications' export;
+* [p4pa-organization](https://github.com/pagopa/p4pa-organization):
+  * To retrieve an Organization given its fiscal code.
 
 ## 🗃️ Entities handled
 * `assessments_registry`
@@ -102,6 +104,12 @@ See [application.yml](src/main/resources/application.yml) for each configurable 
 | CITIZENDB_USER             | Citizen PostgreSQL username                                                           |                                                                                                                              |
 | CITIZENDB_PASSWORD         | Citizen PostgreSQL password                                                           |                                                                                                                              |
 
+##### 📋 [Caching](https://pagopa.atlassian.net/wiki/spaces/SPAC/pages/1542128077/Caching)
+| ENV                        | DESCRIPTION                                 | DEFAULT |
+|----------------------------|---------------------------------------------|---------|
+| CACHE_ORGANIZATION_SIZE    | Organization data cache size                | 100     |
+| CACHE_ORGANIZATION_MINUTES | Organization data cache retention (minutes) | 60      |
+
 ##### 🔗 REST
 | ENV                                               | DESCRIPTION                               | DEFAULT |
 |---------------------------------------------------|-------------------------------------------|---------|
@@ -112,12 +120,16 @@ See [application.yml](src/main/resources/application.yml) for each configurable 
 | DEFAULT_REST_TIMEOUT_READ_MILLIS                  | Default read timeout (milliseconds)       | 120000  |
 
 ##### 🧩 Microservices
-| ENV                                      | DESCRIPTION                                         | DEFAULT |
-|------------------------------------------|-----------------------------------------------------|---------|
-| DEBT_POSITION_BASE_URL                   | DebtPositions microservice URL                      |         |
-| DEBT_POSITION_MAX_ATTEMPTS               | DebtPositions API max attempts                      | 3       |
-| DEBT_POSITION_WAIT_TIME_MILLIS           | DebtPositions retry waiting time (milliseconds)     | 500     |
-| DEBT_POSITION_PRINT_BODY_WHEN_ERROR      | To print body when an error occurs                  | true    |
+| ENV                                 | DESCRIPTION                                     | DEFAULT |
+|-------------------------------------|-------------------------------------------------|---------|
+| DEBT_POSITION_BASE_URL              | DebtPositions microservice URL                  |         |
+| DEBT_POSITION_MAX_ATTEMPTS          | DebtPositions API max attempts                  | 3       |
+| DEBT_POSITION_WAIT_TIME_MILLIS      | DebtPositions retry waiting time (milliseconds) | 500     |
+| DEBT_POSITION_PRINT_BODY_WHEN_ERROR | To print body when an error occurs              | true    |
+| ORGANIZATION_BASE_URL               | Organization microservice URL                   |         |
+| ORGANIZATION_MAX_ATTEMPTS           | Organization API max attempts                   | 3       |
+| ORGANIZATION_WAIT_TIME_MILLIS       | Organization retry waiting time (milliseconds)  | 500     |
+| ORGANIZATION_PRINT_BODY_WHEN_ERROR  | To print body when an error occurs              | true    |
 
 #### 💼 Business logic
 | ENV                                     | DESCRIPTION                                                             | DEFAULT                           |

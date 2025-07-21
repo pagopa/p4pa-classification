@@ -4,16 +4,19 @@ import io.micrometer.common.util.StringUtils;
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
+import it.gov.pagopa.pu.classification.connector.organization.service.OrganizationService;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.exception.custom.AssessmentConflictException;
+import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
 import it.gov.pagopa.pu.classification.mapper.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,6 +33,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
 
   private final InstallmentService installmentService;
   private final ReceiptService receiptService;
+  private final OrganizationService organizationService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final AssessmentsRepository assessmentsRepository;
   private final AssessmentsDetailService assessmentsDetailService;
@@ -42,9 +46,10 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    * @param debtPositionTypeOrgService the service for retrieving debt position type organization information
    * @param assessmentsRepository      the repository for managing assessments
    */
-  public AssessmentsServiceImpl(InstallmentService installmentService, ReceiptService receiptService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository, AssessmentsDetailService assessmentsDetailService, PagedAssessmentsViewMapper pagedAssessmentsViewMapper) {
+  public AssessmentsServiceImpl(InstallmentService installmentService, ReceiptService receiptService, OrganizationService organizationService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentsRepository assessmentsRepository, AssessmentsDetailService assessmentsDetailService, PagedAssessmentsViewMapper pagedAssessmentsViewMapper) {
     this.installmentService = installmentService;
     this.receiptService = receiptService;
+    this.organizationService = organizationService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.assessmentsRepository = assessmentsRepository;
     this.assessmentsDetailService = assessmentsDetailService;
@@ -59,7 +64,10 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   @Override
   public List<Assessments> createAssessment(Long receiptId, String accessToken) {
     ReceiptNoPII receipt = receiptService.getById(receiptId, accessToken);
-    List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(receiptId, accessToken);
+    Organization organization = organizationService.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)
+      .orElseThrow(() -> new NotFoundException("Cannot find organization having fiscal code " + receipt.getOrgFiscalCode()));
+
+    List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(organization.getOrganizationId(), receipt.getReceiptId(), accessToken);
 
     return installmentsList.stream()
       .filter(i -> {

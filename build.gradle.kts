@@ -46,6 +46,7 @@ val jaxbApiVersion = "4.0.2"
 val xmlSchemaVersion = "2.3.1"
 val podamVersion = "8.0.2.RELEASE"
 val rhinoScriptVersion="1.8.0"
+val caffeineVersion = "3.2.1"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
@@ -54,6 +55,8 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-data-rest")
+  implementation("org.springframework.boot:spring-boot-starter-cache")
+  implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa") {
     exclude(group = "org.glassfish.jaxb", module = "jaxb-core")
   }
@@ -166,6 +169,7 @@ tasks.register("dependenciesBuild") {
     "openApiGenerate",
     "openApiGenerateDEBTPOSITIONS",
     "openApiGeneratePROCESSEXECUTION",
+    "openApiGenerateORGANIZATION",
     "jaxbJavaGenAssessment"
   )
 }
@@ -268,6 +272,35 @@ tasks.register<GenerateTask>("openApiGeneratePROCESSEXECUTION") {
   typeMappings.set(mapOf(
     "LocalDateTime" to "java.time.LocalDateTime"
   ))
+  configOptions.set(mapOf(
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java8",
+    "serializableModel" to "true",
+    "useSpringBoot3" to "true",
+    "useJakartaEe" to "true",
+    "useOneOfInterfaces" to "true",
+    "useBeanValidation" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true",
+    "generateConstructorWithAllArgs" to "true",
+    "generatedConstructorWithRequiredArgs" to "true",
+    "enumPropertyNaming" to "original",
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+  ))
+  library.set("resttemplate")
+}
+
+tasks.register<GenerateTask>("openApiGenerateORGANIZATION") {
+  group = "AutomaticallyGeneratedCode"
+  description = "openapi"
+
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-organization/refs/heads/$targetEnv/openapi/generated.openapi.json")
+  outputDir.set("$projectDir/build/generated")
+  invokerPackage.set("it.gov.pagopa.pu.organization.generated")
+  apiPackage.set("it.gov.pagopa.pu.organization.client.generated")
+  modelPackage.set("it.gov.pagopa.pu.organization.dto.generated")
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",
     "openApiNullable" to "false",
