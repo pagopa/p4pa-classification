@@ -45,6 +45,7 @@ val jaxbVersion = "4.0.5"
 val jaxbApiVersion = "4.0.2"
 val xmlSchemaVersion = "2.3.1"
 val podamVersion = "8.0.2.RELEASE"
+val rhinoScriptVersion="1.8.0"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
@@ -64,6 +65,8 @@ dependencies {
   implementation("org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion")
   implementation("org.postgresql:postgresql:$postgresJdbcVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
+
+  implementation("org.mozilla:rhino-engine:$rhinoScriptVersion")
 
 //jaxb
   implementation("org.apache.ws.xmlschema:xmlschema-core:$xmlSchemaVersion")

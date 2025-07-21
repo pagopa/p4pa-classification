@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsd:schema xmlns:pay_i="http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/BilancioDefault/"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/BilancioDefault/"
+<xsd:schema xmlns:pay_i="http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/"
 	elementFormDefault="qualified" attributeFormDefault="unqualified"
 	version="1.0">
 	<xsd:annotation>
@@ -10,7 +10,7 @@
 
 
 	<!-- **** BEGIN: tipi semplici **** -->
-	
+
 	<xsd:simpleType name="stText12">
 		<xsd:restriction base="xsd:string">
 			<xsd:minLength value="1" />
@@ -50,7 +50,7 @@
       	<xsd:element type="pay_i:ctCapitoloDefault" name="capitolo" maxOccurs="unbounded" minOccurs="1" />
     	</xsd:sequence>
   	</xsd:complexType>
-	
+
 
 	<!-- **** END: tipi complessi **** -->
 
