@@ -62,7 +62,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    */
   @Transactional
   @Override
-  public List<Assessments> createAssessment(Long receiptId, String accessToken) {
+  public List<Assessments> createAssessment(Long receiptId, String operatorExternalUserId, String accessToken) {
     ReceiptNoPII receipt = receiptService.getById(receiptId, accessToken);
     Organization organization = organizationService.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)
       .orElseThrow(() -> new NotFoundException("Cannot find organization having fiscal code " + receipt.getOrgFiscalCode()));
@@ -78,7 +78,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         return true;
       })
       .map(i -> {
-        Assessments assessment = buildAssessmentFromReceipt(i, accessToken);
+        Assessments assessment = buildAssessmentFromReceipt(i, operatorExternalUserId, accessToken);
         assessmentsDetailService.createAssessmentDetail(assessment, receipt, i);
         return assessment;
       })
@@ -93,7 +93,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    * @param accessToken the access token for authentication
    * @return the built assessment
    */
-  Assessments buildAssessmentFromReceipt(InstallmentNoPII installment, String accessToken) {
+  Assessments buildAssessmentFromReceipt(InstallmentNoPII installment, String operatorExternalUserId, String accessToken) {
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installment.getInstallmentId(), accessToken);
     String debtPositionTypeOrgCode = debtPositionTypeOrg.getCode();
 
@@ -106,6 +106,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
         .status(AssessmentStatus.CLOSED)
         .assessmentName(installment.getSourceFlowName())
+              .operatorExternalUserId(operatorExternalUserId)
         .build();
 
       assessment = assessmentsRepository.save(newAssessment);
