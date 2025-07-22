@@ -106,7 +106,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
         .status(AssessmentStatus.CLOSED)
         .assessmentName(installment.getSourceFlowName())
-              .operatorExternalUserId(operatorExternalUserId)
+        .operatorExternalUserId(operatorExternalUserId)
         .build();
 
       assessment = assessmentsRepository.save(newAssessment);
