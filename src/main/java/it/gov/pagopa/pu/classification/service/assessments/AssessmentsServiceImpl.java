@@ -132,7 +132,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   }
 
   @Override
-  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode) {
+  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId) {
 
     if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName) != null) {
      throw new AssessmentConflictException("Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
@@ -146,6 +146,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
       .status(AssessmentStatus.ACTIVE)
       .printed(false)
       .organizationId(organizationId)
+      .operatorExternalUserId(operatorExternalUserId)
       .build());
   }
 

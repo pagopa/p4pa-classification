@@ -43,5 +43,5 @@ public interface AssessmentsService {
    * @param assessmentName the name of assessment
    * @param debtPositionTypeOrgCode debtPositionTypeOrgCode
    */
-  Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode);
+  Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId);
 }

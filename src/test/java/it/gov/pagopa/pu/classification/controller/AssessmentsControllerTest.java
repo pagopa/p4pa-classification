@@ -89,11 +89,12 @@ class AssessmentsControllerTest {
     Long organizationId = 3L;
     String assessmentName = "ASSESSMENT_NAME";
     String debtPositionTypeOrgCode = "CODE";
+    String operatorExternalUserId = "CODE";
     Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
-    Mockito.when(serviceMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode)).thenReturn(assessments);
+    Mockito.when(serviceMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId)).thenReturn(assessments);
 
     //when
-    ResponseEntity<Assessments> result = controller.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
+    ResponseEntity<Assessments> result = controller.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId);
 
     //then
     assertNotNull(result);

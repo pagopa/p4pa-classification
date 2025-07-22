@@ -299,18 +299,21 @@ class AssessmentsServiceImplTest {
     Long organizationId = 3L;
     String assessmentName = "ASSESSMENT_NAME";
     String debtPositionTypeOrgCode = "CODE";
+    String operatorExternalUserId = "operatorExternalUserId";
     Assessments assessments = Assessments.builder()
         .organizationId(organizationId)
           .assessmentName(assessmentName)
             .status(AssessmentStatus.ACTIVE)
-              .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
-                .flagManualGeneration(true)
-                  .printed(false).build();
+            .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+            .flagManualGeneration(true)
+            .printed(false)
+            .operatorExternalUserId(operatorExternalUserId)
+            .build();
     Mockito.when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(null);
     Mockito.when(assessmentsRepositoryMock.save(assessments)).thenReturn(assessments);
     //when
 
-    Assessments result = service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
+    Assessments result = service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId);
     //then
     assertNotNull(result);
     assertEquals(assessments, result);
@@ -322,6 +325,7 @@ class AssessmentsServiceImplTest {
     Long organizationId = 3L;
     String assessmentName = "ASSESSMENT_NAME";
     String debtPositionTypeOrgCode = "CODE";
+    String operatorExternalUserId = "operatorExternalUserId";
     Assessments assessments = Assessments.builder()
       .assessmentId(1L)
       .organizationId(organizationId)
@@ -329,11 +333,12 @@ class AssessmentsServiceImplTest {
       .status(AssessmentStatus.ACTIVE)
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .flagManualGeneration(true)
-      .printed(false).build();
+      .printed(false)
+      .operatorExternalUserId(operatorExternalUserId).build();
     Mockito.when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(assessments);
     //when
 
-    AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode));
+    AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId));
     Assertions.assertEquals("Assessment with the same name ASSESSMENT_NAME and debtPositionTypeOrgCode CODE already exists for the current organizationId 3", ex.getMessage());
   }
 }

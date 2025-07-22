@@ -479,6 +479,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: operatorExternalUserId
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Assessment
@@ -492,6 +497,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/assessments/by-assessmentId:
+    post:
+      tags:
+        - assessments-entity-extended-controller
+      operationId: updateStatus
+      parameters:
+        - name: assessmentId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: 'AssessmentsStatusEnum'
+      responses:
+        '200':
+          description: OK
         '500':
           description: Server Error
           content:
