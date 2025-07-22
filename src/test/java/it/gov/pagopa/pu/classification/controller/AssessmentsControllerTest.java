@@ -49,16 +49,17 @@ class AssessmentsControllerTest {
   void whenCreateAssessmentByReceiptIdWithValidReceiptIdThenReturnAssessments() {
     Long receiptId = 1L;
     String accessToken = "accessToken";
-    Mockito.when(serviceMock.createAssessment(receiptId, accessToken))
+    String operatorExternalUserId = "operatorExternalUserId";
+    SecurityUtilsTest.configureSecurityContext(accessToken, operatorExternalUserId);
+    Mockito.when(serviceMock.createAssessment(receiptId, operatorExternalUserId, accessToken))
       .thenReturn(List.of(new Assessments()));
-    SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
 
     ResponseEntity<List<Assessments>> response = controller.createAssessmentByReceiptId(receiptId);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(1, response.getBody().size());
-    Mockito.verify(serviceMock).createAssessment(receiptId, accessToken);
+    Mockito.verify(serviceMock).createAssessment(receiptId, operatorExternalUserId, accessToken);
   }
 
 
@@ -89,8 +90,10 @@ class AssessmentsControllerTest {
     Long organizationId = 3L;
     String assessmentName = "ASSESSMENT_NAME";
     String debtPositionTypeOrgCode = "CODE";
+    String operatorExternalUserId = "operatorExternalUserId";
+    SecurityUtilsTest.configureSecurityContext(operatorExternalUserId);
     Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
-    Mockito.when(serviceMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode)).thenReturn(assessments);
+    Mockito.when(serviceMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId)).thenReturn(assessments);
 
     //when
     ResponseEntity<Assessments> result = controller.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
