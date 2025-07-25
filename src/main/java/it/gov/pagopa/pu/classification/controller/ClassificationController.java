@@ -1,12 +1,14 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.ClassificationsApi;
-import it.gov.pagopa.pu.classification.dto.*;
+import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.ClassificationPaidInstallmentsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
-import it.gov.pagopa.pu.classification.util.DateConversionUtils;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.LocalDateIntervalFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -98,19 +100,17 @@ public class ClassificationController implements ClassificationsApi {
 
   @Override
   public ResponseEntity<PagedClassificationPaidInstallmentsView> getPaidInstallments(
-    Long organizationId, String debtPositionTypeOrgCode, String iuv, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, Set<String> iuds, Pageable pageable) {
+    Long organizationId, String debtPositionTypeOrgCode, String iuv, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, OffsetDateTime receiptCreationDateFrom, OffsetDateTime receiptCreationDateTo, Set<String> iuds, Pageable pageable) {
 
     log.info("User requested getPaidInstallments having organizationId {}", organizationId);
 
     OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
-    LocalDateTimeIntervalFilter updateDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(
-      DateConversionUtils.offsetDateTime2LocalDateTime(updateDateFrom),
-      DateConversionUtils.offsetDateTime2LocalDateTime(updateDateTo));
+    OffsetDateTimeIntervalFilter receiptCreationDateIntervalFilter = new OffsetDateTimeIntervalFilter(receiptCreationDateFrom, receiptCreationDateTo);
 
     ClassificationPaidInstallmentsFilterDTO filter = ClassificationPaidInstallmentsFilterDTO.builder()
       .iuv(iuv)
       .paymentDateTimeIntervalFilter(paymentDateTimeIntervalFilter)
-      .updateDateTimeIntervalFilter(updateDateTimeIntervalFilter)
+      .receiptCreationDateIntervalFilter(receiptCreationDateIntervalFilter)
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .iuds(iuds)
       .build();
