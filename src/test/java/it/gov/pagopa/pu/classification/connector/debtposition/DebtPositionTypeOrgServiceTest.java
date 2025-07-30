@@ -54,9 +54,9 @@ class DebtPositionTypeOrgServiceTest {
     String operatorExternalUserId = "OPERATOR_EXTERNAL_USER_ID";
     List<DebtPositionTypeOrg> expected = List.of();
 
-    when(clientMock.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken)).thenReturn(expected);
+    when(clientMock.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId,true,  accessToken)).thenReturn(expected);
     // When
-    List<DebtPositionTypeOrg> result = service.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
+    List<DebtPositionTypeOrg> result = service.findDebtPositionTypeOrgs(organizationId, operatorExternalUserId, true, accessToken);
     // Then
     assertSame(expected, result);
   }
