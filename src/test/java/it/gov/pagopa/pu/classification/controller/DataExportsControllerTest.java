@@ -110,7 +110,7 @@ class DataExportsControllerTest {
     Pageable pageable = PageRequest.of(0, 10);
 
     LocalDate invalidFrom = LocalDate.now();
-    LocalDate invalidTo = invalidFrom.plusMonths(2);
+    LocalDate invalidTo = invalidFrom.plusMonths(3);
     Executable executable = () ->
       controller.exportClassifications(
         1L,
