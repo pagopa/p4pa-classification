@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 public class PaymentsReportingView implements Serializable {
 
   @NotNull
+  private Long ingestionFlowFileId;
+  @NotNull
   private Long organizationId;
   @Id
   @NotNull

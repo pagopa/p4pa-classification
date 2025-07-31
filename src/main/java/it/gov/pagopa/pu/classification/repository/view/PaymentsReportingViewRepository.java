@@ -16,6 +16,7 @@ public interface PaymentsReportingViewRepository extends Repository<PaymentsRepo
 
   @Query("""
     SELECT new PaymentsReportingView(
+           p.ingestionFlowFileId,
            p.organizationId,
            p.iuf,
            p.regulationUniqueIdentifier,
@@ -30,7 +31,8 @@ public interface PaymentsReportingViewRepository extends Repository<PaymentsRepo
     AND (:regulationUniqueIdentifier IS NULL OR p.regulationUniqueIdentifier = :regulationUniqueIdentifier)
     AND (cast(:regulationDateFrom AS DATE) IS NULL OR p.regulationDate >= :regulationDateFrom)
     AND (cast(:regulationDateTo AS DATE) IS NULL OR p.regulationDate <= :regulationDateTo)
-    GROUP BY p.organizationId,
+    GROUP BY p.ingestionFlowFileId,
+             p.organizationId,
              p.iuf,
              p.regulationUniqueIdentifier,
              p.regulationDate,
