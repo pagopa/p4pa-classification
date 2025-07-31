@@ -14,12 +14,28 @@ import java.time.LocalDate;
 @RepositoryRestResource(path = "payments-reporting-view")
 public interface PaymentsReportingViewRepository extends Repository<PaymentsReportingView, String> {
 
-  @Query("SELECT distinct p FROM PaymentsReportingView p "
-    + "WHERE p.organizationId = :organizationId "
-    + "AND (:iuf IS NULL OR p.iuf = :iuf) "
-    + "AND (:regulationUniqueIdentifier IS NULL OR p.regulationUniqueIdentifier = :regulationUniqueIdentifier) "
-    + "AND (cast(:regulationDateFrom AS DATE) IS NULL OR p.regulationDate >= :regulationDateFrom) "
-    + "AND (cast(:regulationDateTo AS DATE) IS NULL OR p.regulationDate <= :regulationDateTo)")
+  @Query("""
+    SELECT new PaymentsReportingView(
+           p.organizationId,
+           p.iuf,
+           p.regulationUniqueIdentifier,
+           p.regulationDate,
+           p.flowDateTime,
+           SUM(p.totalPayments) as totalPayments,
+           SUM(p.totalAmountCents ) as totalAmountCents
+           )
+    FROM  PaymentsReportingView p
+    WHERE p.organizationId = :organizationId
+    AND (:iuf IS NULL OR p.iuf = :iuf)
+    AND (:regulationUniqueIdentifier IS NULL OR p.regulationUniqueIdentifier = :regulationUniqueIdentifier)
+    AND (cast(:regulationDateFrom AS DATE) IS NULL OR p.regulationDate >= :regulationDateFrom)
+    AND (cast(:regulationDateTo AS DATE) IS NULL OR p.regulationDate <= :regulationDateTo)
+    GROUP BY p.organizationId,
+             p.iuf,
+             p.regulationUniqueIdentifier,
+             p.regulationDate,
+             p.flowDateTime
+    """)
   Page<PaymentsReportingView> findDistinctByIufAndRegulationUniqueIdentifier(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Param("iuf") String iuf,
