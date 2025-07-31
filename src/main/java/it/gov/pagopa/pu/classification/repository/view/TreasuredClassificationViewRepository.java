@@ -101,6 +101,7 @@ public interface TreasuredClassificationViewRepository extends Repository<Treasu
     FROM Classification c
     LEFT JOIN Treasury t ON c.treasuryId = t.treasuryId
     WHERE c.organizationId = :organizationId
+    AND (:#{#filter.label} IS NULL OR c.label = :#{#filter.label})
     AND (:#{#filter.iud} IS NULL OR c.iud = :#{#filter.iud})
     AND (:#{#filter.iuv} IS NULL OR c.iuv = :#{#filter.iuv})
     AND (:#{#filter.iuf} IS NULL OR c.iuf = :#{#filter.iuf})

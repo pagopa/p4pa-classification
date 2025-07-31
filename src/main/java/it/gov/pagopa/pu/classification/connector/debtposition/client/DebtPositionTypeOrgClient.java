@@ -28,9 +28,9 @@ public class DebtPositionTypeOrgClient {
     }
   }
 
-  public List<DebtPositionTypeOrg> findDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
+  public List<DebtPositionTypeOrg> findDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, Boolean flagActive, String accessToken) {
       return Objects.requireNonNull(debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
-          .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId)
+          .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId, flagActive)
           .getEmbedded())
         .getDebtPositionTypeOrgs();
   }
