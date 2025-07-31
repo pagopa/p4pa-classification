@@ -39,13 +39,14 @@ class InstallmentServiceTest {
 	void whenGetByReceiptIdThenInvokeClient() {
 		// Given
 		String accessToken = "ACCESSTOKEN";
+    Long organizationId = 0L;
 		Long receiptId = 1L;
     List<InstallmentNoPII> expected = List.of();
 
-		when(clientMock.getByReceiptId(receiptId, accessToken)).thenReturn(expected);
+		when(clientMock.getByReceiptId(organizationId, receiptId, accessToken)).thenReturn(expected);
 
 		// When
-		List<InstallmentNoPII> result = service.getByReceiptId(receiptId, accessToken);
+		List<InstallmentNoPII> result = service.getByReceiptId(organizationId, receiptId, accessToken);
 
 		// Then
 		assertSame(expected, result);

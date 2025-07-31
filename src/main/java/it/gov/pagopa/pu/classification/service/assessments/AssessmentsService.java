@@ -20,7 +20,7 @@ public interface AssessmentsService {
    * @param accessToken the access token for authentication
    * @return a list of created assessments
    */
-  List<Assessments> createAssessment(Long receiptId, String accessToken);
+  List<Assessments> createAssessment(Long receiptId, String operatorExternalUserId, String accessToken);
 
   /**
    * Retrieves a paginated view of assessments based on the provided filters.
@@ -43,5 +43,5 @@ public interface AssessmentsService {
    * @param assessmentName the name of assessment
    * @param debtPositionTypeOrgCode debtPositionTypeOrgCode
    */
-  Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode);
+  Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId);
 }

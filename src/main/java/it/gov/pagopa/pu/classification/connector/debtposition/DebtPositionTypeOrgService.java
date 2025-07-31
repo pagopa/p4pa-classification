@@ -23,10 +23,11 @@ public interface DebtPositionTypeOrgService {
    *
    * @param organizationId       the ID of the organization
    * @param operatorExternalUserId the external user ID of the operator
+   * @param flagActive boolean value to filter by flagActive
    * @param accessToken          the access token for authentication
    * @return a list of DebtPositionTypeOrg associated with the given organization ID
    */
-  List<DebtPositionTypeOrg> findDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken);
+  List<DebtPositionTypeOrg> findDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, Boolean flagActive, String accessToken);
 
   /**
    * Retrieves a DebtPositionTypeOrg by the given organizationId and debtPositionTypeOrgId.

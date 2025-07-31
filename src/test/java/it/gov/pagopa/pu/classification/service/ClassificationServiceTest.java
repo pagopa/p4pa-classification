@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
@@ -183,21 +182,21 @@ class ClassificationServiceTest {
     String iuv = "IUV123";
     OffsetDateTime paymentFrom = OffsetDateTime.now().minusDays(1);
     OffsetDateTime paymentTo = OffsetDateTime.now();
-    LocalDateTime updateFrom = LocalDateTime.now().minusDays(2);
-    LocalDateTime updateTo = LocalDateTime.now();
+    OffsetDateTime receiptCreationDateTimeFrom = OffsetDateTime.now().minusDays(2);
+    OffsetDateTime receiptCreationDateTimeTo = OffsetDateTime.now();
     Set<String> iuds = Set.of("IUD1", "IUD2");
     Pageable pageable = PageRequest.of(0, 10);
 
     OffsetDateTimeIntervalFilter paymentInterval =
       new OffsetDateTimeIntervalFilter(paymentFrom, paymentTo);
-    LocalDateTimeIntervalFilter updateInterval =
-      new LocalDateTimeIntervalFilter(updateFrom, updateTo);
+    OffsetDateTimeIntervalFilter receiptCreationDateTimeInterval =
+            new OffsetDateTimeIntervalFilter(receiptCreationDateTimeFrom, receiptCreationDateTimeTo);
 
     ClassificationPaidInstallmentsFilterDTO filter = ClassificationPaidInstallmentsFilterDTO.builder()
       .iuv(iuv)
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .paymentDateTimeIntervalFilter(paymentInterval)
-      .updateDateTimeIntervalFilter(updateInterval)
+      .receiptCreationDateIntervalFilter(receiptCreationDateTimeInterval)
       .iuds(iuds)
       .build();
 

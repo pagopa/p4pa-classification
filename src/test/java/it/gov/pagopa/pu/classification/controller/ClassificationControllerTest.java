@@ -1,10 +1,12 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import it.gov.pagopa.pu.classification.dto.*;
+import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.ClassificationPaidInstallmentsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
-import it.gov.pagopa.pu.classification.util.DateConversionUtils;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -127,8 +129,8 @@ class ClassificationControllerTest {
 
     OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
-    OffsetDateTime updateDateFrom = OffsetDateTime.now().minusDays(2);
-    OffsetDateTime updateDateTo = OffsetDateTime.now();
+    OffsetDateTime receiptCreationDateTimeFrom = OffsetDateTime.now().minusDays(2);
+    OffsetDateTime receiptCreationDateTimeTo = OffsetDateTime.now();
 
     Set<String> iuds = Set.of("IUD1", "IUD2");
     Pageable pageable = PageRequest.of(0, 5);
@@ -139,17 +141,14 @@ class ClassificationControllerTest {
     OffsetDateTimeIntervalFilter paymentInterval =
       new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
-    LocalDateTimeIntervalFilter updateInterval =
-      new LocalDateTimeIntervalFilter(
-        DateConversionUtils.offsetDateTime2LocalDateTime(updateDateFrom),
-        DateConversionUtils.offsetDateTime2LocalDateTime(updateDateTo)
-      );
+    OffsetDateTimeIntervalFilter receiptCreationDateTimeInterval =
+      new OffsetDateTimeIntervalFilter(receiptCreationDateTimeFrom, receiptCreationDateTimeTo);
 
     ClassificationPaidInstallmentsFilterDTO filter = ClassificationPaidInstallmentsFilterDTO.builder()
       .iuv(iuv)
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .paymentDateTimeIntervalFilter(paymentInterval)
-      .updateDateTimeIntervalFilter(updateInterval)
+      .receiptCreationDateIntervalFilter(receiptCreationDateTimeInterval)
       .iuds(iuds)
       .build();
 
@@ -165,8 +164,8 @@ class ClassificationControllerTest {
       iuv,
       paymentDateTimeFrom,
       paymentDateTimeTo,
-      updateDateFrom,
-      updateDateTo,
+      receiptCreationDateTimeFrom,
+      receiptCreationDateTimeTo,
       iuds,
       pageable
     );

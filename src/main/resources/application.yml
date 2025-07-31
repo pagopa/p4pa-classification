@@ -117,6 +117,11 @@ rest:
     max-attempts: "\${PROCESS_EXECUTIONS_MAX_ATTEMPTS:3}" # It's counting also the first attempt
     wait-time-millis: "\${PROCESS_EXECUTIONS_WAIT_TIME_MILLIS:500}"
     print-body-when-error: "\${PROCESS_EXECUTIONS_PRINT_BODY_WHEN_ERROR:true}"
+  organization:
+    base-url: "\${ORGANIZATION_BASE_URL:http://localhost:8081}"
+    max-attempts: "\${ORGANIZATION_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${ORGANIZATION_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${ORGANIZATION_PRINT_BODY_WHEN_ERROR:true}"
 
 data-cipher:
   encrypt-psw: "\${DATA_CIPHER_ENCRYPT_PASSWORD:PWD}"
@@ -129,3 +134,9 @@ data-export:
   classification-view:
     max-months-interval: "\${CLASSIFICATION_VIEW_MAX_MONTHS_INTERVAL: 6}"
     max-total-elements: "\${CLASSIFICATION_VIEW_MAX_TOTAL_ELEMENTS:\${data-export.default.max-total-elements}}"
+
+
+cache:
+  organization:
+    size: "\${CACHE_ORGANIZATION_SIZE:100}"
+    expire-in: "\${CACHE_ORGANIZATION_MINUTES:60}"

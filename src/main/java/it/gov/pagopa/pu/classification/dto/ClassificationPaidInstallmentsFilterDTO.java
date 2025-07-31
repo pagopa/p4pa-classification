@@ -14,7 +14,7 @@ import java.util.Set;
 public class ClassificationPaidInstallmentsFilterDTO {
   private String iuv;
   private OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter;
-  private LocalDateTimeIntervalFilter updateDateTimeIntervalFilter;
+  private OffsetDateTimeIntervalFilter receiptCreationDateIntervalFilter;
   private String debtPositionTypeOrgCode;
   private Set<String> iuds;
 }

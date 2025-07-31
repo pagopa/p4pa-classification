@@ -13,10 +13,11 @@ public interface InstallmentService {
   /**
    * Finds a list of InstallmentNoPII by the given receipt ID.
    *
+   * @param organizationId the unique identifier of the organization.
    * @param receiptId the unique identifier of the receipt.
    * @return a list of InstallmentNoPII associated with the given receipt ID.
    */
-  List<InstallmentNoPII> getByReceiptId(Long receiptId, String accessToken);
+  List<InstallmentNoPII> getByReceiptId(Long organizationId, Long receiptId, String accessToken);
 
   List<InstallmentNoPII> findByOrganizationIdAndIuds(Long organizationId, Set<String> iuds, String accessToken);
 }

@@ -125,12 +125,12 @@ paths:
           schema:
             type: string
             format: date-time
-        - name: updateDateFrom
+        - name: receiptCreationDateFrom
           in: query
           schema:
             type: string
             format: date-time
-        - name: updateDateTo
+        - name: receiptCreationDateTo
           in: query
           schema:
             type: string
@@ -492,6 +492,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/assessments/by-assessmentId:
+    post:
+      tags:
+        - assessments-entity-extended-controller
+      operationId: updateStatus
+      parameters:
+        - name: assessmentId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: 'AssessmentsStatusEnum'
+      responses:
+        '200':
+          description: OK
         '500':
           description: Server Error
           content:
@@ -918,6 +950,46 @@ paths:
               schema:
                 type: boolean
                 description: "Indicates whether the balance field is valid or not"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /calculate-amount-balance:
+    post:
+      tags:
+        - balance
+      operationId: calculateAmountBalance
+      description: "The API calculates amount of installment balance based on template"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                balance:
+                  type: string
+                amountCents:
+                  type: integer
+                  format: int64
+                remittanceInformation:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "Balance with amount calculated"
         "400":
           description: Invalid request
           content:

@@ -4,15 +4,16 @@ import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtBilancioDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.bilanciodefault.CtCapitoloDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -34,22 +35,24 @@ public class BalanceService {
 
   public Boolean isBalanceValid(String balance) {
     try {
-      validate(balance);
-      log.info("The balance value is formally valid");
-      return Boolean.TRUE;
+      if (!Objects.isNull(unmarshalBalance(balance))) {
+        log.info("The balance value is formally valid");
+        return Boolean.TRUE;
+      }
+      return Boolean.FALSE;
     } catch (InvalidValueException invalidValueException) {
       log.info("The balance value is not valid: {}", invalidValueException.getMessage());
       return Boolean.FALSE;
     }
   }
 
-  private void validate(String balance) {
+  public Object unmarshalBalance(String balance) {
     try {
       log.info("Validating balance value with default structure");
-      balanceDefaultMarshallingService.unmarshal(balance);
+      return balanceDefaultMarshallingService.unmarshal(balance);
     } catch (InvalidValueException invalidValueException) {
       log.info("Validating balance value with actual structure");
-      balanceUnmashallerService.unmarshal(balance);
+      return balanceUnmashallerService.unmarshal(balance);
     }
   }
 
@@ -96,5 +99,6 @@ public class BalanceService {
     bilancio.getCapitolo().add(capitolo);
     return bilancio;
   }
+
 
 }

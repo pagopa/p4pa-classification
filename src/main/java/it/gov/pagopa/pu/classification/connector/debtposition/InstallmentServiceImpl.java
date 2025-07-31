@@ -18,8 +18,8 @@ public class InstallmentServiceImpl implements InstallmentService {
   }
 
   @Override
-  public List<InstallmentNoPII> getByReceiptId(Long receiptId, String accessToken) {
-    return installmentNoPIIClient.getByReceiptId(receiptId, accessToken);
+  public List<InstallmentNoPII> getByReceiptId(Long organizationId, Long receiptId, String accessToken) {
+    return installmentNoPIIClient.getByReceiptId(organizationId, receiptId, accessToken);
   }
 
   @Override

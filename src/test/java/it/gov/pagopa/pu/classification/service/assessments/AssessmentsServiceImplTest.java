@@ -3,10 +3,12 @@ package it.gov.pagopa.pu.classification.service.assessments;
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
+import it.gov.pagopa.pu.classification.connector.organization.service.OrganizationService;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.exception.custom.AssessmentConflictException;
+import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
 import it.gov.pagopa.pu.classification.mapper.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
@@ -14,6 +16,7 @@ import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIFaker;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +35,7 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +48,8 @@ class AssessmentsServiceImplTest {
   private InstallmentService installmentServiceMock;
   @Mock
   private ReceiptService receiptServiceMock;
+  @Mock
+  private OrganizationService organizationServiceMock;
   @Mock
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
   @Mock
@@ -61,6 +67,7 @@ class AssessmentsServiceImplTest {
     service = new AssessmentsServiceImpl(
       installmentServiceMock,
       receiptServiceMock,
+      organizationServiceMock,
       debtPositionTypeOrgServiceMock,
       assessmentsRepositoryMock,
       assessmentsDetailServiceMock,
@@ -73,6 +80,7 @@ class AssessmentsServiceImplTest {
     Mockito.verifyNoMoreInteractions(
       installmentServiceMock,
       receiptServiceMock,
+      organizationServiceMock,
       debtPositionTypeOrgServiceMock,
       assessmentsRepositoryMock,
       assessmentsDetailServiceMock,
@@ -80,25 +88,47 @@ class AssessmentsServiceImplTest {
   }
 
   @Test
-  void createAssessment_withValidReceiptId_returnsAssessments() {
+  void createAssessment_withNotExistentOrg_throwNotFoundException() {
     Long receiptId = 1L;
     String accessToken = "accessToken";
+    String operatorExternalUserId = "operatorExternalUserId";
+    ReceiptNoPII receipt = new ReceiptNoPII();
+    receipt.setOrgFiscalCode("ORGFC");
+
+    when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
+    when(organizationServiceMock.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken))
+      .thenReturn(Optional.empty());
+
+    Assertions.assertThrows(NotFoundException.class, () -> service.createAssessment(receiptId, operatorExternalUserId, accessToken));
+  }
+
+  @Test
+  void createAssessment_withValidReceiptId_returnsAssessments() {
+    Long receiptId = 1L;
+    Long organizationId = 3L;
+    String accessToken = "accessToken";
+    String operatorExternalUserId = "operatorExternalUserId";
     List<InstallmentNoPII> installments = List.of(InstallmentNoPIIFaker.buildInstallmentNoPII());
     ReceiptNoPII receipt = new ReceiptNoPII();
+    receipt.setReceiptId(receiptId);
+    receipt.setOrgFiscalCode("ORGFC");
+    Organization organization = new Organization();
+    organization.setOrganizationId(organizationId);
     Assessments assessment = new Assessments();
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
     debtPositionTypeOrg.setCode("testCode");
-    debtPositionTypeOrg.setOrganizationId(3L);
+    debtPositionTypeOrg.setOrganizationId(organizationId);
 
     when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
-    when(installmentServiceMock.getByReceiptId(receiptId, accessToken)).thenReturn(installments);
+    when(organizationServiceMock.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)).thenReturn(Optional.of(organization));
+    when(installmentServiceMock.getByReceiptId(organizationId, receiptId, accessToken)).thenReturn(installments);
     when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), accessToken)).thenReturn(debtPositionTypeOrg);
     when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
             debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getCode(), "sourceFlowName"))
             .thenReturn(null);
     when(assessmentsRepositoryMock.save(Mockito.any(Assessments.class))).thenReturn(assessment);
 
-    List<Assessments> result = service.createAssessment(receiptId, accessToken);
+    List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
 
     assertEquals(1, result.size());
     assertEquals(assessment, result.getFirst());
@@ -109,22 +139,29 @@ class AssessmentsServiceImplTest {
   @Test
   void createAssessment_withValidReceiptId_withExistingAssessment_returnsAssessments() {
     Long receiptId = 1L;
+    Long organizationId = 3L;
     String accessToken = "accessToken";
+    String operatorExternalUserId = "operatorExternalUserId";
     List<InstallmentNoPII> installments = List.of(InstallmentNoPIIFaker.buildInstallmentNoPII());
     ReceiptNoPII receipt = new ReceiptNoPII();
+    receipt.setReceiptId(receiptId);
+    receipt.setOrgFiscalCode("ORGFC");
+    Organization organization = new Organization();
+    organization.setOrganizationId(organizationId);
     Assessments assessment = podamFactory.manufacturePojo(Assessments.class);
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
     debtPositionTypeOrg.setCode("testCode");
     debtPositionTypeOrg.setOrganizationId(3L);
 
     when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
-    when(installmentServiceMock.getByReceiptId(receiptId, accessToken)).thenReturn(installments);
+    when(organizationServiceMock.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)).thenReturn(Optional.of(organization));
+    when(installmentServiceMock.getByReceiptId(organizationId, receiptId, accessToken)).thenReturn(installments);
     when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), accessToken)).thenReturn(debtPositionTypeOrg);
     when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
       debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getCode(), "sourceFlowName"))
       .thenReturn(assessment);
 
-    List<Assessments> result = service.createAssessment(receiptId, accessToken);
+    List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
 
     assertEquals(1, result.size());
     assertEquals(assessment, result.getFirst());
@@ -137,15 +174,22 @@ class AssessmentsServiceImplTest {
   @Test
   void createAssessment_withNullBalance_skipsAssessmentCreation() {
     Long receiptId = 1L;
+    Long organizationId = 3L;
     String accessToken = "accessToken";
+    String operatorExternalUserId = "operatorExternalUserId";
     ReceiptNoPII receipt = new ReceiptNoPII();
+    receipt.setReceiptId(receiptId);
+    receipt.setOrgFiscalCode("ORGFC");
+    Organization organization = new Organization();
+    organization.setOrganizationId(organizationId);
     InstallmentNoPII installment = InstallmentNoPIIFaker.buildInstallmentNoPII();
     installment.setBalance(null);
 
     when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
-    when(installmentServiceMock.getByReceiptId(receiptId, accessToken)).thenReturn(List.of(installment));
+    when(organizationServiceMock.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)).thenReturn(Optional.of(organization));
+    when(installmentServiceMock.getByReceiptId(organizationId, receiptId, accessToken)).thenReturn(List.of(installment));
 
-    List<Assessments> result = service.createAssessment(receiptId, accessToken);
+    List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
 
     assertEquals(0, result.size());
   }
@@ -259,18 +303,21 @@ class AssessmentsServiceImplTest {
     Long organizationId = 3L;
     String assessmentName = "ASSESSMENT_NAME";
     String debtPositionTypeOrgCode = "CODE";
+    String operatorExternalUserId = "operatorExternalUserId";
     Assessments assessments = Assessments.builder()
         .organizationId(organizationId)
           .assessmentName(assessmentName)
             .status(AssessmentStatus.ACTIVE)
-              .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
-                .flagManualGeneration(true)
-                  .printed(false).build();
+            .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+            .flagManualGeneration(true)
+            .printed(false)
+            .operatorExternalUserId(operatorExternalUserId)
+            .build();
     Mockito.when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(null);
     Mockito.when(assessmentsRepositoryMock.save(assessments)).thenReturn(assessments);
     //when
 
-    Assessments result = service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
+    Assessments result = service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId);
     //then
     assertNotNull(result);
     assertEquals(assessments, result);
@@ -282,6 +329,7 @@ class AssessmentsServiceImplTest {
     Long organizationId = 3L;
     String assessmentName = "ASSESSMENT_NAME";
     String debtPositionTypeOrgCode = "CODE";
+    String operatorExternalUserId = "operatorExternalUserId";
     Assessments assessments = Assessments.builder()
       .assessmentId(1L)
       .organizationId(organizationId)
@@ -289,11 +337,12 @@ class AssessmentsServiceImplTest {
       .status(AssessmentStatus.ACTIVE)
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .flagManualGeneration(true)
-      .printed(false).build();
+      .printed(false)
+      .operatorExternalUserId(operatorExternalUserId).build();
     Mockito.when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(assessments);
     //when
 
-    AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode));
+    AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId));
     Assertions.assertEquals("Assessment with the same name ASSESSMENT_NAME and debtPositionTypeOrgCode CODE already exists for the current organizationId 3", ex.getMessage());
   }
 }

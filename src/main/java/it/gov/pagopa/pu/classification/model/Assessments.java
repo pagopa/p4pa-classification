@@ -32,4 +32,6 @@ public class Assessments extends BaseEntity implements Serializable {
   private boolean printed;
   @NotNull
   private boolean flagManualGeneration;
+  @NotNull
+  private String operatorExternalUserId;
 }
