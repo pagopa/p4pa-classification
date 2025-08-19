@@ -30,13 +30,13 @@ public interface TreasuryRepository extends JpaRepository<Treasury, String> {
   @Transactional
   @Modifying
   @RestResource(exported = false)
-  long deleteByOrganizationIdAndBillCodeAndBillYear(Long organizationId, String billCode, String billYear);
+  long deleteByOrganizationIdAndBillCodeAndBillYearAndOrgBtCodeAndOrgIstatCode(Long organizationId, String billCode, String billYear, String orgBtCode, String orgIstatCode);
 
   @Query("SELECT t FROM Treasury t WHERE " +
     "t.organizationId=:organizationId AND " +
     "t.billCode=:billCode AND " +
     "t.billYear=:billYear")
-  Treasury findBySemanticKey(Long organizationId, String billCode, String billYear);
+  Treasury findBySemanticKey(Long organizationId, String billCode, String billYear, String orgBtCode, String orgIstatCode);
 
   Treasury getByOrganizationIdAndIuf(Long organizationId, String iuf);
 
