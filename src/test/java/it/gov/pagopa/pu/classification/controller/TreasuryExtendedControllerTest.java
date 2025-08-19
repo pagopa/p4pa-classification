@@ -51,13 +51,15 @@ class TreasuryExtendedControllerTest {
     Long organizationId = 0L;
     String billCode = "BILLCODE";
     String billYear = "BILLYEAR";
+    String orgBtCode = "BTCODE";
+    String orgIstatCode = "ISTATCODE";
     long expectedResult = 1L;
 
-    Mockito.when(repositoryMock.deleteByOrganizationIdAndBillCodeAndBillYear(Mockito.same(organizationId), Mockito.same(billCode), Mockito.same(billYear)))
+    Mockito.when(repositoryMock.deleteByOrganizationIdAndBillCodeAndBillYearAndOrgBtCodeAndOrgIstatCode(Mockito.same(organizationId), Mockito.same(billCode), Mockito.same(billYear), Mockito.same(orgBtCode), Mockito.same(orgIstatCode)))
       .thenReturn(expectedResult);
 
     // When
-    Long result = controller.deleteByOrganizationIdAndBillCodeAndBillYear(organizationId, billCode, billYear).getBody();
+    Long result = controller.deleteByOrganizationIdAndBillCodeAndBillYearAndOrgBtCodeAndOrgIstatCode(organizationId, billCode, billYear, orgBtCode, orgIstatCode).getBody();
 
     // Then
     Assertions.assertEquals(expectedResult, result);

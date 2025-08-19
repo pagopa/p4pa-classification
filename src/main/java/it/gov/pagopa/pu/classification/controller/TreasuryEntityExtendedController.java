@@ -24,7 +24,7 @@ public class TreasuryEntityExtendedController implements TreasuryEntityExtendedC
   }
 
   @Override
-  public ResponseEntity<Long> deleteByOrganizationIdAndBillCodeAndBillYear(Long organizationId, String billCode, String billYear){
-    return ResponseEntity.ok(repository.deleteByOrganizationIdAndBillCodeAndBillYear(organizationId, billCode, billYear));
+  public ResponseEntity<Long> deleteByOrganizationIdAndBillCodeAndBillYearAndOrgBtCodeAndOrgIstatCode(Long organizationId, String billCode, String billYear, String orgBtCode, String orgIstatCode){
+    return ResponseEntity.ok(repository.deleteByOrganizationIdAndBillCodeAndBillYearAndOrgBtCodeAndOrgIstatCode(organizationId, billCode, billYear, orgBtCode, orgIstatCode));
   }
 }

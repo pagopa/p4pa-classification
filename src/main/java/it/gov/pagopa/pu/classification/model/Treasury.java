@@ -25,11 +25,14 @@ public class Treasury extends BaseEntity implements Serializable {
   private String billYear;
   @NotNull
   private String billCode;
-
   @NotNull
   private Long ingestionFlowFileId;
   @NotNull
   private Long organizationId;
+  @NotNull
+  private String orgBtCode;
+  @NotNull
+  private String orgIstatCode;
   private String iuf;
   private String iuv;
 
@@ -78,6 +81,8 @@ public class Treasury extends BaseEntity implements Serializable {
   public static String buildSemanticId(Treasury treasury) {
     return treasury.getBillCode() + "-" +
       treasury.getBillYear() + "-" +
+      treasury.getOrgIstatCode() + "-" +
+      treasury.getOrgBtCode() + "-" +
       treasury.getOrganizationId();
   }
 
@@ -97,6 +102,16 @@ public class Treasury extends BaseEntity implements Serializable {
 
   public void setBillYear(String billYear) {
     this.billYear = billYear;
+    setSemanticId();
+  }
+
+  public void setOrgBtCode(String orgBtCode) {
+    this.orgBtCode = orgBtCode;
+    setSemanticId();
+  }
+
+  public void setOrgIstatCode(String orgIstatCode) {
+    this.orgIstatCode = orgIstatCode;
     setSemanticId();
   }
   //endregion
