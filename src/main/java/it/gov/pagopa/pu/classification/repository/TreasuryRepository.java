@@ -35,7 +35,9 @@ public interface TreasuryRepository extends JpaRepository<Treasury, String> {
   @Query("SELECT t FROM Treasury t WHERE " +
     "t.organizationId=:organizationId AND " +
     "t.billCode=:billCode AND " +
-    "t.billYear=:billYear")
+    "t.billYear=:billYear AND " +
+    "t.orgBtCode=:orgBtCode AND " +
+    "t.orgIstatCode=:orgIstatCode")
   Treasury findBySemanticKey(Long organizationId, String billCode, String billYear, String orgBtCode, String orgIstatCode);
 
   Treasury getByOrganizationIdAndIuf(Long organizationId, String iuf);
