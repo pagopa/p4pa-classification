@@ -147,13 +147,13 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     return assessmentsDetailRepository.save(
             buildAssessmentsDetail(receipt, installment, assessments,assessmentsRegistry.getOfficeCode(),
                     assessmentsRegistry.getSectionCode(),assessmentsRegistry.getAssessmentCode(),
-                    getAssessmentDetailAmount(installment.getInstallmentId(),accessToken)
+                    getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken)
             )
     );
   }
 
-  private Long getAssessmentDetailAmount(Long installmentId, String accessToken){
+  private Long getAssessmentDetailAmount(Long installmentId, String orgFiscalCode, String accessToken){
     List<Transfer> transfers = transferService.getByInstallmentId(installmentId, accessToken);
-    return transfers.stream().map(Transfer::getAmountCents).reduce(0L,Long::sum);
+    return transfers.stream().filter(t->orgFiscalCode.equals(t.getOrgFiscalCode())).map(Transfer::getAmountCents).reduce(0L,Long::sum);
   }
 }
