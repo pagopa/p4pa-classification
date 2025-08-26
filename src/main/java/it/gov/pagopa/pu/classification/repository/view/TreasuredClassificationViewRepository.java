@@ -132,6 +132,7 @@ public interface TreasuredClassificationViewRepository extends Repository<Treasu
     AND (:#{#filter.provisionalCode} IS NULL OR c.provisionalCode = :#{#filter.provisionalCode})
     AND (c.debtPositionTypeOrgCode IS NULL OR c.debtPositionTypeOrgCode IN :#{#filter.debtPositionTypeOrgCodes})
     AND (:#{#filter.debtorFiscalCode} IS NULL OR c.debtorFiscalCodeHash = :#{@dataCipherService.hash(#filter.debtorFiscalCode)})
+    AND (:#{#filter.excludedLabels} IS NULL OR c.label NOT IN :#{#filter.excludedLabels})
     """)
   Page<TreasuredClassificationView> getTreasuredClassifications(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
