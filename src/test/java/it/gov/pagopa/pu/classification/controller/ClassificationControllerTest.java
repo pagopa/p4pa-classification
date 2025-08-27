@@ -101,6 +101,7 @@ class ClassificationControllerTest {
       filterDTO.getDocumentCode(),
       filterDTO.getProvisionalAe(),
       filterDTO.getProvisionalCode(),
+      filterDTO.getExcludedLabels(),
       pageable
     );
 

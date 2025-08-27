@@ -40,7 +40,7 @@ public class ClassificationController implements ClassificationsApi {
     String regulationUniqueIdentifier, String accountRegistryCode, Long billAmountCents,
     String remittanceInformation, String debtorFiscalCode,
     String billYear, String billCode, String documentYear, String documentCode,
-    String provisionalAe, String provisionalCode, Pageable pageable) {
+    String provisionalAe, String provisionalCode, Set<String> excludedLabels, Pageable pageable) {
     log.info("Retrieving Classifications having organizationId: {}",
       organizationId);
 
@@ -82,6 +82,7 @@ public class ClassificationController implements ClassificationsApi {
       .documentCode(documentCode)
       .provisionalAe(provisionalAe)
       .provisionalCode(provisionalCode)
+      .excludedLabels(excludedLabels)
       .build();
 
     return ResponseEntity.ok(

@@ -46,4 +46,6 @@ public class TreasuredClassificationFilterDTO {
   private String documentCode;
   private String provisionalAe;
   private String provisionalCode;
+
+  private Set<String> excludedLabels;
 }

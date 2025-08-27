@@ -1235,6 +1235,13 @@ paths:
           in: query
           schema:
             type: string
+        - name: excludedLabels
+          in: query
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
       responses:
         "200":
           description: Ok
