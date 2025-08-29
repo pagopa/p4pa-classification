@@ -13,13 +13,19 @@ class TreasuryTest {
     Assertions.assertNull(t.getTreasuryId());
 
     t.setOrganizationId(1L);
-    assertSemanticId("null-null-1", t);
+    assertSemanticId("null-null-null-null-1", t);
 
     t.setBillCode("BILLCODE");
-    assertSemanticId("BILLCODE-null-1", t);
+    assertSemanticId("BILLCODE-null-null-null-1", t);
 
     t.setBillYear("BILLYEAR");
-    assertSemanticId("BILLCODE-BILLYEAR-1", t);
+    assertSemanticId("BILLCODE-BILLYEAR-null-null-1", t);
+
+    t.setOrgIstatCode("ISTATCODE");
+    assertSemanticId("BILLCODE-BILLYEAR-ISTATCODE-null-1", t);
+
+    t.setOrgBtCode("BTCODE");
+    assertSemanticId("BILLCODE-BILLYEAR-ISTATCODE-BTCODE-1", t);
   }
 
   private static void assertSemanticId(String expected, Treasury t) {

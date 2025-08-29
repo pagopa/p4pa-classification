@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.dto.ClassificationPaidInstallmentsFilterDTO;
 import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView;
+import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsViewId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -13,19 +14,11 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 @RepositoryRestResource(path = "classifications-paid-installments-view")
-public interface ClassificationPaidInstallmentsViewRepository extends Repository<ClassificationPaidInstallmentsView, String> {
+public interface ClassificationPaidInstallmentsViewRepository extends Repository<ClassificationPaidInstallmentsView, ClassificationPaidInstallmentsViewId> {
   @RestResource(exported = false)
   @Query("""
-    SELECT distinct new ClassificationPaidInstallmentsView(
-    c.iud,
-    c.iuv,
-    c.paymentDateTime,
-    c.receiptCreationDate,
-    c.receiptPaymentRequestId,
-    c.organizationId,
-    c.debtPositionTypeOrgCode,
-    c.transferAmount AS amount)
-    FROM Classification c
+    SELECT distinct c
+    FROM ClassificationPaidInstallmentsView c
     WHERE c.organizationId = :organizationId
     AND (:#{#filter.iuv} IS NULL OR c.iuv = :#{#filter.iuv})
     AND (CAST(:#{#filter.paymentDateTimeIntervalFilter.from} AS STRING) IS NULL OR c.paymentDateTime >= :#{#filter.paymentDateTimeIntervalFilter.from})

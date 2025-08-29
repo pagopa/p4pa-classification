@@ -36,11 +36,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
-  /crud-ext/treasury/by-organizationId-billCode-billYear:
+  /crud-ext/treasury/by-organizationId-billCode-billYear-orgBtCode-orgIstatCode:
     delete:
       tags:
         - treasury-entity-extended-controller
-      operationId: deleteByOrganizationIdAndBillCodeAndBillYear
+      operationId: deleteByOrganizationIdAndBillCodeAndBillYearAndOrgBtCodeAndOrgIstatCode
       parameters:
         - name: organizationId
           in: query
@@ -54,6 +54,16 @@ paths:
           schema:
             type: string
         - name: billYear
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: orgBtCode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: orgIstatCode
           in: query
           required: true
           schema:
@@ -1225,6 +1235,13 @@ paths:
           in: query
           schema:
             type: string
+        - name: excludedLabels
+          in: query
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
       responses:
         "200":
           description: Ok

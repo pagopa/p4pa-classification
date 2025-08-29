@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 
 import java.time.OffsetDateTime;
 
@@ -16,7 +17,7 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(ClassificationPaidInstallmentsView.class)
+@IdClass(ClassificationPaidInstallmentsViewId.class)
 public class ClassificationPaidInstallmentsView {
   @Id
   private String iud;
@@ -31,5 +32,11 @@ public class ClassificationPaidInstallmentsView {
   @NotNull
   private Long organizationId;
   private String debtPositionTypeOrgCode;
+  @Formula(value = "(select sum(c.transfer_amount) " +
+          "          from classification c " +
+          "          where c.iud = iud " +
+          "          group by (c.label) " +
+          "          order by sum(c.transfer_amount) desc " +
+          "          limit 1) ")
   private Long amount;
 }

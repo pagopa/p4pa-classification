@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.service.assessments;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
+import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.Assessments;
@@ -14,6 +15,7 @@ import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
+import it.gov.pagopa.pu.debtposition.dto.generated.Transfer;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
@@ -37,15 +39,17 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   private final AssessmentsRegistryRepository assessmentsRegistryRepository;
   private final InstallmentService installmentService;
   private final ReceiptService receiptService;
+  private final TransferService transferService;
 
 
-  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService) {
+  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
       this.balanceUnmashallerService = balanceUnmashallerService;
       this.assessmentsRepository = assessmentsRepository;
       this.assessmentsRegistryRepository = assessmentsRegistryRepository;
       this.installmentService = installmentService;
       this.receiptService = receiptService;
+      this.transferService = transferService;
   }
 
   @Transactional
@@ -104,27 +108,37 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
             .filter(a-> organizationId.equals(a.getOrganizationId()))
             .orElseThrow(()->
               new ResourceNotFoundException("Assessments having id "+assessmentId+" not found"));
-    List<InstallmentNoPII> installments = installmentService.findByOrganizationIdAndIuds(organizationId, createAssessmentsDetail.getIuds(), accessToken);
-    if(!CollectionUtils.isEmpty(createAssessmentsDetail.getIuds())
-            && (CollectionUtils.isEmpty(installments) || createAssessmentsDetail.getIuds().size()!=installments.size())){
-      throw new InvalidRequestBodyException("One or more iud is invalid. [organizationId: "+organizationId+" iuds:"+createAssessmentsDetail.getIuds()+"]");
-    }
+    List<InstallmentNoPII> installments = getInstallmentsByOrganizationIdAndIuds(organizationId, createAssessmentsDetail, accessToken);
     List<AssessmentsDetail> assessmentsDetails = new ArrayList<>();
     for (InstallmentNoPII installment : installments) {
-      if(installment.getReceiptId()==null){
-        throw new InvalidRequestBodyException("Installment having iud "+installment.getIud()+" does not have a receiptId");
-      }
-      ReceiptNoPII receipt = receiptService.getByReceiptIdAndDebtPositionTypeOrgCode(installment.getReceiptId(),assessments.getDebtPositionTypeOrgCode(), accessToken);
-      if(receipt==null) {
-        throw new ResourceNotFoundException("Receipt having id " + installment.getReceiptId() + " not found");
-      }
+      ReceiptNoPII receipt = getReceiptByReceiptIdAndDebtPositionTypeOrgCode(installment, assessments, accessToken);
       assessmentsDetails.add(saveAssessmentsDetail(organizationId, createAssessmentsDetail.getAssessmentRegistryId(),
-                installment, receipt, assessments));
+                installment, receipt, assessments, accessToken));
     }
     return assessmentsDetails;
   }
 
-  private AssessmentsDetail saveAssessmentsDetail(Long organizationId, Long assessmentRegistryId, InstallmentNoPII installment, ReceiptNoPII receipt, Assessments assessments) {
+  private ReceiptNoPII getReceiptByReceiptIdAndDebtPositionTypeOrgCode(InstallmentNoPII installment, Assessments assessments, String accessToken) {
+    if(installment.getReceiptId()==null){
+      throw new InvalidRequestBodyException("Installment having iud "+ installment.getIud()+" does not have a receiptId");
+    }
+    ReceiptNoPII receipt = receiptService.getByReceiptIdAndDebtPositionTypeOrgCode(installment.getReceiptId(), assessments.getDebtPositionTypeOrgCode(), accessToken);
+    if(receipt==null) {
+      throw new ResourceNotFoundException("Receipt having id " + installment.getReceiptId() + " not found");
+    }
+    return receipt;
+  }
+
+  private List<InstallmentNoPII> getInstallmentsByOrganizationIdAndIuds(Long organizationId, CreateAssessmentsDetail createAssessmentsDetail, String accessToken) {
+    List<InstallmentNoPII> installments = installmentService.findByOrganizationIdAndIuds(organizationId, createAssessmentsDetail.getIuds(), accessToken);
+    if(!CollectionUtils.isEmpty(createAssessmentsDetail.getIuds())
+            && (CollectionUtils.isEmpty(installments) || createAssessmentsDetail.getIuds().size()!=installments.size())){
+      throw new InvalidRequestBodyException("One or more iud is invalid. [organizationId: "+ organizationId +" iuds:"+ createAssessmentsDetail.getIuds()+"]");
+    }
+    return installments;
+  }
+
+  private AssessmentsDetail saveAssessmentsDetail(Long organizationId, Long assessmentRegistryId, InstallmentNoPII installment, ReceiptNoPII receipt, Assessments assessments, String accessToken) {
     AssessmentsRegistry assessmentsRegistry = assessmentsRegistryRepository.findById(assessmentRegistryId)
             .filter(ar-> organizationId.equals(ar.getOrganizationId()))
             .orElseThrow(
@@ -132,7 +146,14 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     );
     return assessmentsDetailRepository.save(
             buildAssessmentsDetail(receipt, installment, assessments,assessmentsRegistry.getOfficeCode(),
-                    assessmentsRegistry.getSectionCode(),assessmentsRegistry.getAssessmentCode(),installment.getAmountCents())
+                    assessmentsRegistry.getSectionCode(),assessmentsRegistry.getAssessmentCode(),
+                    getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken)
+            )
     );
+  }
+
+  private Long getAssessmentDetailAmount(Long installmentId, String orgFiscalCode, String accessToken){
+    List<Transfer> transfers = transferService.getByInstallmentId(installmentId, accessToken);
+    return transfers.stream().filter(t->orgFiscalCode.equals(t.getOrgFiscalCode())).map(Transfer::getAmountCents).reduce(0L,Long::sum);
   }
 }

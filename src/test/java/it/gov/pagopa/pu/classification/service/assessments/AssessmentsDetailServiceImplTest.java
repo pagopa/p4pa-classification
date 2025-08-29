@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.service.assessments;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
+import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.Assessments;
@@ -14,6 +15,7 @@ import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
+import it.gov.pagopa.pu.debtposition.dto.generated.Transfer;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
@@ -53,6 +55,8 @@ class AssessmentsDetailServiceImplTest {
   private InstallmentService installmentServiceMock;
   @Mock
   private ReceiptService receiptServiceMock;
+  @Mock
+  private TransferService transferServiceMock;
   private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   private AssessmentsDetailServiceImpl assessmentsDetailService;
@@ -72,13 +76,13 @@ class AssessmentsDetailServiceImplTest {
   @BeforeEach
   void init() {
     assessmentsDetailService = new AssessmentsDetailServiceImpl(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
-            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock);
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
-            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock);
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock);
   }
 
   @Test
@@ -229,6 +233,8 @@ class AssessmentsDetailServiceImplTest {
     Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
     ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
     installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
+    List<Transfer> transfers = podamFactory.manufacturePojo(List.class,Transfer.class);
+    transfers.forEach(t->t.setOrgFiscalCode(receipt.getOrgFiscalCode()));
     CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistry.getAssessmentRegistryId(), installmentsMap.keySet());
 
     when(assessmentsRepositoryMock.findById(assessments.getAssessmentId()))
@@ -237,6 +243,8 @@ class AssessmentsDetailServiceImplTest {
             .thenReturn(installments);
     when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(), accessToken))
             .thenReturn(receipt);
+    when(transferServiceMock.getByInstallmentId(argThat(i->installments.stream().map(InstallmentNoPII::getInstallmentId).collect(Collectors.toSet()).contains(i)), eq(accessToken)))
+            .thenReturn(transfers);
     when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
             .thenReturn(Optional.of(assessmentsRegistry));
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
@@ -262,7 +270,113 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(assessmentsRegistry.getOfficeCode(),assessmentsDetail.getOfficeCode());
       assertEquals(assessmentsRegistry.getSectionCode(),assessmentsDetail.getSectionCode());
       assertEquals(assessmentsRegistry.getAssessmentCode(),assessmentsDetail.getAssessmentCode());
-      assertEquals(installment.getAmountCents(),assessmentsDetail.getAmountCents());
+      assertEquals(transfers.stream().map(Transfer::getAmountCents).reduce(0L,Long::sum),assessmentsDetail.getAmountCents());
+      assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
+    }
+  }
+
+  @Test
+  void givenReceiptOrgFiscalCodeNotMatchingWhenCreateAssessmentsDetailThenAmountCentsZero(){
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setOrganizationId(organizationId);
+    List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
+    ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
+    installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
+    List<Transfer> transfers = podamFactory.manufacturePojo(List.class,Transfer.class);
+    transfers.forEach(t->t.setOrgFiscalCode("wrongOrgFiscalCode"));
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistry.getAssessmentRegistryId(), installmentsMap.keySet());
+
+    when(assessmentsRepositoryMock.findById(assessments.getAssessmentId()))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
+            .thenReturn(installments);
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(), accessToken))
+            .thenReturn(receipt);
+    when(transferServiceMock.getByInstallmentId(argThat(i->installments.stream().map(InstallmentNoPII::getInstallmentId).collect(Collectors.toSet()).contains(i)), eq(accessToken)))
+            .thenReturn(transfers);
+    when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
+            .thenReturn(Optional.of(assessmentsRegistry));
+    ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
+    when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
+            .thenReturn(new AssessmentsDetail());
+
+    List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
+            createAssessmentsDetail, accessToken);
+
+    assertNotNull(result);
+    assertEquals(installmentsMap.size(),result.size());
+    List<AssessmentsDetail> assessmentsDetails = assessmentsDetailArgumentCaptor.getAllValues();
+    for (AssessmentsDetail assessmentsDetail : assessmentsDetails) {
+      InstallmentNoPII installment = installmentsMap.get(assessmentsDetail.getIud());
+      assertEquals(assessments.getAssessmentId(),assessmentsDetail.getAssessmentId());
+      assertEquals(assessments.getOrganizationId(),assessmentsDetail.getOrganizationId());
+      assertEquals(assessments.getDebtPositionTypeOrgCode(),assessmentsDetail.getDebtPositionTypeOrgCode());
+      assertEquals(installment.getIuv(),assessmentsDetail.getIuv());
+      assertEquals(installment.getIud(),assessmentsDetail.getIud());
+      assertEquals(installment.getIur(),assessmentsDetail.getIur());
+      assertEquals(installment.getDebtorFiscalCodeHash(),assessmentsDetail.getDebtorFiscalCodeHash());
+      assertEquals(receipt.getPaymentDateTime(),assessmentsDetail.getPaymentDateTime());
+      assertEquals(assessmentsRegistry.getOfficeCode(),assessmentsDetail.getOfficeCode());
+      assertEquals(assessmentsRegistry.getSectionCode(),assessmentsDetail.getSectionCode());
+      assertEquals(assessmentsRegistry.getAssessmentCode(),assessmentsDetail.getAssessmentCode());
+      assertEquals(0L,assessmentsDetail.getAmountCents());
+      assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
+    }
+  }
+
+  @Test
+  void givenNoTransfersWhenCreateAssessmentsDetailThenAssessmentsDetailAmountZero(){
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setOrganizationId(organizationId);
+    List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
+    ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
+    installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistry.getAssessmentRegistryId(), installmentsMap.keySet());
+
+    when(assessmentsRepositoryMock.findById(assessments.getAssessmentId()))
+            .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, installmentsMap.keySet(), accessToken))
+            .thenReturn(installments);
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(), accessToken))
+            .thenReturn(receipt);
+    when(transferServiceMock.getByInstallmentId(argThat(i->installments.stream().map(InstallmentNoPII::getInstallmentId).collect(Collectors.toSet()).contains(i)), eq(accessToken)))
+            .thenReturn(Collections.emptyList());
+    when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
+            .thenReturn(Optional.of(assessmentsRegistry));
+    ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
+    when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
+            .thenReturn(new AssessmentsDetail());
+
+    List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
+            createAssessmentsDetail, accessToken);
+
+    assertNotNull(result);
+    assertEquals(installmentsMap.size(),result.size());
+    List<AssessmentsDetail> assessmentsDetails = assessmentsDetailArgumentCaptor.getAllValues();
+    for (AssessmentsDetail assessmentsDetail : assessmentsDetails) {
+      InstallmentNoPII installment = installmentsMap.get(assessmentsDetail.getIud());
+      assertEquals(assessments.getAssessmentId(),assessmentsDetail.getAssessmentId());
+      assertEquals(assessments.getOrganizationId(),assessmentsDetail.getOrganizationId());
+      assertEquals(assessments.getDebtPositionTypeOrgCode(),assessmentsDetail.getDebtPositionTypeOrgCode());
+      assertEquals(installment.getIuv(),assessmentsDetail.getIuv());
+      assertEquals(installment.getIud(),assessmentsDetail.getIud());
+      assertEquals(installment.getIur(),assessmentsDetail.getIur());
+      assertEquals(installment.getDebtorFiscalCodeHash(),assessmentsDetail.getDebtorFiscalCodeHash());
+      assertEquals(receipt.getPaymentDateTime(),assessmentsDetail.getPaymentDateTime());
+      assertEquals(assessmentsRegistry.getOfficeCode(),assessmentsDetail.getOfficeCode());
+      assertEquals(assessmentsRegistry.getSectionCode(),assessmentsDetail.getSectionCode());
+      assertEquals(assessmentsRegistry.getAssessmentCode(),assessmentsDetail.getAssessmentCode());
+      assertEquals(0L,assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
   }
@@ -293,7 +407,7 @@ class AssessmentsDetailServiceImplTest {
     assertThrows(ResourceNotFoundException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(assessmentsDetailRepositoryMock);
+    verifyNoInteractions(assessmentsDetailRepositoryMock,transferServiceMock);
   }
 
   @Test
@@ -323,7 +437,7 @@ class AssessmentsDetailServiceImplTest {
     assertThrows(ResourceNotFoundException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(assessmentsDetailRepositoryMock);
+    verifyNoInteractions(assessmentsDetailRepositoryMock,transferServiceMock);
   }
 
   @Test
@@ -347,7 +461,7 @@ class AssessmentsDetailServiceImplTest {
     assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
+    verifyNoInteractions(receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
   }
 
   @Test
@@ -375,7 +489,7 @@ class AssessmentsDetailServiceImplTest {
     assertThrows(ResourceNotFoundException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
+    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
   }
 
   @Test
@@ -402,7 +516,7 @@ class AssessmentsDetailServiceImplTest {
     assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock);
+    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock,transferServiceMock);
   }
 
   @Test
@@ -424,7 +538,7 @@ class AssessmentsDetailServiceImplTest {
     assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock);
+    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock,transferServiceMock);
   }
 
   @Test
@@ -446,7 +560,7 @@ class AssessmentsDetailServiceImplTest {
             createAssessmentsDetail, accessToken);
 
     assertTrue(result.isEmpty());
-    verifyNoInteractions(receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
+    verifyNoInteractions(receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
   }
 
   @Test
@@ -465,7 +579,7 @@ class AssessmentsDetailServiceImplTest {
     assertThrows(ResourceNotFoundException.class,()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(installmentServiceMock,receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
+    verifyNoInteractions(installmentServiceMock,receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
   }
 
   @Test
@@ -482,6 +596,6 @@ class AssessmentsDetailServiceImplTest {
     assertThrows(ResourceNotFoundException.class,()->assessmentsDetailService.createAssessmentsDetail(organizationId,assessmentsId,
             createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(installmentServiceMock,receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock);
+    verifyNoInteractions(installmentServiceMock,receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
   }
 }
