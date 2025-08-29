@@ -26,7 +26,7 @@ public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
     FROM Assessments a
     LEFT JOIN AssessmentsDetail ad ON a.assessmentId = ad.assessmentId
     WHERE
-      (:assessmentName IS NULL OR a.assessmentName = :assessmentName)
+      (:assessmentName IS NULL OR a.assessmentName ILIKE CONCAT('%', cast(:assessmentName as text), '%'))
       AND (cast(:#{#updateDateTimeIntervalFilter.from} AS STRING) IS NULL OR a.updateDate >= :#{#updateDateTimeIntervalFilter.from})
       AND (cast(:#{#updateDateTimeIntervalFilter.to} AS STRING) IS NULL OR a.updateDate <= :#{#updateDateTimeIntervalFilter.to})
       AND (:iuv IS NULL OR ad.iuv = :iuv)
