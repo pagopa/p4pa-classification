@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
+import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
@@ -57,6 +58,9 @@ class AssessmentsDetailServiceImplTest {
   private ReceiptService receiptServiceMock;
   @Mock
   private TransferService transferServiceMock;
+  @Mock
+  private DataEventsProducerService dataEventsProducerServiceMock;
+
   private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   private AssessmentsDetailServiceImpl assessmentsDetailService;
@@ -76,13 +80,13 @@ class AssessmentsDetailServiceImplTest {
   @BeforeEach
   void init() {
     assessmentsDetailService = new AssessmentsDetailServiceImpl(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
-            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock);
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock, dataEventsProducerServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
-            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock);
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock,dataEventsProducerServiceMock);
   }
 
   @Test

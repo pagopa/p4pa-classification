@@ -4,6 +4,9 @@ import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
+import it.gov.pagopa.pu.classification.enums.DataEventType;
+import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
+import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
@@ -40,16 +43,19 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   private final InstallmentService installmentService;
   private final ReceiptService receiptService;
   private final TransferService transferService;
+  private final DataEventsProducerService dataEventsProducerService;
 
 
-  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService) {
+  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService,
+    DataEventsProducerService dataEventsProducerService) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
-      this.balanceUnmashallerService = balanceUnmashallerService;
-      this.assessmentsRepository = assessmentsRepository;
-      this.assessmentsRegistryRepository = assessmentsRegistryRepository;
-      this.installmentService = installmentService;
-      this.receiptService = receiptService;
-      this.transferService = transferService;
+    this.balanceUnmashallerService = balanceUnmashallerService;
+    this.assessmentsRepository = assessmentsRepository;
+    this.assessmentsRegistryRepository = assessmentsRegistryRepository;
+    this.installmentService = installmentService;
+    this.receiptService = receiptService;
+    this.transferService = transferService;
+    this.dataEventsProducerService = dataEventsProducerService;
   }
 
   @Transactional
@@ -66,6 +72,8 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
         ad.setAmountCents(assessmentDetail.getAmountCents());
         assessmentsDetailRepository.save(ad);
       }
+      dataEventsProducerService.notifyAssessmentsEvent(assessmentDetail, new DataEventRequestDTO(
+        DataEventType.ASSESSMENTS_CREATED, buildDataEventDescription(assessmentDetail)));
     });
   }
 
@@ -144,16 +152,23 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
             .orElseThrow(
             ()->new ResourceNotFoundException("AssessmentsRegistry having id "+assessmentRegistryId+" not found")
     );
-    return assessmentsDetailRepository.save(
+    AssessmentsDetail assessmentsDetail = assessmentsDetailRepository.save(
             buildAssessmentsDetail(receipt, installment, assessments,assessmentsRegistry.getOfficeCode(),
                     assessmentsRegistry.getSectionCode(),assessmentsRegistry.getAssessmentCode(),
                     getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken)
             )
     );
+    dataEventsProducerService.notifyAssessmentsEvent(assessmentsDetail, new DataEventRequestDTO(
+      DataEventType.ASSESSMENTS_CREATED, buildDataEventDescription(assessmentsDetail)));
+    return assessmentsDetail;
   }
 
   private Long getAssessmentDetailAmount(Long installmentId, String orgFiscalCode, String accessToken){
     List<Transfer> transfers = transferService.getByInstallmentId(installmentId, accessToken);
     return transfers.stream().filter(t->orgFiscalCode.equals(t.getOrgFiscalCode())).map(Transfer::getAmountCents).reduce(0L,Long::sum);
+  }
+
+  private String buildDataEventDescription(AssessmentsDetail assessmentsDetail) {
+    return "assessmentId:" + assessmentsDetail.getAssessmentId();
   }
 }
