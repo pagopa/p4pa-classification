@@ -4,6 +4,8 @@ import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
+import it.gov.pagopa.pu.classification.enums.DataEventType;
+import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
 import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.Assessments;
@@ -175,10 +177,11 @@ class AssessmentsDetailServiceImplTest {
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
     doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
-
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
     verify(assessmentsDetailRepositoryMock, times(1)).save(any(AssessmentsDetail.class));
+    verify(dataEventsProducerServiceMock, times(1)).notifyAssessmentsEvent(any(AssessmentsDetail.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS_CREATED, any()));
   }
 
   @Test
@@ -223,6 +226,9 @@ class AssessmentsDetailServiceImplTest {
 
     verify(assessmentsDetailRepositoryMock, times(1)).save(existingDetail);
     assertEquals(10000L, existingDetail.getAmountCents());
+    verify(dataEventsProducerServiceMock, times(1)).notifyAssessmentsEvent(
+      any(AssessmentsDetail.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS_CREATED, any()));
   }
 
   @Test
@@ -277,6 +283,9 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(transfers.stream().map(Transfer::getAmountCents).reduce(0L,Long::sum),assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
+    verify(dataEventsProducerServiceMock, times(5)).notifyAssessmentsEvent(
+      any(AssessmentsDetail.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS_CREATED, any()));
   }
 
   @Test
@@ -331,6 +340,9 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(0L,assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
+    verify(dataEventsProducerServiceMock, times(5)).notifyAssessmentsEvent(
+      any(AssessmentsDetail.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS_CREATED, any()));
   }
 
   @Test
@@ -383,6 +395,9 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(0L,assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
+    verify(dataEventsProducerServiceMock, times(5)).notifyAssessmentsEvent(
+      any(AssessmentsDetail.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS_CREATED, any()));
   }
 
   @Test

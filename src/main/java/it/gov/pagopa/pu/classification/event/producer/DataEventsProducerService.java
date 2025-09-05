@@ -38,10 +38,10 @@ public class DataEventsProducerService {
   }
 
   public void notifyAssessmentsEvent(AssessmentsDetail assessmentsDetail, DataEventRequestDTO dataEventRequest) {
-    notifyDataEvent(assessmentsDetail.getOrganizationId(), String.valueOf(assessmentsDetail.getAssessmentId()), assessmentsDetail, dataEventRequest);
+    notifyDataEvent(assessmentsDetail.getOrganizationId(), String.valueOf(assessmentsDetail.getAssessmentId()), assessmentsDetail, dataEventRequest, "assessments");
   }
 
-  public void notifyDataEvent(Long organizationId, String entityId, Object payload, DataEventRequestDTO dataEventRequest) {
+  public void notifyDataEvent(Long organizationId, String entityId, Object payload, DataEventRequestDTO dataEventRequest, String partitionKey) {
     String eventId = dataEventRequest.getDataEventType().name() + entityId + UUID.randomUUID();
     streamBridge.send("dataEventsProducer-out-0", binder,
       MessageBuilder.withPayload(DataEventDTO.builder()
@@ -52,7 +52,7 @@ public class DataEventsProducerService {
           .payload(payload)
           .eventDescription(dataEventRequest.getEventDescription())
           .build())
-        .setHeader(KafkaHeaders.KEY, String.valueOf(organizationId))
+        .setHeader(KafkaHeaders.KEY, partitionKey+organizationId)
         .build()
     );
   }

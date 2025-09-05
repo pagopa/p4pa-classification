@@ -64,7 +64,7 @@ class DataEventsProducerServiceTest {
         Assertions.assertSame(assessmentsDetail, payload.getPayload());
         Assertions.assertSame(dataEventRequestDTO.getEventDescription(), payload.getEventDescription());
         Assertions.assertSame(dataEventRequestDTO.getDataEventType(), payload.getEventType());
-        Assertions.assertEquals(String.valueOf(assessmentsDetail.getOrganizationId()), m.getHeaders().get(KafkaHeaders.KEY));
+        Assertions.assertEquals("assessments"+assessmentsDetail.getOrganizationId(), m.getHeaders().get(KafkaHeaders.KEY));
         return true;
       }));
   }
