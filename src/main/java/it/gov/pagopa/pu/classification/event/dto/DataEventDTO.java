@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "eventType", defaultImpl = DataEventDTO.class, visible = true)
 @JsonSubTypes({
-  @JsonSubTypes.Type(value = AssessmentsDataEventDTO.class, name = "ASSESSMENTS_CREATED"),
+  @JsonSubTypes.Type(value = AssessmentsDataEventDTO.class, name = "ASSESSMENTS"),
 })
 public class DataEventDTO <T> {
   private String eventId;

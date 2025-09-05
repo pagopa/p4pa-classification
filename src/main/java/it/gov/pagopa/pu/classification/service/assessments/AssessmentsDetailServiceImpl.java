@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
 import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
+import it.gov.pagopa.pu.classification.mapper.Assessments2AssessmentsDataMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -44,10 +45,12 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   private final ReceiptService receiptService;
   private final TransferService transferService;
   private final DataEventsProducerService dataEventsProducerService;
+  private final Assessments2AssessmentsDataMapper assessmentsDataMapper;
 
 
   public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService,
-    DataEventsProducerService dataEventsProducerService) {
+    DataEventsProducerService dataEventsProducerService,
+    Assessments2AssessmentsDataMapper assessmentsDataMapper) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
     this.balanceUnmashallerService = balanceUnmashallerService;
     this.assessmentsRepository = assessmentsRepository;
@@ -56,6 +59,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     this.receiptService = receiptService;
     this.transferService = transferService;
     this.dataEventsProducerService = dataEventsProducerService;
+    this.assessmentsDataMapper = assessmentsDataMapper;
   }
 
   @Transactional
@@ -72,8 +76,8 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
         ad.setAmountCents(assessmentDetail.getAmountCents());
         assessmentsDetailRepository.save(ad);
       }
-      dataEventsProducerService.notifyAssessmentsEvent(assessmentDetail, new DataEventRequestDTO(
-        DataEventType.ASSESSMENTS_CREATED, buildDataEventDescription(assessmentDetail)));
+      dataEventsProducerService.notifyAssessmentsEvent(assessmentsDataMapper.map(assessments, assessmentDetail), new DataEventRequestDTO(
+        DataEventType.ASSESSMENTS, buildDataEventDescription(assessmentDetail)));
     });
   }
 
@@ -158,8 +162,8 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
                     getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken)
             )
     );
-    dataEventsProducerService.notifyAssessmentsEvent(assessmentsDetail, new DataEventRequestDTO(
-      DataEventType.ASSESSMENTS_CREATED, buildDataEventDescription(assessmentsDetail)));
+    dataEventsProducerService.notifyAssessmentsEvent(assessmentsDataMapper.map(assessments, assessmentsDetail), new DataEventRequestDTO(
+      DataEventType.ASSESSMENTS, buildDataEventDescription(assessmentsDetail)));
     return assessmentsDetail;
   }
 

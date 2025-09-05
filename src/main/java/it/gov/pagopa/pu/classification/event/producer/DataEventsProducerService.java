@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.event.producer;
 
+import it.gov.pagopa.pu.classification.dto.AssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventDTO;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
@@ -37,8 +38,8 @@ public class DataEventsProducerService {
     }
   }
 
-  public void notifyAssessmentsEvent(AssessmentsDetail assessmentsDetail, DataEventRequestDTO dataEventRequest) {
-    notifyDataEvent(assessmentsDetail.getOrganizationId(), String.valueOf(assessmentsDetail.getAssessmentId()), assessmentsDetail, dataEventRequest, "assessments");
+  public void notifyAssessmentsEvent(AssessmentsDataDTO assessmentsDataDTO, DataEventRequestDTO dataEventRequest) {
+    notifyDataEvent(assessmentsDataDTO.getOrganizationId(), String.valueOf(assessmentsDataDTO.getAssessmentId()), assessmentsDataDTO, dataEventRequest, "assessments");
   }
 
   public void notifyDataEvent(Long organizationId, String entityId, Object payload, DataEventRequestDTO dataEventRequest, String partitionKey) {
