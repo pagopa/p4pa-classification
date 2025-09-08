@@ -3,8 +3,13 @@ package it.gov.pagopa.pu.classification.service.assessments;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
+import it.gov.pagopa.pu.classification.dto.AssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
+import it.gov.pagopa.pu.classification.enums.DataEventType;
+import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
+import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
+import it.gov.pagopa.pu.classification.mapper.Assessments2AssessmentsDataMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -57,6 +62,11 @@ class AssessmentsDetailServiceImplTest {
   private ReceiptService receiptServiceMock;
   @Mock
   private TransferService transferServiceMock;
+  @Mock
+  private DataEventsProducerService dataEventsProducerServiceMock;
+  @Mock
+  private Assessments2AssessmentsDataMapper assessmentsDataMapperMock;
+
   private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   private AssessmentsDetailServiceImpl assessmentsDetailService;
@@ -76,13 +86,15 @@ class AssessmentsDetailServiceImplTest {
   @BeforeEach
   void init() {
     assessmentsDetailService = new AssessmentsDetailServiceImpl(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
-            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock);
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock,
+      transferServiceMock, dataEventsProducerServiceMock, assessmentsDataMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
-            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock);
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock,
+      transferServiceMock,dataEventsProducerServiceMock, assessmentsDataMapperMock);
   }
 
   @Test
@@ -171,10 +183,14 @@ class AssessmentsDetailServiceImplTest {
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
     doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
-
+    when(assessmentsDataMapperMock.map(assessment, assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment).getFirst()))
+      .thenReturn(new AssessmentsDataDTO());
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
+
     verify(assessmentsDetailRepositoryMock, times(1)).save(any(AssessmentsDetail.class));
+    verify(dataEventsProducerServiceMock, times(1)).notifyAssessmentsEvent(any(AssessmentsDataDTO.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS, any()));
   }
 
   @Test
@@ -214,11 +230,15 @@ class AssessmentsDetailServiceImplTest {
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
     doReturn(existingDetail).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
+    when(assessmentsDataMapperMock.map(assessment, existingDetail)).thenReturn(new AssessmentsDataDTO());
 
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
     verify(assessmentsDetailRepositoryMock, times(1)).save(existingDetail);
     assertEquals(10000L, existingDetail.getAmountCents());
+    verify(dataEventsProducerServiceMock, times(1)).notifyAssessmentsEvent(
+      any(AssessmentsDataDTO.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS, any()));
   }
 
   @Test
@@ -250,6 +270,7 @@ class AssessmentsDetailServiceImplTest {
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
     when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
             .thenReturn(new AssessmentsDetail());
+    when(assessmentsDataMapperMock.map(assessments, new AssessmentsDetail())).thenReturn(new AssessmentsDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
             createAssessmentsDetail, accessToken);
@@ -273,6 +294,9 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(transfers.stream().map(Transfer::getAmountCents).reduce(0L,Long::sum),assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
+    verify(dataEventsProducerServiceMock, times(5)).notifyAssessmentsEvent(
+      any(AssessmentsDataDTO.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS, any()));
   }
 
   @Test
@@ -304,6 +328,7 @@ class AssessmentsDetailServiceImplTest {
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
     when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
             .thenReturn(new AssessmentsDetail());
+    when(assessmentsDataMapperMock.map(assessments, new AssessmentsDetail())).thenReturn(new AssessmentsDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
             createAssessmentsDetail, accessToken);
@@ -327,6 +352,9 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(0L,assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
+    verify(dataEventsProducerServiceMock, times(5)).notifyAssessmentsEvent(
+      any(AssessmentsDataDTO.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS, any()));
   }
 
   @Test
@@ -356,6 +384,7 @@ class AssessmentsDetailServiceImplTest {
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
     when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
             .thenReturn(new AssessmentsDetail());
+    when(assessmentsDataMapperMock.map(assessments, new AssessmentsDetail())).thenReturn(new AssessmentsDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
             createAssessmentsDetail, accessToken);
@@ -379,6 +408,9 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(0L,assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
+    verify(dataEventsProducerServiceMock, times(5)).notifyAssessmentsEvent(
+      any(AssessmentsDataDTO.class),
+      new DataEventRequestDTO(DataEventType.ASSESSMENTS, any()));
   }
 
   @Test
