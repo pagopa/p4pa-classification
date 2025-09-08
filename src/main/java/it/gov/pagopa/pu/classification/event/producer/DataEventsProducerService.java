@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.classification.dto.AssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventDTO;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
-import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import java.time.OffsetDateTime;
 import java.util.UUID;
