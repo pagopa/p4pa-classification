@@ -65,7 +65,7 @@ class AssessmentsDetailServiceImplTest {
   @Mock
   private DataEventsProducerService dataEventsProducerServiceMock;
   @Mock
-  private Assessments2AssessmentsDataMapper assessmentsDataMapper;
+  private Assessments2AssessmentsDataMapper assessmentsDataMapperMock;
 
   private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
@@ -87,14 +87,14 @@ class AssessmentsDetailServiceImplTest {
   void init() {
     assessmentsDetailService = new AssessmentsDetailServiceImpl(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
             assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock,
-      transferServiceMock, dataEventsProducerServiceMock, assessmentsDataMapper);
+      transferServiceMock, dataEventsProducerServiceMock, assessmentsDataMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
             assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock,
-      transferServiceMock,dataEventsProducerServiceMock, assessmentsDataMapper);
+      transferServiceMock,dataEventsProducerServiceMock, assessmentsDataMapperMock);
   }
 
   @Test
@@ -183,7 +183,10 @@ class AssessmentsDetailServiceImplTest {
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
     doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
+    when(assessmentsDataMapperMock.map(assessment, assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment).getFirst()))
+      .thenReturn(new AssessmentsDataDTO());
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
+
 
     verify(assessmentsDetailRepositoryMock, times(1)).save(any(AssessmentsDetail.class));
     verify(dataEventsProducerServiceMock, times(1)).notifyAssessmentsEvent(any(AssessmentsDataDTO.class),
@@ -227,6 +230,7 @@ class AssessmentsDetailServiceImplTest {
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
     doReturn(existingDetail).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
+    when(assessmentsDataMapperMock.map(assessment, existingDetail)).thenReturn(new AssessmentsDataDTO());
 
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
@@ -266,6 +270,7 @@ class AssessmentsDetailServiceImplTest {
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
     when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
             .thenReturn(new AssessmentsDetail());
+    when(assessmentsDataMapperMock.map(assessments, new AssessmentsDetail())).thenReturn(new AssessmentsDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
             createAssessmentsDetail, accessToken);
@@ -323,6 +328,7 @@ class AssessmentsDetailServiceImplTest {
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
     when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
             .thenReturn(new AssessmentsDetail());
+    when(assessmentsDataMapperMock.map(assessments, new AssessmentsDetail())).thenReturn(new AssessmentsDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
             createAssessmentsDetail, accessToken);
@@ -378,6 +384,7 @@ class AssessmentsDetailServiceImplTest {
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
     when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
             .thenReturn(new AssessmentsDetail());
+    when(assessmentsDataMapperMock.map(assessments, new AssessmentsDetail())).thenReturn(new AssessmentsDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
             createAssessmentsDetail, accessToken);
