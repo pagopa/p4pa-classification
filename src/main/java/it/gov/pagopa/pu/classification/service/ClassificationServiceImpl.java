@@ -91,7 +91,8 @@ public class ClassificationServiceImpl implements ClassificationService {
   @Override
   public List<Classification> saveAll(List<Classification> classifications) {
     List<Classification> saved = classificationRepository.saveAll(classifications);
-    dataEventsProducerService.notifyClassificationEvent(saved, new DataEventRequestDTO(DataEventType.TRANSFER_CLASSIFICATION_LABELS, "Classifications"));
+    dataEventsProducerService.notifyClassificationEvent(saved, new DataEventRequestDTO(DataEventType.TRANSFER_CLASSIFICATION_LABELS,
+      String.format("List of classifications with IUD: %s and transferIndex: %d",classifications.getFirst().getIud(), classifications.getFirst().getTransferIndex())));
     return saved;
   }
 }

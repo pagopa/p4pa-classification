@@ -5,9 +5,12 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInst
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
+import it.gov.pagopa.pu.classification.enums.DataEventType;
+import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
 import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.mapper.PagedClassificationPaidInstallmentsViewMapper;
 import it.gov.pagopa.pu.classification.mapper.TreasuredClassificationMapper;
+import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
 import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
@@ -229,5 +232,20 @@ class ClassificationServiceTest {
 
     assertNotNull(result);
     assertEquals(expected, result);
+  }
+
+  @Test
+  void givenListOfClassificationsWhenSaveAllThenOk() {
+    List<Classification> classificationList = List.of(podamFactory.manufacturePojo(Classification.class));
+
+    Mockito.when(classificationRepositoryMock.saveAll(classificationList))
+      .thenReturn(classificationList);
+
+    List<Classification> result = service.saveAll(classificationList);
+
+    assertNotNull(result);
+    verify(dataEventsProducerServiceMock, times(1))
+      .notifyClassificationEvent(result, new DataEventRequestDTO(DataEventType.TRANSFER_CLASSIFICATION_LABELS,
+        String.format("List of classifications with IUD: %s and transferIndex: %d",result.getFirst().getIud(), result.getFirst().getTransferIndex())));
   }
 }
