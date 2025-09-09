@@ -8,6 +8,8 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInst
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
+import it.gov.pagopa.pu.classification.model.Classification;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 public interface ClassificationService {
@@ -20,4 +22,6 @@ public interface ClassificationService {
   ClassificationDetailViewDTO getClassificationDetailView(Long organizationId, Long classificationId);
 
   PagedClassificationPaidInstallmentsView getPaidInstallmentsView(Long organizationId, ClassificationPaidInstallmentsFilterDTO filter, Pageable pageable);
+
+  List<Classification> saveAll(List<Classification> classifications);
 }

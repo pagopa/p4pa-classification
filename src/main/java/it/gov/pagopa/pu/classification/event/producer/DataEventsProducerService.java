@@ -4,10 +4,13 @@ import it.gov.pagopa.pu.classification.dto.AssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventDTO;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
+import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +42,11 @@ public class DataEventsProducerService {
 
   public void notifyAssessmentsEvent(AssessmentsDataDTO assessmentsDataDTO, DataEventRequestDTO dataEventRequest) {
     notifyDataEvent(assessmentsDataDTO.getOrganizationId(), String.valueOf(assessmentsDataDTO.getAssessmentId()), assessmentsDataDTO, dataEventRequest, "assessments");
+  }
+
+  public void notifyClassificationEvent(List<Classification> classifications, DataEventRequestDTO dataEventRequest) {
+    notifyDataEvent(classifications.getFirst().getOrganizationId(),
+      ObjectUtils.defaultIfNull(classifications.getFirst().getIud(),"")+classifications.getFirst().getTransferIndex(), classifications, dataEventRequest, "classification");
   }
 
   public void notifyDataEvent(Long organizationId, String entityId, Object payload, DataEventRequestDTO dataEventRequest, String partitionKey) {

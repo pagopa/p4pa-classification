@@ -5,10 +5,12 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInst
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
+import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.mapper.PagedClassificationPaidInstallmentsViewMapper;
 import it.gov.pagopa.pu.classification.mapper.TreasuredClassificationMapper;
 import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
+import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
 import it.gov.pagopa.pu.classification.repository.view.*;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +50,10 @@ class ClassificationServiceTest {
   private ClassificationPaidInstallmentsViewRepository classificationPaidInstallmentsViewRepositoryMock;
   @Mock
   private PagedClassificationPaidInstallmentsViewMapper pagedClassificationPaidInstallmentsViewMapperMock;
+  @Mock
+  private ClassificationRepository classificationRepositoryMock;
+  @Mock
+  private DataEventsProducerService dataEventsProducerServiceMock;
 
   private ClassificationService service;
 
@@ -62,7 +68,9 @@ class ClassificationServiceTest {
       treasuredClassificationMapperMock,
       classificationDetailViewPIIRepositoryMock,
       classificationPaidInstallmentsViewRepositoryMock,
-      pagedClassificationPaidInstallmentsViewMapperMock);
+      pagedClassificationPaidInstallmentsViewMapperMock,
+      classificationRepositoryMock,
+      dataEventsProducerServiceMock);
   }
 
   @Test

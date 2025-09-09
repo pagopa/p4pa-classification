@@ -8,10 +8,16 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInst
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
+import it.gov.pagopa.pu.classification.enums.DataEventType;
+import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
+import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.mapper.PagedClassificationPaidInstallmentsViewMapper;
 import it.gov.pagopa.pu.classification.mapper.TreasuredClassificationMapper;
+import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView;
+import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
 import it.gov.pagopa.pu.classification.repository.view.*;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +33,8 @@ public class ClassificationServiceImpl implements ClassificationService {
   private final ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository;
   private final ClassificationPaidInstallmentsViewRepository classificationPaidInstallmentsViewRepository;
   private final PagedClassificationPaidInstallmentsViewMapper pagedClassificationPaidInstallmentsViewMapper;
+  private final ClassificationRepository classificationRepository;
+  private final DataEventsProducerService dataEventsProducerService;
 
   public ClassificationServiceImpl(
     ClassificationViewPIIRepository classificationViewPIIRepository,
@@ -35,7 +43,9 @@ public class ClassificationServiceImpl implements ClassificationService {
     TreasuredClassificationMapper treasuredClassificationMapper,
     ClassificationDetailViewPIIRepository classificationDetailViewPIIRepository,
     ClassificationPaidInstallmentsViewRepository classificationPaidInstallmentsViewRepository,
-    PagedClassificationPaidInstallmentsViewMapper pagedClassificationPaidInstallmentsViewMapper) {
+    PagedClassificationPaidInstallmentsViewMapper pagedClassificationPaidInstallmentsViewMapper,
+    ClassificationRepository classificationRepository,
+    DataEventsProducerService dataEventsProducerService) {
     this.classificationViewPIIRepository = classificationViewPIIRepository;
     this.fullClassificationViewPIIRepository = fullClassificationViewPIIRepository;
     this.treasuredClassificationViewRepository = treasuredClassificationViewRepository;
@@ -43,6 +53,8 @@ public class ClassificationServiceImpl implements ClassificationService {
     this.classificationDetailViewPIIRepository = classificationDetailViewPIIRepository;
     this.classificationPaidInstallmentsViewRepository = classificationPaidInstallmentsViewRepository;
     this.pagedClassificationPaidInstallmentsViewMapper = pagedClassificationPaidInstallmentsViewMapper;
+    this.classificationRepository = classificationRepository;
+    this.dataEventsProducerService = dataEventsProducerService;
   }
 
   @Override
@@ -74,5 +86,12 @@ public class ClassificationServiceImpl implements ClassificationService {
   public PagedClassificationPaidInstallmentsView getPaidInstallmentsView(Long organizationId, ClassificationPaidInstallmentsFilterDTO filter, Pageable pageable) {
     Page<ClassificationPaidInstallmentsView> pagedPaidInstallments = classificationPaidInstallmentsViewRepository.findPaidInstallments(organizationId, filter, pageable);
     return pagedClassificationPaidInstallmentsViewMapper.map(pagedPaidInstallments);
+  }
+
+  @Override
+  public List<Classification> saveAll(List<Classification> classifications) {
+    List<Classification> saved = classificationRepository.saveAll(classifications);
+    dataEventsProducerService.notifyClassificationEvent(saved, new DataEventRequestDTO(DataEventType.TRANSFER_CLASSIFICATION_LABELS, "Classifications"));
+    return saved;
   }
 }

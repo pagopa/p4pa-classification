@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.controller;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
+import it.gov.pagopa.pu.classification.service.ClassificationService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,24 +20,26 @@ class ClassificationEntityExtendedControllerTest {
 
   @Mock
   private ClassificationRepository repositoryMock;
+  @Mock
+  private ClassificationService serviceMock;
 
   private ClassificationEntityExtendedController controller;
 
   @BeforeEach
   void init(){
-    controller = new ClassificationEntityExtendedController(repositoryMock);
+    controller = new ClassificationEntityExtendedController(repositoryMock, serviceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
-    Mockito.verifyNoMoreInteractions(repositoryMock);
+    Mockito.verifyNoMoreInteractions(repositoryMock, serviceMock);
   }
 
   @Test
   void whenSaveAllThenInvokeRepository(){
     // Given
     List<Classification> entities = List.of(new Classification());
-    Mockito.when(repositoryMock.saveAll(entities))
+    Mockito.when(serviceMock.saveAll(entities))
       .thenReturn(entities);
 
     // When
