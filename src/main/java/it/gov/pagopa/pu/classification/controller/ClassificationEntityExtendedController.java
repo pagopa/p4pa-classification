@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.classification.controller.generated.ClassificationEntity
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
+import it.gov.pagopa.pu.classification.service.ClassificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,14 +15,17 @@ import java.util.List;
 public class ClassificationEntityExtendedController implements ClassificationEntityExtendedControllerApi {
 
   private final ClassificationRepository repository;
+  private final ClassificationService service;
 
-  public ClassificationEntityExtendedController(ClassificationRepository repository) {
+  public ClassificationEntityExtendedController(ClassificationRepository repository,
+    ClassificationService service) {
     this.repository = repository;
+    this.service = service;
   }
 
   @Override
   public ResponseEntity<Integer> saveAll2(List<Classification> classifications){
-    return ResponseEntity.ok(repository.saveAll(classifications).size());
+    return ResponseEntity.ok(service.saveAll(classifications).size());
   }
 
   @Override

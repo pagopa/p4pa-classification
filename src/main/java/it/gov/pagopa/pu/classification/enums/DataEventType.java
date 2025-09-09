@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.enums;
 
 public enum DataEventType {
-  ASSESSMENTS
+  ASSESSMENTS,
+  TRANSFER_CLASSIFICATION_LABELS
 }
