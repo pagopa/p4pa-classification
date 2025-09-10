@@ -108,12 +108,25 @@ management:
       http: true
       logback: true
 
+springwolf:
+  docket:
+    base-package: it.gov.pagopa.pu.classification.event
+    info:
+      title: "\${spring.application.name}"
+      version: "\${spring.application.version}"
+      description: AsyncAPI And Models
+    servers.kafka-server:
+      protocol: kafka
+      host: "\${KAFKA_BINDER_BROKER:localhost:9093}"
+  use-fqn: false
+
 logging:
   level:
     root: "\${LOG_LEVEL_ROOT:INFO}"
     it.gov.pagopa: "\${LOG_LEVEL_PAGOPA:INFO}"
     org.springframework: "\${LOG_LEVEL_SPRING:INFO}"
     org.springframework.boot.availability: "\${LOG_LEVEL_SPRING_BOOT_AVAILABILITY:DEBUG}"
+    org.springframework.kafka: "\${LOG_LEVEL_SPRING_KAFKA:INFO}"
     it.gov.pagopa.pu.classification.exception.ClassificationExceptionHandler: "\${LOGGING_LEVEL_API_REQUEST_EXCEPTION:INFO}"
     org.springdoc.core.utils.SpringDocAnnotationsUtils: "\${LOG_LEVEL_SPRING_DOC:ERROR}"
     PERFORMANCE_LOG: "\${LOG_LEVEL_PERFORMANCE_LOG:INFO}"

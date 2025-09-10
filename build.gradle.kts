@@ -34,12 +34,6 @@ repositories {
   mavenCentral()
 }
 
-dependencyManagement {
-  imports {
-    mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
-  }
-}
-
 val springDocOpenApiVersion = "2.8.9"
 val openApiToolsVersion = "0.2.6"
 val micrometerVersion = "1.5.1"
@@ -53,6 +47,15 @@ val xmlSchemaVersion = "2.3.1"
 val podamVersion = "8.0.2.RELEASE"
 val rhinoScriptVersion="1.8.0"
 val caffeineVersion = "3.2.1"
+val springWolfAsyncApiVersion = "1.13.0"
+val springCloudDepsVersion = "2025.0.0"
+
+dependencyManagement {
+  imports {
+    mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudDepsVersion")
+  }
+}
+
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
@@ -75,6 +78,9 @@ dependencies {
   implementation("org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion")
   implementation("org.postgresql:postgresql:$postgresJdbcVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
+  implementation("io.github.springwolf:springwolf-kafka:$springWolfAsyncApiVersion")
+  implementation("io.github.springwolf:springwolf-ui:$springWolfAsyncApiVersion")
+  implementation("io.github.springwolf:springwolf-cloud-stream:$springWolfAsyncApiVersion")
 
   implementation("org.mozilla:rhino-engine:$rhinoScriptVersion")
 
