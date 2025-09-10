@@ -14,7 +14,6 @@ import java.io.Serializable;
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
-@DataEventTraced(evenType = ....)
 public class Assessments extends BaseEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "assessments_generator")
