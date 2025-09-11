@@ -81,6 +81,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
       .map(i -> {
         DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(i.getInstallmentId(), accessToken);
 
+        // skipping creation of assessments for technical debtPositionTypes
         if(debtPositionTypeOrg.getDebtPositionTypeId() > 0) {
           Assessments assessment = buildAssessmentFromReceipt(i, operatorExternalUserId, debtPositionTypeOrg);
           assessmentsDetailService.createAssessmentDetail(assessment, receipt, i);
