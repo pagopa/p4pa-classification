@@ -26,4 +26,7 @@ public interface ClassificationRepository extends JpaRepository<Classification, 
   @RestResource(exported = false)
   long deleteByOrganizationIdAndIuvAndIurAndTransferIndex(Long organizationId, String iuv, String iur, int transferIndex);
 
+  @Override
+  @RestResource(exported = false)
+  <S extends Classification> S save(S entity);
 }

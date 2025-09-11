@@ -23,6 +23,7 @@ public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
 
   @RestResource(exported = false)
   @Query("""
+    SELECT distinct a
     FROM Assessments a
     LEFT JOIN AssessmentsDetail ad ON a.assessmentId = ad.assessmentId
     WHERE
