@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -78,25 +79,31 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         return true;
       })
       .map(i -> {
-        Assessments assessment = buildAssessmentFromReceipt(i, operatorExternalUserId, accessToken);
-        assessmentsDetailService.createAssessmentDetail(assessment, receipt, i);
-        return assessment;
+        DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(i.getInstallmentId(), accessToken);
+
+        if(debtPositionTypeOrg.getDebtPositionTypeId() > 0) {
+          Assessments assessment = buildAssessmentFromReceipt(i, operatorExternalUserId, debtPositionTypeOrg);
+          assessmentsDetailService.createAssessmentDetail(assessment, receipt, i);
+          return assessment;
+        } else {
+          return null;
+        }
       })
+      .filter(Objects::nonNull)
       .toList();
   }
 
 
   /**
-   * Builds an assessment based on the given installment information and access token.
+   * Builds an assessment based on the given installment information, operatorExternalUserId and debtPositionTypeOrg.
    *
    * @param installment the installment information
-   * @param accessToken the access token for authentication
+   * @param operatorExternalUserId the external user ID of the operator
+   * @param debtPositionTypeOrg the debt position type organization
    * @return the built assessment
    */
-  Assessments buildAssessmentFromReceipt(InstallmentNoPII installment, String operatorExternalUserId, String accessToken) {
-    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(installment.getInstallmentId(), accessToken);
+  Assessments buildAssessmentFromReceipt(InstallmentNoPII installment, String operatorExternalUserId, DebtPositionTypeOrg debtPositionTypeOrg) {
     String debtPositionTypeOrgCode = debtPositionTypeOrg.getCode();
-
     Assessments assessment = assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
       debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrgCode, installment.getSourceFlowName());
 
