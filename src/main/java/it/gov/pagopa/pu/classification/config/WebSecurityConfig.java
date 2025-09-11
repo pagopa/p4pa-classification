@@ -77,6 +77,11 @@ public class WebSecurityConfig {
           "/actuator/**"
         ).permitAll()
 
+        // springwolf endpoints
+        .requestMatchers(
+          "/springwolf/**"
+        ).permitAll()
+
         // WebMVC
         .requestMatchers(
           "/favicon.ico", "/error"
