@@ -118,6 +118,7 @@ class AssessmentsServiceImplTest {
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
     debtPositionTypeOrg.setCode("testCode");
     debtPositionTypeOrg.setOrganizationId(organizationId);
+    debtPositionTypeOrg.setDebtPositionTypeId(1L);
 
     when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
     when(organizationServiceMock.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)).thenReturn(Optional.of(organization));
@@ -152,6 +153,7 @@ class AssessmentsServiceImplTest {
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
     debtPositionTypeOrg.setCode("testCode");
     debtPositionTypeOrg.setOrganizationId(3L);
+    debtPositionTypeOrg.setDebtPositionTypeId(1L);
 
     when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
     when(organizationServiceMock.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)).thenReturn(Optional.of(organization));
@@ -344,5 +346,32 @@ class AssessmentsServiceImplTest {
 
     AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId));
     Assertions.assertEquals("Assessment with the same name ASSESSMENT_NAME and debtPositionTypeOrgCode CODE already exists for the current organizationId 3", ex.getMessage());
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgWithNegativeDebtPositionTypeIdWhenCreateAssessmentThenSkipAssessmentCreation() {
+    Long receiptId = 1L;
+    Long organizationId = 3L;
+    String accessToken = "accessToken";
+    String operatorExternalUserId = "operatorExternalUserId";
+    List<InstallmentNoPII> installments = List.of(InstallmentNoPIIFaker.buildInstallmentNoPII());
+    ReceiptNoPII receipt = new ReceiptNoPII();
+    receipt.setReceiptId(receiptId);
+    receipt.setOrgFiscalCode("ORGFC");
+    Organization organization = new Organization();
+    organization.setOrganizationId(organizationId);
+    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
+    debtPositionTypeOrg.setCode("testCode");
+    debtPositionTypeOrg.setOrganizationId(organizationId);
+    debtPositionTypeOrg.setDebtPositionTypeId(-1L);
+
+    when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
+    when(organizationServiceMock.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)).thenReturn(Optional.of(organization));
+    when(installmentServiceMock.getByReceiptId(organizationId, receiptId, accessToken)).thenReturn(installments);
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByInstallmentId(installments.getFirst().getInstallmentId(), accessToken)).thenReturn(debtPositionTypeOrg);
+
+    List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
+
+    assertEquals(0, result.size());
   }
 }

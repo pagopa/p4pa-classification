@@ -1,8 +1,7 @@
 package it.gov.pagopa.pu.classification.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import it.gov.pagopa.pu.classification.enums.TreasuryOrigin;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -76,6 +75,12 @@ public class Treasury extends BaseEntity implements Serializable {
   private LocalDate actualSuspensionDate;
   private String managementProvisionalCode;
   private String endToEndId;
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private TreasuryOrigin treasuryOrigin;
+  private String checkNumber;
+  private String clientReference;
+  private String bankReference;
 
   //region keep updated semanticId
   public static String buildSemanticId(Treasury treasury) {
