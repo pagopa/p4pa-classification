@@ -10,7 +10,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
 @Slf4j
 public class NamespaceFilter extends XMLFilterImpl {
 
-  private String namespace;
+  private final String namespace;
 
   public NamespaceFilter(String namespace) {
     this.namespace = namespace;
@@ -25,7 +25,7 @@ public class NamespaceFilter extends XMLFilterImpl {
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if (uri == null || uri.isEmpty()) {
-      log.info("Adding namespace to element: {}", localName);
+      log.debug("Adding namespace to element: {}", localName);
       AttributesImpl newAttrs = new AttributesImpl(atts);
       super.startElement(namespace, localName, qName, newAttrs);
     } else {
