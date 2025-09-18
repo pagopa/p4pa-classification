@@ -3,15 +3,15 @@ import java.util.*
 
 plugins {
   java
-  id("org.springframework.boot") version "3.5.5"
+  id("org.springframework.boot") version "3.5.6"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
-  id("org.sonarqube") version "6.2.0.5505"
+  id("org.sonarqube") version "6.3.1.5724"
   id("com.github.ben-manes.versions") version "0.52.0"
-  id("org.openapi.generator") version "7.13.0"
+  id("org.openapi.generator") version "7.15.0"
   id("org.ajoberstar.grgit") version "5.3.2"
-  id("com.gorylenko.gradle-git-properties") version "2.5.0"
-  id("com.intershop.gradle.jaxb") version "7.0.1"
+  id("com.gorylenko.gradle-git-properties") version "2.5.3"
+  id("com.intershop.gradle.jaxb") version "7.0.2"
 }
 
 group = "it.gov.pagopa.payhub"
@@ -34,20 +34,21 @@ repositories {
   mavenCentral()
 }
 
-val springDocOpenApiVersion = "2.8.9"
-val openApiToolsVersion = "0.2.6"
-val micrometerVersion = "1.5.1"
-val postgresJdbcVersion = "42.7.7"
-val bouncycastleVersion = "1.81"
+val springDocOpenApiVersion = "2.8.13"
+val janinoVersion = "3.1.12"
+val openApiToolsVersion = "0.2.7"
+val bouncycastleVersion = "1.82"
+val micrometerVersion = "1.5.4"
+val caffeineVersion = "3.2.2"
 val httpClientVersion = "5.5"
-val activationVersion = "2.1.3"
+val postgresJdbcVersion = "42.7.7"
+val activationVersion = "2.1.4"
 val jaxbVersion = "4.0.5"
 val jaxbApiVersion = "4.0.2"
 val xmlSchemaVersion = "2.3.1"
 val podamVersion = "8.0.2.RELEASE"
 val rhinoScriptVersion="1.8.0"
-val caffeineVersion = "3.2.1"
-val springWolfAsyncApiVersion = "1.13.0"
+val springWolfAsyncApiVersion = "1.16.0"
 val springCloudDepsVersion = "2025.0.0"
 
 dependencyManagement {
@@ -73,6 +74,7 @@ dependencies {
   implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
   implementation("io.micrometer:micrometer-registry-prometheus")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion")
+  implementation("org.codehaus.janino:janino:$janinoVersion")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
   implementation("org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion")
