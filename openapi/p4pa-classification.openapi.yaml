@@ -426,6 +426,12 @@ paths:
         - assessments-controller
       operationId: getPagedAssessmentsList
       parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
         - name: assessmentName
           in: query
           schema:
@@ -444,7 +450,7 @@ paths:
           in: query
           schema:
             type: string
-        - name: debtPositionTypeOrgCode
+        - name: debtPositionTypeOrgCodes
           in: query
           schema:
             type: array

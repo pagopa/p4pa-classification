@@ -127,7 +127,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
    * {@inheritDoc}
    */
   @Override
-  public PagedAssessmentsView getPagedAssessmentsView(String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable) {
+  public PagedAssessmentsView getPagedAssessmentsView(Long organizationId, String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable) {
     Set<String> setDebtPositionTypeOrgCodes = null;
 
     if (debtPositionTypeOrgCodes != null && !debtPositionTypeOrgCodes.isEmpty()) {
@@ -136,7 +136,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
         .collect(Collectors.toSet());
     }
 
-    Page<Assessments> pagedAssessments = assessmentsRepository.findPagedAssessments(assessmentName, updateDateTimeIntervalFilter, iuv, setDebtPositionTypeOrgCodes, status, pageable);
+    Page<Assessments> pagedAssessments = assessmentsRepository.findPagedAssessments(organizationId, assessmentName, updateDateTimeIntervalFilter, iuv, setDebtPositionTypeOrgCodes, status, pageable);
     return pagedAssessmentsViewMapper.map(pagedAssessments);
   }
 
