@@ -75,7 +75,6 @@ paths:
             application/json:
               schema:
                 type: integer
-                format: int64
         '500':
           description: Server Error
           content:
@@ -263,7 +262,6 @@ paths:
             application/json:
               schema:
                 type: integer
-                format: int64
         '500':
           description: Server Error
           content:
@@ -299,7 +297,6 @@ paths:
             application/json:
               schema:
                 type: integer
-                format: int64
         '500':
           description: Server Error
           content:
@@ -335,7 +332,6 @@ paths:
             application/json:
               schema:
                 type: integer
-                format: int64
         '500':
           description: Server Error
           content:

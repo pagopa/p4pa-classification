@@ -53,13 +53,13 @@ class TreasuryExtendedControllerTest {
     String billYear = "BILLYEAR";
     String orgBtCode = "BTCODE";
     String orgIstatCode = "ISTATCODE";
-    long expectedResult = 1L;
+    int expectedResult = 1;
 
     Mockito.when(repositoryMock.deleteByOrganizationIdAndBillCodeAndBillYearAndOrgBtCodeAndOrgIstatCode(Mockito.same(organizationId), Mockito.same(billCode), Mockito.same(billYear), Mockito.same(orgBtCode), Mockito.same(orgIstatCode)))
       .thenReturn(expectedResult);
 
     // When
-    Long result = controller.deleteByOrganizationIdAndBillCodeAndBillYearAndOrgBtCodeAndOrgIstatCode(organizationId, billCode, billYear, orgBtCode, orgIstatCode).getBody();
+    Integer result = controller.deleteByOrganizationIdAndBillCodeAndBillYearAndOrgBtCodeAndOrgIstatCode(organizationId, billCode, billYear, orgBtCode, orgIstatCode).getBody();
 
     // Then
     Assertions.assertEquals(expectedResult, result);

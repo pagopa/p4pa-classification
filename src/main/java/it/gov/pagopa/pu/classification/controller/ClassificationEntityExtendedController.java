@@ -29,17 +29,17 @@ public class ClassificationEntityExtendedController implements ClassificationEnt
   }
 
   @Override
-  public ResponseEntity<Long> deleteByOrganizationIdAndIufAndLabel(Long organizationId, String iuf, ClassificationsEnum  label){
+  public ResponseEntity<Integer> deleteByOrganizationIdAndIufAndLabel(Long organizationId, String iuf, ClassificationsEnum  label){
     return ResponseEntity.ok(repository.deleteByOrganizationIdAndIufAndLabel(organizationId, iuf, label));
   }
 
   @Override
-  public ResponseEntity<Long> deleteByOrganizationIdAndIuvAndIurAndTransferIndex(Long organizationId, String iuv, String iur, Integer transferIndex){
+  public ResponseEntity<Integer> deleteByOrganizationIdAndIuvAndIurAndTransferIndex(Long organizationId, String iuv, String iur, Integer transferIndex){
     return ResponseEntity.ok(repository.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(organizationId, iuv, iur, transferIndex));
   }
 
   @Override
-  public ResponseEntity<Long> deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud, ClassificationsEnum  label){
+  public ResponseEntity<Integer> deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud, ClassificationsEnum  label){
     return ResponseEntity.ok(repository.deleteByOrganizationIdAndIudAndLabel(organizationId, iud, label));
   }
 }
