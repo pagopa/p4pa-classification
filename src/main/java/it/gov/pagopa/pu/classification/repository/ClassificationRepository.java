@@ -14,17 +14,17 @@ public interface ClassificationRepository extends JpaRepository<Classification, 
   @Transactional
   @Modifying
   @RestResource(exported = false)
-  long deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud, ClassificationsEnum label);
+  Integer deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud, ClassificationsEnum label);
 
   @Transactional
   @Modifying
   @RestResource(exported = false)
-  long deleteByOrganizationIdAndIufAndLabel(Long organizationId, String iuf, ClassificationsEnum label);
+  Integer deleteByOrganizationIdAndIufAndLabel(Long organizationId, String iuf, ClassificationsEnum label);
 
   @Transactional
   @Modifying
   @RestResource(exported = false)
-  long deleteByOrganizationIdAndIuvAndIurAndTransferIndex(Long organizationId, String iuv, String iur, int transferIndex);
+  Integer deleteByOrganizationIdAndIuvAndIurAndTransferIndex(Long organizationId, String iuv, String iur, int transferIndex);
 
   @Override
   @RestResource(exported = false)
