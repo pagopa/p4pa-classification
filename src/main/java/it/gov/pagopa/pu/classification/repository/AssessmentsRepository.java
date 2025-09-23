@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.repository;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
@@ -26,15 +27,16 @@ public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
     SELECT distinct a
     FROM Assessments a
     LEFT JOIN AssessmentsDetail ad ON a.assessmentId = ad.assessmentId
-    WHERE
-      (:assessmentName IS NULL OR a.assessmentName ILIKE CONCAT('%', cast(:assessmentName as text), '%'))
-      AND (cast(:#{#updateDateTimeIntervalFilter.from} AS STRING) IS NULL OR a.updateDate >= :#{#updateDateTimeIntervalFilter.from})
-      AND (cast(:#{#updateDateTimeIntervalFilter.to} AS STRING) IS NULL OR a.updateDate <= :#{#updateDateTimeIntervalFilter.to})
-      AND (:iuv IS NULL OR ad.iuv = :iuv)
-      AND (:debtPositionTypeOrgCodes IS NULL OR a.debtPositionTypeOrgCode IN :debtPositionTypeOrgCodes)
-      AND (:status IS NULL OR a.status = :status)
+    WHERE a.organizationId = :organizationId
+    AND (:assessmentName IS NULL OR a.assessmentName ILIKE CONCAT('%', cast(:assessmentName as text), '%'))
+    AND (cast(:#{#updateDateTimeIntervalFilter.from} AS STRING) IS NULL OR a.updateDate >= :#{#updateDateTimeIntervalFilter.from})
+    AND (cast(:#{#updateDateTimeIntervalFilter.to} AS STRING) IS NULL OR a.updateDate <= :#{#updateDateTimeIntervalFilter.to})
+    AND (:iuv IS NULL OR ad.iuv = :iuv)
+    AND (:debtPositionTypeOrgCodes IS NULL OR a.debtPositionTypeOrgCode IN :debtPositionTypeOrgCodes)
+    AND (:status IS NULL OR a.status = :status)
     """)
   Page<Assessments> findPagedAssessments(
+    @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Param("assessmentName") String assessmentName,
     @Param("updateDateTimeIntervalFilter") LocalDateTimeIntervalFilter updateDateTimeIntervalFilter,
     @Param("iuv") String iuv,

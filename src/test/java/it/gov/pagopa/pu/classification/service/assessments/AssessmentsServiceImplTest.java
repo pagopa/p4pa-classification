@@ -200,6 +200,7 @@ class AssessmentsServiceImplTest {
   @Test
   void givenParamsWhenGetPagedAssessmentsViewThenReturnPagedAssessmentsView() {
     //given
+    Long organizationId = 1L;
     String assessmentName = "ASSESSMENT_NAME";
     OffsetDateTime from = OffsetDateTime.now();
     OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
@@ -215,10 +216,10 @@ class AssessmentsServiceImplTest {
 
     PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
-    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(assessmentName, localDateTimeIntervalFilter, iuv, new HashSet<>(debtPositionTypeOrgCodes), AssessmentStatus.ACTIVE, Pageable.ofSize(1))).thenReturn(pagedAssessments);
+    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, new HashSet<>(debtPositionTypeOrgCodes), AssessmentStatus.ACTIVE, Pageable.ofSize(1))).thenReturn(pagedAssessments);
     Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
     //when
-    PagedAssessmentsView result = service.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
+    PagedAssessmentsView result = service.getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
     //then
     assertNotNull(result);
     assertEquals(expected, result);
@@ -227,6 +228,7 @@ class AssessmentsServiceImplTest {
   @Test
   void givenNullDebtPositionTypeOrgCodesWhenGetPagedAssessmentsViewThenReturnPagedAssessmentsView() {
     // given
+    Long organizationId = 1L;
     String assessmentName = "ASSESSMENT_NAME";
     OffsetDateTime from = OffsetDateTime.now();
     OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
@@ -238,11 +240,11 @@ class AssessmentsServiceImplTest {
     Page<Assessments> pagedAssessments = new PageImpl<>(content, pageable, 1);
     PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
-    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
+    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
     Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
 
     // when
-    PagedAssessmentsView result = service.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, pageable);
+    PagedAssessmentsView result = service.getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, pageable);
 
     // then
     assertNotNull(result);
@@ -252,6 +254,7 @@ class AssessmentsServiceImplTest {
   @Test
   void givenEmptyDebtPositionTypeOrgCodesWhenGetPagedAssessmentsViewThenReturnPagedAssessmentsView() {
     // given
+    Long organizationId = 1L;
     String assessmentName = "ASSESSMENT_NAME";
     OffsetDateTime from = OffsetDateTime.now();
     OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
@@ -263,11 +266,11 @@ class AssessmentsServiceImplTest {
     Page<Assessments> pagedAssessments = new PageImpl<>(content, pageable, 1);
     PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
-    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
+    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
     Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
 
     // when
-    PagedAssessmentsView result = service.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, pageable);
+    PagedAssessmentsView result = service.getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, pageable);
 
     // then
     assertNotNull(result);
@@ -277,6 +280,7 @@ class AssessmentsServiceImplTest {
   @Test
   void givenDebtPositionTypeOrgCodesWithBlankValuesWhenGetPagedAssessmentsViewThenReturnPagedAssessmentsView() {
     // given
+    Long organizationId = 1L;
     String assessmentName = "ASSESSMENT_NAME";
     OffsetDateTime from = OffsetDateTime.now();
     OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
@@ -288,11 +292,11 @@ class AssessmentsServiceImplTest {
     Page<Assessments> pagedAssessments = new PageImpl<>(content, pageable, 1);
     PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
-    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(assessmentName, localDateTimeIntervalFilter, iuv, Set.of("VALID_CODE"), AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
+    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, Set.of("VALID_CODE"), AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
     Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
 
     // when
-    PagedAssessmentsView result = service.getPagedAssessmentsView(assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, pageable);
+    PagedAssessmentsView result = service.getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, pageable);
 
     // then
     assertNotNull(result);

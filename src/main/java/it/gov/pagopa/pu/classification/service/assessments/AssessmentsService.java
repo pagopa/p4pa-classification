@@ -25,6 +25,7 @@ public interface AssessmentsService {
   /**
    * Retrieves a paginated view of assessments based on the provided filters.
    *
+   * @param organizationId the id of organization
    * @param assessmentName the name of the assessment to filter by; if {@code null}, this filter is ignored
    * @param updateDateTimeIntervalFilter the date-time interval filter to apply on the update date; if {@code null}, no date filtering is applied
    * @param iuv the IUV (Unique Payment Identifier) to filter by; if {@code null}, this filter is ignored
@@ -34,7 +35,7 @@ public interface AssessmentsService {
    * @return a paginated view of assessments matching the specified filters
    */
 
-  PagedAssessmentsView getPagedAssessmentsView(String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable);
+  PagedAssessmentsView getPagedAssessmentsView(Long organizationId, String assessmentName, LocalDateTimeIntervalFilter updateDateTimeIntervalFilter, String iuv, List<String> debtPositionTypeOrgCodes, AssessmentStatus status, Pageable pageable);
 
 
   /**

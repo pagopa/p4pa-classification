@@ -55,13 +55,13 @@ class ClassificationEntityExtendedControllerTest {
     Long organizationId = 0L;
     String iuf = "IUF";
     ClassificationsEnum label = ClassificationsEnum.RT_NO_IUF;
-    long expectedResult = 1L;
+    int expectedResult = 1;
 
     Mockito.when(repositoryMock.deleteByOrganizationIdAndIufAndLabel(Mockito.same(organizationId), Mockito.same(iuf), Mockito.same(label)))
       .thenReturn(expectedResult);
 
     // When
-    Long result = controller.deleteByOrganizationIdAndIufAndLabel(organizationId, iuf, label).getBody();
+    Integer result = controller.deleteByOrganizationIdAndIufAndLabel(organizationId, iuf, label).getBody();
 
     // Then
     Assertions.assertEquals(expectedResult, result);
@@ -74,13 +74,13 @@ class ClassificationEntityExtendedControllerTest {
     String iuv = "IUV";
     String iur = "IUR";
     Integer transferIndex = 1;
-    long expectedResult = 1L;
+    int expectedResult = 1;
 
     Mockito.when(repositoryMock.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(Mockito.same(organizationId), Mockito.same(iuv), Mockito.same(iur), Mockito.same(transferIndex)))
       .thenReturn(expectedResult);
 
     // When
-    Long result = controller.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(organizationId, iuv, iur, transferIndex).getBody();
+    Integer result = controller.deleteByOrganizationIdAndIuvAndIurAndTransferIndex(organizationId, iuv, iur, transferIndex).getBody();
 
     // Then
     Assertions.assertEquals(expectedResult, result);
@@ -92,13 +92,13 @@ class ClassificationEntityExtendedControllerTest {
     Long organizationId = 0L;
     String iud = "IUD";
     ClassificationsEnum label = ClassificationsEnum.IUD_NO_RT;
-    long expectedResult = 1L;
+    int expectedResult = 1;
 
     Mockito.when(repositoryMock.deleteByOrganizationIdAndIudAndLabel(Mockito.same(organizationId), Mockito.same(iud), Mockito.same(label)))
       .thenReturn(expectedResult);
 
     // When
-    Long result = controller.deleteByOrganizationIdAndIudAndLabel(organizationId, iud, label).getBody();
+    Integer result = controller.deleteByOrganizationIdAndIudAndLabel(organizationId, iud, label).getBody();
 
     // Then
     Assertions.assertEquals(expectedResult, result);
