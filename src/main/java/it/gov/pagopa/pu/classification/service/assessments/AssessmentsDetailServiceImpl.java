@@ -130,6 +130,11 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     return assessmentsDetails;
   }
 
+  @Override
+  public void deleteAssessmentDetail(String debtPositionTypeOrgCode, String iuv, String iud) {
+    assessmentsDetailRepository.deleteAllByDebtPositionTypeOrgCodeAndIuvAndIud(debtPositionTypeOrgCode, iuv, iud);
+  }
+
   private ReceiptNoPII getReceiptByReceiptIdAndDebtPositionTypeOrgCode(InstallmentNoPII installment, Assessments assessments, String accessToken) {
     if(installment.getReceiptId()==null){
       throw new InvalidRequestBodyException("Installment having iud "+ installment.getIud()+" does not have a receiptId");

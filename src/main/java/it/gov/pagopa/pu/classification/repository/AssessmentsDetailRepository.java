@@ -21,6 +21,9 @@ public interface AssessmentsDetailRepository extends JpaRepository<AssessmentsDe
   @RestResource(exported = false)
   AssessmentsDetail findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(String debtPositionTypeOrgCode, String iuv, String iud, String officeCode, String sectionCode, String assessmentCode);
 
+  @RestResource(exported = false)
+  void deleteAllByDebtPositionTypeOrgCodeAndIuvAndIud(String debtPositionTypeOrgCode, String iuv, String iud);
+
   @SuppressWarnings("squid:S107") // Suppressing too many parameters warning: it's allowed in query methods
   @Query("""
     FROM AssessmentsDetail ad

@@ -135,6 +135,7 @@ class AssessmentsServiceImplTest {
     assertEquals(assessment, result.getFirst());
 
     Mockito.verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
+    Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetail(Mockito.same(debtPositionTypeOrg.getCode()), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
 
   @Test
@@ -170,6 +171,7 @@ class AssessmentsServiceImplTest {
 
     Mockito.verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
     Mockito.verify(assessmentsRepositoryMock, times(0)).save(Mockito.any());
+    Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetail(Mockito.same(debtPositionTypeOrg.getCode()), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
 
 
@@ -377,5 +379,6 @@ class AssessmentsServiceImplTest {
     List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
 
     assertEquals(0, result.size());
+    Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetail(Mockito.same(debtPositionTypeOrg.getCode()), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
 }
