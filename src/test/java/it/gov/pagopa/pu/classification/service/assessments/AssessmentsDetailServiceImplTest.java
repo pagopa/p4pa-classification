@@ -630,4 +630,13 @@ class AssessmentsDetailServiceImplTest {
 
     verifyNoInteractions(installmentServiceMock,receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
   }
+
+  @Test
+  void givenAssessmentDetailWhenDeleteThenOk() {
+    Long organizationId = 1L;
+    String iuv = "iuv";
+    String iud = "iud";
+    assessmentsDetailService.deleteAssessmentDetailsByOrgAndInstallment(organizationId, iuv, iud);
+    verify(assessmentsDetailRepositoryMock).deleteAllByOrganizationIdAndIuvAndIud(organizationId, iuv, iud);
+  }
 }
