@@ -71,6 +71,15 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(organization.getOrganizationId(), receipt.getReceiptId(), accessToken);
 
     return installmentsList.stream()
+      .map(installmentNoPII -> {
+        assessmentsDetailService.deleteAssessmentDetailsByOrgAndInstallment(
+          organization.getOrganizationId(),
+          installmentNoPII.getIuv(),
+          installmentNoPII.getIud()
+        );
+
+        return installmentNoPII;
+      })
       .filter(i -> {
         if (i.getBalance() == null) {
           log.info("Balance is null for installmentId: {} and receiptId: {}", i.getInstallmentId(), receiptId);
@@ -80,9 +89,6 @@ public class AssessmentsServiceImpl implements AssessmentsService {
       })
       .map(i -> {
         DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByInstallmentId(i.getInstallmentId(), accessToken);
-
-        // delete all existing assessment details for the given installment (iuv, iud) and debtPositionTypeOrg code
-        assessmentsDetailService.deleteAssessmentDetail(debtPositionTypeOrg.getCode(), i.getIuv(), i.getIud());
 
         // skipping creation of assessments for technical debtPositionTypes
         if(debtPositionTypeOrg.getDebtPositionTypeId() > 0) {

@@ -13,5 +13,5 @@ public interface AssessmentsDetailService {
 
   List<AssessmentsDetail> createAssessmentsDetail(Long organizationId, Long assessmentId, CreateAssessmentsDetail createAssessmentsDetail, String accessToken);
 
-  void deleteAssessmentDetail(String debtPositionTypeOrgCode, String iuv, String iud);
+  void deleteAssessmentDetailsByOrgAndInstallment(Long organizationId, String iuv, String iud);
 }

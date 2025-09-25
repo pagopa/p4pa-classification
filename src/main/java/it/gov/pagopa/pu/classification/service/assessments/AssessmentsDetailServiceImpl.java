@@ -131,8 +131,8 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   }
 
   @Override
-  public void deleteAssessmentDetail(String debtPositionTypeOrgCode, String iuv, String iud) {
-    assessmentsDetailRepository.deleteAllByDebtPositionTypeOrgCodeAndIuvAndIud(debtPositionTypeOrgCode, iuv, iud);
+  public void deleteAssessmentDetailsByOrgAndInstallment(Long organizationId, String iuv, String iud) {
+    assessmentsDetailRepository.deleteAllByOrganizationIdAndIuvAndIud(organizationId, iuv, iud);
   }
 
   private ReceiptNoPII getReceiptByReceiptIdAndDebtPositionTypeOrgCode(InstallmentNoPII installment, Assessments assessments, String accessToken) {
