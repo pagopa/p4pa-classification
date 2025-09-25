@@ -12,4 +12,6 @@ public interface AssessmentsDetailService {
   void createAssessmentDetail(Assessments assessments, ReceiptNoPII receipt, InstallmentNoPII installmentNoPII);
 
   List<AssessmentsDetail> createAssessmentsDetail(Long organizationId, Long assessmentId, CreateAssessmentsDetail createAssessmentsDetail, String accessToken);
+
+  void deleteAssessmentDetailsByOrgAndInstallment(Long organizationId, String iuv, String iud);
 }

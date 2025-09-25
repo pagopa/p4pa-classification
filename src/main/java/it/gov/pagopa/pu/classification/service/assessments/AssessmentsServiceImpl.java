@@ -71,6 +71,15 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(organization.getOrganizationId(), receipt.getReceiptId(), accessToken);
 
     return installmentsList.stream()
+      .map(installmentNoPII -> {
+        assessmentsDetailService.deleteAssessmentDetailsByOrgAndInstallment(
+          organization.getOrganizationId(),
+          installmentNoPII.getIuv(),
+          installmentNoPII.getIud()
+        );
+
+        return installmentNoPII;
+      })
       .filter(i -> {
         if (i.getBalance() == null) {
           log.info("Balance is null for installmentId: {} and receiptId: {}", i.getInstallmentId(), receiptId);

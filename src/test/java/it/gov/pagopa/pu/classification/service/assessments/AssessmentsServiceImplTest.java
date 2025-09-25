@@ -39,8 +39,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsServiceImplTest {
@@ -135,6 +134,7 @@ class AssessmentsServiceImplTest {
     assertEquals(assessment, result.getFirst());
 
     Mockito.verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
+    Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
 
   @Test
@@ -170,6 +170,7 @@ class AssessmentsServiceImplTest {
 
     Mockito.verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
     Mockito.verify(assessmentsRepositoryMock, times(0)).save(Mockito.any());
+    Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
 
 
@@ -194,6 +195,7 @@ class AssessmentsServiceImplTest {
     List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
 
     assertEquals(0, result.size());
+    verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(organizationId, installment.getIuv(), installment.getIud());
   }
 
 
@@ -377,5 +379,6 @@ class AssessmentsServiceImplTest {
     List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
 
     assertEquals(0, result.size());
+    Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
 }
