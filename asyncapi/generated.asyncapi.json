@@ -32,11 +32,12 @@
         "title": "DataEventType",
         "type": "string",
         "enum": [
-          "ASSESSMENTS",
+          "ASSESSMENTS_DETAIL",
+          "PAYMENT_ASSESSMENTS",
           "TRANSFER_CLASSIFICATION_LABELS"
         ],
         "examples": [
-          "\"ASSESSMENTS\""
+          "\"ASSESSMENTS_DETAIL\""
         ]
       },
       "HeadersNotDocumented": {
