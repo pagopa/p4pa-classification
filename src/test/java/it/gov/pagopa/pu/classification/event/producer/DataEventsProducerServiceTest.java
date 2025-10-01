@@ -4,6 +4,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import it.gov.pagopa.pu.classification.dto.AssessmentsDetailDataDTO;
+import it.gov.pagopa.pu.classification.dto.PaymentAssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventDTO;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
@@ -43,7 +44,7 @@ class DataEventsProducerServiceTest {
   }
 
   @Test
-  void whenNotifyAssessmentsEventThenSendMessage() {
+  void whenNotifyAssessmentsDetailEventThenSendMessage() {
     // Given
     AssessmentsDetailDataDTO assessmentsDataDTO = new AssessmentsDetailDataDTO();
     Assessments assessments = new Assessments();
@@ -72,6 +73,38 @@ class DataEventsProducerServiceTest {
         Assertions.assertSame(dataEventRequestDTO.getEventDescription(), payload.getEventDescription());
         Assertions.assertSame(dataEventRequestDTO.getDataEventType(), payload.getEventType());
         Assertions.assertEquals("assessments"+assessmentsDataDTO.getAssessments().getOrganizationId(), m.getHeaders().get(KafkaHeaders.KEY));
+        return true;
+      }));
+  }
+
+  @Test
+  void whenNotifyPaymentAssessmentsEventThenSendMessage() {
+    // Given
+    PaymentAssessmentsDataDTO assessmentsDataDTO = new PaymentAssessmentsDataDTO();
+    assessmentsDataDTO.setAssessmentId(1L);
+    AssessmentsDetail assessmentsDetail = new AssessmentsDetail();
+    assessmentsDetail.setAssessmentDetailId(99L);
+    assessmentsDataDTO.setAssessmentsDetailList(List.of(assessmentsDetail));
+
+    DataEventRequestDTO dataEventRequestDTO = new DataEventRequestDTO(DataEventType.PAYMENT_ASSESSMENTS, "EVENTDESCRIPTION");
+    String traceId = "TRACEID";
+    MDC.put("traceId", traceId);
+
+    // When
+    dataEventsProducerService.notifyPaymentAssessmentsEvent(assessmentsDataDTO, dataEventRequestDTO);
+
+    // Then
+    verify(streamBridge, times(1)).send(
+      Mockito.eq("dataEventsProducer-out-0"),
+      Mockito.any(),
+      Mockito.<Message<?>>argThat(m -> {
+        DataEventDTO<?> payload = (DataEventDTO<?>)m.getPayload();
+        String eventIdPrefix = dataEventRequestDTO.getDataEventType().name() + assessmentsDataDTO.getAssessmentId();
+        Assertions.assertEquals(eventIdPrefix, payload.getEventId().substring(0, eventIdPrefix.length()));
+        Assertions.assertSame(assessmentsDataDTO, payload.getPayload());
+        Assertions.assertSame(dataEventRequestDTO.getEventDescription(), payload.getEventDescription());
+        Assertions.assertSame(dataEventRequestDTO.getDataEventType(), payload.getEventType());
+        Assertions.assertEquals("assessments"+assessmentsDataDTO.getOrganizationId(), m.getHeaders().get(KafkaHeaders.KEY));
         return true;
       }));
   }
