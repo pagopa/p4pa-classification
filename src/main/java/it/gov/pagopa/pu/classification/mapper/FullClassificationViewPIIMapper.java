@@ -7,6 +7,8 @@ import it.gov.pagopa.pu.classification.dto.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.FullClassificationViewNoPII;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class FullClassificationViewPIIMapper {
   private final PersonalDataService personalDataService;
@@ -16,7 +18,10 @@ public class FullClassificationViewPIIMapper {
   }
 
   public FullClassificationViewDTO map(FullClassificationViewNoPII noPii) {
-    ReceiptPIIDTO receiptPIIDTO = personalDataService.get(noPii.getReceiptPersonalDataId(), ReceiptPIIDTO.class);
+    ReceiptPIIDTO receiptPIIDTO = Optional.ofNullable(noPii.getReceiptPersonalDataId())
+                                    .map(id -> personalDataService.get(id, ReceiptPIIDTO.class))
+                                    .orElse(null);
+
     PaymentNotificationPIIDTO paymentNotificationPIIDTO = personalDataService
       .get(noPii.getPaymentNotificationPersonalDataId(), PaymentNotificationPIIDTO.class);
 
@@ -33,8 +38,8 @@ public class FullClassificationViewPIIMapper {
       .paymentNotificationDebtPositionTypeOrgCode(noPii.getPaymentNotificationDebtPositionTypeOrgCode())
       .paymentNotificationBalance(noPii.getPaymentNotificationBalance())
       .paymentNotificationDebtor(paymentNotificationPIIDTO.getDebtor())
-      .receiptDebtor(receiptPIIDTO.getDebtor())
-      .receiptPayer(receiptPIIDTO.getPayer())
+      .receiptDebtor(receiptPIIDTO != null ? receiptPIIDTO.getDebtor() : null)
+      .receiptPayer(receiptPIIDTO != null ? receiptPIIDTO.getPayer() : null)
       .classificationId(noPii.getClassificationId())
       .receiptFileName(noPii.getReceiptFileName())
       .receiptIud(noPii.getReceiptIud())

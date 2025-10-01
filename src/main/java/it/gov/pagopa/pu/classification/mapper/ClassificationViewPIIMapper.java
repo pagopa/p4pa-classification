@@ -6,6 +6,8 @@ import it.gov.pagopa.pu.classification.dto.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.ClassificationViewNoPII;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ClassificationViewPIIMapper {
   private final PersonalDataService personalDataService;
@@ -15,11 +17,13 @@ public class ClassificationViewPIIMapper {
   }
 
   public ClassificationViewDTO map(ClassificationViewNoPII noPii) {
-    ReceiptPIIDTO pii = personalDataService.get(noPii.getReceiptPersonalDataId(), ReceiptPIIDTO.class);
+    ReceiptPIIDTO pii = Optional.ofNullable(noPii.getReceiptPersonalDataId())
+                          .map(id -> personalDataService.get(id, ReceiptPIIDTO.class))
+                          .orElse(null);
 
     return ClassificationViewDTO.builder()
-      .receiptDebtor(pii.getDebtor())
-      .receiptPayer(pii.getPayer())
+      .receiptDebtor(pii != null ? pii.getDebtor() : null)
+      .receiptPayer(pii != null ? pii.getPayer() : null)
       .classificationId(noPii.getClassificationId())
       .receiptFileName(noPii.getReceiptFileName())
       .receiptIud(noPii.getReceiptIud())
