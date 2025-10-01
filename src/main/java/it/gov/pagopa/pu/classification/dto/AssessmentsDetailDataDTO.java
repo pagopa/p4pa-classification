@@ -1,6 +1,5 @@
 package it.gov.pagopa.pu.classification.dto;
 
-import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import java.util.List;
