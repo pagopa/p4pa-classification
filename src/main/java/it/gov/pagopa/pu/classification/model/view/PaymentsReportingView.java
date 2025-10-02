@@ -30,6 +30,8 @@ public class PaymentsReportingView implements Serializable {
   @Id
   @NotNull
   private String iuf;
+  @NotNull
+  private String iuv;
   @Id
   @NotNull
   private String regulationUniqueIdentifier;
