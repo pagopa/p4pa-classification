@@ -78,6 +78,7 @@ public interface FullClassificationViewNoPIIDTORepository extends Repository<Ful
       t.provisionalCode as treasuryProvisionalCode,
       t.actualSuspensionDate as treasuryActualSuspensionDate,
       t.managementProvisionalCode as treasuryManagementProvisionalCode,
+      t.treasuryOrigin as treasuryOrigin,
       c.label as classificationLabel,
       c.lastClassificationDate as lastClassificationDate,
       pn.ingestionFlowFileId as paymentNotificationIngestionFlowFileId,

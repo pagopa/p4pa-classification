@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
+import it.gov.pagopa.pu.classification.enums.TreasuryOrigin;
 import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -202,6 +203,9 @@ public class ClassificationViewDTO {
 
   @JsonProperty("tres_managementProvisionalCode")
   private String treasuryManagementProvisionalCode;
+
+  @JsonProperty("tres_origin")
+  private TreasuryOrigin treasuryOrigin;
 
   private ClassificationsEnum classificationLabel;
   private LocalDate lastClassificationDate;

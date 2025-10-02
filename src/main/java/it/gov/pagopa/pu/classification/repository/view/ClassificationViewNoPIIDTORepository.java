@@ -78,6 +78,7 @@ public interface ClassificationViewNoPIIDTORepository extends Repository<Classif
       t.provisionalCode as treasuryProvisionalCode,
       t.actualSuspensionDate as treasuryActualSuspensionDate,
       t.managementProvisionalCode as treasuryManagementProvisionalCode,
+      t.treasuryOrigin as treasuryOrigin,
       c.label as classificationLabel,
       c.lastClassificationDate as lastClassificationDate
     )
