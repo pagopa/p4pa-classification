@@ -17,21 +17,7 @@ public interface PaymentsReportingViewRepository extends Repository<PaymentsRepo
   @Query("SELECT distinct p FROM PaymentsReportingView p "
     + "WHERE p.organizationId = :organizationId "
     + "AND (:iuf IS NULL OR p.iuf = :iuf) "
-    + "AND (:regulationUniqueIdentifier IS NULL OR p.regulationUniqueIdentifier = :regulationUniqueIdentifier) "
-    + "AND (cast(:regulationDateFrom AS DATE) IS NULL OR p.regulationDate >= :regulationDateFrom) "
-    + "AND (cast(:regulationDateTo AS DATE) IS NULL OR p.regulationDate <= :regulationDateTo)")
-  Page<PaymentsReportingView> findDistinctByIufAndRegulationUniqueIdentifier(
-    @Parameter(required = true) @Param("organizationId") Long organizationId,
-    @Param("iuf") String iuf,
-    @Param("regulationUniqueIdentifier") String regulationUniqueIdentifier,
-    @Param("regulationDateFrom") LocalDate regulationDateFrom,
-    @Param("regulationDateTo") LocalDate regulationDateTo,
-    Pageable pageable);
-
-  @Query("SELECT distinct p FROM PaymentsReportingView p "
-    + "WHERE p.organizationId = :organizationId "
-    + "AND (:iuf IS NULL OR p.iuf = :iuf) "
-    + "AND (:iuv IS NULL OR p.iuv = :iuv) "
+    + "AND (:iuv IS NULL or p.iuv = :iuv) "
     + "AND (:regulationUniqueIdentifier IS NULL OR p.regulationUniqueIdentifier = :regulationUniqueIdentifier) "
     + "AND (cast(:regulationDateFrom AS DATE) IS NULL OR p.regulationDate >= :regulationDateFrom) "
     + "AND (cast(:regulationDateTo AS DATE) IS NULL OR p.regulationDate <= :regulationDateTo)")
