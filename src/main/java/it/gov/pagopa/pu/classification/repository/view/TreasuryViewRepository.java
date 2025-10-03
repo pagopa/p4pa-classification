@@ -32,7 +32,9 @@ public interface TreasuryViewRepository extends Repository<TreasuryView, String>
         t.provisionalAe as provisionalAe,
         t.pspLastName as pspLastName,
         t.documentCode as documentCode,
-        t.documentYear as documentYear
+        t.documentYear as documentYear,
+        t.orgBtCode as orgBtCode,
+        t.orgIstatCode as orgIstatCode
         )
         FROM TreasuryView t
         WHERE t.organizationId = :organizationId

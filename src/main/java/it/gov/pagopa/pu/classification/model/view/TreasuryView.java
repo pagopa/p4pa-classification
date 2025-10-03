@@ -42,5 +42,8 @@ public class TreasuryView implements Serializable {
   private String pspLastName;
   private String documentCode;
   private String documentYear;
-
+  @NotNull
+  private String orgBtCode;
+  @NotNull
+  private String orgIstatCode;
 }
