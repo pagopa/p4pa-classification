@@ -34,6 +34,11 @@ public interface ClassificationRepository extends JpaRepository<Classification, 
   @RestResource(exported = false)
   Integer deleteByOrganizationIdAndIuvAndIurAndTransferIndex(Long organizationId, String iuv, String iur, int transferIndex);
 
+  @Transactional
+  @Modifying
+  @RestResource(exported = false)
+  Integer deleteByOrganizationIdAndTreasuryId(Long organizationId, String treasuryId);
+
   @Query("""
     SELECT c
     FROM Classification c
