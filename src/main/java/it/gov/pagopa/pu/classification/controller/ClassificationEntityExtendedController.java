@@ -39,6 +39,11 @@ public class ClassificationEntityExtendedController implements ClassificationEnt
   }
 
   @Override
+  public ResponseEntity<Integer> deleteByOrganizationIdAndTreasuryId(Long organizationId, String treasuryId){
+    return ResponseEntity.ok(repository.deleteByOrganizationIdAndTreasuryId(organizationId, treasuryId));
+  }
+
+  @Override
   public ResponseEntity<Integer> deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud, ClassificationsEnum  label){
     return ResponseEntity.ok(repository.deleteByOrganizationIdAndIudAndLabel(organizationId, iud, label));
   }
