@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.model.view;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
+import it.gov.pagopa.pu.classification.enums.TreasuryOrigin;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -84,6 +85,7 @@ import java.time.OffsetDateTime;
     private String treasuryProvisionalCode;
     private LocalDate treasuryActualSuspensionDate;
     private String treasuryManagementProvisionalCode;
+    private TreasuryOrigin treasuryOrigin;
     @Enumerated(EnumType.STRING)
     private ClassificationsEnum classificationLabel;
     private LocalDate lastClassificationDate;

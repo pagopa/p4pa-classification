@@ -8,7 +8,8 @@ import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
 import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
-import it.gov.pagopa.pu.classification.mapper.Assessments2AssessmentsDataMapper;
+import it.gov.pagopa.pu.classification.mapper.Assessments2AssessmentsDetailDataMapper;
+import it.gov.pagopa.pu.classification.mapper.Assessments2PaymentAssessmentsDataMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -45,12 +46,14 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   private final ReceiptService receiptService;
   private final TransferService transferService;
   private final DataEventsProducerService dataEventsProducerService;
-  private final Assessments2AssessmentsDataMapper assessmentsDataMapper;
+  private final Assessments2PaymentAssessmentsDataMapper paymentAssessmentsDataMapper;
+  private final Assessments2AssessmentsDetailDataMapper assessmentsDetailDataMapper;
 
 
   public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService,
     DataEventsProducerService dataEventsProducerService,
-    Assessments2AssessmentsDataMapper assessmentsDataMapper) {
+    Assessments2PaymentAssessmentsDataMapper paymentAssessmentsDataMapper,
+    Assessments2AssessmentsDetailDataMapper assessmentsDetailDataMapper) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
     this.balanceUnmashallerService = balanceUnmashallerService;
     this.assessmentsRepository = assessmentsRepository;
@@ -59,7 +62,8 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     this.receiptService = receiptService;
     this.transferService = transferService;
     this.dataEventsProducerService = dataEventsProducerService;
-    this.assessmentsDataMapper = assessmentsDataMapper;
+    this.paymentAssessmentsDataMapper = paymentAssessmentsDataMapper;
+    this.assessmentsDetailDataMapper = assessmentsDetailDataMapper;
   }
 
   @Transactional
@@ -76,9 +80,9 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
         ad.setAmountCents(assessmentDetail.getAmountCents());
         assessmentsDetailRepository.save(ad);
       }
-      dataEventsProducerService.notifyAssessmentsEvent(assessmentsDataMapper.map(assessments, assessmentDetail), new DataEventRequestDTO(
-        DataEventType.ASSESSMENTS, buildDataEventDescription(assessmentDetail)));
     });
+    dataEventsProducerService.notifyPaymentAssessmentsEvent(paymentAssessmentsDataMapper.map(assessments, assessmentsDetailList), new DataEventRequestDTO(
+      DataEventType.PAYMENT_ASSESSMENTS, buildDataEventDescription(assessments)));
   }
 
   List<AssessmentsDetail> buildAssessmentDetail(ReceiptNoPII receipt, InstallmentNoPII installment, Assessments assessment) {
@@ -127,7 +131,14 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
       assessmentsDetails.add(saveAssessmentsDetail(organizationId, createAssessmentsDetail.getAssessmentRegistryId(),
                 installment, receipt, assessments, accessToken));
     }
+    dataEventsProducerService.notifyAssessmentsDetailEvent(assessmentsDetailDataMapper.map(assessments, assessmentsDetails), new DataEventRequestDTO(
+      DataEventType.ASSESSMENTS_DETAIL, buildDataEventDescription(assessments)));
     return assessmentsDetails;
+  }
+
+  @Override
+  public void deleteAssessmentDetailsByOrgAndInstallment(Long organizationId, String iuv, String iud) {
+    assessmentsDetailRepository.deleteAllByOrganizationIdAndIuvAndIud(organizationId, iuv, iud);
   }
 
   private ReceiptNoPII getReceiptByReceiptIdAndDebtPositionTypeOrgCode(InstallmentNoPII installment, Assessments assessments, String accessToken) {
@@ -156,15 +167,12 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
             .orElseThrow(
             ()->new ResourceNotFoundException("AssessmentsRegistry having id "+assessmentRegistryId+" not found")
     );
-    AssessmentsDetail assessmentsDetail = assessmentsDetailRepository.save(
+    return assessmentsDetailRepository.save(
             buildAssessmentsDetail(receipt, installment, assessments,assessmentsRegistry.getOfficeCode(),
                     assessmentsRegistry.getSectionCode(),assessmentsRegistry.getAssessmentCode(),
                     getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken)
             )
     );
-    dataEventsProducerService.notifyAssessmentsEvent(assessmentsDataMapper.map(assessments, assessmentsDetail), new DataEventRequestDTO(
-      DataEventType.ASSESSMENTS, buildDataEventDescription(assessmentsDetail)));
-    return assessmentsDetail;
   }
 
   private Long getAssessmentDetailAmount(Long installmentId, String orgFiscalCode, String accessToken){
@@ -172,7 +180,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     return transfers.stream().filter(t->orgFiscalCode.equals(t.getOrgFiscalCode())).map(Transfer::getAmountCents).reduce(0L,Long::sum);
   }
 
-  private String buildDataEventDescription(AssessmentsDetail assessmentsDetail) {
-    return "assessmentId:" + assessmentsDetail.getAssessmentId();
+  private String buildDataEventDescription(Assessments assessments) {
+    return "assessmentId:" + assessments.getAssessmentId();
   }
 }

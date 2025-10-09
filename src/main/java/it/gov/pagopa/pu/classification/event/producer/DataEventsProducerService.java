@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.event.producer;
 
-import it.gov.pagopa.pu.classification.dto.AssessmentsDataDTO;
+import it.gov.pagopa.pu.classification.dto.AssessmentsDetailDataDTO;
+import it.gov.pagopa.pu.classification.dto.PaymentAssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventDTO;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
@@ -40,8 +41,14 @@ public class DataEventsProducerService {
     }
   }
 
-  public void notifyAssessmentsEvent(AssessmentsDataDTO assessmentsDataDTO, DataEventRequestDTO dataEventRequest) {
-    notifyDataEvent(assessmentsDataDTO.getOrganizationId(), String.valueOf(assessmentsDataDTO.getAssessmentId()), assessmentsDataDTO, dataEventRequest, "assessments");
+  public void notifyAssessmentsDetailEvent(AssessmentsDetailDataDTO assessmentsDataDTO, DataEventRequestDTO dataEventRequest) {
+    notifyDataEvent(assessmentsDataDTO.getAssessments().getOrganizationId(), String.valueOf(assessmentsDataDTO.getAssessments().getAssessmentId()), assessmentsDataDTO, dataEventRequest, "assessments");
+  }
+
+  public void notifyPaymentAssessmentsEvent(
+    PaymentAssessmentsDataDTO paymentAssessmentsDataDTO, DataEventRequestDTO dataEventRequest) {
+    notifyDataEvent(paymentAssessmentsDataDTO.getOrganizationId(),
+      String.valueOf(paymentAssessmentsDataDTO.getAssessmentId()), paymentAssessmentsDataDTO, dataEventRequest, "assessments");
   }
 
   public void notifyClassificationEvent(List<Classification> classifications, DataEventRequestDTO dataEventRequest) {

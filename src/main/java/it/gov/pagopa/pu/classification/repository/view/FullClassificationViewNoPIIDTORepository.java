@@ -78,6 +78,7 @@ public interface FullClassificationViewNoPIIDTORepository extends Repository<Ful
       t.provisionalCode as treasuryProvisionalCode,
       t.actualSuspensionDate as treasuryActualSuspensionDate,
       t.managementProvisionalCode as treasuryManagementProvisionalCode,
+      t.treasuryOrigin as treasuryOrigin,
       c.label as classificationLabel,
       c.lastClassificationDate as lastClassificationDate,
       pn.ingestionFlowFileId as paymentNotificationIngestionFlowFileId,
@@ -121,7 +122,7 @@ public interface FullClassificationViewNoPIIDTORepository extends Repository<Ful
     AND (:#{#filter.remittanceInformation} IS NULL OR c.remittanceInformation = :#{#filter.remittanceInformation})
     AND (:#{#filter.pspCompanyName} IS NULL OR c.receiptPspCompanyName = :#{#filter.pspCompanyName})
     AND (:#{#filter.pspLastName} IS NULL OR c.pspLastName = :#{#filter.pspLastName})
-    AND (:#{#filter.debtPositionTypeOrgCodes} IS NULL OR c.debtPositionTypeOrgCode IN (:#{#filter.debtPositionTypeOrgCodes}))
+    AND (:#{#filter.debtPositionTypeOrgCodes} IS NULL OR c.debtPositionTypeOrgCode IS NULL OR c.debtPositionTypeOrgCode IN (:#{#filter.debtPositionTypeOrgCodes}))
     """)
   Page<FullClassificationViewNoPII> findFullClassificationViewNoPIIDTO(
     @Parameter(required = true) @Param("organizationId") Long organizationId,

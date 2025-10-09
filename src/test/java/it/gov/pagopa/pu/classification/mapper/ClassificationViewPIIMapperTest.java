@@ -46,4 +46,18 @@ class ClassificationViewPIIMapperTest {
     TestUtils.reflectionEqualsByName(classificationViewNoPII, result);
     TestUtils.checkNotNullFields(result);
   }
+
+  @Test
+  void givenNullPersonalDataIdWhenMapThenOk() {
+    ClassificationViewNoPII classificationViewNoPII = podamFactory.manufacturePojo(ClassificationViewNoPII.class);
+
+    when(personalDataServiceMock.get(classificationViewNoPII.getReceiptPersonalDataId(), ReceiptPIIDTO.class))
+      .thenReturn(null);
+
+    ClassificationViewDTO result = mapper.map(classificationViewNoPII);
+
+    assertNotNull(result);
+    TestUtils.reflectionEqualsByName(classificationViewNoPII, result);
+    TestUtils.checkNotNullFields(result, "receiptDebtor", "receiptPayer");
+  }
 }

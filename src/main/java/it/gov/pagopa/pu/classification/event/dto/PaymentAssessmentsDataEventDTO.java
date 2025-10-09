@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.event.dto;
 
-import it.gov.pagopa.pu.classification.dto.AssessmentsDataDTO;
-import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
+import it.gov.pagopa.pu.classification.dto.PaymentAssessmentsDataDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,5 +10,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
-public class AssessmentsDataEventDTO extends DataEventDTO<AssessmentsDataDTO> {
+public class PaymentAssessmentsDataEventDTO extends DataEventDTO<PaymentAssessmentsDataDTO>{
+
 }

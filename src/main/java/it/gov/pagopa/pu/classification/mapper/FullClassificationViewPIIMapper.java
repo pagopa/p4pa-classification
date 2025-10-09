@@ -7,6 +7,8 @@ import it.gov.pagopa.pu.classification.dto.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.FullClassificationViewNoPII;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class FullClassificationViewPIIMapper {
   private final PersonalDataService personalDataService;
@@ -16,7 +18,10 @@ public class FullClassificationViewPIIMapper {
   }
 
   public FullClassificationViewDTO map(FullClassificationViewNoPII noPii) {
-    ReceiptPIIDTO receiptPIIDTO = personalDataService.get(noPii.getReceiptPersonalDataId(), ReceiptPIIDTO.class);
+    ReceiptPIIDTO receiptPIIDTO = Optional.ofNullable(noPii.getReceiptPersonalDataId())
+                                    .map(id -> personalDataService.get(id, ReceiptPIIDTO.class))
+                                    .orElse(null);
+
     PaymentNotificationPIIDTO paymentNotificationPIIDTO = personalDataService
       .get(noPii.getPaymentNotificationPersonalDataId(), PaymentNotificationPIIDTO.class);
 
@@ -33,15 +38,15 @@ public class FullClassificationViewPIIMapper {
       .paymentNotificationDebtPositionTypeOrgCode(noPii.getPaymentNotificationDebtPositionTypeOrgCode())
       .paymentNotificationBalance(noPii.getPaymentNotificationBalance())
       .paymentNotificationDebtor(paymentNotificationPIIDTO.getDebtor())
-      .receiptDebtor(receiptPIIDTO.getDebtor())
-      .receiptPayer(receiptPIIDTO.getPayer())
+      .receiptDebtor(receiptPIIDTO != null ? receiptPIIDTO.getDebtor() : null)
+      .receiptPayer(receiptPIIDTO != null ? receiptPIIDTO.getPayer() : null)
       .classificationId(noPii.getClassificationId())
       .receiptFileName(noPii.getReceiptFileName())
       .receiptIud(noPii.getReceiptIud())
       .receiptIuv(noPii.getReceiptIuv())
       .receiptOrgFiscalCode(noPii.getReceiptOrgFiscalCode())
       .receiptPaymentReceiptId(noPii.getReceiptPaymentReceiptId())
-      .receiptPaymentDateTime(noPii.getReceiptPaymentDateTime().toLocalDateTime())
+      .receiptPaymentDateTime(noPii.getReceiptPaymentDateTime() != null ? noPii.getReceiptPaymentDateTime().toLocalDateTime() : null)
       .receiptPaymentRequestId(noPii.getReceiptPaymentRequestId())
       .receiptIdPsp(noPii.getReceiptIdPsp())
       .receiptPspCompanyName(noPii.getReceiptPspCompanyName())
@@ -53,7 +58,7 @@ public class FullClassificationViewPIIMapper {
       .receiptTransferAmount(noPii.getReceiptTransferAmount())
       .receiptTransferRemittanceInformation(noPii.getReceiptTransferRemittanceInformation())
       .receiptTransferCategory(noPii.getReceiptTransferCategory())
-      .receiptCreationDate(noPii.getReceiptCreationDate().toLocalDateTime())
+      .receiptCreationDate(noPii.getReceiptCreationDate() != null ? noPii.getReceiptCreationDate().toLocalDateTime() : null)
       .receiptInstallmentBalance(noPii.getReceiptInstallmentBalance())
       .paymentsReportingIuf(noPii.getPaymentsReportingIuf())
       .paymentsReportingFlowDateTime(noPii.getPaymentsReportingFlowDateTime())
@@ -95,6 +100,7 @@ public class FullClassificationViewPIIMapper {
       .treasuryProvisionalCode(noPii.getTreasuryProvisionalCode())
       .treasuryActualSuspensionDate(noPii.getTreasuryActualSuspensionDate())
       .treasuryManagementProvisionalCode(noPii.getTreasuryManagementProvisionalCode())
+      .treasuryOrigin(noPii.getTreasuryOrigin())
       .classificationLabel(noPii.getClassificationLabel())
       .lastClassificationDate(noPii.getLastClassificationDate())
       .build();
