@@ -32,7 +32,7 @@ public interface ClassificationPaidInstallmentsViewRepository extends Repository
     AND c.paymentDateTime IS NOT NULL
     AND c.receiptCreationDate IS NOT NULL
     AND c.receiptPaymentRequestId IS NOT NULL
-    AND NOT EXISTS (SELECT ad FROM AssessmentsDetail ad where ad.iud = c.iud)
+    AND NOT EXISTS (SELECT ad FROM AssessmentsDetail ad where ad.iud = c.iud and ad.organizationId = :organizationId)
     """)
   Page<ClassificationPaidInstallmentsView> findPaidInstallments(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
