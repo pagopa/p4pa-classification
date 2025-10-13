@@ -65,11 +65,14 @@ public class PaymentsReportingWithReceiptView implements Serializable {
   @NotNull
   private LocalDate acquiringDate;
   private String bicCodePouringBank;
+  private LocalDateTime creationDate;
+  private LocalDateTime updateDate;
+  private String updateOperatorExternalId;
+  private String updateTraceId;
 
   @Formula("(SELECT c.receipt_payment_request_id "
   + "FROM classification c "
   + "WHERE c.payments_reporting_id = payments_reporting_id "
   + "LIMIT 1)")
   private String receiptPaymentRequestId;
-
 }
