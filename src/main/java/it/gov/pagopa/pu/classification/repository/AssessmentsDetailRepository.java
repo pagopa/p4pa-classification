@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 
 @RepositoryRestResource(path = "assessments-details")
@@ -22,6 +23,8 @@ public interface AssessmentsDetailRepository extends JpaRepository<AssessmentsDe
 
   @RestResource(exported = false)
   AssessmentsDetail findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(String debtPositionTypeOrgCode, String iuv, String iud, String officeCode, String sectionCode, String assessmentCode);
+
+  List<AssessmentsDetail> findAllByOrganizationIdAndIuvAndIud(Long organizationId, String iuv, String iud);
 
   @RestResource(exported = false)
   @Modifying
