@@ -57,4 +57,6 @@ public interface ClassificationRepository extends JpaRepository<Classification, 
   @Override
   @RestResource(exported = false)
   <S extends Classification> S save(S entity);
+
+  List<Classification> findAllByOrganizationIdAndIuvAndIud(Long organizationId, String iuv, String iud);
 }
