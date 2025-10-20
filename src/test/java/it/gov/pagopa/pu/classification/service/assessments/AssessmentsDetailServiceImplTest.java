@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.AssessmentsDetailDataDTO;
 import it.gov.pagopa.pu.classification.dto.PaymentAssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
+import it.gov.pagopa.pu.classification.enums.ClassificationLabel;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
 import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
@@ -108,6 +109,8 @@ class AssessmentsDetailServiceImplTest {
     ReceiptNoPII receipt = new ReceiptNoPII();
     receipt.setPaymentDateTime(OffsetDateTime.now());
     receipt.setReceiptId(9999L);
+    receipt.setCreationDate(OffsetDateTime.now());
+    receipt.setTransferDate(OffsetDateTime.now());
     Assessments assessment = new Assessments();
     assessment.setAssessmentId(1L);
     assessment.setOrganizationId(1L);
@@ -125,7 +128,7 @@ class AssessmentsDetailServiceImplTest {
 
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
 
-    List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment);
+    List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment, "office description", "section description", "assessment description", 1L);
 
     assertNotNull(result);
     assertEquals(1, result.size());
@@ -156,7 +159,7 @@ class AssessmentsDetailServiceImplTest {
 
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
 
-    List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment);
+    List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment, "office description", "section description", "assessment description", 1L);
 
     assertNotNull(result);
     assertTrue(result.isEmpty());
@@ -187,7 +190,7 @@ class AssessmentsDetailServiceImplTest {
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
     doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
-    when(paymentAssessmentsDataMapperMock.map(assessment, List.of(assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment).getFirst())))
+    when(paymentAssessmentsDataMapperMock.map(assessment, List.of(assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment, null, null, null, null).getFirst())))
       .thenReturn(new PaymentAssessmentsDataDTO());
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
@@ -229,6 +232,7 @@ class AssessmentsDetailServiceImplTest {
       .sectionCode("CAP1")
       .assessmentCode("ACC1")
       .amountCents(5000L)
+      .classificationLabel(ClassificationLabel.REPORTED)
       .build();
 
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);

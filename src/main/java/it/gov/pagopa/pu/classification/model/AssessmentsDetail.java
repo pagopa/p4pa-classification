@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.model;
 
+import it.gov.pagopa.pu.classification.enums.ClassificationLabel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -43,4 +44,12 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   @NotNull
   private boolean amountSubmitted = true;
   private Long receiptId;
+  private String officeDescription;
+  private String sectionDescription;
+  private String assessmentDescription;
+  private Long debtPositionTypeOrgId;
+  private ClassificationLabel classificationLabel;
+  private OffsetDateTime dateReceipt;
+  private OffsetDateTime dateReporting;
+  private OffsetDateTime dateTreasury;
 }

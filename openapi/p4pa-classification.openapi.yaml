@@ -1460,3 +1460,12 @@ components:
           uniqueItems: true
           items:
             type: string
+        officeDescription:
+          type: string
+        sectionDescription:
+          type: string
+        assessmentDescription:
+          type: string
+        debtPositionTypeOrgId:
+          type: integer
+          format: int64
