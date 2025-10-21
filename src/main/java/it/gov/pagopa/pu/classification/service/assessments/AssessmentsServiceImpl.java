@@ -159,10 +159,12 @@ public class AssessmentsServiceImpl implements AssessmentsService {
 
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken);
 
+    Long debtPositionTypeOrgId = debtPositionTypeOrg != null ? debtPositionTypeOrg.getDebtPositionTypeOrgId() : null;
+
     return assessmentsRepository.save(
       Assessments.builder()
       .assessmentName(assessmentName)
-      .debtPositionTypeOrgId(debtPositionTypeOrg.getDebtPositionTypeOrgId())
+      .debtPositionTypeOrgId(debtPositionTypeOrgId)
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .flagManualGeneration(true)
       .status(AssessmentStatus.ACTIVE)

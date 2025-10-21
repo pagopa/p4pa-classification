@@ -129,26 +129,38 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     String sectionCode,
     String assessmentCode,
     Long amountCents,
-    Long assessmentsRegistryId
+    AssessmentsRegistry assessmentsRegistry
   ) {
-    Optional<AssessmentsRegistry> assessmentsRegistry;
+    int year = Optional.ofNullable(assessment.getCreationDate())
+      .map(LocalDateTime::getYear)
+      .orElse(LocalDateTime.now().getYear());
 
-    if (assessmentsRegistryId != null) {
-      assessmentsRegistry = assessmentsRegistryRepository.findById(assessmentsRegistryId);
-    } else {
-      assessmentsRegistry = assessmentsRegistryRepository.findByOrganizationIdAndCodes(
+    AssessmentsRegistry resolvedRegistry = Optional.ofNullable(assessmentsRegistry)
+      .orElseGet(() -> assessmentsRegistryRepository.findByOrganizationIdAndCodes(
         assessment.getOrganizationId(),
         assessment.getDebtPositionTypeOrgCode(),
         sectionCode,
         officeCode,
         assessmentCode,
-        String.valueOf(assessment.getCreationDate() != null ? assessment.getCreationDate().getYear() : LocalDateTime.now().getYear())
-      );
-    }
+        String.valueOf(year)
+      ).orElse(null));
+
+    String officeDescription = Optional.ofNullable(resolvedRegistry)
+      .map(AssessmentsRegistry::getOfficeDescription)
+      .orElse(null);
+
+    String sectionDescription = Optional.ofNullable(resolvedRegistry)
+      .map(AssessmentsRegistry::getSectionDescription)
+      .orElse(null);
+
+    String assessmentDescription = Optional.ofNullable(resolvedRegistry)
+      .map(AssessmentsRegistry::getAssessmentDescription)
+      .orElse(null);
 
     return AssessmentsDetail.builder()
             .assessmentId(assessment.getAssessmentId())
             .organizationId(assessment.getOrganizationId())
+            .debtPositionTypeOrgId(assessment.getDebtPositionTypeOrgId())
             .debtPositionTypeOrgCode(assessment.getDebtPositionTypeOrgCode())
             .iuv(installment.getIuv())
             .iud(installment.getIud())
@@ -156,14 +168,13 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
             .debtorFiscalCodeHash(installment.getDebtorFiscalCodeHash())
             .paymentDateTime(receipt.getPaymentDateTime())
             .officeCode(officeCode)
+            .officeDescription(officeDescription)
             .sectionCode(sectionCode)
+            .sectionDescription(sectionDescription)
             .assessmentCode(assessmentCode)
+            .assessmentDescription(assessmentDescription)
             .amountCents(amountCents)
             .receiptId(receipt.getReceiptId())
-            .officeDescription(assessmentsRegistry.map(AssessmentsRegistry::getOfficeDescription).orElse(null))
-            .sectionDescription(assessmentsRegistry.map(AssessmentsRegistry::getSectionDescription).orElse(null))
-            .assessmentDescription(assessmentsRegistry.map(AssessmentsRegistry::getAssessmentDescription).orElse(null))
-            .debtPositionTypeOrgId(assessment.getDebtPositionTypeOrgId())
             .build();
   }
 
@@ -232,7 +243,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
               assessmentsRegistry.getSectionCode(),
               assessmentsRegistry.getAssessmentCode(),
               getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken),
-              assessmentsRegistry.getAssessmentRegistryId()
+              assessmentsRegistry
             )
     );
   }

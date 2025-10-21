@@ -110,6 +110,7 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
             AND entity.officeCode = :officeCode
             AND entity.assessmentCode = :assessmentCode
             AND entity.operatingYear = :operatingYear
+        ORDER BY CASE WHEN entity.status = 'ACTIVE' THEN 0 ELSE 1 END ASC
     """)
     Optional<AssessmentsRegistry> findByOrganizationIdAndCodes(
       @Param("organizationId") Long organizationId,
