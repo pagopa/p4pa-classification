@@ -21,6 +21,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -159,12 +160,14 @@ public class AssessmentsServiceImpl implements AssessmentsService {
 
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken);
 
-    Long debtPositionTypeOrgId = debtPositionTypeOrg != null ? debtPositionTypeOrg.getDebtPositionTypeOrgId() : null;
+    if (debtPositionTypeOrg == null) {
+      throw new ResourceNotFoundException("DebtPositionTypeOrg not found by organizationId=%d and debtPositionTypeOrgCode=%s".formatted(organizationId, debtPositionTypeOrgCode));
+    }
 
     return assessmentsRepository.save(
       Assessments.builder()
       .assessmentName(assessmentName)
-      .debtPositionTypeOrgId(debtPositionTypeOrgId)
+      .debtPositionTypeOrgId(debtPositionTypeOrg.getDebtPositionTypeOrgId())
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .flagManualGeneration(true)
       .status(AssessmentStatus.ACTIVE)

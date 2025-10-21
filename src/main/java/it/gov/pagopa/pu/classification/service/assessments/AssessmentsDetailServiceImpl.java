@@ -118,7 +118,16 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     String assessmentCode,
     Long amountCents
   ) {
-    return this.buildAssessmentsDetail(receipt, installment, assessment, officeCode, sectionCode, assessmentCode, amountCents, null);
+    AssessmentsRegistry assessmentsRegistry = assessmentsRegistryRepository.findByOrganizationIdAndCodes(
+      assessment.getOrganizationId(),
+      assessment.getDebtPositionTypeOrgCode(),
+      sectionCode,
+      officeCode,
+      assessmentCode,
+      String.valueOf(LocalDateTime.now().getYear())
+    ).orElse(null);
+
+    return this.buildAssessmentsDetail(receipt, installment, assessment, officeCode, sectionCode, assessmentCode, amountCents, assessmentsRegistry);
   }
 
   private AssessmentsDetail buildAssessmentsDetail(
@@ -131,29 +140,15 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     Long amountCents,
     AssessmentsRegistry assessmentsRegistry
   ) {
-    int year = Optional.ofNullable(assessment.getCreationDate())
-      .map(LocalDateTime::getYear)
-      .orElse(LocalDateTime.now().getYear());
-
-    AssessmentsRegistry resolvedRegistry = Optional.ofNullable(assessmentsRegistry)
-      .orElseGet(() -> assessmentsRegistryRepository.findByOrganizationIdAndCodes(
-        assessment.getOrganizationId(),
-        assessment.getDebtPositionTypeOrgCode(),
-        sectionCode,
-        officeCode,
-        assessmentCode,
-        String.valueOf(year)
-      ).orElse(null));
-
-    String officeDescription = Optional.ofNullable(resolvedRegistry)
+    String officeDescription = Optional.ofNullable(assessmentsRegistry)
       .map(AssessmentsRegistry::getOfficeDescription)
       .orElse(null);
 
-    String sectionDescription = Optional.ofNullable(resolvedRegistry)
+    String sectionDescription = Optional.ofNullable(assessmentsRegistry)
       .map(AssessmentsRegistry::getSectionDescription)
       .orElse(null);
 
-    String assessmentDescription = Optional.ofNullable(resolvedRegistry)
+    String assessmentDescription = Optional.ofNullable(assessmentsRegistry)
       .map(AssessmentsRegistry::getAssessmentDescription)
       .orElse(null);
 
