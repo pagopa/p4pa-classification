@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -124,7 +125,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
       sectionCode,
       officeCode,
       assessmentCode,
-      String.valueOf(LocalDateTime.now().getYear())
+      String.valueOf(Optional.ofNullable(receipt.getPaymentDateTime()).orElse(OffsetDateTime.now()).getYear())
     ).orElse(null);
 
     return this.buildAssessmentsDetail(receipt, installment, assessment, officeCode, sectionCode, assessmentCode, amountCents, assessmentsRegistry);
