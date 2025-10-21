@@ -43,6 +43,7 @@ public interface AssessmentsService {
    *
    * @param assessmentName the name of assessment
    * @param debtPositionTypeOrgCode debtPositionTypeOrgCode
+   * @param accessToken the access token for authentication
    */
-  Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId);
+  Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId, String accessToken);
 }

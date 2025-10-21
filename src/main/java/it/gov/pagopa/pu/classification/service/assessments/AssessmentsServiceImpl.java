@@ -120,6 +120,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     if (assessment == null) {
       Assessments newAssessment = Assessments.builder()
         .organizationId(debtPositionTypeOrg.getOrganizationId())
+        .debtPositionTypeOrgId(debtPositionTypeOrg.getDebtPositionTypeOrgId())
         .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
         .status(AssessmentStatus.CLOSED)
         .assessmentName(installment.getSourceFlowName())
@@ -150,15 +151,18 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   }
 
   @Override
-  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId) {
+  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId, String accessToken) {
 
     if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName) != null) {
      throw new AssessmentConflictException("Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
     }
 
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken);
+
     return assessmentsRepository.save(
       Assessments.builder()
       .assessmentName(assessmentName)
+      .debtPositionTypeOrgId(debtPositionTypeOrg.getDebtPositionTypeOrgId())
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .flagManualGeneration(true)
       .status(AssessmentStatus.ACTIVE)

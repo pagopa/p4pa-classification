@@ -34,4 +34,5 @@ public class Assessments extends BaseEntity implements Serializable {
   private boolean flagManualGeneration;
   @NotNull
   private String operatorExternalUserId;
+  private Long debtPositionTypeOrgId;
 }

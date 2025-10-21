@@ -39,6 +39,7 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -115,6 +116,7 @@ class AssessmentsDetailServiceImplTest {
     assessment.setAssessmentId(1L);
     assessment.setOrganizationId(1L);
     assessment.setDebtPositionTypeOrgCode("DPTC");
+    assessment.setDebtPositionTypeOrgId(1L);
 
     CtBilancio bilancio = new CtBilancio();
     CtCapitolo capitolo = new CtCapitolo();
@@ -126,9 +128,15 @@ class AssessmentsDetailServiceImplTest {
     capitolo.getAccertamento().add(accertamento);
     bilancio.getCapitolo().add(capitolo);
 
+    AssessmentsRegistry assessmentsRegistry = new AssessmentsRegistry();
+    assessmentsRegistry.setAssessmentDescription("assessmentDescription");
+    assessmentsRegistry.setOfficeDescription("officeDescription");
+    assessmentsRegistry.setSectionDescription("sectionDescription");
+
+    when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), capitolo.getCodCapitolo(), capitolo.getCodUfficio(), accertamento.getCodAccertamento(), String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
 
-    List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment, "office description", "section description", "assessment description", 1L);
+    List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment);
 
     assertNotNull(result);
     assertEquals(1, result.size());
@@ -141,11 +149,12 @@ class AssessmentsDetailServiceImplTest {
     assertEquals("ACC1", detail.getAssessmentCode());
     assertEquals(10000L, detail.getAmountCents());
     assertEquals(9999L, detail.getReceiptId());
+    assertEquals(1L, detail.getDebtPositionTypeOrgId());
     assertSame(installment.getIur(), detail.getIur());
     assertSame(installment.getDebtorFiscalCodeHash(), detail.getDebtorFiscalCodeHash());
     assertSame(receipt.getPaymentDateTime(), detail.getPaymentDateTime());
 
-    TestUtils.checkNotNullFields(detail, "assessmentDetailId","creationDate","updateDate","updateOperatorExternalId","updateTraceId");
+    TestUtils.checkNotNullFields(detail, "assessmentDetailId","creationDate","updateDate","updateOperatorExternalId","updateTraceId", "classificationLabel", "dateReceipt", "dateReporting", "dateTreasury");
   }
 
   @Test
@@ -159,7 +168,7 @@ class AssessmentsDetailServiceImplTest {
 
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
 
-    List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment, "office description", "section description", "assessment description", 1L);
+    List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment);
 
     assertNotNull(result);
     assertTrue(result.isEmpty());
@@ -187,10 +196,16 @@ class AssessmentsDetailServiceImplTest {
     capitolo.getAccertamento().add(accertamento);
     bilancio.getCapitolo().add(capitolo);
 
+    AssessmentsRegistry assessmentsRegistry = new AssessmentsRegistry();
+    assessmentsRegistry.setAssessmentDescription("assessmentDescription");
+    assessmentsRegistry.setOfficeDescription("officeDescription");
+    assessmentsRegistry.setSectionDescription("sectionDescription");
+
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
     doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
-    when(paymentAssessmentsDataMapperMock.map(assessment, List.of(assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment, null, null, null, null).getFirst())))
+    when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), "CAP1", "UFF1", "ACC1", String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
+    when(paymentAssessmentsDataMapperMock.map(assessment, List.of(assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment).getFirst())))
       .thenReturn(new PaymentAssessmentsDataDTO());
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
@@ -232,13 +247,21 @@ class AssessmentsDetailServiceImplTest {
       .sectionCode("CAP1")
       .assessmentCode("ACC1")
       .amountCents(5000L)
-      .classificationLabel(ClassificationLabel.REPORTED)
+      .officeDescription("officeDescription")
+      .sectionDescription("sectionDescription")
+      .assessmentDescription("assessmentDescription")
       .build();
+
+    AssessmentsRegistry assessmentsRegistry = new AssessmentsRegistry();
+    assessmentsRegistry.setAssessmentDescription("assessmentDescription");
+    assessmentsRegistry.setOfficeDescription("officeDescription");
+    assessmentsRegistry.setSectionDescription("sectionDescription");
 
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
     doReturn(existingDetail).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
     when(paymentAssessmentsDataMapperMock.map(assessment, List.of(existingDetail))).thenReturn(new PaymentAssessmentsDataDTO());
+    when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), capitolo.getCodCapitolo(), capitolo.getCodUfficio(), accertamento.getCodAccertamento(), String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
 
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
@@ -257,6 +280,9 @@ class AssessmentsDetailServiceImplTest {
     assessments.setOrganizationId(organizationId);
     AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
     assessmentsRegistry.setOrganizationId(organizationId);
+    assessmentsRegistry.setAssessmentDescription("assessmentDescription");
+    assessmentsRegistry.setSectionDescription("sectionDescription");
+    assessmentsRegistry.setOfficeDescription("officeDescription");
     List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
     Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
     ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);

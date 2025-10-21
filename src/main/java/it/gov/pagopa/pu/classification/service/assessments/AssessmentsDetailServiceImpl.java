@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.service.assessments;
 
+import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
@@ -19,6 +20,7 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
 import it.gov.pagopa.pu.classification.util.Utilities;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.Transfer;
@@ -31,8 +33,10 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Lazy
 @Slf4j
@@ -52,9 +56,9 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
 
 
   public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService,
-    DataEventsProducerService dataEventsProducerService,
-    Assessments2PaymentAssessmentsDataMapper paymentAssessmentsDataMapper,
-    Assessments2AssessmentsDetailDataMapper assessmentsDetailDataMapper) {
+                                      DataEventsProducerService dataEventsProducerService,
+                                      Assessments2PaymentAssessmentsDataMapper paymentAssessmentsDataMapper,
+                                      Assessments2AssessmentsDetailDataMapper assessmentsDetailDataMapper) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
     this.balanceUnmashallerService = balanceUnmashallerService;
     this.assessmentsRepository = assessmentsRepository;
@@ -70,7 +74,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   @Transactional
   @Override
   public void createAssessmentDetail(Assessments assessments, ReceiptNoPII receipt, InstallmentNoPII installmentNoPII) {
-    List<AssessmentsDetail> assessmentsDetailList = buildAssessmentDetail(receipt, installmentNoPII, assessments, null, null, null, null);
+    List<AssessmentsDetail> assessmentsDetailList = buildAssessmentDetail(receipt, installmentNoPII, assessments);
     assessmentsDetailList.forEach(assessmentDetail -> {
       AssessmentsDetail ad = assessmentsDetailRepository.findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
         assessmentDetail.getDebtPositionTypeOrgCode(), assessmentDetail.getIuv(), assessmentDetail.getIud(),
@@ -86,7 +90,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
       DataEventType.PAYMENT_ASSESSMENTS, buildDataEventDescription(assessments)));
   }
 
-  List<AssessmentsDetail> buildAssessmentDetail(ReceiptNoPII receipt, InstallmentNoPII installment, Assessments assessment, String officeDescription, String sectionDescription, String assessmentDescription, Long debtPositionTypeOrgId) {
+  List<AssessmentsDetail> buildAssessmentDetail(ReceiptNoPII receipt, InstallmentNoPII installment, Assessments assessment) {
     CtBilancio balance = balanceUnmashallerService.unmarshal(installment.getBalance());
 
     List<CtCapitolo> capitoloList = balance.getCapitolo();
@@ -100,16 +104,24 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
                   capitolo.getCodUfficio(),
                   capitolo.getCodCapitolo(),
                   accertamento.getCodAccertamento(),
-                  Utilities.bigDecimalEuroToLongCentsAmount(accertamento.getImporto()),
-                  officeDescription,
-                  sectionDescription,
-                  assessmentDescription,
-                  debtPositionTypeOrgId
+                  Utilities.bigDecimalEuroToLongCentsAmount(accertamento.getImporto())
                 ))
       ).toList();
   }
 
-  private static AssessmentsDetail buildAssessmentsDetail(
+  private AssessmentsDetail buildAssessmentsDetail(
+    ReceiptNoPII receipt,
+    InstallmentNoPII installment,
+    Assessments assessment,
+    String officeCode,
+    String sectionCode,
+    String assessmentCode,
+    Long amountCents
+  ) {
+    return this.buildAssessmentsDetail(receipt, installment, assessment, officeCode, sectionCode, assessmentCode, amountCents, null);
+  }
+
+  private AssessmentsDetail buildAssessmentsDetail(
     ReceiptNoPII receipt,
     InstallmentNoPII installment,
     Assessments assessment,
@@ -117,11 +129,23 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     String sectionCode,
     String assessmentCode,
     Long amountCents,
-    String officeDescription,
-    String sectionDescription,
-    String assessmentDescription,
-    Long debtPositionTypeOrgId
+    Long assessmentsRegistryId
   ) {
+    Optional<AssessmentsRegistry> assessmentsRegistry;
+
+    if (assessmentsRegistryId != null) {
+      assessmentsRegistry = assessmentsRegistryRepository.findById(assessmentsRegistryId);
+    } else {
+      assessmentsRegistry = assessmentsRegistryRepository.findByOrganizationIdAndCodes(
+        assessment.getOrganizationId(),
+        assessment.getDebtPositionTypeOrgCode(),
+        sectionCode,
+        officeCode,
+        assessmentCode,
+        String.valueOf(assessment.getCreationDate() != null ? assessment.getCreationDate().getYear() : LocalDateTime.now().getYear())
+      );
+    }
+
     return AssessmentsDetail.builder()
             .assessmentId(assessment.getAssessmentId())
             .organizationId(assessment.getOrganizationId())
@@ -136,14 +160,10 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
             .assessmentCode(assessmentCode)
             .amountCents(amountCents)
             .receiptId(receipt.getReceiptId())
-            .officeDescription(officeDescription)
-            .sectionDescription(sectionDescription)
-            .assessmentDescription(assessmentDescription)
-            .debtPositionTypeOrgId(debtPositionTypeOrgId)
-            .classificationLabel(ClassificationLabel.REPORTED) // @TODO: logic behind this value to be defined
-            .dateReceipt(receipt.getCreationDate())
-            .dateReporting(installment.getNotificationDate())
-            .dateTreasury(receipt.getTransferDate())
+            .officeDescription(assessmentsRegistry.map(AssessmentsRegistry::getOfficeDescription).orElse(null))
+            .sectionDescription(assessmentsRegistry.map(AssessmentsRegistry::getSectionDescription).orElse(null))
+            .assessmentDescription(assessmentsRegistry.map(AssessmentsRegistry::getAssessmentDescription).orElse(null))
+            .debtPositionTypeOrgId(assessment.getDebtPositionTypeOrgId())
             .build();
   }
 
@@ -212,10 +232,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
               assessmentsRegistry.getSectionCode(),
               assessmentsRegistry.getAssessmentCode(),
               getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken),
-              createAssessmentsDetail.getOfficeDescription(),
-              createAssessmentsDetail.getSectionDescription(),
-              createAssessmentsDetail.getAssessmentDescription(),
-              createAssessmentsDetail.getDebtPositionTypeOrgId()
+              assessmentsRegistry.getAssessmentRegistryId()
             )
     );
   }
