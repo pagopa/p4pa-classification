@@ -24,6 +24,7 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   private Long assessmentId;
   @NotNull
   private Long organizationId;
+  private Long debtPositionTypeOrgId;
   @NotNull
   private String debtPositionTypeOrgCode;
   @NotNull
@@ -36,18 +37,17 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   private byte[] debtorFiscalCodeHash;
   private OffsetDateTime paymentDateTime;
   private String officeCode;
+  private String officeDescription;
   @NotNull
   private String sectionCode;
+  private String sectionDescription;
   private String assessmentCode;
+  private String assessmentDescription;
   @NotNull
   private Long amountCents;
   @NotNull
   private boolean amountSubmitted = true;
   private Long receiptId;
-  private String officeDescription;
-  private String sectionDescription;
-  private String assessmentDescription;
-  private Long debtPositionTypeOrgId;
   private ClassificationLabel classificationLabel;
   private OffsetDateTime dateReceipt;
   private OffsetDateTime dateReporting;
