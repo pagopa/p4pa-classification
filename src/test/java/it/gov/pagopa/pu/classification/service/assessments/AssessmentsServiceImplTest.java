@@ -29,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -388,4 +389,38 @@ class AssessmentsServiceImplTest {
     assertEquals(0, result.size());
     Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
+
+  @Test
+  void createAssessmentWhenDebtPositionTypeOrgNotFoundThenThrowsNotFoundException() {
+    // Given
+    Long organizationId = 3L;
+    String assessmentName = "ASSESSMENT_NAME";
+    String debtPositionTypeOrgCode = "CODE";
+    String operatorExternalUserId = "operatorExternalUserId";
+    String accessToken = "accessToken";
+
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(
+      organizationId, debtPositionTypeOrgCode, accessToken))
+      .thenReturn(null);
+    when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(
+      organizationId, debtPositionTypeOrgCode, assessmentName
+    )).thenReturn(null);
+
+    // When / Then
+    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+      () -> service.createAssessment(
+        organizationId,
+        assessmentName,
+        debtPositionTypeOrgCode,
+        operatorExternalUserId,
+        accessToken));
+
+    assertEquals("DebtPositionTypeOrg not found by organizationId=3 and debtPositionTypeOrgCode=CODE",
+      exception.getMessage());
+
+    verify(debtPositionTypeOrgServiceMock).getDebtPositionTypeOrgByDebtPositionTypeOrgCode(
+      organizationId, debtPositionTypeOrgCode, accessToken);
+  }
+
+
 }

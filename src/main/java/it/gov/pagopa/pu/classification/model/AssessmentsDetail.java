@@ -24,6 +24,7 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   private Long assessmentId;
   @NotNull
   private Long organizationId;
+  @NotNull
   private Long debtPositionTypeOrgId;
   @NotNull
   private String debtPositionTypeOrgCode;
