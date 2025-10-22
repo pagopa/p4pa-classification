@@ -15,7 +15,9 @@ public class TreasuredClassificationMapper {
 
     if (pagedClassificationListDTO != null) {
       if (!pagedClassificationListDTO.getContent().isEmpty()) {
-        mappedPagedClassificationList.setContent(pagedClassificationListDTO.getContent());
+        mappedPagedClassificationList.setContent(
+          pagedClassificationListDTO.getContent().stream()
+            .map(this::map2TreasuredClassificationDTO).toList());
       } else {
         mappedPagedClassificationList.setContent(Collections.emptyList());
       }
@@ -33,5 +35,14 @@ public class TreasuredClassificationMapper {
     }
 
     return mappedPagedClassificationList;
+  }
+
+  private TreasuredClassificationView map2TreasuredClassificationDTO(
+    TreasuredClassificationView input) {
+    return input.toBuilder()
+      .calculatedAmount(input.getTransferAmount() != null ?
+        input.getTransferAmount()
+        : input.getTreasuryBillAmountCents())
+      .build();
   }
 }

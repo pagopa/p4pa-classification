@@ -70,6 +70,7 @@ public class TreasuredClassificationView implements Serializable {
   private String transferCategory;
   private OffsetDateTime receiptCreationDate;
   private String installmentBalance;
+  private Long calculatedAmount;
   //endregion
 
   //region Treasury fields
