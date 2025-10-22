@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.service.assessments;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
+import it.gov.pagopa.pu.classification.dto.BuildAssessmentsDetailParamsDTO;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
@@ -124,49 +125,49 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
       String.valueOf(Optional.ofNullable(receipt.getPaymentDateTime()).orElse(OffsetDateTime.now()).getYear())
     ).orElse(null);
 
-    return this.buildAssessmentsDetail(receipt, installment, assessment, officeCode, sectionCode, assessmentCode, amountCents, assessmentsRegistry);
+    return this.buildAssessmentsDetail(BuildAssessmentsDetailParamsDTO.builder()
+        .receipt(receipt)
+        .installment(installment)
+        .assessment(assessment)
+        .officeCode(officeCode)
+        .sectionCode(sectionCode)
+        .assessmentCode(assessmentCode)
+        .amountCents(amountCents)
+        .assessmentsRegistry(assessmentsRegistry)
+        .build());
   }
 
-  private AssessmentsDetail buildAssessmentsDetail(
-    ReceiptNoPII receipt,
-    InstallmentNoPII installment,
-    Assessments assessment,
-    String officeCode,
-    String sectionCode,
-    String assessmentCode,
-    Long amountCents,
-    AssessmentsRegistry assessmentsRegistry
-  ) {
-    String officeDescription = Optional.ofNullable(assessmentsRegistry)
+  private AssessmentsDetail buildAssessmentsDetail(BuildAssessmentsDetailParamsDTO params) {
+    String officeDescription = Optional.ofNullable(params.getAssessmentsRegistry())
       .map(AssessmentsRegistry::getOfficeDescription)
       .orElse(null);
 
-    String sectionDescription = Optional.ofNullable(assessmentsRegistry)
+    String sectionDescription = Optional.ofNullable(params.getAssessmentsRegistry())
       .map(AssessmentsRegistry::getSectionDescription)
       .orElse(null);
 
-    String assessmentDescription = Optional.ofNullable(assessmentsRegistry)
+    String assessmentDescription = Optional.ofNullable(params.getAssessmentsRegistry())
       .map(AssessmentsRegistry::getAssessmentDescription)
       .orElse(null);
 
     return AssessmentsDetail.builder()
-            .assessmentId(assessment.getAssessmentId())
-            .organizationId(assessment.getOrganizationId())
-            .debtPositionTypeOrgId(assessment.getDebtPositionTypeOrgId())
-            .debtPositionTypeOrgCode(assessment.getDebtPositionTypeOrgCode())
-            .iuv(installment.getIuv())
-            .iud(installment.getIud())
-            .iur(installment.getIur())
-            .debtorFiscalCodeHash(installment.getDebtorFiscalCodeHash())
-            .paymentDateTime(receipt.getPaymentDateTime())
-            .officeCode(officeCode)
+            .assessmentId(params.getAssessment().getAssessmentId())
+            .organizationId(params.getAssessment().getOrganizationId())
+            .debtPositionTypeOrgId(params.getAssessment().getDebtPositionTypeOrgId())
+            .debtPositionTypeOrgCode(params.getAssessment().getDebtPositionTypeOrgCode())
+            .iuv(params.getInstallment().getIuv())
+            .iud(params.getInstallment().getIud())
+            .iur(params.getInstallment().getIur())
+            .debtorFiscalCodeHash(params.getInstallment().getDebtorFiscalCodeHash())
+            .paymentDateTime(params.getReceipt().getPaymentDateTime())
+            .officeCode(params.getOfficeCode())
             .officeDescription(officeDescription)
-            .sectionCode(sectionCode)
+            .sectionCode(params.getSectionCode())
             .sectionDescription(sectionDescription)
-            .assessmentCode(assessmentCode)
+            .assessmentCode(params.getAssessmentCode())
             .assessmentDescription(assessmentDescription)
-            .amountCents(amountCents)
-            .receiptId(receipt.getReceiptId())
+            .amountCents(params.getAmountCents())
+            .receiptId(params.getReceipt().getReceiptId())
             .build();
   }
 
@@ -228,14 +229,16 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     );
     return assessmentsDetailRepository.save(
             buildAssessmentsDetail(
-              receipt,
-              installment,
-              assessments,
-              assessmentsRegistry.getOfficeCode(),
-              assessmentsRegistry.getSectionCode(),
-              assessmentsRegistry.getAssessmentCode(),
-              getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken),
-              assessmentsRegistry
+              BuildAssessmentsDetailParamsDTO.builder()
+                .receipt(receipt)
+                .installment(installment)
+                .assessment(assessments)
+                .officeCode(assessmentsRegistry.getOfficeCode())
+                .sectionCode(assessmentsRegistry.getSectionCode())
+                .assessmentCode(assessmentsRegistry.getAssessmentCode())
+                .amountCents(getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken))
+                .assessmentsRegistry(assessmentsRegistry)
+                .build()
             )
     );
   }
