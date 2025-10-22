@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.AssessmentsDetailDataDTO;
 import it.gov.pagopa.pu.classification.dto.PaymentAssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
-import it.gov.pagopa.pu.classification.enums.ClassificationLabel;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
 import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;

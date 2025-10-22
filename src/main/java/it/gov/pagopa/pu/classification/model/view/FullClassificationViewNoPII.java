@@ -1,7 +1,10 @@
 package it.gov.pagopa.pu.classification.model.view;
 
 import jakarta.persistence.Entity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;

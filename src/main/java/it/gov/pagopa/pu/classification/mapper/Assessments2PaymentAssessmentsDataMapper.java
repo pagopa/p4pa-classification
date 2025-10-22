@@ -3,9 +3,10 @@ package it.gov.pagopa.pu.classification.mapper;
 import it.gov.pagopa.pu.classification.dto.PaymentAssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service

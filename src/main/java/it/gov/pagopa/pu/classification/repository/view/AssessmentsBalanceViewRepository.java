@@ -3,8 +3,8 @@ package it.gov.pagopa.pu.classification.repository.view;
 import io.swagger.v3.oas.annotations.Parameter;
 import it.gov.pagopa.pu.classification.model.view.AssessmentsBalanceView;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;

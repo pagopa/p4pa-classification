@@ -1,11 +1,9 @@
 package it.gov.pagopa.pu.classification.service.assessments;
 
-import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
-import it.gov.pagopa.pu.classification.enums.ClassificationLabel;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
 import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
@@ -20,7 +18,6 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
 import it.gov.pagopa.pu.classification.util.Utilities;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.Transfer;
@@ -33,7 +30,6 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
