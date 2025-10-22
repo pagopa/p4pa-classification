@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.service.assessments;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
+import it.gov.pagopa.pu.classification.dto.BuildAssessmentsDetailParamsDTO;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
@@ -30,8 +31,10 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Lazy
 @Slf4j
@@ -51,9 +54,9 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
 
 
   public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService,
-    DataEventsProducerService dataEventsProducerService,
-    Assessments2PaymentAssessmentsDataMapper paymentAssessmentsDataMapper,
-    Assessments2AssessmentsDetailDataMapper assessmentsDetailDataMapper) {
+                                      DataEventsProducerService dataEventsProducerService,
+                                      Assessments2PaymentAssessmentsDataMapper paymentAssessmentsDataMapper,
+                                      Assessments2AssessmentsDetailDataMapper assessmentsDetailDataMapper) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
     this.balanceUnmashallerService = balanceUnmashallerService;
     this.assessmentsRepository = assessmentsRepository;
@@ -92,28 +95,79 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     return capitoloList.stream()
       .flatMap(capitolo -> capitolo.getAccertamento().stream()
         .map(accertamento ->
-                buildAssessmentsDetail(receipt, installment, assessment, capitolo.getCodUfficio(),
-                        capitolo.getCodCapitolo(),accertamento.getCodAccertamento(),
-                        Utilities.bigDecimalEuroToLongCentsAmount(accertamento.getImporto())))
+                buildAssessmentsDetail(
+                  receipt,
+                  installment,
+                  assessment,
+                  capitolo.getCodUfficio(),
+                  capitolo.getCodCapitolo(),
+                  accertamento.getCodAccertamento(),
+                  Utilities.bigDecimalEuroToLongCentsAmount(accertamento.getImporto())
+                ))
       ).toList();
   }
 
-  private static AssessmentsDetail buildAssessmentsDetail(ReceiptNoPII receipt, InstallmentNoPII installment, Assessments assessment,
-                    String officeCode, String sectionCode, String assessmentCode, Long amountCents) {
+  private AssessmentsDetail buildAssessmentsDetail(
+    ReceiptNoPII receipt,
+    InstallmentNoPII installment,
+    Assessments assessment,
+    String officeCode,
+    String sectionCode,
+    String assessmentCode,
+    Long amountCents
+  ) {
+    AssessmentsRegistry assessmentsRegistry = assessmentsRegistryRepository.findByOrganizationIdAndCodes(
+      assessment.getOrganizationId(),
+      assessment.getDebtPositionTypeOrgCode(),
+      sectionCode,
+      officeCode,
+      assessmentCode,
+      String.valueOf(Optional.ofNullable(receipt.getPaymentDateTime()).orElse(OffsetDateTime.now()).getYear())
+    ).orElse(null);
+
+    return this.buildAssessmentsDetail(BuildAssessmentsDetailParamsDTO.builder()
+        .receipt(receipt)
+        .installment(installment)
+        .assessment(assessment)
+        .officeCode(officeCode)
+        .sectionCode(sectionCode)
+        .assessmentCode(assessmentCode)
+        .amountCents(amountCents)
+        .assessmentsRegistry(assessmentsRegistry)
+        .build());
+  }
+
+  private AssessmentsDetail buildAssessmentsDetail(BuildAssessmentsDetailParamsDTO params) {
+    String officeDescription = Optional.ofNullable(params.getAssessmentsRegistry())
+      .map(AssessmentsRegistry::getOfficeDescription)
+      .orElse(null);
+
+    String sectionDescription = Optional.ofNullable(params.getAssessmentsRegistry())
+      .map(AssessmentsRegistry::getSectionDescription)
+      .orElse(null);
+
+    String assessmentDescription = Optional.ofNullable(params.getAssessmentsRegistry())
+      .map(AssessmentsRegistry::getAssessmentDescription)
+      .orElse(null);
+
     return AssessmentsDetail.builder()
-            .assessmentId(assessment.getAssessmentId())
-            .organizationId(assessment.getOrganizationId())
-            .debtPositionTypeOrgCode(assessment.getDebtPositionTypeOrgCode())
-            .iuv(installment.getIuv())
-            .iud(installment.getIud())
-            .iur(installment.getIur())
-            .debtorFiscalCodeHash(installment.getDebtorFiscalCodeHash())
-            .paymentDateTime(receipt.getPaymentDateTime())
-            .officeCode(officeCode)
-            .sectionCode(sectionCode)
-            .assessmentCode(assessmentCode)
-            .amountCents(amountCents)
-            .receiptId(receipt.getReceiptId())
+            .assessmentId(params.getAssessment().getAssessmentId())
+            .organizationId(params.getAssessment().getOrganizationId())
+            .debtPositionTypeOrgId(params.getAssessment().getDebtPositionTypeOrgId())
+            .debtPositionTypeOrgCode(params.getAssessment().getDebtPositionTypeOrgCode())
+            .iuv(params.getInstallment().getIuv())
+            .iud(params.getInstallment().getIud())
+            .iur(params.getInstallment().getIur())
+            .debtorFiscalCodeHash(params.getInstallment().getDebtorFiscalCodeHash())
+            .paymentDateTime(params.getReceipt().getPaymentDateTime())
+            .officeCode(params.getOfficeCode())
+            .officeDescription(officeDescription)
+            .sectionCode(params.getSectionCode())
+            .sectionDescription(sectionDescription)
+            .assessmentCode(params.getAssessmentCode())
+            .assessmentDescription(assessmentDescription)
+            .amountCents(params.getAmountCents())
+            .receiptId(params.getReceipt().getReceiptId())
             .build();
   }
 
@@ -128,8 +182,14 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     List<AssessmentsDetail> assessmentsDetails = new ArrayList<>();
     for (InstallmentNoPII installment : installments) {
       ReceiptNoPII receipt = getReceiptByReceiptIdAndDebtPositionTypeOrgCode(installment, assessments, accessToken);
-      assessmentsDetails.add(saveAssessmentsDetail(organizationId, createAssessmentsDetail.getAssessmentRegistryId(),
-                installment, receipt, assessments, accessToken));
+      assessmentsDetails.add(saveAssessmentsDetail(
+        organizationId,
+        createAssessmentsDetail,
+        installment,
+        receipt,
+        assessments,
+        accessToken
+      ));
     }
     dataEventsProducerService.notifyAssessmentsDetailEvent(assessmentsDetailDataMapper.map(assessments, assessmentsDetails), new DataEventRequestDTO(
       DataEventType.ASSESSMENTS_DETAIL, buildDataEventDescription(assessments)));
@@ -161,16 +221,24 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     return installments;
   }
 
-  private AssessmentsDetail saveAssessmentsDetail(Long organizationId, Long assessmentRegistryId, InstallmentNoPII installment, ReceiptNoPII receipt, Assessments assessments, String accessToken) {
-    AssessmentsRegistry assessmentsRegistry = assessmentsRegistryRepository.findById(assessmentRegistryId)
+  private AssessmentsDetail saveAssessmentsDetail(Long organizationId, CreateAssessmentsDetail createAssessmentsDetail, InstallmentNoPII installment, ReceiptNoPII receipt, Assessments assessments, String accessToken) {
+    AssessmentsRegistry assessmentsRegistry = assessmentsRegistryRepository.findById(createAssessmentsDetail.getAssessmentRegistryId())
             .filter(ar-> organizationId.equals(ar.getOrganizationId()))
             .orElseThrow(
-            ()->new ResourceNotFoundException("AssessmentsRegistry having id "+assessmentRegistryId+" not found")
+            ()->new ResourceNotFoundException("AssessmentsRegistry having id "+createAssessmentsDetail.getAssessmentRegistryId()+" not found")
     );
     return assessmentsDetailRepository.save(
-            buildAssessmentsDetail(receipt, installment, assessments,assessmentsRegistry.getOfficeCode(),
-                    assessmentsRegistry.getSectionCode(),assessmentsRegistry.getAssessmentCode(),
-                    getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken)
+            buildAssessmentsDetail(
+              BuildAssessmentsDetailParamsDTO.builder()
+                .receipt(receipt)
+                .installment(installment)
+                .assessment(assessments)
+                .officeCode(assessmentsRegistry.getOfficeCode())
+                .sectionCode(assessmentsRegistry.getSectionCode())
+                .assessmentCode(assessmentsRegistry.getAssessmentCode())
+                .amountCents(getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken))
+                .assessmentsRegistry(assessmentsRegistry)
+                .build()
             )
     );
   }

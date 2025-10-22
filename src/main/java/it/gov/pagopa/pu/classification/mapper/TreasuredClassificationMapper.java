@@ -2,9 +2,10 @@ package it.gov.pagopa.pu.classification.mapper;
 
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
-import java.util.Collections;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Component
 public class TreasuredClassificationMapper {

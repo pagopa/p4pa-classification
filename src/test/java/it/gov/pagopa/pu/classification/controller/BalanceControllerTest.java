@@ -2,8 +2,8 @@ package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
-import it.gov.pagopa.pu.classification.service.BalanceTemplateResolverService;
 import it.gov.pagopa.pu.classification.service.BalanceService;
+import it.gov.pagopa.pu.classification.service.BalanceTemplateResolverService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -15,9 +15,9 @@ import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
-import org.springframework.util.StringUtils;
 
 @Service
 public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryService{

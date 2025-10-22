@@ -1,11 +1,12 @@
 package it.gov.pagopa.pu.classification.event.dto;
 
 import it.gov.pagopa.pu.classification.enums.DataEventType;
-import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor

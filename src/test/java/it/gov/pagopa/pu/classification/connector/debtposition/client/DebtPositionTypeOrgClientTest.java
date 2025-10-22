@@ -106,4 +106,45 @@ class DebtPositionTypeOrgClientTest {
 
     Assertions.assertSame(expectedDebtPositionTypeOrg, result);
   }
+
+  @Test
+  void whenGetDebtPositionTypeOrgByDebtPositionTypeOrgCodeThenReturnIt() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "CODE";
+    DebtPositionTypeOrg expectedDebtPositionTypeOrg = new DebtPositionTypeOrg();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByOrganizationIdAndCode(organizationId, debtPositionTypeOrgCode))
+      .thenReturn(expectedDebtPositionTypeOrg);
+
+    // When
+    DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken);
+
+    // Then
+    Assertions.assertSame(expectedDebtPositionTypeOrg, result);
+  }
+
+  @Test
+  void givenNotExistentCodeWhenGetDebtPositionTypeOrgByDebtPositionTypeOrgCodeThenReturnNull() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "CODE";
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByOrganizationIdAndCode(organizationId, debtPositionTypeOrgCode))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    // When
+    DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken);
+
+    // Then
+    Assertions.assertNull(result);
+  }
+
+
 }
