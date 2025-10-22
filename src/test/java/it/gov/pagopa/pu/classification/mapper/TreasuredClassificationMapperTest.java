@@ -42,7 +42,14 @@ class TreasuredClassificationMapperTest {
       pagedTreasuredClassifications);
 
     assertNotNull(result);
-    assertEquals(pagedTreasuredClassifications.getContent(), result.getContent());
+
+    List<TreasuredClassificationView> expectedContent = pagedTreasuredClassifications.getContent()
+      .stream()
+      .peek(i -> i.setCalculatedAmount(
+        i.getTransferAmount() != null ? i.getTransferAmount()
+          : i.getTreasuryBillAmountCents()))
+      .toList();
+    assertEquals(expectedContent, result.getContent());
     assertEquals(pagedTreasuredClassifications.getTotalPages(),
       result.getTotalPages());
     assertEquals(pagedTreasuredClassifications.getTotalElements(),
@@ -90,7 +97,14 @@ class TreasuredClassificationMapperTest {
       pagedTreasuredClassifications);
 
     assertNotNull(result);
-    assertEquals(pagedTreasuredClassifications.getContent(), result.getContent());
+
+    List<TreasuredClassificationView> expectedContent = pagedTreasuredClassifications.getContent()
+      .stream()
+      .peek(i -> i.setCalculatedAmount(
+        i.getTransferAmount() != null ? i.getTransferAmount()
+          : i.getTreasuryBillAmountCents()))
+      .toList();
+    assertEquals(expectedContent, result.getContent());
     assertNull(result.getTotalPages());
     assertNull(result.getTotalElements());
     assertNull(result.getNumber());
