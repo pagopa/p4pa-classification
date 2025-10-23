@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.model;
 
+import it.gov.pagopa.pu.classification.enums.ClassificationLabel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -24,6 +25,8 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   @NotNull
   private Long organizationId;
   @NotNull
+  private Long debtPositionTypeOrgId;
+  @NotNull
   private String debtPositionTypeOrgCode;
   @NotNull
   private String iuv;
@@ -35,12 +38,19 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   private byte[] debtorFiscalCodeHash;
   private OffsetDateTime paymentDateTime;
   private String officeCode;
+  private String officeDescription;
   @NotNull
   private String sectionCode;
+  private String sectionDescription;
   private String assessmentCode;
+  private String assessmentDescription;
   @NotNull
   private Long amountCents;
   @NotNull
   private boolean amountSubmitted = true;
   private Long receiptId;
+  private ClassificationLabel classificationLabel;
+  private OffsetDateTime dateReceipt;
+  private OffsetDateTime dateReporting;
+  private OffsetDateTime dateTreasury;
 }

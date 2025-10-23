@@ -15,6 +15,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -98,4 +99,26 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
     @Transactional
     @Query("UPDATE AssessmentsRegistry a SET a.status = :status WHERE a.organizationId = :organizationId and a.debtPositionTypeOrgCode = :debtPositionTypeOrgCode and a.operatingYear = :operatingYear")
     void updateStatus(AssessmentsRegistryStatus status, Long organizationId, String debtPositionTypeOrgCode, String operatingYear);
+
+
+    @Query("""
+        SELECT entity
+        FROM AssessmentsRegistry entity
+        WHERE entity.organizationId = :organizationId
+            AND entity.debtPositionTypeOrgCode = :debtPositionTypeOrgCode
+            AND entity.sectionCode = :sectionCode
+            AND entity.officeCode = :officeCode
+            AND entity.assessmentCode = :assessmentCode
+            AND entity.operatingYear = :operatingYear
+        ORDER BY CASE WHEN entity.status = 'ACTIVE' THEN 0 ELSE 1 END ASC
+        LIMIT 1
+    """)
+    Optional<AssessmentsRegistry> findByOrganizationIdAndCodes(
+      @Param("organizationId") Long organizationId,
+      @Param("debtPositionTypeOrgCode") String debtPositionTypeOrgCode,
+      @Param("sectionCode") String sectionCode,
+      @Param("officeCode") String officeCode,
+      @Param("assessmentCode") String assessmentCode,
+      @Param("operatingYear") String operatingYear
+    );
 }

@@ -22,6 +22,8 @@ public class Assessments extends BaseEntity implements Serializable {
   @NotNull
   private Long organizationId;
   @NotNull
+  private Long debtPositionTypeOrgId;
+  @NotNull
   private String debtPositionTypeOrgCode;
   @Enumerated(EnumType.STRING)
   @NotNull

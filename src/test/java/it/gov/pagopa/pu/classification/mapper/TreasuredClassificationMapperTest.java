@@ -1,14 +1,8 @@
 package it.gov.pagopa.pu.classification.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
 import it.gov.pagopa.pu.classification.util.TestUtils;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +12,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TreasuredClassificationMapperTest {
@@ -43,7 +42,14 @@ class TreasuredClassificationMapperTest {
       pagedTreasuredClassifications);
 
     assertNotNull(result);
-    assertEquals(pagedTreasuredClassifications.getContent(), result.getContent());
+
+    List<TreasuredClassificationView> expectedContent = pagedTreasuredClassifications.getContent()
+      .stream()
+      .peek(i -> i.setCalculatedAmount(
+        i.getTransferAmount() != null ? i.getTransferAmount()
+          : i.getTreasuryBillAmountCents()))
+      .toList();
+    assertEquals(expectedContent, result.getContent());
     assertEquals(pagedTreasuredClassifications.getTotalPages(),
       result.getTotalPages());
     assertEquals(pagedTreasuredClassifications.getTotalElements(),
@@ -91,7 +97,14 @@ class TreasuredClassificationMapperTest {
       pagedTreasuredClassifications);
 
     assertNotNull(result);
-    assertEquals(pagedTreasuredClassifications.getContent(), result.getContent());
+
+    List<TreasuredClassificationView> expectedContent = pagedTreasuredClassifications.getContent()
+      .stream()
+      .peek(i -> i.setCalculatedAmount(
+        i.getTransferAmount() != null ? i.getTransferAmount()
+          : i.getTreasuryBillAmountCents()))
+      .toList();
+    assertEquals(expectedContent, result.getContent());
     assertNull(result.getTotalPages());
     assertNull(result.getTotalElements());
     assertNull(result.getNumber());

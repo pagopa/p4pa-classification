@@ -16,15 +16,19 @@ public class ClassificationDetailViewPIIMapper {
   }
 
   public ClassificationDetailViewDTO map(ClassificationDetailViewNoPII noPii) {
-    ReceiptPIIDTO pii = personalDataService.get(noPii.getReceiptPersonalDataId(), ReceiptPIIDTO.class);
+    ReceiptPIIDTO pii = null;
+    if (noPii.getReceiptPersonalDataId() != null) {
+      pii = personalDataService.get(noPii.getReceiptPersonalDataId(), ReceiptPIIDTO.class);
+    }
+
     PaymentNotificationPIIDTO paymentNotificationPIIDTO = null;
-    if(noPii.getPaymentNotificationPersonalDataId()!=null) {
-       paymentNotificationPIIDTO = personalDataService.get(noPii.getPaymentNotificationPersonalDataId(), PaymentNotificationPIIDTO.class);
+    if (noPii.getPaymentNotificationPersonalDataId()!=null) {
+      paymentNotificationPIIDTO = personalDataService.get(noPii.getPaymentNotificationPersonalDataId(), PaymentNotificationPIIDTO.class);
     }
 
     return ClassificationDetailViewDTO.builder()
-      .receiptDebtor(pii.getDebtor())
-      .receiptPayer(pii.getPayer())
+      .receiptDebtor(pii != null ? pii.getDebtor() : null)
+      .receiptPayer(pii != null ? pii.getPayer() : null)
       .classificationId(noPii.getClassificationId())
       .organizationId(noPii.getOrganizationId())
       .transferId(noPii.getTransferId())

@@ -1,19 +1,16 @@
 package it.gov.pagopa.pu.classification.model.view;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "classification")
@@ -70,6 +67,7 @@ public class TreasuredClassificationView implements Serializable {
   private String transferCategory;
   private OffsetDateTime receiptCreationDate;
   private String installmentBalance;
+  private Long calculatedAmount;
   //endregion
 
   //region Treasury fields

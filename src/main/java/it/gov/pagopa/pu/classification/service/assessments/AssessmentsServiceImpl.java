@@ -21,6 +21,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -120,6 +121,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     if (assessment == null) {
       Assessments newAssessment = Assessments.builder()
         .organizationId(debtPositionTypeOrg.getOrganizationId())
+        .debtPositionTypeOrgId(debtPositionTypeOrg.getDebtPositionTypeOrgId())
         .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
         .status(AssessmentStatus.CLOSED)
         .assessmentName(installment.getSourceFlowName())
@@ -150,15 +152,22 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   }
 
   @Override
-  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId) {
+  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId, String accessToken) {
 
     if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName) != null) {
      throw new AssessmentConflictException("Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
     }
 
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken);
+
+    if (debtPositionTypeOrg == null) {
+      throw new ResourceNotFoundException("DebtPositionTypeOrg not found by organizationId=%d and debtPositionTypeOrgCode=%s".formatted(organizationId, debtPositionTypeOrgCode));
+    }
+
     return assessmentsRepository.save(
       Assessments.builder()
       .assessmentName(assessmentName)
+      .debtPositionTypeOrgId(debtPositionTypeOrg.getDebtPositionTypeOrgId())
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .flagManualGeneration(true)
       .status(AssessmentStatus.ACTIVE)

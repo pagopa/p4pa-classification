@@ -2,9 +2,10 @@ package it.gov.pagopa.pu.classification.mapper;
 
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
-import java.util.Collections;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Component
 public class TreasuredClassificationMapper {
@@ -15,7 +16,9 @@ public class TreasuredClassificationMapper {
 
     if (pagedClassificationListDTO != null) {
       if (!pagedClassificationListDTO.getContent().isEmpty()) {
-        mappedPagedClassificationList.setContent(pagedClassificationListDTO.getContent());
+        mappedPagedClassificationList.setContent(
+          pagedClassificationListDTO.getContent().stream()
+            .map(this::map2TreasuredClassificationDTO).toList());
       } else {
         mappedPagedClassificationList.setContent(Collections.emptyList());
       }
@@ -33,5 +36,14 @@ public class TreasuredClassificationMapper {
     }
 
     return mappedPagedClassificationList;
+  }
+
+  private TreasuredClassificationView map2TreasuredClassificationDTO(
+    TreasuredClassificationView input) {
+    return input.toBuilder()
+      .calculatedAmount(input.getTransferAmount() != null ?
+        input.getTransferAmount()
+        : input.getTreasuryBillAmountCents())
+      .build();
   }
 }

@@ -7,10 +7,6 @@ import it.gov.pagopa.pu.classification.event.dto.DataEventDTO;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
 import it.gov.pagopa.pu.classification.model.Classification;
 import it.gov.pagopa.pu.classification.util.Utilities;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Supplier;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -20,6 +16,11 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 @Component
 public class DataEventsProducerService {

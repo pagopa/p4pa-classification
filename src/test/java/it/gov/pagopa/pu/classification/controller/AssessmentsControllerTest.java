@@ -92,9 +92,10 @@ class AssessmentsControllerTest {
     String assessmentName = "ASSESSMENT_NAME";
     String debtPositionTypeOrgCode = "CODE";
     String operatorExternalUserId = "operatorExternalUserId";
+    String accessToken = "TOKENHEADER.TOKENPAYLOAD.TOKENDIGEST";
     SecurityUtilsTest.configureSecurityContext(operatorExternalUserId);
     Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
-    Mockito.when(serviceMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId)).thenReturn(assessments);
+    Mockito.when(serviceMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId, accessToken)).thenReturn(assessments);
 
     //when
     ResponseEntity<Assessments> result = controller.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
