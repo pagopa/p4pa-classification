@@ -43,13 +43,14 @@ public interface ClassificationRepository extends JpaRepository<Classification, 
     SELECT c
     FROM Classification c
     WHERE c.organizationId = :organizationId
-    AND c.iuv = :iuv
+    AND ( (:iuv IS NOT NULL AND c.iuv = :iuv) OR (:iuf IS NOT NULL AND c.iuf = :iuf) )
     AND (:debtPositionTypeOrgCodes IS NULL OR c.debtPositionTypeOrgCode IN :debtPositionTypeOrgCodes)
     AND (:labels IS NULL OR c.label IN :labels)
     """)
   Page<Classification> findByFilters(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
-    @Parameter(required = true) @Param("iuv") String iuv,
+    @Param("iuv") String iuv,
+    @Param("iuf") String iuf,
     @Param("debtPositionTypeOrgCodes") List<String> debtPositionTypeOrgCodes,
     @Param("labels") List<ClassificationsEnum> labels,
     Pageable pageable);
