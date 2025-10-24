@@ -74,5 +74,5 @@ public class PaymentsReportingWithReceiptView implements Serializable {
   + "FROM classification c "
   + "WHERE c.payments_reporting_id = payments_reporting_id "
   + "LIMIT 1)")
-  private String receiptPaymentRequestId;
+  private String receiptId;
 }
