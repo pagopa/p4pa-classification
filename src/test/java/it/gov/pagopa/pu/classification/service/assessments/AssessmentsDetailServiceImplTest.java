@@ -3,15 +3,8 @@ package it.gov.pagopa.pu.classification.service.assessments;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
-import it.gov.pagopa.pu.classification.dto.AssessmentsDetailDataDTO;
-import it.gov.pagopa.pu.classification.dto.PaymentAssessmentsDataDTO;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
-import it.gov.pagopa.pu.classification.enums.DataEventType;
-import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
-import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
-import it.gov.pagopa.pu.classification.mapper.Assessments2AssessmentsDetailDataMapper;
-import it.gov.pagopa.pu.classification.mapper.Assessments2PaymentAssessmentsDataMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -65,12 +58,6 @@ class AssessmentsDetailServiceImplTest {
   private ReceiptService receiptServiceMock;
   @Mock
   private TransferService transferServiceMock;
-  @Mock
-  private DataEventsProducerService dataEventsProducerServiceMock;
-  @Mock
-  private Assessments2PaymentAssessmentsDataMapper paymentAssessmentsDataMapperMock;
-  @Mock
-  private Assessments2AssessmentsDetailDataMapper assessmentsDetailDataMapperMock;
 
   private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
@@ -91,15 +78,14 @@ class AssessmentsDetailServiceImplTest {
   @BeforeEach
   void init() {
     assessmentsDetailService = new AssessmentsDetailServiceImpl(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
-            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock,
-      transferServiceMock, dataEventsProducerServiceMock, paymentAssessmentsDataMapperMock,assessmentsDetailDataMapperMock);
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(assessmentsDetailRepositoryMock, balanceUnmashallerServiceMock,
             assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock,
-      transferServiceMock,dataEventsProducerServiceMock, paymentAssessmentsDataMapperMock, assessmentsDetailDataMapperMock);
+      transferServiceMock);
   }
 
   @Test
@@ -204,14 +190,10 @@ class AssessmentsDetailServiceImplTest {
     doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
     when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), "CAP1", "UFF1", "ACC1", String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
-    when(paymentAssessmentsDataMapperMock.map(assessment, List.of(assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment).getFirst())))
-      .thenReturn(new PaymentAssessmentsDataDTO());
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
 
     verify(assessmentsDetailRepositoryMock, times(1)).save(any(AssessmentsDetail.class));
-    verify(dataEventsProducerServiceMock, times(1)).notifyPaymentAssessmentsEvent(any(PaymentAssessmentsDataDTO.class),
-      new DataEventRequestDTO(DataEventType.PAYMENT_ASSESSMENTS, any()));
   }
 
   @Test
@@ -259,16 +241,12 @@ class AssessmentsDetailServiceImplTest {
     when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
     doReturn(existingDetail).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
-    when(paymentAssessmentsDataMapperMock.map(assessment, List.of(existingDetail))).thenReturn(new PaymentAssessmentsDataDTO());
     when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), capitolo.getCodCapitolo(), capitolo.getCodUfficio(), accertamento.getCodAccertamento(), String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
 
     assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
     verify(assessmentsDetailRepositoryMock, times(1)).save(existingDetail);
     assertEquals(10000L, existingDetail.getAmountCents());
-    verify(dataEventsProducerServiceMock, times(1)).notifyPaymentAssessmentsEvent(
-      any(PaymentAssessmentsDataDTO.class),
-      new DataEventRequestDTO(DataEventType.PAYMENT_ASSESSMENTS, any()));
   }
 
   @Test
@@ -303,7 +281,6 @@ class AssessmentsDetailServiceImplTest {
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
     when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
             .thenReturn(new AssessmentsDetail());
-    when(assessmentsDetailDataMapperMock.map(assessments, Collections.nCopies(5, new AssessmentsDetail()))).thenReturn(new AssessmentsDetailDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
             createAssessmentsDetail, accessToken);
@@ -327,9 +304,6 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(transfers.stream().map(Transfer::getAmountCents).reduce(0L,Long::sum),assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
-    verify(dataEventsProducerServiceMock, times(1)).notifyAssessmentsDetailEvent(
-      any(AssessmentsDetailDataDTO.class),
-      new DataEventRequestDTO(DataEventType.ASSESSMENTS_DETAIL, any()));
   }
 
   @Test
@@ -361,7 +335,6 @@ class AssessmentsDetailServiceImplTest {
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
     when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
             .thenReturn(new AssessmentsDetail());
-    when(assessmentsDetailDataMapperMock.map(assessments, Collections.nCopies(5, new AssessmentsDetail()))).thenReturn(new AssessmentsDetailDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
             createAssessmentsDetail, accessToken);
@@ -385,9 +358,6 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(0L,assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
-    verify(dataEventsProducerServiceMock, times(1)).notifyAssessmentsDetailEvent(
-      any(AssessmentsDetailDataDTO.class),
-      new DataEventRequestDTO(DataEventType.ASSESSMENTS_DETAIL, any()));
   }
 
   @Test
@@ -417,8 +387,6 @@ class AssessmentsDetailServiceImplTest {
     ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
     when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
             .thenReturn(new AssessmentsDetail());
-    when(assessmentsDetailDataMapperMock.map(assessments, Collections.nCopies(5, new AssessmentsDetail())))
-      .thenReturn(new AssessmentsDetailDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId,assessments.getAssessmentId(),
             createAssessmentsDetail, accessToken);
@@ -442,9 +410,6 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(0L,assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
-    verify(dataEventsProducerServiceMock, times(1)).notifyAssessmentsDetailEvent(
-      any(AssessmentsDetailDataDTO.class),
-      new DataEventRequestDTO(DataEventType.ASSESSMENTS_DETAIL, any()));
   }
 
   @Test
@@ -621,15 +586,11 @@ class AssessmentsDetailServiceImplTest {
             .thenReturn(Optional.of(assessments));
     when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, Collections.emptySet(), accessToken))
             .thenReturn(Collections.emptyList());
-    when(assessmentsDetailDataMapperMock.map(assessments, new ArrayList<>())).thenReturn(new AssessmentsDetailDataDTO());
 
     List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken);
 
     assertTrue(result.isEmpty());
-    verify(dataEventsProducerServiceMock, times(1)).notifyAssessmentsDetailEvent(
-      any(AssessmentsDetailDataDTO.class),
-      new DataEventRequestDTO(DataEventType.ASSESSMENTS_DETAIL, any()));
     verifyNoInteractions(receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
   }
 

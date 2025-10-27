@@ -5,12 +5,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.BuildAssessmentsDetailParamsDTO;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
-import it.gov.pagopa.pu.classification.enums.DataEventType;
-import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
-import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
-import it.gov.pagopa.pu.classification.mapper.Assessments2AssessmentsDetailDataMapper;
-import it.gov.pagopa.pu.classification.mapper.Assessments2PaymentAssessmentsDataMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -48,15 +43,9 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   private final InstallmentService installmentService;
   private final ReceiptService receiptService;
   private final TransferService transferService;
-  private final DataEventsProducerService dataEventsProducerService;
-  private final Assessments2PaymentAssessmentsDataMapper paymentAssessmentsDataMapper;
-  private final Assessments2AssessmentsDetailDataMapper assessmentsDetailDataMapper;
 
 
-  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService,
-                                      DataEventsProducerService dataEventsProducerService,
-                                      Assessments2PaymentAssessmentsDataMapper paymentAssessmentsDataMapper,
-                                      Assessments2AssessmentsDetailDataMapper assessmentsDetailDataMapper) {
+  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
     this.balanceUnmashallerService = balanceUnmashallerService;
     this.assessmentsRepository = assessmentsRepository;
@@ -64,9 +53,6 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     this.installmentService = installmentService;
     this.receiptService = receiptService;
     this.transferService = transferService;
-    this.dataEventsProducerService = dataEventsProducerService;
-    this.paymentAssessmentsDataMapper = paymentAssessmentsDataMapper;
-    this.assessmentsDetailDataMapper = assessmentsDetailDataMapper;
   }
 
   @Transactional
@@ -84,8 +70,6 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
         assessmentsDetailRepository.save(ad);
       }
     });
-    dataEventsProducerService.notifyPaymentAssessmentsEvent(paymentAssessmentsDataMapper.map(assessments, assessmentsDetailList), new DataEventRequestDTO(
-      DataEventType.PAYMENT_ASSESSMENTS, buildDataEventDescription(assessments)));
   }
 
   List<AssessmentsDetail> buildAssessmentDetail(ReceiptNoPII receipt, InstallmentNoPII installment, Assessments assessment) {
@@ -191,8 +175,6 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
         accessToken
       ));
     }
-    dataEventsProducerService.notifyAssessmentsDetailEvent(assessmentsDetailDataMapper.map(assessments, assessmentsDetails), new DataEventRequestDTO(
-      DataEventType.ASSESSMENTS_DETAIL, buildDataEventDescription(assessments)));
     return assessmentsDetails;
   }
 
