@@ -229,8 +229,4 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     List<Transfer> transfers = transferService.getByInstallmentId(installmentId, accessToken);
     return transfers.stream().filter(t->orgFiscalCode.equals(t.getOrgFiscalCode())).map(Transfer::getAmountCents).reduce(0L,Long::sum);
   }
-
-  private String buildDataEventDescription(Assessments assessments) {
-    return "assessmentId:" + assessments.getAssessmentId();
-  }
 }
