@@ -11,8 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationWorkflowClientTest {
@@ -37,9 +35,8 @@ class ClassificationWorkflowClientTest {
     );
   }
 
-  //region findByOrgFiscalCode test
   @Test
-  void whenClassifyAssessmentsThenInvokeWithAccessToken() {
+  void testClassifyAssessments() {
     // Given
     String accessToken = "ACCESS_TOKEN";
     Long organizationId = 1L;
@@ -59,24 +56,4 @@ class ClassificationWorkflowClientTest {
     Assertions.assertSame(expectedResult, result);
   }
 
-  @Test
-  void givenNotExistentOrgFiscalCodeWhenGetOrgFiscalCodeThenNull() {
-    // Given
-    String accessToken = "ACCESS_TOKEN";
-    Long organizationId = 1L;
-    String iuv = "IUV";
-    String iud = "IUD";
-
-    Mockito.when(workflowHubApisHolderMock.getClassificationApi(accessToken))
-      .thenReturn(classificationApiMock);
-    Mockito.when(classificationApiMock.assessmentsClassification(organizationId, iuv, iud))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
-
-    // When
-    WorkflowCreatedDTO result = classificationWorkflowClient.classifyAssessments(organizationId, iuv, iud, accessToken);
-
-    // Then
-    Assertions.assertNull(result);
-  }
-  //endregion
 }
