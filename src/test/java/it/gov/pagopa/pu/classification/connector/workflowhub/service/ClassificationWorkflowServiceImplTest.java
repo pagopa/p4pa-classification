@@ -34,7 +34,7 @@ class ClassificationWorkflowServiceImplTest {
   }
 
   @Test
-  void givenNotExistentFiscalCodeWhenGetOrganizationByFiscalCodeThenEmpty(){
+  void whenClassifyAssessmentsThenInvokeClient(){
     // Given
     String accessToken = "ACCESS_TOKEN";
     Long organizationId = 1L;

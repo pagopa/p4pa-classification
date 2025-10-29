@@ -36,7 +36,7 @@ class ClassificationWorkflowClientTest {
   }
 
   @Test
-  void testClassifyAssessments() {
+  void whenClassifyAssessmentsThenReturnWorkflowCreatedDTO() {
     // Given
     String accessToken = "ACCESS_TOKEN";
     Long organizationId = 1L;
