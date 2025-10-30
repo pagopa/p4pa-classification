@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.model;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationLabel;
+import it.gov.pagopa.pu.classification.model.listeners.AssessmentsDetailEntityListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -15,6 +16,7 @@ import java.time.OffsetDateTime;
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
+@EntityListeners({AssessmentsDetailEntityListener.class})
 public class AssessmentsDetail extends BaseEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "assessments_detail_generator")
