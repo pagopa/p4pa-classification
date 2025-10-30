@@ -23,7 +23,7 @@ class AssessmentsDetailEntityListenerTest {
 
   private static final AssessmentsDetail assessmentsDetail = new AssessmentsDetail();
 
-  private static final String accessToken = "ACCESS_TOKEN";
+  private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
 
   @BeforeAll
   static void beforeAll() {
@@ -35,14 +35,14 @@ class AssessmentsDetailEntityListenerTest {
   @BeforeEach
   void setUp() {
     listener = new AssessmentsDetailEntityListener(classificationWorkflowServiceMock);
-    SecurityUtilsTest.configureSecurityContext(accessToken, null);
+    SecurityUtilsTest.configureSecurityContext(ACCESS_TOKEN, null);
     WorkflowCreatedDTO expectedResult = new WorkflowCreatedDTO();
     Mockito.when(
       classificationWorkflowServiceMock.classifyAssessments(
         assessmentsDetail.getOrganizationId(),
         assessmentsDetail.getIuv(),
         assessmentsDetail.getIud(),
-        accessToken
+        ACCESS_TOKEN
       )
     ).thenReturn(expectedResult);
   }
@@ -69,7 +69,7 @@ class AssessmentsDetailEntityListenerTest {
       assessmentsDetail.getOrganizationId(),
       assessmentsDetail.getIuv(),
       assessmentsDetail.getIud(),
-      accessToken
+      ACCESS_TOKEN
     );
   }
 
@@ -83,7 +83,7 @@ class AssessmentsDetailEntityListenerTest {
       assessmentsDetail.getOrganizationId(),
       assessmentsDetail.getIuv(),
       assessmentsDetail.getIud(),
-      accessToken
+      ACCESS_TOKEN
     );
   }
 }
