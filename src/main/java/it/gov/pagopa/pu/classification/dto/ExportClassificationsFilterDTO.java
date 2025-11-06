@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class ExportClassificationsFilterDTO {
 
-  private String iuf;
+  private List<String> iuf;
   private String iud;
   private List<String> iuv;
   private List<String> iur;
