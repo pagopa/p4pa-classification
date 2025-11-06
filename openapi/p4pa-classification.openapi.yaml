@@ -646,7 +646,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: iuf
+        - name: iufs
           in: query
           schema:
             type: array
@@ -820,7 +820,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: iuf
+        - name: iufs
           in: query
           schema:
             type: array
