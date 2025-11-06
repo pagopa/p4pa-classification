@@ -17,8 +17,6 @@ import java.time.OffsetDateTime;
 @SuperBuilder
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "eventType", defaultImpl = DataEventDTO.class, visible = true)
 @JsonSubTypes({
-  @JsonSubTypes.Type(value = AssessmentsDetailDataEventDTO.class, name = "ASSESSMENTS_DETAIL"),
-  @JsonSubTypes.Type(value = PaymentAssessmentsDataEventDTO.class, name = "PAYMENT_ASSESSMENTS"),
   @JsonSubTypes.Type(value = Classification.class, name = "TRANSFER_CLASSIFICATION_LABELS"),
 })
 public class DataEventDTO <T> {

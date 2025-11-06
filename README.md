@@ -52,6 +52,8 @@ See [log configured pattern](/src/main/resources/logback-spring.xml).
   * To apply the right visibility during classifications' export;
 * [p4pa-organization](https://github.com/pagopa/p4pa-organization):
   * To retrieve an Organization given its fiscal code.
+* [p4pa-workflow-hub](https://github.com/pagopa/p4pa-workflow-hub):
+  * To start assessments classification when creating/updating unclassified `assessments_detail`
 
 ## 🗃️ Entities handled
 * `assessments_registry`
@@ -130,6 +132,10 @@ See [application.yml](src/main/resources/application.yml) for each configurable 
 | ORGANIZATION_MAX_ATTEMPTS           | Organization API max attempts                   | 3       |
 | ORGANIZATION_WAIT_TIME_MILLIS       | Organization retry waiting time (milliseconds)  | 500     |
 | ORGANIZATION_PRINT_BODY_WHEN_ERROR  | To print body when an error occurs              | true    |
+| WORKFLOW_HUB_BASE_URL               | WorkflowHub microservice URL                    |         |
+| WORKFLOW_HUB_MAX_ATTEMPTS           | WorkflowHub API max attempts                    | 3       |
+| WORKFLOW_HUB_WAIT_TIME_MILLIS       | WorkflowHub retry waiting time (milliseconds)   | 500     |
+| WORKFLOW_HUB_PRINT_BODY_WHEN_ERROR  | To print body when an error occurs              | true    |
 
 ##### 🌀 KAFKA
 | ENV                                              | DESCRIPTION                                                        | DEFAULT   |
