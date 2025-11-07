@@ -37,7 +37,7 @@ public class ClassificationViewDTO {
   private String receiptPaymentReceiptId;
 
   @JsonProperty("rec_paymentDateTime")
-  private LocalDateTime receiptPaymentDateTime;
+  private OffsetDateTime receiptPaymentDateTime;
 
   @JsonProperty("rec_paymentRequestId")
   private String receiptPaymentRequestId;
@@ -79,7 +79,7 @@ public class ClassificationViewDTO {
   private String receiptTransferCategory;
 
   @JsonProperty("rec_creationDate")
-  private LocalDateTime receiptCreationDate;
+  private OffsetDateTime receiptCreationDate;
 
   @JsonProperty("rec_installmentBalance")
   private String receiptInstallmentBalance;
@@ -88,7 +88,7 @@ public class ClassificationViewDTO {
   private String paymentsReportingIuf;
 
   @JsonProperty("payRep_flowDateTime")
-  private LocalDateTime paymentsReportingFlowDateTime;
+  private OffsetDateTime paymentsReportingFlowDateTime;
 
   @JsonProperty("payRep_regulationUniqueIdentifier")
   private String paymentsReportingRegulationUniqueIdentifier;

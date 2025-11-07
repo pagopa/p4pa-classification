@@ -46,7 +46,7 @@ import java.time.OffsetDateTime;
     private OffsetDateTime receiptCreationDate;
     private String receiptInstallmentBalance;
     private String paymentsReportingIuf;
-    private LocalDateTime paymentsReportingFlowDateTime;
+    private OffsetDateTime paymentsReportingFlowDateTime;
     private String paymentsReportingRegulationUniqueIdentifier;
     private LocalDate paymentsReportingRegulationDate;
     private String paymentsReportingSenderPspType;
