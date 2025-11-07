@@ -11,7 +11,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -111,7 +110,7 @@ public class ClassificationDetailViewNoPII implements Serializable {
   @NotNull
   private String pspIdentifier;
   @NotNull
-  private LocalDateTime flowDateTime;
+  private OffsetDateTime flowDateTime;
   @NotNull
   private String senderPspType;
   @NotNull

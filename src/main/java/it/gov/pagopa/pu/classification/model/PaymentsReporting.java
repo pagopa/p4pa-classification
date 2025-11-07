@@ -8,7 +8,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "payments_reporting")
@@ -36,7 +36,7 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
   @NotNull
   private String iuf;
   @NotNull
-  private LocalDateTime flowDateTime;
+  private OffsetDateTime flowDateTime;
   @NotNull
   private String regulationUniqueIdentifier;
   @NotNull

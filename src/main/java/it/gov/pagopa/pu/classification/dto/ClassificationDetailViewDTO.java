@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Data
@@ -96,7 +95,7 @@ public class ClassificationDetailViewDTO {
 
   //PaymentsReporting fields
   private String pspIdentifier;
-  private LocalDateTime flowDateTime;
+  private OffsetDateTime flowDateTime;
   private String senderPspType;
   private String senderPspCode;
   private String senderPspName;
