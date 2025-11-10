@@ -1314,6 +1314,8 @@ components:
             - CLASSIFICATION_GENERIC_ERROR
         message:
           type: string
+        traceId:
+          type: string
     PagedFullClassificationView:
       type: object
       required:
