@@ -40,7 +40,7 @@ public class DataExportsController implements DataExportsApi {
                                                                        Set<ClassificationsEnum> label,
                                                                        LocalDate lastClassificationDateFrom,
                                                                        LocalDate lastClassificationDateTo,
-                                                                       String iuf,
+                                                                       List<String> iufs,
                                                                        String iud,
                                                                        List<String> iuv,
                                                                        List<String> iur,
@@ -71,7 +71,7 @@ public class DataExportsController implements DataExportsApi {
     LocalDateIntervalFilter regionValueDate = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
 
     ExportClassificationsFilterDTO exportClassificationsFilterDTO =
-      buildExportClassificationsFilterDTO(label, lastClassificationDate, iuf, iud, iuv, iur, payDate, paymentDate, regulationDate, billDate, regionValueDate, regulationUniqueIdentifier, accountRegistryCode, billAmountCents, remittanceInformation, pspCompanyName, pspLastName, debtPositionTypeOrgCodes);
+      buildExportClassificationsFilterDTO(label, lastClassificationDate, iufs, iud, iuv, iur, payDate, paymentDate, regulationDate, billDate, regionValueDate, regulationUniqueIdentifier, accountRegistryCode, billAmountCents, remittanceInformation, pspCompanyName, pspLastName, debtPositionTypeOrgCodes);
 
     return ResponseEntity.ok(classificationService.getPagedClassificationView(organizationId, operatorExternalUserId, exportClassificationsFilterDTO, pageable, accessToken));
   }
@@ -82,7 +82,7 @@ public class DataExportsController implements DataExportsApi {
                                                                                Set<ClassificationsEnum> label,
                                                                                LocalDate lastClassificationDateFrom,
                                                                                LocalDate lastClassificationDateTo,
-                                                                               String iuf,
+                                                                               List<String> iufs,
                                                                                String iud,
                                                                                List<String> iuv,
                                                                                List<String> iur,
@@ -113,7 +113,7 @@ public class DataExportsController implements DataExportsApi {
     LocalDateIntervalFilter regionValueDate = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
 
     ExportClassificationsFilterDTO exportClassificationsFilterDTO =
-      buildExportClassificationsFilterDTO(label, lastClassificationDate, iuf, iud, iuv, iur, payDate, paymentDate, regulationDate, billDate, regionValueDate, regulationUniqueIdentifier, accountRegistryCode, billAmountCents, remittanceInformation, pspCompanyName, pspLastName, debtPositionTypeOrgCodes);
+      buildExportClassificationsFilterDTO(label, lastClassificationDate, iufs, iud, iuv, iur, payDate, paymentDate, regulationDate, billDate, regionValueDate, regulationUniqueIdentifier, accountRegistryCode, billAmountCents, remittanceInformation, pspCompanyName, pspLastName, debtPositionTypeOrgCodes);
 
     return ResponseEntity.ok(classificationService.getPagedFullClassificationView(organizationId, operatorExternalUserId, exportClassificationsFilterDTO, pageable, accessToken));
   }
@@ -131,7 +131,7 @@ public class DataExportsController implements DataExportsApi {
   @SuppressWarnings("squid:S107")
   private ExportClassificationsFilterDTO buildExportClassificationsFilterDTO(Set<ClassificationsEnum> label,
                                                                              LocalDateIntervalFilter lastClassificationDate,
-                                                                             String iuf,
+                                                                             List<String> iufs,
                                                                              String iud,
                                                                              List<String> iuv,
                                                                              List<String> iur,
@@ -149,7 +149,7 @@ public class DataExportsController implements DataExportsApi {
                                                                              Set<String> debtPositionTypeOrgCodes) {
     return ExportClassificationsFilterDTO.builder()
       .label(label)
-      .iuf(iuf)
+      .iufs(iufs)
       .iud(iud)
       .iuv(iuv)
       .iur(iur)

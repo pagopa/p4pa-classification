@@ -102,7 +102,7 @@ public interface FullClassificationViewNoPIIDTORepository extends Repository<Ful
     AND (:#{#filter.label} IS NULL OR c.label IN (:#{#filter.label}))
     AND (:#{#filter.iud} IS NULL OR c.iud = :#{#filter.iud})
     AND (:#{#filter.iuv} IS NULL OR c.iuv IN :#{#filter.iuv})
-    AND (:#{#filter.iuf} IS NULL OR c.iuf = :#{#filter.iuf})
+    AND (:#{#filter.iufs} IS NULL OR c.iuf IN :#{#filter.iufs})
     AND (:#{#filter.iur} IS NULL OR c.iur IN :#{#filter.iur})
     AND (CAST(:#{#filter.paymentDateTime.from} AS STRING) IS NULL OR c.receiptPaymentDateTime >= :#{#filter.paymentDateTime.from})
     AND (CAST(:#{#filter.paymentDateTime.to} AS STRING) IS NULL OR c.receiptPaymentDateTime <= :#{#filter.paymentDateTime.to})

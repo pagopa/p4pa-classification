@@ -646,10 +646,12 @@ paths:
           required: true
           schema:
             type: string
-        - name: iuf
+        - name: iufs
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: iud
           in: query
           schema:
@@ -818,10 +820,12 @@ paths:
           required: true
           schema:
             type: string
-        - name: iuf
+        - name: iufs
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: iud
           in: query
           schema:
