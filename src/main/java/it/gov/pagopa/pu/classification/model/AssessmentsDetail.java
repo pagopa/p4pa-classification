@@ -51,6 +51,7 @@ public class AssessmentsDetail extends BaseEntity implements Serializable {
   @NotNull
   private boolean amountSubmitted = true;
   private Long receiptId;
+  @Enumerated(EnumType.STRING)
   private ClassificationLabel classificationLabel;
   private OffsetDateTime dateReceipt;
   private OffsetDateTime dateReporting;
