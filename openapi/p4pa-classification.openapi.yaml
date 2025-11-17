@@ -678,13 +678,11 @@ paths:
               type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
-          required: true
           schema:
             type: string
             format: date
         - name: lastClassificationDateTo
           in: query
-          required: true
           schema:
             type: string
             format: date
@@ -852,13 +850,11 @@ paths:
               type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
-          required: true
           schema:
             type: string
             format: date
         - name: lastClassificationDateTo
           in: query
-          required: true
           schema:
             type: string
             format: date
