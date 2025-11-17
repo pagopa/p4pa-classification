@@ -3,8 +3,6 @@ package it.gov.pagopa.pu.classification.controller;
 import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
-import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
-import it.gov.pagopa.pu.classification.exception.custom.InvalidDateTimeIntervalException;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import it.gov.pagopa.pu.classification.util.TestUtils;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,12 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,8 +35,7 @@ class DataExportsControllerTest {
 
   @BeforeEach
   void setUp() {
-    Integer maxMonthsInterval = 1;
-    controller = new DataExportsController(maxMonthsInterval, classificationServiceMock);
+    controller = new DataExportsController(classificationServiceMock);
     SecurityUtilsTest.configureSecurityContext(accessToken, "userId");
   }
 
@@ -106,46 +97,6 @@ class DataExportsControllerTest {
   }
 
   @Test
-  void exportClassificationsThrowsInvalidDateTimeIntervalExceptionOnInvalidInterval() {
-    Pageable pageable = PageRequest.of(0, 10);
-
-    LocalDate invalidFrom = LocalDate.now();
-    LocalDate invalidTo = invalidFrom.plusMonths(3);
-    Executable executable = () ->
-      controller.exportClassifications(
-        1L,
-        "operator123",
-        Set.of(ClassificationsEnum.TES_NO_MATCH),
-        List.of("iuf_value"),
-        "iud_value",
-        List.of("iuv_value"),
-        List.of("iur_value"),
-        invalidFrom,
-        invalidTo,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "regUniqueId",
-        "accRegistryCode",
-        1000L,
-        "remittanceInfo",
-        "pspCompany",
-        "pspLastName",
-        Set.of("code"),
-        pageable
-      );
-
-    assertThrows(InvalidDateTimeIntervalException.class, executable);
-  }
-
-  @Test
   void exportFullClassificationsReturnsPagedFullClassificationViewOnValidInterval() {
     Long organizationId = 1L;
     String operatorExternalUserId = "operator123";
@@ -193,43 +144,5 @@ class DataExportsControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(expectedView, response.getBody());
-  }
-
-  @Test
-  void exportFullClassificationsThrowsInvalidDateTimeIntervalExceptionOnInvalidInterval() {
-    LocalDate now = LocalDate.now();
-    Pageable pageable = PageRequest.of(0, 10);
-    LocalDate invalidFrom = now.minusMonths(2);
-
-    Executable executable = () -> controller.exportFullClassifications(
-        1L,
-        "operator123",
-        Set.of(ClassificationsEnum.TES_NO_MATCH),
-        List.of("iuf_value"),
-        "iud_value",
-        List.of("iuv_value"),
-        List.of("iur_value"),
-        invalidFrom,
-        now,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "regUniqueId",
-        "accRegistryCode",
-        1000L,
-        "remittanceInfo",
-        "pspCompany",
-        "pspLastName",
-        Set.of("code"),
-        pageable);
-
-    assertThrows(InvalidDateTimeIntervalException.class, executable);
   }
 }
