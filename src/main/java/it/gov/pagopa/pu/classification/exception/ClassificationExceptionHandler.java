@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.exception;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationErrorDTO;
 import it.gov.pagopa.pu.classification.exception.custom.*;
+import it.gov.pagopa.pu.classification.util.Utilities;
 import jakarta.persistence.RollbackException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -112,7 +113,7 @@ public class ClassificationExceptionHandler {
     return ResponseEntity
       .status(httpStatus)
       .contentType(MediaType.APPLICATION_JSON)
-      .body(new ClassificationErrorDTO(errorEnum, message));
+      .body(new ClassificationErrorDTO(errorEnum, message, Utilities.getTraceId()));
   }
 
   private static void logException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus) {

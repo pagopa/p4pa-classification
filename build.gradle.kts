@@ -1,5 +1,7 @@
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 import java.util.*
+import com.github.jk1.license.render.*
+import com.github.jk1.license.filter.*
 
 plugins {
   java
@@ -12,6 +14,7 @@ plugins {
   id("org.ajoberstar.grgit") version "5.3.2"
   id("com.gorylenko.gradle-git-properties") version "2.5.3"
   id("com.intershop.gradle.jaxb") version "7.0.2"
+  id("com.github.jk1.dependency-license-report") version "3.0.1"
 }
 
 group = "it.gov.pagopa.payhub"
@@ -28,6 +31,18 @@ configurations {
   compileOnly {
     extendsFrom(configurations.annotationProcessor.get())
   }
+  compileClasspath {
+    resolutionStrategy.activateDependencyLocking()
+  }
+}
+
+licenseReport {
+  renderers = arrayOf(XmlReportRenderer("third-party-libs.xml", "Back-End Libraries"))
+  outputDir = "$projectDir/dependency-licenses"
+  filters = arrayOf(SpdxLicenseBundleNormalizer())
+}
+tasks.classes {
+  finalizedBy(tasks.generateLicenseReport)
 }
 
 repositories {
@@ -50,6 +65,7 @@ val podamVersion = "8.0.2.RELEASE"
 val rhinoScriptVersion="1.8.0"
 val springWolfAsyncApiVersion = "1.16.0"
 val springCloudDepsVersion = "2025.0.0"
+val commonsLang3Version = "3.19.0"
 
 dependencyManagement {
   imports {
@@ -73,7 +89,10 @@ dependencies {
   implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka")
   implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
   implementation("io.micrometer:micrometer-registry-prometheus")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion") {
+    exclude(group = "org.apache.commons", module = "commons-lang3")
+  }
+  implementation("org.apache.commons:commons-lang3:${commonsLang3Version}")
   implementation("org.codehaus.janino:janino:$janinoVersion")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
@@ -161,14 +180,6 @@ jaxb {
       outputDir = file("$projectDir/build/generated/jaxb/java")
       schema = file("src/main/resources/xsd/bilancioDefault.xsd")
     }
-  }
-}
-
-
-
-configurations {
-  compileClasspath {
-    resolutionStrategy.activateDependencyLocking()
   }
 }
 

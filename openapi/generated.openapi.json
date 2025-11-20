@@ -4404,27 +4404,14 @@
             "uniqueItems" : true
           }
         }, {
-          "name" : "lastClassificationDateFrom",
-          "in" : "query",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "date"
-          }
-        }, {
-          "name" : "lastClassificationDateTo",
-          "in" : "query",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "date"
-          }
-        }, {
-          "name" : "iuf",
+          "name" : "iufs",
           "in" : "query",
           "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }, {
           "name" : "iud",
@@ -4452,6 +4439,22 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "name" : "lastClassificationDateFrom",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "lastClassificationDateTo",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
           }
         }, {
           "name" : "payDateFrom",
@@ -4699,27 +4702,14 @@
             "uniqueItems" : true
           }
         }, {
-          "name" : "lastClassificationDateFrom",
-          "in" : "query",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "date"
-          }
-        }, {
-          "name" : "lastClassificationDateTo",
-          "in" : "query",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "date"
-          }
-        }, {
-          "name" : "iuf",
+          "name" : "iufs",
           "in" : "query",
           "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }, {
           "name" : "iud",
@@ -4747,6 +4737,22 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "name" : "lastClassificationDateFrom",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "lastClassificationDateTo",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
           }
         }, {
           "name" : "payDateFrom",
@@ -5254,6 +5260,27 @@
   },
   "components" : {
     "schemas" : {
+      "PageMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "AbstractJsonSchemaPropertyObject" : {
         "type" : "object",
         "properties" : {
@@ -5328,7 +5355,7 @@
           }
         }
       },
-      "Classification" : {
+      "Treasury" : {
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -5345,158 +5372,7 @@
           "updateTraceId" : {
             "type" : "string"
           },
-          "classificationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "transferId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "paymentNotificationId" : {
-            "type" : "string"
-          },
-          "paymentsReportingId" : {
-            "type" : "string"
-          },
           "treasuryId" : {
-            "type" : "string"
-          },
-          "iuf" : {
-            "type" : "string"
-          },
-          "iud" : {
-            "type" : "string"
-          },
-          "iuv" : {
-            "type" : "string"
-          },
-          "iur" : {
-            "type" : "string"
-          },
-          "transferIndex" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "label" : {
-            "$ref" : "#/components/schemas/ClassificationsEnum"
-          },
-          "lastClassificationDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "payDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "paymentDateTime" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "regulationDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "billDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "regionValueDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "regulationUniqueIdentifier" : {
-            "type" : "string"
-          },
-          "accountRegistryCode" : {
-            "type" : "string"
-          },
-          "billAmountCents" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "remittanceInformation" : {
-            "type" : "string"
-          },
-          "pspCompanyName" : {
-            "type" : "string"
-          },
-          "pspLastName" : {
-            "type" : "string"
-          },
-          "debtPositionTypeOrgCode" : {
-            "type" : "string"
-          },
-          "installmentIngestionFlowFileName" : {
-            "type" : "string"
-          },
-          "receiptOrgFiscalCode" : {
-            "type" : "string"
-          },
-          "receiptPaymentReceiptId" : {
-            "type" : "string"
-          },
-          "receiptPaymentDateTime" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "receiptPaymentRequestId" : {
-            "type" : "string"
-          },
-          "receiptIdPsp" : {
-            "type" : "string"
-          },
-          "receiptPspCompanyName" : {
-            "type" : "string"
-          },
-          "organizationEntityType" : {
-            "type" : "string"
-          },
-          "organizationName" : {
-            "type" : "string"
-          },
-          "receiptPersonalDataId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "receiptPaymentOutcomeCode" : {
-            "type" : "string"
-          },
-          "receiptPaymentAmount" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "receiptCreditorReferenceId" : {
-            "type" : "string"
-          },
-          "transferAmount" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "transferCategory" : {
-            "type" : "string"
-          },
-          "receiptCreationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "installmentBalance" : {
-            "type" : "string"
-          },
-          "provisionalAe" : {
-            "type" : "string"
-          },
-          "provisionalCode" : {
-            "type" : "string"
-          },
-          "documentYear" : {
-            "type" : "string"
-          },
-          "documentCode" : {
             "type" : "string"
           },
           "billYear" : {
@@ -5505,40 +5381,155 @@
           "billCode" : {
             "type" : "string"
           },
-          "debtorFiscalCodeHash" : {
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "orgBtCode" : {
+            "type" : "string"
+          },
+          "orgIstatCode" : {
+            "type" : "string"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "accountCode" : {
+            "type" : "string"
+          },
+          "domainIdCode" : {
+            "type" : "string"
+          },
+          "transactionTypeCode" : {
+            "type" : "string"
+          },
+          "remittanceCode" : {
+            "type" : "string"
+          },
+          "remittanceDescription" : {
+            "type" : "string"
+          },
+          "billAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "billDate" : {
             "type" : "string",
-            "format" : "byte"
+            "format" : "date"
+          },
+          "receptionDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "documentYear" : {
+            "type" : "string"
+          },
+          "documentCode" : {
+            "type" : "string"
+          },
+          "sealCode" : {
+            "type" : "string"
+          },
+          "pspLastName" : {
+            "type" : "string"
+          },
+          "pspFirstName" : {
+            "type" : "string"
+          },
+          "pspAddress" : {
+            "type" : "string"
+          },
+          "pspPostalCode" : {
+            "type" : "string"
+          },
+          "pspCity" : {
+            "type" : "string"
+          },
+          "pspFiscalCode" : {
+            "type" : "string"
+          },
+          "pspVatNumber" : {
+            "type" : "string"
+          },
+          "abiCode" : {
+            "type" : "string"
+          },
+          "cabCode" : {
+            "type" : "string"
+          },
+          "ibanCode" : {
+            "type" : "string"
+          },
+          "accountRegistryCode" : {
+            "type" : "string"
+          },
+          "provisionalAe" : {
+            "type" : "string"
+          },
+          "provisionalCode" : {
+            "type" : "string"
+          },
+          "accountTypeCode" : {
+            "type" : "string"
+          },
+          "processCode" : {
+            "type" : "string"
+          },
+          "executionPgCode" : {
+            "type" : "string"
+          },
+          "transferPgCode" : {
+            "type" : "string"
+          },
+          "processPgNumber" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "regionValueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "actualSuspensionDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "managementProvisionalCode" : {
+            "type" : "string"
+          },
+          "endToEndId" : {
+            "type" : "string"
+          },
+          "treasuryOrigin" : {
+            "$ref" : "#/components/schemas/TreasuryOrigin"
+          },
+          "checkNumber" : {
+            "type" : "string"
+          },
+          "clientReference" : {
+            "type" : "string"
+          },
+          "bankReference" : {
+            "type" : "string"
+          },
+          "regularized" : {
+            "type" : "boolean"
           },
           "_links" : {
             "$ref" : "#/components/schemas/Links"
           }
         },
-        "required" : [ "label", "organizationId" ]
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "orgBtCode", "orgIstatCode", "organizationId", "pspLastName", "treasuryOrigin" ]
       },
-      "ClassificationsEnum" : {
+      "TreasuryOrigin" : {
         "type" : "string",
-        "enum" : [ "DOPPI", "RT_NO_IUF", "RT_NO_IUD", "IUV_NO_RT", "TES_NO_IUF_OR_IUV", "IUF_NO_TES", "IUD_RT_IUF", "RT_IUF", "RT_TES", "IUD_RT_IUF_TES", "RT_IUF_TES", "IUF_TES_DIV_IMP", "IUD_NO_RT", "TES_NO_MATCH", "UNKNOWN" ]
-      },
-      "PageMetadata" : {
-        "type" : "object",
-        "properties" : {
-          "size" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalElements" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "number" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
+        "enum" : [ "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE", "TREASURY_CSV_COMPLETE" ]
       },
       "PaymentsReporting" : {
         "type" : "object",
@@ -5764,6 +5755,10 @@
         },
         "required" : [ "assessmentName", "debtPositionTypeOrgCode", "debtPositionTypeOrgId", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
       },
+      "ClassificationsEnum" : {
+        "type" : "string",
+        "enum" : [ "DOPPI", "RT_NO_IUF", "RT_NO_IUD", "IUV_NO_RT", "TES_NO_IUF_OR_IUV", "IUF_NO_TES", "IUD_RT_IUF", "RT_IUF", "RT_TES", "IUD_RT_IUF_TES", "RT_IUF_TES", "IUF_TES_DIV_IMP", "IUD_NO_RT", "TES_NO_MATCH", "UNKNOWN" ]
+      },
       "AssessmentsDetail" : {
         "type" : "object",
         "properties" : {
@@ -5871,7 +5866,7 @@
         "type" : "string",
         "enum" : [ "PAID", "REPORTED", "CASHED" ]
       },
-      "Treasury" : {
+      "Classification" : {
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -5888,16 +5883,7 @@
           "updateTraceId" : {
             "type" : "string"
           },
-          "treasuryId" : {
-            "type" : "string"
-          },
-          "billYear" : {
-            "type" : "string"
-          },
-          "billCode" : {
-            "type" : "string"
-          },
-          "ingestionFlowFileId" : {
+          "classificationId" : {
             "type" : "integer",
             "format" : "int64"
           },
@@ -5905,85 +5891,138 @@
             "type" : "integer",
             "format" : "int64"
           },
-          "orgBtCode" : {
+          "transferId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentNotificationId" : {
             "type" : "string"
           },
-          "orgIstatCode" : {
+          "paymentsReportingId" : {
+            "type" : "string"
+          },
+          "treasuryId" : {
             "type" : "string"
           },
           "iuf" : {
             "type" : "string"
           },
+          "iud" : {
+            "type" : "string"
+          },
           "iuv" : {
             "type" : "string"
           },
-          "accountCode" : {
+          "iur" : {
             "type" : "string"
           },
-          "domainIdCode" : {
+          "transferIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "label" : {
+            "$ref" : "#/components/schemas/ClassificationsEnum"
+          },
+          "lastClassificationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "payDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "paymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "billDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "regionValueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "regulationUniqueIdentifier" : {
             "type" : "string"
           },
-          "transactionTypeCode" : {
-            "type" : "string"
-          },
-          "remittanceCode" : {
-            "type" : "string"
-          },
-          "remittanceDescription" : {
+          "accountRegistryCode" : {
             "type" : "string"
           },
           "billAmountCents" : {
             "type" : "integer",
             "format" : "int64"
           },
-          "billDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "receptionDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "documentYear" : {
+          "remittanceInformation" : {
             "type" : "string"
           },
-          "documentCode" : {
-            "type" : "string"
-          },
-          "sealCode" : {
+          "pspCompanyName" : {
             "type" : "string"
           },
           "pspLastName" : {
             "type" : "string"
           },
-          "pspFirstName" : {
+          "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
-          "pspAddress" : {
+          "installmentIngestionFlowFileName" : {
             "type" : "string"
           },
-          "pspPostalCode" : {
+          "receiptOrgFiscalCode" : {
             "type" : "string"
           },
-          "pspCity" : {
+          "receiptPaymentReceiptId" : {
             "type" : "string"
           },
-          "pspFiscalCode" : {
+          "receiptPaymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "receiptPaymentRequestId" : {
             "type" : "string"
           },
-          "pspVatNumber" : {
+          "receiptIdPsp" : {
             "type" : "string"
           },
-          "abiCode" : {
+          "receiptPspCompanyName" : {
             "type" : "string"
           },
-          "cabCode" : {
+          "organizationEntityType" : {
             "type" : "string"
           },
-          "ibanCode" : {
+          "organizationName" : {
             "type" : "string"
           },
-          "accountRegistryCode" : {
+          "receiptPersonalDataId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptPaymentOutcomeCode" : {
+            "type" : "string"
+          },
+          "receiptPaymentAmount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptCreditorReferenceId" : {
+            "type" : "string"
+          },
+          "transferAmount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "transferCategory" : {
+            "type" : "string"
+          },
+          "receiptCreationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "installmentBalance" : {
             "type" : "string"
           },
           "provisionalAe" : {
@@ -5992,60 +6031,27 @@
           "provisionalCode" : {
             "type" : "string"
           },
-          "accountTypeCode" : {
+          "documentYear" : {
             "type" : "string"
           },
-          "processCode" : {
+          "documentCode" : {
             "type" : "string"
           },
-          "executionPgCode" : {
+          "billYear" : {
             "type" : "string"
           },
-          "transferPgCode" : {
+          "billCode" : {
             "type" : "string"
           },
-          "processPgNumber" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "regionValueDate" : {
+          "debtorFiscalCodeHash" : {
             "type" : "string",
-            "format" : "date"
-          },
-          "actualSuspensionDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "managementProvisionalCode" : {
-            "type" : "string"
-          },
-          "endToEndId" : {
-            "type" : "string"
-          },
-          "treasuryOrigin" : {
-            "$ref" : "#/components/schemas/TreasuryOrigin"
-          },
-          "checkNumber" : {
-            "type" : "string"
-          },
-          "clientReference" : {
-            "type" : "string"
-          },
-          "bankReference" : {
-            "type" : "string"
-          },
-          "regularized" : {
-            "type" : "boolean"
+            "format" : "byte"
           },
           "_links" : {
             "$ref" : "#/components/schemas/Links"
           }
         },
-        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "orgBtCode", "orgIstatCode", "organizationId", "pspLastName", "treasuryOrigin" ]
-      },
-      "TreasuryOrigin" : {
-        "type" : "string",
-        "enum" : [ "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE", "TREASURY_CSV_COMPLETE" ]
+        "required" : [ "label", "organizationId" ]
       },
       "AssessmentsRequestBody" : {
         "type" : "object",
@@ -6712,6 +6718,9 @@
             "$ref" : "#/components/schemas/CodeEnum"
           },
           "message" : {
+            "type" : "string"
+          },
+          "traceId" : {
             "type" : "string"
           }
         },
@@ -8362,16 +8371,58 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "PagedModelClassification" : {
+      "PaymentsReportingView" : {
+        "type" : "object",
+        "properties" : {
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "regulationUniqueIdentifier" : {
+            "type" : "string"
+          },
+          "regulationDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "flowDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "totalPayments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "flowDateTime", "ingestionFlowFileId", "iuf", "iuv", "organizationId", "regulationDate", "regulationUniqueIdentifier", "totalAmountCents", "totalPayments" ]
+      },
+      "PagedModelPaymentsReportingView" : {
         "type" : "object",
         "properties" : {
           "_embedded" : {
             "type" : "object",
             "properties" : {
-              "classifications" : {
+              "paymentsReportingViews" : {
                 "type" : "array",
                 "items" : {
-                  "$ref" : "#/components/schemas/Classification"
+                  "$ref" : "#/components/schemas/PaymentsReportingView"
                 }
               }
             }
@@ -8384,22 +8435,126 @@
           }
         }
       },
-      "CollectionModelClassification" : {
+      "PagedModelTreasury" : {
         "type" : "object",
         "properties" : {
           "_embedded" : {
             "type" : "object",
             "properties" : {
-              "classifications" : {
+              "treasuries" : {
                 "type" : "array",
                 "items" : {
-                  "$ref" : "#/components/schemas/Classification"
+                  "$ref" : "#/components/schemas/Treasury"
                 }
               }
             }
           },
           "_links" : {
             "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        }
+      },
+      "PaymentNotificationNoPII" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
+          },
+          "paymentNotificationId" : {
+            "type" : "string"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "paymentExecutionDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "paymentType" : {
+            "type" : "string"
+          },
+          "amountPaidCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paCommissionCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "transferCategory" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "balance" : {
+            "type" : "string"
+          },
+          "personalDataId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformationHash" : {
+            "type" : "string",
+            "format" : "byte"
+          },
+          "debtorFiscalCodeHash" : {
+            "type" : "string",
+            "format" : "byte"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "required" : [ "amountPaidCents", "debtPositionTypeOrgCode", "ingestionFlowFileId", "iud", "iuv", "organizationId", "paymentExecutionDate", "paymentType", "remittanceInformation", "transferCategory" ]
+      },
+      "PagedModelPaymentNotificationNoPII" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "paymentNotificationNoPIIs" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/PaymentNotificationNoPII"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
           }
         }
       },
@@ -8505,6 +8660,9 @@
           "receiptId" : {
             "type" : "string"
           },
+          "iud" : {
+            "type" : "string"
+          },
           "_links" : {
             "$ref" : "#/components/schemas/Links"
           }
@@ -8596,77 +8754,59 @@
           }
         }
       },
-      "TreasuryView" : {
-        "type" : "object",
-        "properties" : {
-          "treasuryId" : {
-            "type" : "string"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "billYear" : {
-            "type" : "string"
-          },
-          "billCode" : {
-            "type" : "string"
-          },
-          "regionValueDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "billDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "iuf" : {
-            "type" : "string"
-          },
-          "billAmountCents" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "iuv" : {
-            "type" : "string"
-          },
-          "provisionalCode" : {
-            "type" : "string"
-          },
-          "provisionalAe" : {
-            "type" : "string"
-          },
-          "pspLastName" : {
-            "type" : "string"
-          },
-          "documentCode" : {
-            "type" : "string"
-          },
-          "documentYear" : {
-            "type" : "string"
-          },
-          "orgBtCode" : {
-            "type" : "string"
-          },
-          "orgIstatCode" : {
-            "type" : "string"
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "orgBtCode", "orgIstatCode", "organizationId", "pspLastName", "treasuryId" ]
-      },
-      "PagedModelTreasuryView" : {
+      "CollectionModelAssessmentsBalanceView" : {
         "type" : "object",
         "properties" : {
           "_embedded" : {
             "type" : "object",
             "properties" : {
-              "treasuryViews" : {
+              "assessmentsBalanceViews" : {
                 "type" : "array",
                 "items" : {
-                  "$ref" : "#/components/schemas/TreasuryView"
+                  "$ref" : "#/components/schemas/AssessmentsBalanceView"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "AssessmentsBalanceView" : {
+        "type" : "object",
+        "properties" : {
+          "officeCode" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "sectionCode" : {
+            "type" : "string"
+          },
+          "assessmentCode" : {
+            "type" : "string"
+          },
+          "amountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "PagedModelAssessments" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "type" : "object",
+            "properties" : {
+              "assessmentses" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/Assessments"
                 }
               }
             }
@@ -9009,117 +9149,77 @@
         },
         "required" : [ "acquiringDate", "amountPaidCents", "billCode", "billYear", "classificationId", "flowDateTime", "ingestionFlowFileId", "label", "organizationId", "paymentExecutionDate", "paymentNotificationAmountPaidCents", "paymentNotificationDebtPositionTypeOrgCode", "paymentNotificationIud", "paymentNotificationRemittanceInformation", "paymentOutcomeCode", "paymentType", "pspIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments" ]
       },
-      "PaymentNotificationNoPII" : {
+      "TreasuryView" : {
         "type" : "object",
         "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
-          "updateTraceId" : {
-            "type" : "string"
-          },
-          "paymentNotificationId" : {
+          "treasuryId" : {
             "type" : "string"
           },
           "organizationId" : {
             "type" : "integer",
             "format" : "int64"
           },
-          "ingestionFlowFileId" : {
+          "billYear" : {
+            "type" : "string"
+          },
+          "billCode" : {
+            "type" : "string"
+          },
+          "regionValueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "billDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "billAmountCents" : {
             "type" : "integer",
             "format" : "int64"
-          },
-          "iud" : {
-            "type" : "string"
           },
           "iuv" : {
             "type" : "string"
           },
-          "paymentExecutionDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "paymentType" : {
+          "provisionalCode" : {
             "type" : "string"
           },
-          "amountPaidCents" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "paCommissionCents" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "remittanceInformation" : {
+          "provisionalAe" : {
             "type" : "string"
           },
-          "transferCategory" : {
+          "pspLastName" : {
             "type" : "string"
           },
-          "debtPositionTypeOrgCode" : {
+          "documentCode" : {
             "type" : "string"
           },
-          "balance" : {
+          "documentYear" : {
             "type" : "string"
           },
-          "personalDataId" : {
-            "type" : "integer",
-            "format" : "int64"
+          "orgBtCode" : {
+            "type" : "string"
           },
-          "remittanceInformationHash" : {
-            "type" : "string",
-            "format" : "byte"
-          },
-          "debtorFiscalCodeHash" : {
-            "type" : "string",
-            "format" : "byte"
+          "orgIstatCode" : {
+            "type" : "string"
           },
           "_links" : {
             "$ref" : "#/components/schemas/Links"
           }
         },
-        "required" : [ "amountPaidCents", "debtPositionTypeOrgCode", "ingestionFlowFileId", "iud", "iuv", "organizationId", "paymentExecutionDate", "paymentType", "remittanceInformation", "transferCategory" ]
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "orgBtCode", "orgIstatCode", "organizationId", "pspLastName", "treasuryId" ]
       },
-      "PagedModelPaymentNotificationNoPII" : {
+      "PagedModelTreasuryView" : {
         "type" : "object",
         "properties" : {
           "_embedded" : {
             "type" : "object",
             "properties" : {
-              "paymentNotificationNoPIIs" : {
+              "treasuryViews" : {
                 "type" : "array",
                 "items" : {
-                  "$ref" : "#/components/schemas/PaymentNotificationNoPII"
-                }
-              }
-            }
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          },
-          "page" : {
-            "$ref" : "#/components/schemas/PageMetadata"
-          }
-        }
-      },
-      "PagedModelAssessments" : {
-        "type" : "object",
-        "properties" : {
-          "_embedded" : {
-            "type" : "object",
-            "properties" : {
-              "assessmentses" : {
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/Assessments"
+                  "$ref" : "#/components/schemas/TreasuryView"
                 }
               }
             }
@@ -9173,16 +9273,16 @@
           }
         }
       },
-      "PagedModelTreasury" : {
+      "PagedModelClassification" : {
         "type" : "object",
         "properties" : {
           "_embedded" : {
             "type" : "object",
             "properties" : {
-              "treasuries" : {
+              "classifications" : {
                 "type" : "array",
                 "items" : {
-                  "$ref" : "#/components/schemas/Treasury"
+                  "$ref" : "#/components/schemas/Classification"
                 }
               }
             }
@@ -9195,107 +9295,19 @@
           }
         }
       },
-      "PaymentsReportingView" : {
-        "type" : "object",
-        "properties" : {
-          "ingestionFlowFileId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "iuf" : {
-            "type" : "string"
-          },
-          "iuv" : {
-            "type" : "string"
-          },
-          "regulationUniqueIdentifier" : {
-            "type" : "string"
-          },
-          "regulationDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "flowDateTime" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "totalPayments" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalAmountCents" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "required" : [ "flowDateTime", "ingestionFlowFileId", "iuf", "iuv", "organizationId", "regulationDate", "regulationUniqueIdentifier", "totalAmountCents", "totalPayments" ]
-      },
-      "PagedModelPaymentsReportingView" : {
+      "CollectionModelClassification" : {
         "type" : "object",
         "properties" : {
           "_embedded" : {
             "type" : "object",
             "properties" : {
-              "paymentsReportingViews" : {
+              "classifications" : {
                 "type" : "array",
                 "items" : {
-                  "$ref" : "#/components/schemas/PaymentsReportingView"
+                  "$ref" : "#/components/schemas/Classification"
                 }
               }
             }
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          },
-          "page" : {
-            "$ref" : "#/components/schemas/PageMetadata"
-          }
-        }
-      },
-      "CollectionModelAssessmentsBalanceView" : {
-        "type" : "object",
-        "properties" : {
-          "_embedded" : {
-            "type" : "object",
-            "properties" : {
-              "assessmentsBalanceViews" : {
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/AssessmentsBalanceView"
-                }
-              }
-            }
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "AssessmentsBalanceView" : {
-        "type" : "object",
-        "properties" : {
-          "officeCode" : {
-            "type" : "string"
-          },
-          "debtPositionTypeOrgCode" : {
-            "type" : "string"
-          },
-          "sectionCode" : {
-            "type" : "string"
-          },
-          "assessmentCode" : {
-            "type" : "string"
-          },
-          "amountCents" : {
-            "type" : "integer",
-            "format" : "int64"
           },
           "_links" : {
             "$ref" : "#/components/schemas/Links"

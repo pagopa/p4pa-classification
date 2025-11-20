@@ -646,10 +646,12 @@ paths:
           required: true
           schema:
             type: string
-        - name: iuf
+        - name: iufs
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: iud
           in: query
           schema:
@@ -676,13 +678,11 @@ paths:
               type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
-          required: true
           schema:
             type: string
             format: date
         - name: lastClassificationDateTo
           in: query
-          required: true
           schema:
             type: string
             format: date
@@ -818,10 +818,12 @@ paths:
           required: true
           schema:
             type: string
-        - name: iuf
+        - name: iufs
           in: query
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: iud
           in: query
           schema:
@@ -848,13 +850,11 @@ paths:
               type: ClassificationsEnum
         - name: lastClassificationDateFrom
           in: query
-          required: true
           schema:
             type: string
             format: date
         - name: lastClassificationDateTo
           in: query
-          required: true
           schema:
             type: string
             format: date
@@ -1309,6 +1309,8 @@ components:
             - CLASSIFICATION_CONFLICT
             - CLASSIFICATION_GENERIC_ERROR
         message:
+          type: string
+        traceId:
           type: string
     PagedFullClassificationView:
       type: object

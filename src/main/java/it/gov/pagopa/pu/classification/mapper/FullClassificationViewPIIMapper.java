@@ -22,8 +22,9 @@ public class FullClassificationViewPIIMapper {
                                     .map(id -> personalDataService.get(id, ReceiptPIIDTO.class))
                                     .orElse(null);
 
-    PaymentNotificationPIIDTO paymentNotificationPIIDTO = personalDataService
-      .get(noPii.getPaymentNotificationPersonalDataId(), PaymentNotificationPIIDTO.class);
+    PaymentNotificationPIIDTO paymentNotificationPIIDTO = Optional.ofNullable(noPii.getPaymentNotificationPersonalDataId())
+      .map(id -> personalDataService.get(id, PaymentNotificationPIIDTO.class))
+      .orElse(null);
 
     return FullClassificationViewDTO.builder()
       .paymentNotificationIngestionFlowFileId(noPii.getPaymentNotificationIngestionFlowFileId())
@@ -37,7 +38,7 @@ public class FullClassificationViewPIIMapper {
       .paymentNotificationTransferCategory(noPii.getPaymentNotificationTransferCategory())
       .paymentNotificationDebtPositionTypeOrgCode(noPii.getPaymentNotificationDebtPositionTypeOrgCode())
       .paymentNotificationBalance(noPii.getPaymentNotificationBalance())
-      .paymentNotificationDebtor(paymentNotificationPIIDTO.getDebtor())
+      .paymentNotificationDebtor(paymentNotificationPIIDTO != null ? paymentNotificationPIIDTO.getDebtor() : null)
       .receiptDebtor(receiptPIIDTO != null ? receiptPIIDTO.getDebtor() : null)
       .receiptPayer(receiptPIIDTO != null ? receiptPIIDTO.getPayer() : null)
       .classificationId(noPii.getClassificationId())
@@ -46,7 +47,7 @@ public class FullClassificationViewPIIMapper {
       .receiptIuv(noPii.getReceiptIuv())
       .receiptOrgFiscalCode(noPii.getReceiptOrgFiscalCode())
       .receiptPaymentReceiptId(noPii.getReceiptPaymentReceiptId())
-      .receiptPaymentDateTime(noPii.getReceiptPaymentDateTime() != null ? noPii.getReceiptPaymentDateTime().toLocalDateTime() : null)
+      .receiptPaymentDateTime(noPii.getReceiptPaymentDateTime())
       .receiptPaymentRequestId(noPii.getReceiptPaymentRequestId())
       .receiptIdPsp(noPii.getReceiptIdPsp())
       .receiptPspCompanyName(noPii.getReceiptPspCompanyName())
@@ -58,7 +59,7 @@ public class FullClassificationViewPIIMapper {
       .receiptTransferAmount(noPii.getReceiptTransferAmount())
       .receiptTransferRemittanceInformation(noPii.getReceiptTransferRemittanceInformation())
       .receiptTransferCategory(noPii.getReceiptTransferCategory())
-      .receiptCreationDate(noPii.getReceiptCreationDate() != null ? noPii.getReceiptCreationDate().toLocalDateTime() : null)
+      .receiptCreationDate(noPii.getReceiptCreationDate())
       .receiptInstallmentBalance(noPii.getReceiptInstallmentBalance())
       .paymentsReportingIuf(noPii.getPaymentsReportingIuf())
       .paymentsReportingFlowDateTime(noPii.getPaymentsReportingFlowDateTime())
