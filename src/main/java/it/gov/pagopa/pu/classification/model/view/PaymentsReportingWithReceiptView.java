@@ -75,4 +75,10 @@ public class PaymentsReportingWithReceiptView implements Serializable {
   + "WHERE c.payments_reporting_id = payments_reporting_id "
   + "LIMIT 1)")
   private String receiptId;
+
+  @Formula("(SELECT c.iud "
+  + "FROM classification c "
+  + "WHERE c.payments_reporting_id = payments_reporting_id "
+  + "LIMIT 1)")
+  private String iud;
 }
