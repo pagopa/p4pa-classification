@@ -22,8 +22,9 @@ public class FullClassificationViewPIIMapper {
                                     .map(id -> personalDataService.get(id, ReceiptPIIDTO.class))
                                     .orElse(null);
 
-    PaymentNotificationPIIDTO paymentNotificationPIIDTO = personalDataService
-      .get(noPii.getPaymentNotificationPersonalDataId(), PaymentNotificationPIIDTO.class);
+    PaymentNotificationPIIDTO paymentNotificationPIIDTO = Optional.ofNullable(noPii.getPaymentNotificationPersonalDataId())
+      .map(id -> personalDataService.get(id, PaymentNotificationPIIDTO.class))
+      .orElse(null);
 
     return FullClassificationViewDTO.builder()
       .paymentNotificationIngestionFlowFileId(noPii.getPaymentNotificationIngestionFlowFileId())
@@ -37,7 +38,7 @@ public class FullClassificationViewPIIMapper {
       .paymentNotificationTransferCategory(noPii.getPaymentNotificationTransferCategory())
       .paymentNotificationDebtPositionTypeOrgCode(noPii.getPaymentNotificationDebtPositionTypeOrgCode())
       .paymentNotificationBalance(noPii.getPaymentNotificationBalance())
-      .paymentNotificationDebtor(paymentNotificationPIIDTO.getDebtor())
+      .paymentNotificationDebtor(paymentNotificationPIIDTO != null ? paymentNotificationPIIDTO.getDebtor() : null)
       .receiptDebtor(receiptPIIDTO != null ? receiptPIIDTO.getDebtor() : null)
       .receiptPayer(receiptPIIDTO != null ? receiptPIIDTO.getPayer() : null)
       .classificationId(noPii.getClassificationId())
