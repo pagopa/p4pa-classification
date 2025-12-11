@@ -48,6 +48,7 @@ public class Classification extends BaseEntity implements Serializable {
   private String pspCompanyName;
   private String pspLastName;
   private String debtPositionTypeOrgCode;
+  private String debtPositionTypeOrgDescription;
 
   private String installmentIngestionFlowFileName;
   private String receiptOrgFiscalCode;
