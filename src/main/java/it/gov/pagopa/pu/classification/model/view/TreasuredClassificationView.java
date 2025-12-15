@@ -48,8 +48,7 @@ public class TreasuredClassificationView implements Serializable {
   private String pspCompanyName;
   private String pspLastName;
   private String debtPositionTypeOrgCode;
-  //TODO: P4ADEV-2918 will be added in Classification entity
-  //private String debtPositionTypeOrgDescription;
+  private String debtPositionTypeOrgDescription;
   private String installmentIngestionFlowFileName;
   private String receiptOrgFiscalCode;
   private String receiptPaymentReceiptId;
