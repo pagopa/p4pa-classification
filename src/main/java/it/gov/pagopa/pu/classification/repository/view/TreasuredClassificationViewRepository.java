@@ -41,6 +41,7 @@ public interface TreasuredClassificationViewRepository extends Repository<Treasu
        c.pspCompanyName as pspCompanyName,
        c.pspLastName as pspLastName,
        c.debtPositionTypeOrgCode as debtPositionTypeOrgCode,
+       c.debtPositionTypeOrgDescription as debtPositionTypeOrgDescription,
        c.installmentIngestionFlowFileName as installmentIngestionFlowFileName,
        c.receiptOrgFiscalCode as receiptOrgFiscalCode,
        c.receiptPaymentReceiptId as receiptPaymentReceiptId,
