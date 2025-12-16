@@ -66,7 +66,7 @@ val rhinoScriptVersion="1.8.1"
 val springWolfAsyncApiVersion = "1.20.0"
 val springCloudDepsVersion = "2025.1.0"
 val commonsLang3Version = "3.20.0"
-val lz4JavaVersion = "1.8.1"
+val lz4JavaVersion = "1.10.1"
 
 dependencyManagement {
   imports {
@@ -90,13 +90,13 @@ dependencies {
   implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka") {
     exclude(group = "org.lz4", module = "lz4-java")
   }
-  implementation ("org.lz4:lz4-java::$lz4JavaVersion")
+  implementation ("at.yawk.lz4:lz4-java:$lz4JavaVersion")
   implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
   implementation("io.micrometer:micrometer-registry-prometheus")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion") {
     exclude(group = "org.apache.commons", module = "commons-lang3")
   }
-  implementation("org.apache.commons:commons-lang3:${commonsLang3Version}")
+  implementation("org.apache.commons:commons-lang3:$commonsLang3Version")
   implementation("org.codehaus.janino:janino:$janinoVersion")
   implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
   implementation("org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion")
