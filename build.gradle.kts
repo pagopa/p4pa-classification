@@ -102,7 +102,9 @@ dependencies {
   implementation("org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion")
   implementation("org.postgresql:postgresql:$postgresJdbcVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
-  implementation("io.github.springwolf:springwolf-kafka:$springWolfAsyncApiVersion")
+  implementation("io.github.springwolf:springwolf-kafka:$springWolfAsyncApiVersion") {
+    exclude(group = "org.lz4", module = "lz4-java")
+  }
   implementation("io.github.springwolf:springwolf-ui:$springWolfAsyncApiVersion")
   implementation("io.github.springwolf:springwolf-cloud-stream:$springWolfAsyncApiVersion")
 
