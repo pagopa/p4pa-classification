@@ -5,15 +5,15 @@ import com.github.jk1.license.filter.*
 
 plugins {
   java
-  id("org.springframework.boot") version "3.5.6"
+  id("org.springframework.boot") version "4.0.0"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
-  id("org.sonarqube") version "6.3.1.5724"
-  id("com.github.ben-manes.versions") version "0.52.0"
-  id("org.openapi.generator") version "7.15.0"
+  id("org.sonarqube") version "7.2.1.6560"
+  id("com.github.ben-manes.versions") version "0.53.0"
+  id("org.openapi.generator") version "7.17.0"
   id("org.ajoberstar.grgit") version "5.3.2"
-  id("com.gorylenko.gradle-git-properties") version "2.5.3"
-  id("com.intershop.gradle.jaxb") version "7.0.2"
+  id("com.gorylenko.gradle-git-properties") version "2.5.4"
+  id("com.intershop.gradle.jaxb") version "8.0.1"
   id("com.github.jk1.dependency-license-report") version "3.0.1"
 }
 
@@ -49,23 +49,23 @@ repositories {
   mavenCentral()
 }
 
-val springDocOpenApiVersion = "2.8.13"
+val springDocOpenApiVersion = "3.0.0"
 val janinoVersion = "3.1.12"
-val openApiToolsVersion = "0.2.7"
-val bouncycastleVersion = "1.82"
-val micrometerVersion = "1.5.4"
-val caffeineVersion = "3.2.2"
-val httpClientVersion = "5.5"
-val postgresJdbcVersion = "42.7.7"
+val openApiToolsVersion = "0.2.8"
+val bouncycastleVersion = "1.83"
+val micrometerVersion = "1.6.1"
+val caffeineVersion = "3.2.3"
+val httpClientVersion = "5.5.1"
+val postgresJdbcVersion = "42.7.8"
 val activationVersion = "2.1.4"
-val jaxbVersion = "4.0.5"
-val jaxbApiVersion = "4.0.2"
-val xmlSchemaVersion = "2.3.1"
+val jaxbVersion = "4.0.6"
+val jaxbApiVersion = "4.0.4"
+val xmlSchemaVersion = "2.3.2"
 val podamVersion = "8.0.2.RELEASE"
-val rhinoScriptVersion="1.8.0"
-val springWolfAsyncApiVersion = "1.16.0"
-val springCloudDepsVersion = "2025.0.0"
-val commonsLang3Version = "3.19.0"
+val rhinoScriptVersion="1.8.1"
+val springWolfAsyncApiVersion = "1.20.0"
+val springCloudDepsVersion = "2025.1.0"
+val commonsLang3Version = "3.20.0"
 
 dependencyManagement {
   imports {
@@ -75,11 +75,11 @@ dependencyManagement {
 
 
 dependencies {
-  implementation("org.springframework.boot:spring-boot-starter")
-  implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.springframework.boot:spring-boot-starter-webmvc")
   implementation("org.springframework.boot:spring-boot-starter-validation")
-  implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+  implementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
+  implementation("org.springframework.boot:spring-boot-starter-hateoas")
   implementation("org.springframework.boot:spring-boot-starter-data-rest")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
@@ -94,7 +94,6 @@ dependencies {
   }
   implementation("org.apache.commons:commons-lang3:${commonsLang3Version}")
   implementation("org.codehaus.janino:janino:$janinoVersion")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
   implementation("org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion")
   implementation("org.postgresql:postgresql:$postgresJdbcVersion")
@@ -122,7 +121,8 @@ dependencies {
   testAnnotationProcessor("org.projectlombok:lombok")
 
   //	Testing
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-security-test")
   testImplementation("org.mockito:mockito-core")
   testImplementation("org.projectlombok:lombok")
   testImplementation("com.h2database:h2")
