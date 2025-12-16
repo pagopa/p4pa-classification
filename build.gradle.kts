@@ -37,7 +37,8 @@ configurations {
 }
 
 licenseReport {
-  renderers = arrayOf(XmlReportRenderer("third-party-libs.xml", "Back-End Libraries"))
+  renderers =
+    arrayOf(XmlReportRenderer("third-party-libs.xml", "Back-End Libraries"))
   outputDir = "$projectDir/dependency-licenses"
   filters = arrayOf(SpdxLicenseBundleNormalizer())
 }
@@ -62,7 +63,7 @@ val jaxbVersion = "4.0.6"
 val jaxbApiVersion = "4.0.4"
 val xmlSchemaVersion = "2.3.2"
 val podamVersion = "8.0.2.RELEASE"
-val rhinoScriptVersion="1.8.1"
+val rhinoScriptVersion = "1.8.1"
 val springWolfAsyncApiVersion = "1.20.0"
 val springCloudDepsVersion = "2025.1.0"
 val commonsLang3Version = "3.20.0"
@@ -90,7 +91,7 @@ dependencies {
   implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka") {
     exclude(group = "org.lz4", module = "lz4-java")
   }
-  implementation ("at.yawk.lz4:lz4-java:$lz4JavaVersion")
+  implementation("at.yawk.lz4:lz4-java:$lz4JavaVersion")
   implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
   implementation("io.micrometer:micrometer-registry-prometheus")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion") {
@@ -224,39 +225,46 @@ openApiGenerate {
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.classification.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.classification.dto.generated")
-  typeMappings.set(mapOf(
-    "Treasury" to "it.gov.pagopa.pu.classification.model.Treasury",
-    "PaymentsReporting" to "it.gov.pagopa.pu.classification.model.PaymentsReporting",
-    "Classification" to "it.gov.pagopa.pu.classification.model.Classification",
-    "ClassificationView" to "it.gov.pagopa.pu.classification.dto.ClassificationViewDTO",
-    "Assessments" to "it.gov.pagopa.pu.classification.model.Assessments",
-    "PaymentNotificationDTO" to "it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO",
-    "PersonDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO",
-    "FullClassificationView" to "it.gov.pagopa.pu.classification.dto.FullClassificationViewDTO",
-    "ClassificationsEnum" to "it.gov.pagopa.pu.classification.enums.ClassificationsEnum",
-    "TreasuredClassificationDTO" to "it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView",
-    "ClassificationDetailViewDTO" to "it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO",
-    "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.enums.AssessmentStatus",
-    "DebtPositionDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO",
-    "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.model.AssessmentsRegistry",
-    "AssessmentsDetail" to "it.gov.pagopa.pu.classification.model.AssessmentsDetail",
-    "ClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView"
-  ))
-  configOptions.set(mapOf(
-    "dateLibrary" to "java8",
-    "requestMappingMode" to "api_interface",
-    "useSpringBoot3" to "true",
-    "interfaceOnly" to "true",
-    "useTags" to "true",
-    "useBeanValidation" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  typeMappings.set(
+    mapOf(
+      "Treasury" to "it.gov.pagopa.pu.classification.model.Treasury",
+      "PaymentsReporting" to "it.gov.pagopa.pu.classification.model.PaymentsReporting",
+      "Classification" to "it.gov.pagopa.pu.classification.model.Classification",
+      "ClassificationView" to "it.gov.pagopa.pu.classification.dto.ClassificationViewDTO",
+      "Assessments" to "it.gov.pagopa.pu.classification.model.Assessments",
+      "PaymentNotificationDTO" to "it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO",
+      "PersonDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO",
+      "FullClassificationView" to "it.gov.pagopa.pu.classification.dto.FullClassificationViewDTO",
+      "ClassificationsEnum" to "it.gov.pagopa.pu.classification.enums.ClassificationsEnum",
+      "TreasuredClassificationDTO" to "it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView",
+      "ClassificationDetailViewDTO" to "it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO",
+      "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.enums.AssessmentStatus",
+      "DebtPositionDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO",
+      "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.model.AssessmentsRegistry",
+      "AssessmentsDetail" to "it.gov.pagopa.pu.classification.model.AssessmentsDetail",
+      "ClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView"
+    )
+  )
+  configOptions.set(
+    mapOf(
+      "dateLibrary" to "java8",
+      "requestMappingMode" to "api_interface",
+      "useSpringBoot3" to "true",
+      "interfaceOnly" to "true",
+      "useTags" to "true",
+      "useBeanValidation" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
 }
 
-var targetEnv = when (Objects.requireNonNullElse(System.getProperty("targetBranch"), grgit.branch.current().name)) {
+var targetEnv = when (Objects.requireNonNullElse(
+  System.getProperty("targetBranch"),
+  grgit.branch.current().name
+)) {
   "uat" -> "uat"
   "main" -> "main"
   else -> "develop"
@@ -273,22 +281,24 @@ tasks.register<GenerateTask>("openApiGenerateDEBTPOSITIONS") {
   apiPackage.set("it.gov.pagopa.pu.debtposition.client.generated")
   modelPackage.set("it.gov.pagopa.pu.debtposition.dto.generated")
   typeMappings.set(mapOf("LocalDateTime" to "java.time.LocalDateTime"))
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -302,25 +312,29 @@ tasks.register<GenerateTask>("openApiGeneratePROCESSEXECUTION") {
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.p4paprocessexecutions.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.p4paprocessexecutions.dto.generated")
-  typeMappings.set(mapOf(
-    "LocalDateTime" to "java.time.LocalDateTime"
-  ))
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  typeMappings.set(
+    mapOf(
+      "LocalDateTime" to "java.time.LocalDateTime"
+    )
+  )
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -334,22 +348,24 @@ tasks.register<GenerateTask>("openApiGenerateORGANIZATION") {
   invokerPackage.set("it.gov.pagopa.pu.organization.generated")
   apiPackage.set("it.gov.pagopa.pu.organization.client.generated")
   modelPackage.set("it.gov.pagopa.pu.organization.dto.generated")
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -363,21 +379,23 @@ tasks.register<GenerateTask>("openApiGenerateWORKFLOWHUB") {
   invokerPackage.set("it.gov.pagopa.pu.workflow.generated")
   apiPackage.set("it.gov.pagopa.pu.workflow.client.generated")
   modelPackage.set("it.gov.pagopa.pu.workflow.dto.generated")
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
   library.set("resttemplate")
 }
