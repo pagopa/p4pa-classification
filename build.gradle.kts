@@ -66,6 +66,7 @@ val rhinoScriptVersion="1.8.1"
 val springWolfAsyncApiVersion = "1.20.0"
 val springCloudDepsVersion = "2025.1.0"
 val commonsLang3Version = "3.20.0"
+val lz4JavaVersion = "1.8.1"
 
 dependencyManagement {
   imports {
@@ -86,7 +87,10 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jpa") {
     exclude(group = "org.glassfish.jaxb", module = "jaxb-core")
   }
-  implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka")
+  implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka") {
+    exclude(group = "org.lz4", module = "lz4-java")
+  }
+  implementation ("org.lz4:lz4-java::${lz4JavaVersion}")
   implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
   implementation("io.micrometer:micrometer-registry-prometheus")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion") {
