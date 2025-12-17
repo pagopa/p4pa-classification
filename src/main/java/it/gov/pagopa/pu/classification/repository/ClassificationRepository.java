@@ -37,6 +37,22 @@ public interface ClassificationRepository extends JpaRepository<Classification, 
   @Transactional
   @Modifying
   @RestResource(exported = false)
+  @Query("""
+    DELETE FROM Classification c
+    WHERE c.organizationId = :organizationId
+    AND c.iuv = :iuv
+    AND c.transferIndex = :transferIndex
+    AND c.receiptPaymentAmount = :receiptPaymentAmount
+    AND c.receiptOrgFiscalCode = :receiptOrgFiscalCode
+    AND c.label = :label
+    """)
+  Integer deleteDuplicates(Long organizationId, String iuv, int transferIndex,
+    Long receiptPaymentAmount, String receiptOrgFiscalCode,
+    ClassificationsEnum label);
+
+  @Transactional
+  @Modifying
+  @RestResource(exported = false)
   Integer deleteByOrganizationIdAndTreasuryId(Long organizationId, String treasuryId);
 
   @Query("""

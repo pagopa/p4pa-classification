@@ -103,6 +103,33 @@ class ClassificationEntityExtendedControllerTest {
     Assertions.assertEquals(expectedResult, result);
   }
 
+
+  @Test
+  void whenDeleteDuplicatesThenInvokeRepository() {
+    // Given
+    Long organizationId = 0L;
+    String iuv = "IUV";
+    int transferIndex = 1;
+    Long receiptPaymentAmount = 100L;
+    String receiptOrgFiscalCode = "ORGFISCALCODE";
+    ClassificationsEnum label = ClassificationsEnum.DOPPI;
+    int expectedResult = 1;
+
+    Mockito.when(repositoryMock.deleteDuplicates(Mockito.same(organizationId),
+        Mockito.same(iuv), Mockito.same(transferIndex),
+        Mockito.same(receiptPaymentAmount), Mockito.same(receiptOrgFiscalCode),
+        Mockito.same(label)))
+      .thenReturn(expectedResult);
+
+    // When
+    Integer result = controller.deleteDuplicates(organizationId, iuv,
+        transferIndex, receiptPaymentAmount, receiptOrgFiscalCode, label)
+      .getBody();
+
+    // Then
+    Assertions.assertEquals(expectedResult, result);
+  }
+
   @Test
   void whenDeleteByOrganizationIdAndIudAndLabelThenInvokeRepository(){
     // Given

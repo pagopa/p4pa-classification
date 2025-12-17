@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.classification.model.view;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionOrigin;
+import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptOriginType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -148,4 +150,9 @@ public class ClassificationDetailViewNoPII implements Serializable {
   private Long paymentNotificationAmountPaidCents;
   @NotNull
   private String paymentNotificationDebtPositionTypeOrgCode;
+
+  @Enumerated(EnumType.STRING)
+  private DebtPositionOrigin debtPositionOrigin;
+  @Enumerated(EnumType.STRING)
+  private ReceiptOriginType receiptOrigin;
 }

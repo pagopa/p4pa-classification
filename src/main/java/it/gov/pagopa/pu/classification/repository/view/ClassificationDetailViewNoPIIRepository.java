@@ -55,6 +55,8 @@ public interface ClassificationDetailViewNoPIIRepository extends Repository<Clas
       c.transferCategory as transferCategory,
       c.receiptCreationDate as receiptCreationDate,
       c.installmentBalance as installmentBalance,
+      c.debtPositionOrigin as debtPositionOrigin,
+      c.receiptOrigin as receiptOrigin,
       t.billYear as billYear,
       t.billCode as billCode,
       t.ingestionFlowFileId as ingestionFlowFileId,
