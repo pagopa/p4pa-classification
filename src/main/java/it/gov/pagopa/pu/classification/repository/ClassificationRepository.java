@@ -18,21 +18,31 @@ import java.util.List;
 
 
 @RepositoryRestResource(path = "classifications")
-public interface ClassificationRepository extends JpaRepository<Classification, String> {
-  @Transactional
-  @Modifying
-  @RestResource(exported = false)
-  Integer deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud, ClassificationsEnum label);
+public interface ClassificationRepository extends
+  JpaRepository<Classification, String> {
 
   @Transactional
   @Modifying
   @RestResource(exported = false)
-  Integer deleteByOrganizationIdAndIufAndLabel(Long organizationId, String iuf, ClassificationsEnum label);
+  Integer deleteByOrganizationIdAndIudAndLabel(Long organizationId, String iud,
+    ClassificationsEnum label);
 
   @Transactional
   @Modifying
   @RestResource(exported = false)
-  Integer deleteByOrganizationIdAndIuvAndIurAndTransferIndex(Long organizationId, String iuv, String iur, int transferIndex);
+  Integer deleteByOrganizationIdAndIufAndLabel(Long organizationId, String iuf,
+    ClassificationsEnum label);
+
+  @Transactional
+  @Modifying
+  @RestResource(exported = false)
+  Integer deleteByOrganizationIdAndIuvAndIurAndTransferIndex(
+    Long organizationId, String iuv, String iur, int transferIndex);
+
+  @Transactional
+  @Modifying
+  @RestResource(exported = false)
+  Integer deleteByOrganizationIdAndIuvAndIurAndTransferIndexAndLabelNot(Long organizationId, String iuv, String iur, int transferIndex, ClassificationsEnum label);
 
   @Transactional
   @Modifying
@@ -53,7 +63,8 @@ public interface ClassificationRepository extends JpaRepository<Classification, 
   @Transactional
   @Modifying
   @RestResource(exported = false)
-  Integer deleteByOrganizationIdAndTreasuryId(Long organizationId, String treasuryId);
+  Integer deleteByOrganizationIdAndTreasuryId(Long organizationId,
+    String treasuryId);
 
   @Query("""
     SELECT c
@@ -75,5 +86,6 @@ public interface ClassificationRepository extends JpaRepository<Classification, 
   @RestResource(exported = false)
   <S extends Classification> S save(S entity);
 
-  List<Classification> findAllByOrganizationIdAndIuvAndIud(Long organizationId, String iuv, String iud);
+  List<Classification> findAllByOrganizationIdAndIuvAndIud(Long organizationId,
+    String iuv, String iud);
 }
