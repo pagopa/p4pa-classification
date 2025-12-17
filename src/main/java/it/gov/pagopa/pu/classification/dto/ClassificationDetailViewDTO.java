@@ -125,6 +125,8 @@ public class ClassificationDetailViewDTO {
   private Long paymentNotificationAmountPaidCents;
   private String paymentNotificationDebtPositionTypeOrgCode;
 
+  @Enumerated(EnumType.STRING)
   private DebtPositionOrigin debtPositionOrigin;
+  @Enumerated(EnumType.STRING)
   private ReceiptOriginType receiptOrigin;
 }
