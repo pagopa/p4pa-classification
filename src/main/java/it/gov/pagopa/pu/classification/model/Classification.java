@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.classification.model;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionOrigin;
+import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptOriginType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -80,4 +82,9 @@ public class Classification extends BaseEntity implements Serializable {
   private String billCode;
 
   private byte[] debtorFiscalCodeHash;
+
+  @Enumerated(EnumType.STRING)
+  private DebtPositionOrigin debtPositionOrigin;
+  @Enumerated(EnumType.STRING)
+  private ReceiptOriginType receiptOrigin;
 }
