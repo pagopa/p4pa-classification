@@ -368,6 +368,104 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/classifications/duplicates:
+    delete:
+      tags:
+        - classification-entity-extended-controller
+      operationId: deleteDuplicates
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: transferIndex
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: receiptPaymentAmount
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: receiptOrgFiscalCode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: ClassificationsEnum
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/classifications/by-organizationId-iuv-iur-transferIndex-labelNot:
+    delete:
+      tags:
+        - classification-entity-extended-controller
+      operationId: deleteByOrganizationIdAndIuvAndIurAndTransferIndexAndLabelNot
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: iur
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: transferIndex
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: ClassificationsEnum
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
   /assessments/create-by-receipt-id:
     post:
       tags:

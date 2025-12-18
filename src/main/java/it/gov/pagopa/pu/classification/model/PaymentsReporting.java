@@ -68,7 +68,8 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
     return paymentsReporting.getIuf() + "_" +
       paymentsReporting.getIuv() + "_" +
       paymentsReporting.getTransferIndex() + "_" +
-      paymentsReporting.getOrganizationId();
+      paymentsReporting.getOrganizationId() + "_" +
+      paymentsReporting.getIur();
   }
 
   private void setSemanticId() {
@@ -92,6 +93,11 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
 
   public void setTransferIndex(Integer transferIndex) {
     this.transferIndex = transferIndex;
+    setSemanticId();
+  }
+
+  public void setIur(String iur) {
+    this.iur = iur;
     setSemanticId();
   }
 //endregion

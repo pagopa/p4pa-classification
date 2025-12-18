@@ -39,8 +39,22 @@ public class ClassificationEntityExtendedController implements ClassificationEnt
   }
 
   @Override
+  public ResponseEntity<Integer> deleteByOrganizationIdAndIuvAndIurAndTransferIndexAndLabelNot(
+    Long organizationId, String iuv, String iur, Integer transferIndex,
+    ClassificationsEnum label) {
+    return ResponseEntity.ok(repository.deleteByOrganizationIdAndIuvAndIurAndTransferIndexAndLabelNot(organizationId, iuv, iur, transferIndex, label));
+  }
+
+  @Override
   public ResponseEntity<Integer> deleteByOrganizationIdAndTreasuryId(Long organizationId, String treasuryId){
     return ResponseEntity.ok(repository.deleteByOrganizationIdAndTreasuryId(organizationId, treasuryId));
+  }
+
+  @Override
+  public ResponseEntity<Integer> deleteDuplicates(Long organizationId,
+    String iuv, Integer transferIndex, Long receiptPaymentAmount,
+    String receiptOrgFiscalCode, ClassificationsEnum label) {
+    return ResponseEntity.ok(repository.deleteDuplicates(organizationId, iuv, transferIndex, receiptPaymentAmount, receiptOrgFiscalCode, label));
   }
 
   @Override
