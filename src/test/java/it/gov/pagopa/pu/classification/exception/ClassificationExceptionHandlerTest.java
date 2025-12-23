@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.exception;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.classification.config.json.JsonConfig;
 import it.gov.pagopa.pu.classification.exception.custom.*;
+import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.UtilitiesTest;
 import jakarta.persistence.RollbackException;
 import jakarta.servlet.ServletException;
@@ -78,6 +79,11 @@ class ClassificationExceptionHandlerTest {
         String testEndpoint(@RequestParam(DATA) String data, @Valid @RequestBody TestRequestBody body) {
             return "OK";
         }
+    }
+
+    @BeforeEach
+    void init() {
+      TestUtils.clearDefaultTimezone();
     }
 
     @Data
