@@ -1,7 +1,9 @@
 package it.gov.pagopa.pu.classification.model;
 
+import it.gov.pagopa.pu.classification.config.json.JsonConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 class TreasuryTest {
 
@@ -30,6 +32,28 @@ class TreasuryTest {
 
   private static void assertSemanticId(String expected, Treasury t) {
     Assertions.assertEquals(expected, t.getTreasuryId());
+  }
+
+  @Test
+  void testDeserialization() {
+    // Given
+    String json = """
+      {
+        "organizationId": 1,
+        "billCode": "BILLCODE",
+        "billYear": "BILLYEAR",
+        "orgIstatCode": "ISTATCODE",
+        "orgBtCode": "BTCODE"
+      }
+      """;
+
+    JsonMapper mapper = new JsonConfig().objectMapperJackson3();
+
+    // When
+    Treasury result = mapper.readValue(json, Treasury.class);
+
+    // Then
+    Assertions.assertEquals("BILLCODE-BILLYEAR-ISTATCODE-BTCODE-1", result.getTreasuryId());
   }
 
 }

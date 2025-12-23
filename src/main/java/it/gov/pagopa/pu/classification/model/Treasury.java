@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.gov.pagopa.pu.classification.enums.TreasuryOrigin;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "treasury")
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(onConstructor_ = @JsonCreator)
 @Builder
 @Data
 @EqualsAndHashCode(of = "treasuryId", callSuper = false)

@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @Table(name = "payment_notification")
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(onConstructor_ = @JsonCreator)
 @Data
 @EqualsAndHashCode(of = "paymentNotificationId", callSuper = false)
 public class PaymentNotificationNoPII extends BaseEntity implements Serializable, NoPIIEntity<PaymentNotificationPIIDTO>{

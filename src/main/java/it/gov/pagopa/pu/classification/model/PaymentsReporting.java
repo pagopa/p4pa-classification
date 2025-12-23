@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -13,7 +14,7 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "payments_reporting")
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(onConstructor_ = @JsonCreator)
 @Builder
 @Data
 @EqualsAndHashCode(of = "paymentsReportingId", callSuper = false)
