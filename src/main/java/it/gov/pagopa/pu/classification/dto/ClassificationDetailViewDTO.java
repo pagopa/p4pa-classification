@@ -45,6 +45,7 @@ public class ClassificationDetailViewDTO {
   private String pspCompanyName;
   private String pspLastName;
   private String debtPositionTypeOrgCode;
+  private String debtPositionTypeOrgDescription;
   private String installmentIngestionFlowFileName;
   private String receiptOrgFiscalCode;
   private String receiptPaymentReceiptId;

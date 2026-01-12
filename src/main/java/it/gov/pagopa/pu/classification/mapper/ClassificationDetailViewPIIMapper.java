@@ -54,6 +54,7 @@ public class ClassificationDetailViewPIIMapper {
       .pspCompanyName(noPii.getPspCompanyName())
       .pspLastName(noPii.getPspLastName())
       .debtPositionTypeOrgCode(noPii.getDebtPositionTypeOrgCode())
+      .debtPositionTypeOrgDescription(noPii.getDebtPositionTypeOrgDescription())
       .installmentIngestionFlowFileName(noPii.getInstallmentIngestionFlowFileName())
       .receiptOrgFiscalCode(noPii.getReceiptOrgFiscalCode())
       .receiptPaymentReceiptId(noPii.getReceiptPaymentReceiptId())
