@@ -126,6 +126,8 @@ public class ClassificationDetailViewPIIMapper {
       .paymentNotificationIud(noPii.getPaymentNotificationIud())
       .paymentNotificationAmountPaidCents(noPii.getPaymentNotificationAmountPaidCents())
       .paymentNotificationDebtPositionTypeOrgCode(noPii.getPaymentNotificationDebtPositionTypeOrgCode())
+      .debtPositionOrigin(noPii.getDebtPositionOrigin())
+      .receiptOrigin(noPii.getReceiptOrigin())
       .build();
   }
 }

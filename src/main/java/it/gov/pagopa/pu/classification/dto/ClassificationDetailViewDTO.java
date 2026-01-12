@@ -1,7 +1,11 @@
 package it.gov.pagopa.pu.classification.dto;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
+import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptOriginType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -121,4 +125,9 @@ public class ClassificationDetailViewDTO {
   private String paymentNotificationIud;
   private Long paymentNotificationAmountPaidCents;
   private String paymentNotificationDebtPositionTypeOrgCode;
+
+  @Enumerated(EnumType.STRING)
+  private DebtPositionOrigin debtPositionOrigin;
+  @Enumerated(EnumType.STRING)
+  private ReceiptOriginType receiptOrigin;
 }

@@ -86,6 +86,27 @@ class ClassificationEntityExtendedControllerTest {
     Assertions.assertEquals(expectedResult, result);
   }
 
+
+  @Test
+  void whenDeleteByOrganizationIdAndIuvAndIurAndTransferIndexAndLabelNotThenInvokeRepository(){
+    // Given
+    Long organizationId = 0L;
+    String iuv = "IUV";
+    String iur = "IUR";
+    Integer transferIndex = 1;
+    ClassificationsEnum label = ClassificationsEnum.DOPPI;
+    int expectedResult = 1;
+
+    Mockito.when(repositoryMock.deleteByOrganizationIdAndIuvAndIurAndTransferIndexAndLabelNot(Mockito.same(organizationId), Mockito.same(iuv), Mockito.same(iur), Mockito.same(transferIndex), Mockito.same(label)))
+      .thenReturn(expectedResult);
+
+    // When
+    Integer result = controller.deleteByOrganizationIdAndIuvAndIurAndTransferIndexAndLabelNot(organizationId, iuv, iur, transferIndex, label).getBody();
+
+    // Then
+    Assertions.assertEquals(expectedResult, result);
+  }
+
   @Test
   void whenDeleteByOrganizationIdAndTreasuryIdThenInvokeRepository(){
     // Given
