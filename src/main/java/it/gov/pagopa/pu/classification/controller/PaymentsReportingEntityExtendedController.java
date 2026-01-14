@@ -24,6 +24,7 @@ public class PaymentsReportingEntityExtendedController implements PaymentsReport
     return ResponseEntity.ok(repository.saveAll(paymentsReportings).size());
   }
 
+  @Override
   public ResponseEntity<OffsetDateTime> findLatestFlowDate(Long organizationId) {
     return ResponseEntity.ok(repository.findLatestFlowDate(organizationId));
   }
