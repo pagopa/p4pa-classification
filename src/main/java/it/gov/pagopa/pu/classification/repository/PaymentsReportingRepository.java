@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 
@@ -37,4 +38,10 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     "pr1.paymentOutcomeCode != pr2.paymentOutcomeCode")
   List<PaymentsReporting> findDuplicates(Long organizationId, String iuv,
     int transferIndex, String receiverOrganizationCode);
+
+  @Query("SELECT pr1.flowDateTime FROM PaymentsReporting pr1 WHERE " +
+    "pr1.organizationId = :organizationId " +
+    "ORDER BY pr1.flowDateTime DESC " +
+    "LIMIT 1")
+  OffsetDateTime findLatestFlowDate(Long organizationId);
 }
