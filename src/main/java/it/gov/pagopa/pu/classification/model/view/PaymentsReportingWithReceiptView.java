@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Formula;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -70,15 +69,7 @@ public class PaymentsReportingWithReceiptView implements Serializable {
   private String updateOperatorExternalId;
   private String updateTraceId;
 
-  @Formula("(SELECT c.receipt_payment_request_id "
-  + "FROM classification c "
-  + "WHERE c.payments_reporting_id = payments_reporting_id "
-  + "LIMIT 1)")
   private String receiptId;
-
-  @Formula("(SELECT c.iud "
-  + "FROM classification c "
-  + "WHERE c.payments_reporting_id = payments_reporting_id "
-  + "LIMIT 1)")
   private String iud;
+  private String debtPositionTypeOrgDescription;
 }
