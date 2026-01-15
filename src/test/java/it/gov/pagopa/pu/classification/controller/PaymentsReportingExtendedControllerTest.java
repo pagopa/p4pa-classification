@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,5 +44,20 @@ class PaymentsReportingExtendedControllerTest {
 
     // Then
     Assertions.assertEquals(entities.size(), result);
+  }
+
+  @Test
+  void whenFindLatestFlowDateThenInvokeRepository() {
+    // Given
+    Long organizationId = 1L;
+    OffsetDateTime expectedResult = OffsetDateTime.now();
+    Mockito.when(repositoryMock.findLatestFlowDate(organizationId))
+      .thenReturn(expectedResult);
+
+    // When
+    OffsetDateTime actualResult = controller.findLatestFlowDate(organizationId).getBody();
+
+    // Then
+    Assertions.assertEquals(expectedResult, actualResult);
   }
 }

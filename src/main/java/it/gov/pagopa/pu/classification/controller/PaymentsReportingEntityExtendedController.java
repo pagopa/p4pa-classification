@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.classification.repository.PaymentsReportingRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /** Controller to host spring-data-rest directly not supported methods */
@@ -21,5 +22,10 @@ public class PaymentsReportingEntityExtendedController implements PaymentsReport
   @Override
   public ResponseEntity<Integer> saveAll1(List<PaymentsReporting> paymentsReportings){
     return ResponseEntity.ok(repository.saveAll(paymentsReportings).size());
+  }
+
+  @Override
+  public ResponseEntity<OffsetDateTime> findLatestFlowDate(Long organizationId) {
+    return ResponseEntity.ok(repository.findLatestFlowDate(organizationId));
   }
 }

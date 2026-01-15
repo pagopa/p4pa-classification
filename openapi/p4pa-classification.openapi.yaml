@@ -108,6 +108,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClassificationErrorDTO'
+  /crud-ext/payments-reporting/findLatestFlowDate:
+    get:
+      tags:
+        - payments-reporting-entity-extended-controller
+      operationId: findLatestFlowDate
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Latest payment reporting flowDateTime for the given organization
+          content:
+            application/json:
+              schema:
+                type: string
+                format: date-time
+        '404':
+          description: Not Found - PaymentReporting flowDateTime for given Organization Not Found
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationErrorDTO'
   /organization/{organizationId}/classifications/paid-installments:
     get:
       tags:
