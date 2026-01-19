@@ -17,45 +17,46 @@ public interface PaymentsReportingWithReceiptViewRepository extends Repository<P
 
   @SuppressWarnings("squid:S107") // Suppressing too many parameters warning: it's allowed in query methods
   @Query("""
-    SELECT
-      p.paymentsReportingId,
-      p.ingestionFlowFileId,
-      p.organizationId,
-      p.iuv,
-      p.iur,
-      p.transferIndex,
-      p.pspIdentifier,
-      p.iuf,
-      p.flowDateTime,
-      p.regulationUniqueIdentifier,
-      p.regulationDate,
-      p.senderPspType,
-      p.senderPspCode,
-      p.senderPspName,
-      p.receiverOrganizationType,
-      p.receiverOrganizationCode,
-      p.receiverOrganizationName,
-      p.totalPayments,
-      p.totalAmountCents,
-      p.amountPaidCents,
-      p.paymentOutcomeCode,
-      p.payDate,
-      p.acquiringDate,
-      p.bicCodePouringBank,
-      p.creationDate,
-      p.updateDate,
-      p.updateOperatorExternalId,
-      p.updateTraceId,
-      c.receiptPaymentRequestId,
-      c.iud,
-      c.debtPositionTypeOrgDescription
-    FROM PaymentsReporting p
+    SELECT DISTINCT new PaymentsReportingWithReceiptView(
+      p.paymentsReportingId AS paymentsReportingId,
+      p.ingestionFlowFileId AS ingestionFlowFileId,
+      p.organizationId AS organizationId,
+      p.iuv AS iuv,
+      p.iur AS iur,
+      p.transferIndex AS transferIndex,
+      p.pspIdentifier AS pspIdentifier,
+      p.iuf AS iuf,
+      p.flowDateTime AS flowDateTime,
+      p.regulationUniqueIdentifier AS regulationUniqueIdentifier,
+      p.regulationDate AS regulationDate,
+      p.senderPspType AS senderPspType,
+      p.senderPspCode AS senderPspCode,
+      p.senderPspName AS senderPspName,
+      p.receiverOrganizationType AS receiverOrganizationType,
+      p.receiverOrganizationCode AS receiverOrganizationCode,
+      p.receiverOrganizationName AS receiverOrganizationName,
+      p.totalPayments AS totalPayments,
+      p.totalAmountCents AS totalAmountCents,
+      p.amountPaidCents AS amountPaidCents,
+      p.paymentOutcomeCode AS paymentOutcomeCode,
+      p.payDate AS payDate,
+      p.acquiringDate AS acquiringDate,
+      p.bicCodePouringBank AS bicCodePouringBank,
+      p.creationDate AS creationDate,
+      p.updateDate AS updateDate,
+      p.updateOperatorExternalId AS updateOperatorExternalId,
+      p.updateTraceId AS updateTraceId,
+      c.receiptPaymentRequestId AS receiptId,
+      c.iud AS iud,
+      c.debtPositionTypeOrgDescription AS debtPositionTypeOrgDescription
+    )
+    FROM PaymentsReportingWithReceiptView p
     LEFT JOIN Classification c ON p.paymentsReportingId = c.paymentsReportingId
     WHERE p.organizationId = :organizationId
       AND p.iuf = :iuf
       AND (:iuv IS NULL OR p.iuv = :iuv)
-      AND (CAST(:payDateFrom AS DATE) IS NULL OR p.payDate >= CAST(:payDateFrom AS DATE))
-      AND (CAST(:payDateTo AS DATE) IS NULL OR p.payDate <= CAST(:payDateTo AS DATE))
+      AND (CAST(:payDateFrom AS DATE) IS NULL OR p.payDate >= :payDateFrom)
+      AND (CAST(:payDateTo AS DATE) IS NULL OR p.payDate <= :payDateTo)
       AND (:debtPositionTypeOrgCode IS NULL OR c.debtPositionTypeOrgCode = :debtPositionTypeOrgCode)
       AND (:fiscalCode IS NULL OR c.debtorFiscalCodeHash = :#{@dataCipherService.hash(#fiscalCode)})
     """)
