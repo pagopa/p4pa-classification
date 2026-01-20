@@ -32,7 +32,7 @@ public class TreasuredClassificationView implements Serializable {
   private String iud;
   private String iuv;
   private String iur;
-  private int transferIndex;
+  private Integer transferIndex;
   @Enumerated(EnumType.STRING)
   private ClassificationsEnum label;
   private LocalDate lastClassificationDate;
