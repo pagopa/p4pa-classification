@@ -63,6 +63,8 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
   @NotNull
   private LocalDate acquiringDate;
   private String bicCodePouringBank;
+  @NotNull
+  private Integer revision;
 
 //region keep updated semanticId
   public static String buildSemanticId(PaymentsReporting paymentsReporting) {
