@@ -21,7 +21,7 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     "p.iuv=:iuv AND " +
     "p.iur=:iur AND " +
     "p.transferIndex=:transferIndex")
-  List<PaymentsReporting> findByTransferSemanticKey (Long organizationId, String iuv, String iur, int transferIndex);
+  List<PaymentsReporting> findByTransferSemanticKey (Long organizationId, String iuv, String iur, Integer transferIndex);
 
   @Query("SELECT DISTINCT pr1 FROM PaymentsReporting pr1, PaymentsReporting pr2 WHERE " +
     // Input filters
@@ -37,7 +37,7 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     "pr1.amountPaidCents = pr2.amountPaidCents AND " +
     "pr1.paymentOutcomeCode != pr2.paymentOutcomeCode")
   List<PaymentsReporting> findDuplicates(Long organizationId, String iuv,
-    int transferIndex, String receiverOrganizationCode);
+    Integer transferIndex, String receiverOrganizationCode);
 
   @Query("SELECT pr1.flowDateTime FROM PaymentsReporting pr1 WHERE " +
     "pr1.organizationId = :organizationId " +
