@@ -37,12 +37,12 @@ public interface ClassificationRepository extends
   @Modifying
   @RestResource(exported = false)
   Integer deleteByOrganizationIdAndIuvAndIurAndTransferIndex(
-    Long organizationId, String iuv, String iur, int transferIndex);
+    Long organizationId, String iuv, String iur, Integer transferIndex);
 
   @Transactional
   @Modifying
   @RestResource(exported = false)
-  Integer deleteByOrganizationIdAndIuvAndIurAndTransferIndexAndLabelNot(Long organizationId, String iuv, String iur, int transferIndex, ClassificationsEnum label);
+  Integer deleteByOrganizationIdAndIuvAndIurAndTransferIndexAndLabelNot(Long organizationId, String iuv, String iur, Integer transferIndex, ClassificationsEnum label);
 
   @Transactional
   @Modifying
@@ -56,7 +56,7 @@ public interface ClassificationRepository extends
     AND c.receiptOrgFiscalCode = :receiptOrgFiscalCode
     AND c.label = :label
     """)
-  Integer deleteDuplicates(Long organizationId, String iuv, int transferIndex,
+  Integer deleteDuplicates(Long organizationId, String iuv, Integer transferIndex,
     Long receiptPaymentAmount, String receiptOrgFiscalCode,
     ClassificationsEnum label);
 

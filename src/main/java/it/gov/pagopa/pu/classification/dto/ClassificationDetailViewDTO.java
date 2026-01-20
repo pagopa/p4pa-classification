@@ -30,7 +30,7 @@ public class ClassificationDetailViewDTO {
   private String iud;
   private String iuv;
   private String iur;
-  private int transferIndex;
+  private Integer transferIndex;
   private ClassificationsEnum label;
   private LocalDate lastClassificationDate;
   private LocalDate payDate;
