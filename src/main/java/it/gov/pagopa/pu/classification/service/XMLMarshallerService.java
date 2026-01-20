@@ -44,8 +44,8 @@ public class XMLMarshallerService {
 
       return writer.toString();
     } catch (Exception e) {
-      log.error("Error while parsing ctBilancioDefault: {}", object, e);
-      throw new InvalidValueException("Error while parsing ctBilancioDefault: " + object);
+      log.error("Error while marshalling {}: {}", clazz.getSimpleName(), object, e);
+      throw new InvalidValueException("[XML_MARSHALLING_ERROR] Error while marshalling " + clazz.getSimpleName() + ": " + object);
     }
   }
 

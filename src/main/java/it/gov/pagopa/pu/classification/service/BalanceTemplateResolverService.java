@@ -71,7 +71,7 @@ public class BalanceTemplateResolverService {
       }
       return balanceDefaultMarshallingService.marshal(ctBilancioDefault);
     } catch (Exception e) {
-      throw new InvalidValueException("Error calculating amount of balance: " + e.getMessage());
+      throw new InvalidValueException("[BALANCE_CALCULATION_ERROR] Error calculating amount of balance: " + e.getMessage());
     }
   }
 

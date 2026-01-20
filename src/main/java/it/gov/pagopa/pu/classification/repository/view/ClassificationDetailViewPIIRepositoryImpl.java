@@ -21,7 +21,7 @@ public class ClassificationDetailViewPIIRepositoryImpl implements Classification
   public ClassificationDetailViewDTO getClassificationDetailView(Long organizationId, Long classificationId) {
     ClassificationDetailViewNoPII classificationDetailViewNoPII = classificationDetailViewNoPIIRepository.findByOrganizationIdAndClassificationId(organizationId, classificationId);
     if (classificationDetailViewNoPII == null) {
-      throw new NotFoundException("Classification detail not found for organizationId: " + organizationId + " and classificationId: " + classificationId);
+      throw new NotFoundException("[CLASSIFICATION_NOT_FOUND] Classification detail not found for organizationId: " + organizationId + " and classificationId: " + classificationId);
     }
     return classificationDetailViewPIIMapper.map(classificationDetailViewNoPII);
   }

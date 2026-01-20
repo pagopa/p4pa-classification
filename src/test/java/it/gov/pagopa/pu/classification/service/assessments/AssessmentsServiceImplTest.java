@@ -359,7 +359,7 @@ class AssessmentsServiceImplTest {
     //when
 
     AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId, accessToken));
-    Assertions.assertEquals("Assessment with the same name ASSESSMENT_NAME and debtPositionTypeOrgCode CODE already exists for the current organizationId 3", ex.getMessage());
+    Assertions.assertEquals("[ASSESSMENT_ALREADY_EXISTS] Assessment with the same name ASSESSMENT_NAME and debtPositionTypeOrgCode CODE already exists for the current organizationId 3", ex.getMessage());
   }
 
   @Test
@@ -415,7 +415,7 @@ class AssessmentsServiceImplTest {
         operatorExternalUserId,
         accessToken));
 
-    assertEquals("DebtPositionTypeOrg not found by organizationId=3 and debtPositionTypeOrgCode=CODE",
+    assertEquals("[DEBT_POSITION_TYPE_ORG_NOT_FOUND] DebtPositionTypeOrg not found by organizationId=3 and debtPositionTypeOrgCode=CODE",
       exception.getMessage());
 
     verify(debtPositionTypeOrgServiceMock).getDebtPositionTypeOrgByDebtPositionTypeOrgCode(

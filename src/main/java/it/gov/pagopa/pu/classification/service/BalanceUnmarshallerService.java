@@ -33,7 +33,7 @@ public class BalanceUnmarshallerService {
       this.schema = schemaFactory.newSchema(paymetsReportingXsdResource.getURL());
       this.xmlUnmarshallerService = xmlUnmarshallerService;
     } catch (JAXBException | SAXException | IOException e) {
-      throw new IllegalStateException("Error while creating jaxb context for CtBilancio", e);
+      throw new IllegalStateException("[BALANCE_UNMARSHALLING_ERROR] Error while creating jaxb context for CtBilancio", e);
     }
   }
 

@@ -70,7 +70,7 @@ public class BalanceService {
 
     long assessmentRegistriesSize = assessmentsRegistries.getTotalElements();
     if (assessmentRegistriesSize > 1) {
-      throw new IllegalStateException("Expected exactly one assessment registry result, but found " + assessmentRegistriesSize + ".");
+      throw new IllegalStateException("[TOO_MANY_ASSESSMENT_REGISTRY] Expected exactly one assessment registry result, but found " + assessmentRegistriesSize + ".");
     }
 
     AssessmentsRegistry assessmentRegistry = assessmentsRegistries.get().findFirst().orElse(null);
