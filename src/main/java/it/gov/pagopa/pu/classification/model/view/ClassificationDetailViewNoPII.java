@@ -37,7 +37,7 @@ public class ClassificationDetailViewNoPII implements Serializable {
   private String iud;
   private String iuv;
   private String iur;
-  private int transferIndex;
+  private Integer transferIndex;
   @NotNull
   @Enumerated(EnumType.STRING)
   private ClassificationsEnum label;
