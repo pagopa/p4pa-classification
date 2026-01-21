@@ -41,7 +41,7 @@ public class AESUtils {
             SecretKeyFactory factory = SecretKeyFactory.getInstance(FACTORY_INSTANCE);
             return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), ALGORITHM_TYPE);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new IllegalStateException("Cannot initialize cryptographic data", e);
+            throw new IllegalStateException("[CIPHERING_ERROR] Cannot initialize cryptographic data", e);
         }
     }
 
@@ -87,7 +87,7 @@ public class AESUtils {
         try {
             return cipher.doFinal(encryptedByte);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new IllegalStateException("Cannot execute cipher op", e);
+            throw new IllegalStateException("[CIPHERING_ERROR] Cannot execute cipher op", e);
         }
     }
 
@@ -99,7 +99,7 @@ public class AESUtils {
         } catch (NoSuchPaddingException | NoSuchAlgorithmException |
                  InvalidKeyException
                  | InvalidAlgorithmParameterException e) {
-            throw new IllegalStateException("Cannot initialize cipher data", e);
+            throw new IllegalStateException("[CIPHERING_ERROR] Cannot initialize cipher data", e);
         }
     }
 }

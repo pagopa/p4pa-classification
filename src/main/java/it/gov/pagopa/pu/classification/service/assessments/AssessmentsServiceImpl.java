@@ -67,7 +67,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   public List<Assessments> createAssessment(Long receiptId, String operatorExternalUserId, String accessToken) {
     ReceiptNoPII receipt = receiptService.getById(receiptId, accessToken);
     Organization organization = organizationService.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)
-      .orElseThrow(() -> new NotFoundException("Cannot find organization having fiscal code " + receipt.getOrgFiscalCode()));
+      .orElseThrow(() -> new NotFoundException("[ORGANIZATION_NOT_FOUND] Cannot find organization having fiscal code " + receipt.getOrgFiscalCode()));
 
     List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(organization.getOrganizationId(), receipt.getReceiptId(), accessToken);
 
@@ -155,13 +155,13 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId, String accessToken) {
 
     if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName) != null) {
-     throw new AssessmentConflictException("Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
+     throw new AssessmentConflictException("[ASSESSMENT_ALREADY_EXISTS] Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
     }
 
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken);
 
     if (debtPositionTypeOrg == null) {
-      throw new ResourceNotFoundException("DebtPositionTypeOrg not found by organizationId=%d and debtPositionTypeOrgCode=%s".formatted(organizationId, debtPositionTypeOrgCode));
+      throw new ResourceNotFoundException("[DEBT_POSITION_TYPE_ORG_NOT_FOUND] DebtPositionTypeOrg not found by organizationId=%d and debtPositionTypeOrgCode=%s".formatted(organizationId, debtPositionTypeOrgCode));
     }
 
     return assessmentsRepository.save(

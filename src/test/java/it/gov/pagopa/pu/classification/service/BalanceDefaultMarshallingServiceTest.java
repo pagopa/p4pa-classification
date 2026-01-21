@@ -87,7 +87,7 @@ class BalanceDefaultMarshallingServiceTest {
 
     InvalidValueException exception = assertThrows(InvalidValueException.class, () -> service.unmarshal(balance));
 
-    assertEquals("Function type to calculate amount balance not supported", exception.getMessage());
+    assertEquals("[BALANCE_MARSHALLING_ERROR] Function type to calculate amount balance not supported", exception.getMessage());
   }
 
   @Test

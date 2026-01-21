@@ -30,7 +30,7 @@ public class FullClassificationViewPIIRepositoryImpl implements FullClassificati
     Page<FullClassificationViewNoPII> pagedClassificationViewNoPIIDTO = fullClassificationViewNoPIIDTORepository.findFullClassificationViewNoPIIDTO(organizationId, exportClassificationsFilterDTO, pageable);
 
     if (pagedClassificationViewNoPIIDTO.getTotalElements() > maxTotalElements) {
-      throw new ExportTooManyRecordsException("The number of elements returned: %d exceeds the maximum limit of %d".formatted(pagedClassificationViewNoPIIDTO.getTotalElements(), maxTotalElements));
+      throw new ExportTooManyRecordsException("[TOO_MANY_EXPORTED_RECORDS] The number of elements returned: %d exceeds the maximum limit of %d".formatted(pagedClassificationViewNoPIIDTO.getTotalElements(), maxTotalElements));
     }
 
     return pagedFullClassificationViewMapper.map2PagedClassificationView(pagedClassificationViewNoPIIDTO);

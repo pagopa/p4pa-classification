@@ -116,7 +116,7 @@ class BalanceServiceTest {
 
     IllegalStateException exception = assertThrows(IllegalStateException.class, () -> balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode));
 
-    assertEquals("Expected exactly one assessment registry result, but found 2.", exception.getMessage());
+    assertEquals("[TOO_MANY_ASSESSMENT_REGISTRY] Expected exactly one assessment registry result, but found 2.", exception.getMessage());
   }
 
   @Test

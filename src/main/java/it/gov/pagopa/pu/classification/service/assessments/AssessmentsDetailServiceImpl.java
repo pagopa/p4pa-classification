@@ -161,7 +161,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     Assessments assessments = assessmentsRepository.findById(assessmentId)
             .filter(a-> organizationId.equals(a.getOrganizationId()))
             .orElseThrow(()->
-              new ResourceNotFoundException("Assessments having id "+assessmentId+" not found"));
+              new ResourceNotFoundException("[ASSESSMENT_NOT_FOUND] Assessment with id "+assessmentId+" not found"));
     List<InstallmentNoPII> installments = getInstallmentsByOrganizationIdAndIuds(organizationId, createAssessmentsDetail, accessToken);
     List<AssessmentsDetail> assessmentsDetails = new ArrayList<>();
     for (InstallmentNoPII installment : installments) {
@@ -185,11 +185,11 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
 
   private ReceiptNoPII getReceiptByReceiptIdAndDebtPositionTypeOrgCode(InstallmentNoPII installment, Assessments assessments, String accessToken) {
     if(installment.getReceiptId()==null){
-      throw new InvalidRequestBodyException("Installment having iud "+ installment.getIud()+" does not have a receiptId");
+      throw new InvalidRequestBodyException("[INVALID_INSTALLMENT] Installment having iud "+ installment.getIud()+" does not have a receiptId");
     }
     ReceiptNoPII receipt = receiptService.getByReceiptIdAndDebtPositionTypeOrgCode(installment.getReceiptId(), assessments.getDebtPositionTypeOrgCode(), accessToken);
     if(receipt==null) {
-      throw new ResourceNotFoundException("Receipt having id " + installment.getReceiptId() + " not found");
+      throw new ResourceNotFoundException("[RECEIPT_NOT_FOUND] Receipt with id " + installment.getReceiptId() + " not found");
     }
     return receipt;
   }
@@ -198,7 +198,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     List<InstallmentNoPII> installments = installmentService.findByOrganizationIdAndIuds(organizationId, createAssessmentsDetail.getIuds(), accessToken);
     if(!CollectionUtils.isEmpty(createAssessmentsDetail.getIuds())
             && (CollectionUtils.isEmpty(installments) || createAssessmentsDetail.getIuds().size()!=installments.size())){
-      throw new InvalidRequestBodyException("One or more iud is invalid. [organizationId: "+ organizationId +" iuds:"+ createAssessmentsDetail.getIuds()+"]");
+      throw new InvalidRequestBodyException("[INVALID_IUD] One or more iud is invalid. [organizationId: "+ organizationId +" iuds:"+ createAssessmentsDetail.getIuds()+"]");
     }
     return installments;
   }
@@ -207,7 +207,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     AssessmentsRegistry assessmentsRegistry = assessmentsRegistryRepository.findById(createAssessmentsDetail.getAssessmentRegistryId())
             .filter(ar-> organizationId.equals(ar.getOrganizationId()))
             .orElseThrow(
-            ()->new ResourceNotFoundException("AssessmentsRegistry having id "+createAssessmentsDetail.getAssessmentRegistryId()+" not found")
+            ()->new ResourceNotFoundException("[ASSESSMENT_REGISTRY_NOT_FOUND] AssessmentRegistry with id "+createAssessmentsDetail.getAssessmentRegistryId()+" not found")
     );
     return assessmentsDetailRepository.save(
             buildAssessmentsDetail(
