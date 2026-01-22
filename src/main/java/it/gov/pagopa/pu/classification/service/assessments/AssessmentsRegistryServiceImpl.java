@@ -83,7 +83,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
 
   private static void validateAssessmentRegistry(AssessmentsRegistry assessmentsRegistry) {
     if(assessmentsRegistry.getAssessmentRegistryId()!=null){
-      throw new InvalidRequestBodyException("assessmentRegistryId should not be provided");
+      throw new InvalidRequestBodyException("[INVALID_ASSESSMENT_REGISTRY] assessmentRegistryId should not be provided");
     }
   }
 }

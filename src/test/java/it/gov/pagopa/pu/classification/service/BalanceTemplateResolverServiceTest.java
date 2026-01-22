@@ -162,6 +162,6 @@ class BalanceTemplateResolverServiceTest {
     when(balanceServiceMock.unmarshalBalance(request.getBalance())).thenReturn(ctBilancioDefault);
     InvalidValueException exception = assertThrows(InvalidValueException.class, () -> service.calculateAmountBalance(request));
 
-    assertEquals("Error calculating amount of balance: NOT_VALID as function type to calculate amount balance not supported", exception.getMessage());
+    assertEquals("[BALANCE_CALCULATION_ERROR] Error calculating amount of balance: NOT_VALID as function type to calculate amount balance not supported", exception.getMessage());
   }
 }

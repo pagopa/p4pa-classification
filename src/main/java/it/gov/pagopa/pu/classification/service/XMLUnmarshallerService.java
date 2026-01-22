@@ -61,7 +61,7 @@ public class XMLUnmarshallerService {
       return element.getValue();
     } catch (Exception e) {
       log.error("Error while parsing xml: {}", xmlString, e);
-      throw new InvalidValueException("Error while parsing xml: " + xmlString);
+      throw new InvalidValueException("[XML_UNMARSHALLING_ERROR] Error while parsing xml: " + xmlString);
     }
   }
 }
