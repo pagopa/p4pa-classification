@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -66,8 +67,15 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   @Override
   public List<Assessments> createAssessment(Long receiptId, String operatorExternalUserId, String accessToken) {
     ReceiptNoPII receipt = receiptService.getById(receiptId, accessToken);
-    Organization organization = organizationService.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken)
-      .orElseThrow(() -> new NotFoundException("[ORGANIZATION_NOT_FOUND] Cannot find organization having fiscal code " + receipt.getOrgFiscalCode()));
+
+    String receiptOrgFiscalCode = receipt.getOrgFiscalCode();
+
+    if(receiptOrgFiscalCode.startsWith("UNKNOWN_")) {
+      return Collections.emptyList();
+    }
+
+    Organization organization = organizationService.getOrganizationByFiscalCode(receiptOrgFiscalCode, accessToken)
+      .orElseThrow(() -> new NotFoundException("[ORGANIZATION_NOT_FOUND] Cannot find organization having fiscal code " + receiptOrgFiscalCode));
 
     List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(organization.getOrganizationId(), receipt.getReceiptId(), accessToken);
 
