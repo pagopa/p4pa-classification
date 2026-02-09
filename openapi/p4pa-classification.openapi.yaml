@@ -1424,10 +1424,10 @@ components:
     ClassificationErrorDTO:
       type: object
       required:
-        - code
+        - category
         - message
       properties:
-        code:
+        category:
           type: string
           enum:
             - CLASSIFICATION_NOT_FOUND

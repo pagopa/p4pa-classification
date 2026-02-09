@@ -43,49 +43,49 @@ public class ClassificationExceptionHandler {
 
   @ExceptionHandler({InvalidRequestBodyException.class})
   public ResponseEntity<ClassificationErrorDTO> handleInvalidRequestBodyException(InvalidRequestBodyException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST);
   }
 
   @ExceptionHandler({ExportTooManyRecordsException.class})
   public ResponseEntity<ClassificationErrorDTO> handleExportTooManyRecordsException(RuntimeException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST);
   }
 
   @ExceptionHandler({InvalidDateTimeIntervalException.class})
   public ResponseEntity<ClassificationErrorDTO> handleInvalidDateTimeIntervalException(RuntimeException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST);
   }
 
   @ExceptionHandler({InvalidValueException.class})
   public ResponseEntity<ClassificationErrorDTO> handleInternalError(RuntimeException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST);
   }
 
   @ExceptionHandler({NotFoundException.class, ResourceNotFoundException.class})
   public ResponseEntity<ClassificationErrorDTO> handleNotFoundError(RuntimeException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.NOT_FOUND, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_NOT_FOUND);
+    return handleException(ex, request, HttpStatus.NOT_FOUND, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_NOT_FOUND);
   }
 
   @ExceptionHandler({DataIntegrityViolationException.class})
   public ResponseEntity<ClassificationErrorDTO> handleDataIntegrityViolationException(Exception ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.CONFLICT, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_CONFLICT);
+    return handleException(ex, request, HttpStatus.CONFLICT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_CONFLICT);
   }
 
   @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class})
   public ResponseEntity<ClassificationErrorDTO> handleViolationException(Exception ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST);
   }
 
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})
   public ResponseEntity<ClassificationErrorDTO> handleServletException(Exception ex, HttpServletRequest request) {
     HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-    ClassificationErrorDTO.CodeEnum errorCode = ClassificationErrorDTO.CodeEnum.CLASSIFICATION_GENERIC_ERROR;
+    ClassificationErrorDTO.CategoryEnum errorCode = ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_GENERIC_ERROR;
     if (ex instanceof ErrorResponse errorResponse) {
       httpStatus = HttpStatus.valueOf((errorResponse.getStatusCode().value()));
       if(httpStatus.isSameCodeAs(HttpStatus.NOT_FOUND)) {
-        errorCode = ClassificationErrorDTO.CodeEnum.CLASSIFICATION_NOT_FOUND;
+        errorCode = ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_NOT_FOUND;
       } else if (httpStatus.is4xxClientError()) {
-        errorCode = ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST;
+        errorCode = ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST;
       }
     }
     return handleException(ex, request, httpStatus, errorCode);
@@ -102,15 +102,15 @@ public class ClassificationExceptionHandler {
 
   @ExceptionHandler({RuntimeException.class})
   public ResponseEntity<ClassificationErrorDTO> handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_GENERIC_ERROR);
+    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_GENERIC_ERROR);
   }
 
   @ExceptionHandler({AssessmentConflictException.class})
   public ResponseEntity<ClassificationErrorDTO> handleInvalidNameException(RuntimeException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.CONFLICT, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_CONFLICT);
+    return handleException(ex, request, HttpStatus.CONFLICT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_CONFLICT);
   }
 
-  static ResponseEntity<ClassificationErrorDTO> handleException(Exception ex, HttpServletRequest request, HttpStatus httpStatus, ClassificationErrorDTO.CodeEnum errorEnum) {
+  static ResponseEntity<ClassificationErrorDTO> handleException(Exception ex, HttpServletRequest request, HttpStatus httpStatus, ClassificationErrorDTO.CategoryEnum errorEnum) {
     logException(ex, request, httpStatus);
 
     String message = Optional.of(request.getRequestURI())
@@ -144,17 +144,17 @@ public class ClassificationExceptionHandler {
     switch (ex) {
       case HttpMessageNotReadableException httpMessageNotReadableException -> {
         if (httpMessageNotReadableException.getCause() instanceof DatabindException jsonMappingException) {
-          return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST.name(),
+          return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
             "Cannot parse body. " +
             jsonMappingException.getPath().stream()
               .map(JacksonException.Reference::getPropertyName)
               .collect(Collectors.joining(".")) +
             ": " + jsonMappingException.getOriginalMessage());
         }
-        return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST.name(), "Required request body is missing");
+        return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(), "Required request body is missing");
       }
       case MethodArgumentNotValidException methodArgumentNotValidException -> {
-        return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST.name(),
+        return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
           "Invalid request content." +
           methodArgumentNotValidException.getBindingResult()
             .getAllErrors().stream()
@@ -165,7 +165,7 @@ public class ClassificationExceptionHandler {
             .collect(Collectors.joining(";")));
       }
       case ConstraintViolationException constraintViolationException -> {
-        return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CodeEnum.CLASSIFICATION_BAD_REQUEST.name(),
+        return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
           "Invalid request content." +
           constraintViolationException.getConstraintViolations()
             .stream()

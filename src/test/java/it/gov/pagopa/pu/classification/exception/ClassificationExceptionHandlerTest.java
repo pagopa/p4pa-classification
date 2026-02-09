@@ -141,7 +141,7 @@ class ClassificationExceptionHandlerTest {
 
         performRequest(null, MediaType.APPLICATION_JSON)
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Required request parameter 'data' for method parameter type String is not present"))
           .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
 
@@ -153,7 +153,7 @@ class ClassificationExceptionHandlerTest {
 
         performRequest(DATA, MediaType.APPLICATION_JSON)
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_GENERIC_ERROR"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_GENERIC_ERROR"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
           .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
     }
@@ -165,7 +165,7 @@ class ClassificationExceptionHandlerTest {
 
         performRequest(DATA, MediaType.APPLICATION_JSON)
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_GENERIC_ERROR"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_GENERIC_ERROR"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
           .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
     }
@@ -174,7 +174,7 @@ class ClassificationExceptionHandlerTest {
     void handle4xxHttpServletException() throws Exception {
         performRequest(DATA, MediaType.parseMediaType("application/hal+json"))
                 .andExpect(MockMvcResultMatchers.status().isNotAcceptable())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("No acceptable representation"))
           .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
     }
@@ -183,7 +183,7 @@ class ClassificationExceptionHandlerTest {
   void handleUrlNotFound() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.post("/NOTEXISTENTURL"))
       .andExpect(MockMvcResultMatchers.status().isNotFound())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_NOT_FOUND"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_NOT_FOUND"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("No static resource NOTEXISTENTURL for request '/NOTEXISTENTURL'."))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -195,7 +195,7 @@ class ClassificationExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isNotFound())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_NOT_FOUND"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_NOT_FOUND"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -207,7 +207,7 @@ class ClassificationExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isConflict())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_CONFLICT"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_CONFLICT"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -216,7 +216,7 @@ class ClassificationExceptionHandlerTest {
     void handleNoBodyException() throws Exception {
         performRequest(DATA, MediaType.APPLICATION_JSON, null)
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("[CLASSIFICATION_BAD_REQUEST] Required request body is missing"))
           .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
     }
@@ -226,7 +226,7 @@ class ClassificationExceptionHandlerTest {
         performRequest(DATA, MediaType.APPLICATION_JSON,
                 "{\"notRequiredField\":\"notRequired\",\"lowerCaseAlphabeticField\":\"ABC\"}")
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("[CLASSIFICATION_BAD_REQUEST] Invalid request content. lowerCaseAlphabeticField: must match \"[a-z]+\"; requiredField: must not be null"))
           .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
     }
@@ -236,7 +236,7 @@ class ClassificationExceptionHandlerTest {
         performRequest(DATA, MediaType.APPLICATION_JSON,
                 "{\"notRequiredField\":\"notRequired\",\"dateTimeField\":\"2025-02-05\"}")
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("[CLASSIFICATION_BAD_REQUEST] Cannot parse body. dateTimeField: Text '2025-02-05' could not be parsed at index 10"))
           .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
     }
@@ -248,7 +248,7 @@ class ClassificationExceptionHandlerTest {
 
         performRequest(DATA, MediaType.APPLICATION_JSON)
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_GENERIC_ERROR"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_GENERIC_ERROR"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("500 INTERNAL_SERVER_ERROR \"Error\""))
           .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
     }
@@ -262,7 +262,7 @@ class ClassificationExceptionHandlerTest {
 
         performRequest(DATA, MediaType.APPLICATION_JSON)
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("[CLASSIFICATION_BAD_REQUEST] Invalid request content. fieldName: resolved message"))
           .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
     }
@@ -273,7 +273,7 @@ class ClassificationExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_GENERIC_ERROR"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_GENERIC_ERROR"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("[CLASSIFICATION_CONNECTION_ERROR] connection refused"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -285,7 +285,7 @@ class ClassificationExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("[CLASSIFICATION_BAD_REQUEST] Invalid request content. fieldName: resolved message"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -297,7 +297,7 @@ class ClassificationExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_GENERIC_ERROR"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_GENERIC_ERROR"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("TransactionError"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -308,7 +308,7 @@ class ClassificationExceptionHandlerTest {
 
       performRequest(DATA, MediaType.APPLICATION_JSON)
         .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
         .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
 
@@ -320,7 +320,7 @@ class ClassificationExceptionHandlerTest {
 
       performRequest(DATA, MediaType.APPLICATION_JSON)
         .andExpect(MockMvcResultMatchers.status().isNotFound())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_NOT_FOUND"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_NOT_FOUND"))
         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
         .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
 
@@ -332,7 +332,7 @@ class ClassificationExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -343,7 +343,7 @@ class ClassificationExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -354,7 +354,7 @@ class ClassificationExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -365,7 +365,7 @@ class ClassificationExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isConflict())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_CONFLICT"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_CONFLICT"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
@@ -377,7 +377,7 @@ class ClassificationExceptionHandlerTest {
 
     mockMvc.perform(MockMvcRequestBuilders.get("/crud/classifications/-12"))
       .andExpect(MockMvcResultMatchers.status().isNotFound())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("CLASSIFICATION_NOT_FOUND"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("CLASSIFICATION_NOT_FOUND"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("[CLASSIFICATION_NOT_FOUND] EntityRepresentationModel not found"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
