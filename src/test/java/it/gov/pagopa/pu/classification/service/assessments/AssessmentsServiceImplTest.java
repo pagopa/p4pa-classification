@@ -422,5 +422,27 @@ class AssessmentsServiceImplTest {
       organizationId, debtPositionTypeOrgCode, accessToken);
   }
 
+  @Test
+  void givenReceiptWithUnknownOrgFiscalCodeWhenCreateAssessmentThenReturnEmptyList() {
+    Long receiptId = 1L;
+    String accessToken = "accessToken";
+    String operatorExternalUserId = "operatorExternalUserId";
 
+    ReceiptNoPII receipt = new ReceiptNoPII();
+    receipt.setReceiptId(receiptId);
+    receipt.setOrgFiscalCode("UNKNOWN_11111111111");
+
+    when(receiptServiceMock.getById(receiptId, accessToken)).thenReturn(receipt);
+
+    List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+
+    verify(receiptServiceMock).getById(receiptId, accessToken);
+    verifyNoInteractions(organizationServiceMock);
+    verifyNoInteractions(installmentServiceMock);
+    verifyNoInteractions(debtPositionTypeOrgServiceMock);
+    verifyNoInteractions(assessmentsDetailServiceMock);
+  }
 }
