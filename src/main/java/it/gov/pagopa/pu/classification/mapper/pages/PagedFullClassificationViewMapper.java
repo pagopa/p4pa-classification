@@ -10,10 +10,10 @@ import java.util.Collections;
 
 @Component
 public class PagedFullClassificationViewMapper {
-  private final FullClassificationViewPIIMapper fullClassificationViewPIIMapper;
+  private final FullClassificationViewPIIMapper mapper;
 
-  public PagedFullClassificationViewMapper(FullClassificationViewPIIMapper fullClassificationViewPIIMapper) {
-    this.fullClassificationViewPIIMapper = fullClassificationViewPIIMapper;
+  public PagedFullClassificationViewMapper(FullClassificationViewPIIMapper mapper) {
+    this.mapper = mapper;
   }
 
   public PagedFullClassificationView map2PagedClassificationView(Page<FullClassificationViewNoPII> pagedFullClassificationViewNoPII) {
@@ -21,9 +21,7 @@ public class PagedFullClassificationViewMapper {
 
     if(pagedFullClassificationViewNoPII != null){
       if (!pagedFullClassificationViewNoPII.getContent().isEmpty()){
-        mappedPagedClassificationView.setContent(pagedFullClassificationViewNoPII.stream()
-          .map(fullClassificationViewPIIMapper::map)
-          .toList());
+        mappedPagedClassificationView.setContent(mapper.mapAll(pagedFullClassificationViewNoPII.getContent()));
       }else {
         mappedPagedClassificationView.setContent(Collections.emptyList());
       }

@@ -38,27 +38,23 @@ class PagedFullClassificationViewMapperTest {
 
   @Test
   void givenValidPagedFullClassificationViewNoPIIWhenMap2PagedFullClassificationViewThenReturnPagedFullClassificationView(){
-    //given
+    // Given
     int pageSize = 10;
     long totalElements = 1;
 
-    FullClassificationViewNoPII noPII = podamFactory.manufacturePojo(FullClassificationViewNoPII.class);
-
-    List<FullClassificationViewNoPII> content = List.of(noPII);
-
     Pageable pageable = PageRequest.of(0, pageSize);
-
+    List<FullClassificationViewNoPII> content = List.of(podamFactory.manufacturePojo(FullClassificationViewNoPII.class));
     Page<FullClassificationViewNoPII> pagedInstallmentPaidViewNoPII = new PageImpl<>(content, pageable, totalElements);
+    List<FullClassificationViewDTO> expectedContent = List.of(podamFactory.manufacturePojo(FullClassificationViewDTO.class));
 
-    FullClassificationViewDTO viewDTO = podamFactory.manufacturePojo(FullClassificationViewDTO.class);
+    when(fullClassificationViewPIIMapper.mapAll(content)).thenReturn(expectedContent);
 
-    when(fullClassificationViewPIIMapper.map(noPII)).thenReturn(viewDTO);
-    //when
-
+    // When
     PagedFullClassificationView result = mapper.map2PagedClassificationView(pagedInstallmentPaidViewNoPII);
-    //then
+
+    // Then
     assertNotNull(result);
-    assertFalse(result.getContent().isEmpty());
+    assertSame(expectedContent, result.getContent());
     assertEquals(1, result.getTotalElements());
     assertEquals(1, result.getTotalPages());
     assertEquals(10, result.getSize());
@@ -69,17 +65,18 @@ class PagedFullClassificationViewMapperTest {
 
   @Test
   void givenEmptyPagedFullClassificationViewNoPIIWhenMap2PagedFullClassificationViewThenReturnEmptyCollection(){
-    //given
+    // Given
     int pageSize = 10;
     long totalElements = 0;
 
     Pageable pageable = PageRequest.of(0, pageSize);
 
     Page<FullClassificationViewNoPII> pages = new PageImpl<>(Collections.emptyList(), pageable, totalElements);
-    //when
 
+    // When
     PagedFullClassificationView result = mapper.map2PagedClassificationView(pages);
-    //then
+
+    // Then
     assertNotNull(result);
     assertTrue(result.getContent().isEmpty());
     assertEquals(0, result.getTotalElements());
@@ -92,31 +89,28 @@ class PagedFullClassificationViewMapperTest {
 
   @Test
   void givenNullPagedFullClassificationViewNoPIIWhenMap2PagedFullClassificationViewThenReturnNewPagedInstallmentPaidView(){
-    //when
+    // When
     PagedFullClassificationView result = mapper.map2PagedClassificationView(null);
-    //then
+
+    // Then
     assertNotNull(result);
   }
 
   @Test
   void givenUnPagedFullClassificationViewNoPIIWhenMap2PagedFullClassificationViewThenReturnPagedInstallmentPaidView(){
-    //given
-    FullClassificationViewNoPII noPII = podamFactory.manufacturePojo(FullClassificationViewNoPII.class);
-
-    List<FullClassificationViewNoPII> content = List.of(noPII);
-
+    // Given
+    List<FullClassificationViewNoPII> content = List.of(podamFactory.manufacturePojo(FullClassificationViewNoPII.class));
     Page<FullClassificationViewNoPII> pages = new PageImpl<>(content);
+    List<FullClassificationViewDTO> expectedContent = List.of(podamFactory.manufacturePojo(FullClassificationViewDTO.class));
 
-    FullClassificationViewDTO viewDTO = podamFactory.manufacturePojo(FullClassificationViewDTO.class);
+    when(fullClassificationViewPIIMapper.mapAll(content)).thenReturn(expectedContent);
 
-    when(fullClassificationViewPIIMapper.map(noPII)).thenReturn(viewDTO);
-
-    //when
+    // When
     PagedFullClassificationView result = mapper.map2PagedClassificationView(pages);
 
-    //then
+    // Then
     assertNotNull(result);
-    assertFalse(result.getContent().isEmpty());
+    assertSame(expectedContent, result.getContent());
 
     TestUtils.checkNotNullFields(result, "size","totalPages", "totalElements", "number");
   }
