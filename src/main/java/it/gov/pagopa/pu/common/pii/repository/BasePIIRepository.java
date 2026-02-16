@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.common.pii.citizen.enums.PersonalDataType;
 import it.gov.pagopa.pu.common.pii.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.common.pii.dto.FullEntityPIIDTO;
 import it.gov.pagopa.pu.common.pii.dto.PIIDTO;
-import it.gov.pagopa.pu.common.pii.mapper.BasePIIMapper;
+import it.gov.pagopa.pu.common.pii.mapper.BaseEntityPIIMapper;
 import it.gov.pagopa.pu.common.pii.model.NoPIIEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.util.Pair;
@@ -14,11 +14,11 @@ import java.util.Optional;
 
 public abstract class BasePIIRepository<F extends FullEntityPIIDTO<E, P>, E extends NoPIIEntity<P>, P extends PIIDTO, I extends Serializable> {
 
-  private final BasePIIMapper<F, E, P> piiMapper;
+  private final BaseEntityPIIMapper<F, E, P> piiMapper;
   private final PersonalDataService personalDataService;
   private final JpaRepository<E, I> noPIIRepository;
 
-  protected BasePIIRepository(BasePIIMapper<F, E, P> piiMapper, PersonalDataService personalDataService, JpaRepository<E, I> noPIIRepository) {
+  protected BasePIIRepository(BaseEntityPIIMapper<F, E, P> piiMapper, PersonalDataService personalDataService, JpaRepository<E, I> noPIIRepository) {
     this.piiMapper = piiMapper;
     this.personalDataService = personalDataService;
     this.noPIIRepository = noPIIRepository;

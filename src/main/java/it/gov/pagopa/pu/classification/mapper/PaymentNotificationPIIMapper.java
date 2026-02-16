@@ -5,11 +5,11 @@ import it.gov.pagopa.pu.common.pii.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
-import it.gov.pagopa.pu.common.pii.mapper.BasePIIMapper;
+import it.gov.pagopa.pu.common.pii.mapper.BaseEntityPIIMapper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentNotificationPIIMapper extends BasePIIMapper<PaymentNotificationDTO, PaymentNotificationNoPII, PaymentNotificationPIIDTO> {
+public class PaymentNotificationPIIMapper extends BaseEntityPIIMapper<PaymentNotificationDTO, PaymentNotificationNoPII, PaymentNotificationPIIDTO> {
   private final PersonalDataService personalDataService;
   private final DataCipherService dataCipherService;
 
