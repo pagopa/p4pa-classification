@@ -1,30 +1,35 @@
-package it.gov.pagopa.pu.classification.dto;
+package it.gov.pagopa.pu.classification.model.view.classification;
 
 import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.dto.pii.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
-import it.gov.pagopa.pu.classification.model.view.classification.ClassificationDetailViewNoPII;
-import it.gov.pagopa.pu.common.pii.dto.Full2PIIDTO;
+import it.gov.pagopa.pu.common.pii.dto.No2PIIDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionOrigin;
-import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptOriginType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+@Entity
+@Table(name = "classification")
 @Data
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder(toBuilder = true)
-public class ClassificationDetailViewDTO implements Full2PIIDTO<ClassificationDetailViewNoPII, ReceiptPIIDTO, PaymentNotificationPIIDTO> {
+@EqualsAndHashCode(callSuper = false)
+public class ClassificationDetailViewNoPII implements No2PIIDTO<ReceiptPIIDTO, PaymentNotificationPIIDTO> {
   //Classification fields
+  @Id
+  @NotNull
   private Long classificationId;
+  @NotNull
   private Long organizationId;
   private Long transferId;
   private String paymentNotificationId;
@@ -35,6 +40,8 @@ public class ClassificationDetailViewDTO implements Full2PIIDTO<ClassificationDe
   private String iuv;
   private String iur;
   private Integer transferIndex;
+  @NotNull
+  @Enumerated(EnumType.STRING)
   private ClassificationsEnum label;
   private LocalDate lastClassificationDate;
   private LocalDate payDate;
@@ -59,8 +66,7 @@ public class ClassificationDetailViewDTO implements Full2PIIDTO<ClassificationDe
   private String receiptPspCompanyName;
   private String organizationEntityType;
   private String organizationName;
-  private PersonDTO receiptPayer;
-  private PersonDTO receiptDebtor;
+  private Long receiptPersonalDataId;
   private String receiptPaymentOutcomeCode;
   private Long receiptPaymentAmount;
   private String receiptCreditorReferenceId;
@@ -70,8 +76,11 @@ public class ClassificationDetailViewDTO implements Full2PIIDTO<ClassificationDe
   private String installmentBalance;
 
   //Treasury fields
+  @NotNull
   private String billYear;
+  @NotNull
   private String billCode;
+  @NotNull
   private Long ingestionFlowFileId;
   private String accountCode;
   private String domainIdCode;
@@ -103,35 +112,60 @@ public class ClassificationDetailViewDTO implements Full2PIIDTO<ClassificationDe
   private String endToEndId;
 
   //PaymentsReporting fields
+  @NotNull
   private String pspIdentifier;
+  @NotNull
   private OffsetDateTime flowDateTime;
+  @NotNull
   private String senderPspType;
+  @NotNull
   private String senderPspCode;
   private String senderPspName;
   private String receiverOrganizationType;
   private String receiverOrganizationCode;
   private String receiverOrganizationName;
+  @NotNull
   private Long totalPayments;
+  @NotNull
   private Long totalAmountCents;
+  @NotNull
   private Long amountPaidCents;
+  @NotNull
   private String paymentOutcomeCode;
+  @NotNull
   private LocalDate acquiringDate;
   private String bicCodePouringBank;
 
   //PaymentNotificationNoPII fields
+  @NotNull
   private LocalDate paymentExecutionDate;
+  @NotNull
   private String paymentType;
   private String balance;
   private byte[] remittanceInformationHash;
   private byte[] debtorFiscalCodeHash;
-  private PersonDTO paymentNotificationDebtor;
+  private Long paymentNotificationPersonalDataId;
+  @NotNull
   private String paymentNotificationRemittanceInformation;
+  @NotNull
   private String paymentNotificationIud;
+  @NotNull
   private Long paymentNotificationAmountPaidCents;
+  @NotNull
   private String paymentNotificationDebtPositionTypeOrgCode;
 
   @Enumerated(EnumType.STRING)
   private DebtPositionOrigin debtPositionOrigin;
   @Enumerated(EnumType.STRING)
   private ReceiptOriginType receiptOrigin;
+
+  @Override
+  public Long getPersonalDataId() {
+    return receiptPersonalDataId;
+  }
+
+  @Override
+  public Long getPersonalDataId2() {
+    return paymentNotificationPersonalDataId;
+  }
 }

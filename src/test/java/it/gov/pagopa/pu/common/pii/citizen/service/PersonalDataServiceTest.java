@@ -1,12 +1,14 @@
 package it.gov.pagopa.pu.common.pii.citizen.service;
 
 import it.gov.pagopa.pu.classification.dto.ClassificationViewDTO;
+import it.gov.pagopa.pu.classification.dto.pii.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.common.pii.citizen.enums.PersonalDataType;
 import it.gov.pagopa.pu.common.pii.citizen.model.PersonalData;
 import it.gov.pagopa.pu.common.pii.citizen.repository.PersonalDataRepository;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
 class PersonalDataServiceTest {
@@ -150,6 +155,46 @@ class PersonalDataServiceTest {
     Assertions.assertEquals("[PII_ENTITY_NOT_FOUND] PII Entities with ids 2 not found", notFoundException.getMessage());
   }
 //endregion
+
+  @Test
+  void whenGet2AllThenOk() {
+    // Given
+    Set<Long> pDataIds1 = LongStream.range(0, 10).boxed().collect(Collectors.toSet());
+    Class<ClassificationViewDTO> classType1 = ClassificationViewDTO.class;
+    Map<Long, ClassificationViewDTO> expectedPData1Dtos = Map.of();
+
+    Set<Long> pDataIds2 = LongStream.range(pDataIds1.size(), 10).boxed().collect(Collectors.toSet());
+    Class<ReceiptPIIDTO> classType2 = ReceiptPIIDTO.class;
+    Map<Long, ReceiptPIIDTO> expectedPData2Dtos = Map.of();
+
+    service = Mockito.spy(service);
+
+    List<PersonalData> pData = List.of();
+
+    Mockito.when(repositoryMock.findAllById(Stream.concat(
+        pDataIds1.stream(),
+        pDataIds2.stream()
+      ).toList()))
+      .thenReturn(pData);
+
+    Mockito.doReturn(expectedPData1Dtos)
+      .when(service)
+      .getAll(Mockito.same(pData), Mockito.same(pDataIds1), Mockito.same(classType1));
+
+    Mockito.doReturn(expectedPData2Dtos)
+      .when(service)
+      .getAll(Mockito.same(pData), Mockito.same(pDataIds2), Mockito.same(classType2));
+
+    // When
+    Pair<Map<Long, ClassificationViewDTO>, Map<Long, ReceiptPIIDTO>> results = service.get2All(
+      pDataIds1, classType1,
+      pDataIds2, classType2
+    );
+
+    //Then
+    Assertions.assertSame(results.getLeft(), expectedPData1Dtos);
+    Assertions.assertSame(results.getRight(), expectedPData2Dtos);
+  }
 
   @Test
   void testDelete() {

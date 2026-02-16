@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.classification.repository;
 
 import it.gov.pagopa.pu.common.pii.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
-import it.gov.pagopa.pu.classification.mapper.PaymentNotificationPIIMapper;
+import it.gov.pagopa.pu.classification.mapper.pii.PaymentNotificationPIIMapper;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
