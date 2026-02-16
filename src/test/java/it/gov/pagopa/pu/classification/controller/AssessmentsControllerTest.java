@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.controller;
 
-import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.filters.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;

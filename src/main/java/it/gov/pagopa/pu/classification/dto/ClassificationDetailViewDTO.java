@@ -1,6 +1,10 @@
 package it.gov.pagopa.pu.classification.dto;
 
+import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
+import it.gov.pagopa.pu.classification.dto.pii.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
+import it.gov.pagopa.pu.classification.model.view.classification.ClassificationDetailViewNoPII;
+import it.gov.pagopa.pu.common.pii.dto.Full2PIIDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptOriginType;
@@ -18,7 +22,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class ClassificationDetailViewDTO {
+public class ClassificationDetailViewDTO implements Full2PIIDTO<ClassificationDetailViewNoPII, ReceiptPIIDTO, PaymentNotificationPIIDTO> {
   //Classification fields
   private Long classificationId;
   private Long organizationId;

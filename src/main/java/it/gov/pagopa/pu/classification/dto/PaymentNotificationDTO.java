@@ -1,7 +1,9 @@
 package it.gov.pagopa.pu.classification.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
+import it.gov.pagopa.pu.common.pii.dto.FullEntityPIIDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentNotificationDTO implements FullPIIDTO<PaymentNotificationNoPII, PaymentNotificationPIIDTO> {
+public class PaymentNotificationDTO implements FullEntityPIIDTO<PaymentNotificationNoPII, PaymentNotificationPIIDTO> {
 
   private String paymentNotificationId;
   private Long organizationId;

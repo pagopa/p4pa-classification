@@ -1,6 +1,10 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.dto.*;
+import it.gov.pagopa.pu.classification.dto.filters.ClassificationPaidInstallmentsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.filters.ExportClassificationsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.filters.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.filters.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
@@ -8,13 +12,17 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassificatio
 import it.gov.pagopa.pu.classification.enums.DataEventType;
 import it.gov.pagopa.pu.classification.event.dto.DataEventRequestDTO;
 import it.gov.pagopa.pu.classification.event.producer.DataEventsProducerService;
-import it.gov.pagopa.pu.classification.mapper.PagedClassificationPaidInstallmentsViewMapper;
-import it.gov.pagopa.pu.classification.mapper.TreasuredClassificationMapper;
+import it.gov.pagopa.pu.classification.mapper.pages.PagedClassificationPaidInstallmentsViewMapper;
+import it.gov.pagopa.pu.classification.mapper.pages.TreasuredClassificationMapper;
 import it.gov.pagopa.pu.classification.model.Classification;
-import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView;
+import it.gov.pagopa.pu.classification.model.view.classification.ClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
 import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
 import it.gov.pagopa.pu.classification.repository.view.*;
+import it.gov.pagopa.pu.classification.repository.view.classification.ClassificationDetailViewPIIRepository;
+import it.gov.pagopa.pu.classification.repository.view.classification.ClassificationPaidInstallmentsViewRepository;
+import it.gov.pagopa.pu.classification.repository.view.classification.ClassificationViewPIIRepository;
+import it.gov.pagopa.pu.classification.repository.view.classification.FullClassificationViewPIIRepository;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
