@@ -1,6 +1,10 @@
 package it.gov.pagopa.pu.classification.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
+import it.gov.pagopa.pu.classification.dto.pii.ReceiptPIIDTO;
+import it.gov.pagopa.pu.classification.model.view.classification.FullClassificationViewNoPII;
+import it.gov.pagopa.pu.common.pii.dto.Full2PIIDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +19,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper=false)
-public class FullClassificationViewDTO extends ClassificationViewDTO {
+public class FullClassificationViewDTO extends BaseClassificationViewDTO implements Full2PIIDTO<FullClassificationViewNoPII, ReceiptPIIDTO, PaymentNotificationPIIDTO> {
 
   @JsonProperty("payNotice_ingestionFlowFileId")
   private Long paymentNotificationIngestionFlowFileId;
@@ -52,4 +56,5 @@ public class FullClassificationViewDTO extends ClassificationViewDTO {
 
   @JsonProperty("payNotice_debtor")
   private PersonDTO paymentNotificationDebtor;
+
 }

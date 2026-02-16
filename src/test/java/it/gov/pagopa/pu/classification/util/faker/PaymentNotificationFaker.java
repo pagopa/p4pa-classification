@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.util.faker;
 
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
-import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
+import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
 
 import java.time.LocalDate;

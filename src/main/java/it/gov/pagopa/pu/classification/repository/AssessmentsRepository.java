@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.repository;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import it.gov.pagopa.pu.classification.dto.LocalDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.filters.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import org.springframework.data.domain.Page;

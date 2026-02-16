@@ -247,7 +247,7 @@ openApiGenerate {
       "DebtPositionDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO",
       "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.model.AssessmentsRegistry",
       "AssessmentsDetail" to "it.gov.pagopa.pu.classification.model.AssessmentsDetail",
-      "ClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView"
+      "ClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.model.view.classification.ClassificationPaidInstallmentsView"
     )
   )
   configOptions.set(

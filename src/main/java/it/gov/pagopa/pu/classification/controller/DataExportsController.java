@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.classification.controller;
 
 import it.gov.pagopa.pu.classification.controller.generated.DataExportsApi;
-import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
-import it.gov.pagopa.pu.classification.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.filters.ExportClassificationsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.filters.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;

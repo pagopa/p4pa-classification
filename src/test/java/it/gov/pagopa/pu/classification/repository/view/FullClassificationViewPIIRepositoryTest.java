@@ -1,10 +1,13 @@
 package it.gov.pagopa.pu.classification.repository.view;
 
-import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.filters.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.exception.custom.ExportTooManyRecordsException;
-import it.gov.pagopa.pu.classification.mapper.PagedFullClassificationViewMapper;
-import it.gov.pagopa.pu.classification.model.view.FullClassificationViewNoPII;
+import it.gov.pagopa.pu.classification.mapper.pages.PagedFullClassificationViewMapper;
+import it.gov.pagopa.pu.classification.model.view.classification.FullClassificationViewNoPII;
+import it.gov.pagopa.pu.classification.repository.view.classification.FullClassificationViewNoPIIDTORepository;
+import it.gov.pagopa.pu.classification.repository.view.classification.FullClassificationViewPIIRepository;
+import it.gov.pagopa.pu.classification.repository.view.classification.FullClassificationViewPIIRepositoryImpl;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

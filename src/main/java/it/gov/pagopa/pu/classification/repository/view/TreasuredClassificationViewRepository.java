@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.repository.view;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import it.gov.pagopa.pu.classification.dto.TreasuredClassificationFilterDTO;
+import it.gov.pagopa.pu.classification.dto.filters.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
