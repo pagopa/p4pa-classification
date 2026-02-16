@@ -1,6 +1,6 @@
-package it.gov.pagopa.pu.classification.citizen.repository;
+package it.gov.pagopa.pu.common.pii.citizen.repository;
 
-import it.gov.pagopa.pu.classification.citizen.model.PersonalData;
+import it.gov.pagopa.pu.common.pii.citizen.model.PersonalData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 

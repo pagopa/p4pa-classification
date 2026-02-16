@@ -1,11 +1,11 @@
-package it.gov.pagopa.pu.classification.mapper;
+package it.gov.pagopa.pu.common.pii.mapper;
 
-import it.gov.pagopa.pu.classification.dto.FullPIIDTO;
-import it.gov.pagopa.pu.classification.dto.PIIDTO;
-import it.gov.pagopa.pu.classification.model.NoPIIEntity;
+import it.gov.pagopa.pu.common.pii.dto.FullEntityPIIDTO;
+import it.gov.pagopa.pu.common.pii.dto.PIIDTO;
+import it.gov.pagopa.pu.common.pii.model.NoPIIEntity;
 import org.springframework.data.util.Pair;
 
-public abstract class BasePIIMapper<F extends FullPIIDTO<E, P>, E extends NoPIIEntity<P>, P extends PIIDTO> {
+public abstract class BasePIIMapper<F extends FullEntityPIIDTO<E, P>, E extends NoPIIEntity<P>, P extends PIIDTO> {
 
   public final Pair<E, P> map(F fullDTO){
     E noPii = extractNoPiiEntity(fullDTO);

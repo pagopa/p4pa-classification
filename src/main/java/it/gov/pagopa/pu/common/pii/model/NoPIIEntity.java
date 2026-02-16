@@ -1,6 +1,6 @@
-package it.gov.pagopa.pu.classification.model;
+package it.gov.pagopa.pu.common.pii.model;
 
-import it.gov.pagopa.pu.classification.dto.PIIDTO;
+import it.gov.pagopa.pu.common.pii.dto.PIIDTO;
 
 public interface NoPIIEntity<P extends PIIDTO> {
   void setPersonalDataId(Long personalDataId);

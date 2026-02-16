@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.citizen.util;
+package it.gov.pagopa.pu.common.pii.citizen.util;
 
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;

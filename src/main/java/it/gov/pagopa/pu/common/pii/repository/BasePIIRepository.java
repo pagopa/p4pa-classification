@@ -1,34 +1,34 @@
-package it.gov.pagopa.pu.classification.repository;
+package it.gov.pagopa.pu.common.pii.repository;
 
-import it.gov.pagopa.pu.classification.citizen.enums.PersonalDataType;
-import it.gov.pagopa.pu.classification.citizen.service.PersonalDataService;
-import it.gov.pagopa.pu.classification.dto.FullPIIDTO;
-import it.gov.pagopa.pu.classification.dto.PIIDTO;
-import it.gov.pagopa.pu.classification.mapper.BasePIIMapper;
-import it.gov.pagopa.pu.classification.model.NoPIIEntity;
+import it.gov.pagopa.pu.common.pii.citizen.enums.PersonalDataType;
+import it.gov.pagopa.pu.common.pii.citizen.service.PersonalDataService;
+import it.gov.pagopa.pu.common.pii.dto.FullEntityPIIDTO;
+import it.gov.pagopa.pu.common.pii.dto.PIIDTO;
+import it.gov.pagopa.pu.common.pii.mapper.BasePIIMapper;
+import it.gov.pagopa.pu.common.pii.model.NoPIIEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.util.Pair;
 
 import java.io.Serializable;
 import java.util.Optional;
 
-public abstract class BasePIIRepository<F extends FullPIIDTO<E, P>, E extends NoPIIEntity<P>, P extends PIIDTO, I extends Serializable> {
+public abstract class BasePIIRepository<F extends FullEntityPIIDTO<E, P>, E extends NoPIIEntity<P>, P extends PIIDTO, I extends Serializable> {
 
   private final BasePIIMapper<F, E, P> piiMapper;
   private final PersonalDataService personalDataService;
   private final JpaRepository<E, I> noPIIRepository;
 
-  BasePIIRepository(BasePIIMapper<F, E, P> piiMapper, PersonalDataService personalDataService, JpaRepository<E, I> noPIIRepository) {
+  protected BasePIIRepository(BasePIIMapper<F, E, P> piiMapper, PersonalDataService personalDataService, JpaRepository<E, I> noPIIRepository) {
     this.piiMapper = piiMapper;
     this.personalDataService = personalDataService;
     this.noPIIRepository = noPIIRepository;
   }
 
-  abstract void setId(F fullDTO, I id);
-  abstract void setId(E noPii, I id);
-  abstract I getId(E noPii);
-  abstract Class<P> getPIITDTOClass();
-  abstract PersonalDataType getPIIPersonalDataType();
+  protected abstract void setId(F fullDTO, I id);
+  protected abstract void setId(E noPii, I id);
+  protected abstract I getId(E noPii);
+  protected abstract Class<P> getPIITDTOClass();
+  protected abstract PersonalDataType getPIIPersonalDataType();
 
   public F save(F fullDTO) {
     Pair<E, P> p = piiMapper.map(fullDTO);

@@ -1,10 +1,10 @@
-package it.gov.pagopa.pu.classification.citizen.service;
+package it.gov.pagopa.pu.common.pii.citizen.service;
 
-import it.gov.pagopa.pu.classification.citizen.enums.PersonalDataType;
-import it.gov.pagopa.pu.classification.citizen.model.PersonalData;
-import it.gov.pagopa.pu.classification.citizen.repository.PersonalDataRepository;
 import it.gov.pagopa.pu.classification.dto.ClassificationViewDTO;
 import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
+import it.gov.pagopa.pu.common.pii.citizen.enums.PersonalDataType;
+import it.gov.pagopa.pu.common.pii.citizen.model.PersonalData;
+import it.gov.pagopa.pu.common.pii.citizen.repository.PersonalDataRepository;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

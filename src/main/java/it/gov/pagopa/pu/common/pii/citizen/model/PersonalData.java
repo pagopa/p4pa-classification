@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.citizen.model;
+package it.gov.pagopa.pu.common.pii.citizen.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

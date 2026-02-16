@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.citizen.service;
+package it.gov.pagopa.pu.common.pii.citizen.service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

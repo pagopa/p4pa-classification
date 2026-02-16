@@ -1,10 +1,11 @@
 package it.gov.pagopa.pu.classification.mapper;
 
-import it.gov.pagopa.pu.classification.citizen.service.DataCipherService;
-import it.gov.pagopa.pu.classification.citizen.service.PersonalDataService;
+import it.gov.pagopa.pu.common.pii.citizen.service.DataCipherService;
+import it.gov.pagopa.pu.common.pii.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
 import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
+import it.gov.pagopa.pu.common.pii.mapper.BasePIIMapper;
 import org.springframework.stereotype.Service;
 
 @Service

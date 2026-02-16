@@ -1,7 +1,7 @@
-package it.gov.pagopa.pu.classification.citizen.service;
+package it.gov.pagopa.pu.common.pii.citizen.service;
 
-import it.gov.pagopa.pu.classification.citizen.util.AESUtils;
-import it.gov.pagopa.pu.classification.citizen.util.HashAlgorithm;
+import it.gov.pagopa.pu.common.pii.citizen.util.AESUtils;
+import it.gov.pagopa.pu.common.pii.citizen.util.HashAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.JacksonException;
@@ -47,6 +47,7 @@ public class DataCipherService {
         }
     }
 
+  @SuppressWarnings("squid:S1168") // null String if hashed should return still null
   public byte[] hash(String value) {
     if (value == null) {
       return null;

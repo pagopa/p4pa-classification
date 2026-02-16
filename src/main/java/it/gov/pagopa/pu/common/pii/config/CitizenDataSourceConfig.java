@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.config;
+package it.gov.pagopa.pu.common.pii.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategySnakeCaseImpl;
@@ -22,7 +22,7 @@ import java.util.Map;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "emfCitizen",
         transactionManagerRef = "tmCitizen",
-        basePackages = {"it.gov.pagopa.pu.classification.citizen.repository"}
+        basePackages = {"it.gov.pagopa.pu.common.pii.citizen.repository"}
 )
 public class CitizenDataSourceConfig {
 
@@ -39,7 +39,7 @@ public class CitizenDataSourceConfig {
           LocalValidatorFactoryBean validatorFactoryBean) {
 
     return builder.dataSource(dataSource)
-            .packages("it.gov.pagopa.pu.classification.citizen.model")
+            .packages("it.gov.pagopa.pu.common.pii.citizen.model")
             .properties(Map.of(
                     "hibernate.physical_naming_strategy", PhysicalNamingStrategySnakeCaseImpl.class.getName(),
                     "hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName(),

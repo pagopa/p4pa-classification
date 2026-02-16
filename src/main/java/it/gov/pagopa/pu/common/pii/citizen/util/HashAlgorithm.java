@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.citizen.util;
+package it.gov.pagopa.pu.common.pii.citizen.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
