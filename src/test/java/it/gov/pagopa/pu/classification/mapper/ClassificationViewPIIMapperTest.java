@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.classification.mapper;
 
 import it.gov.pagopa.pu.common.pii.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.classification.dto.ClassificationViewDTO;
-import it.gov.pagopa.pu.classification.dto.ReceiptPIIDTO;
+import it.gov.pagopa.pu.classification.dto.pii.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.ClassificationViewNoPII;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

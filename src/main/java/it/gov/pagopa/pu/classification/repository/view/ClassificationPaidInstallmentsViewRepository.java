@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.classification.repository.view;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
-import it.gov.pagopa.pu.classification.dto.ClassificationPaidInstallmentsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.filters.ClassificationPaidInstallmentsFilterDTO;
 import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.model.view.ClassificationPaidInstallmentsViewId;
 import org.springframework.data.domain.Page;

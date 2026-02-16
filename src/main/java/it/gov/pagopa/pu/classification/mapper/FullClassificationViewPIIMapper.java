@@ -2,8 +2,8 @@ package it.gov.pagopa.pu.classification.mapper;
 
 import it.gov.pagopa.pu.common.pii.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.classification.dto.FullClassificationViewDTO;
-import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
-import it.gov.pagopa.pu.classification.dto.ReceiptPIIDTO;
+import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
+import it.gov.pagopa.pu.classification.dto.pii.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.FullClassificationViewNoPII;
 import org.springframework.stereotype.Service;
 

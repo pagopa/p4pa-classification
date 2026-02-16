@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.dto;
+package it.gov.pagopa.pu.classification.dto.filters;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

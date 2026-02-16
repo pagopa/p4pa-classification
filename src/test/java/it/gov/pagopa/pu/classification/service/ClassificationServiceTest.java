@@ -1,6 +1,10 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.dto.*;
+import it.gov.pagopa.pu.classification.dto.filters.ClassificationPaidInstallmentsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.filters.ExportClassificationsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.filters.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.filters.TreasuredClassificationFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;

@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.repository.view;
 
-import it.gov.pagopa.pu.classification.dto.ExportClassificationsFilterDTO;
+import it.gov.pagopa.pu.classification.dto.filters.ExportClassificationsFilterDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView;
 import it.gov.pagopa.pu.classification.exception.custom.ExportTooManyRecordsException;
 import it.gov.pagopa.pu.classification.mapper.PagedFullClassificationViewMapper;

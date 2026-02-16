@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.dto;
+package it.gov.pagopa.pu.classification.dto.pii;
 
 import it.gov.pagopa.pu.common.pii.dto.PIIDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentNotificationPIIDTO implements PIIDTO {
+public class ReceiptPIIDTO implements PIIDTO {
   private PersonDTO debtor;
+  private PersonDTO payer;
 }

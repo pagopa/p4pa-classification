@@ -1,20 +1,19 @@
 package it.gov.pagopa.pu.classification.mapper;
 
+import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
+import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
+import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
 import it.gov.pagopa.pu.common.pii.citizen.service.DataCipherService;
 import it.gov.pagopa.pu.common.pii.citizen.service.PersonalDataService;
-import it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO;
-import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
-import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
 import it.gov.pagopa.pu.common.pii.mapper.BaseEntityPIIMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentNotificationPIIMapper extends BaseEntityPIIMapper<PaymentNotificationDTO, PaymentNotificationNoPII, PaymentNotificationPIIDTO> {
-  private final PersonalDataService personalDataService;
   private final DataCipherService dataCipherService;
 
   public PaymentNotificationPIIMapper(PersonalDataService personalDataService, DataCipherService dataCipherService) {
-    this.personalDataService = personalDataService;
+    super(PaymentNotificationPIIDTO.class, personalDataService);
     this.dataCipherService = dataCipherService;
   }
 
@@ -54,7 +53,12 @@ public class PaymentNotificationPIIMapper extends BaseEntityPIIMapper<PaymentNot
 
   @Override
   public PaymentNotificationDTO map(PaymentNotificationNoPII noPii) {
-    PaymentNotificationPIIDTO paymentNotification = personalDataService.get(noPii.getPersonalDataId(),PaymentNotificationPIIDTO.class);
+    PaymentNotificationPIIDTO pii = personalDataService.get(noPii.getPersonalDataId(),PaymentNotificationPIIDTO.class);
+    return map(noPii, pii);
+  }
+
+  @Override
+  protected PaymentNotificationDTO map(PaymentNotificationNoPII noPii, PaymentNotificationPIIDTO pii) {
     return PaymentNotificationDTO.builder()
       .paymentNotificationId(noPii.getPaymentNotificationId())
       .organizationId(noPii.getOrganizationId())
@@ -69,7 +73,7 @@ public class PaymentNotificationPIIMapper extends BaseEntityPIIMapper<PaymentNot
       .transferCategory(noPii.getTransferCategory())
       .debtPositionTypeOrgCode(noPii.getDebtPositionTypeOrgCode())
       .balance(noPii.getBalance())
-      .debtor(paymentNotification.getDebtor())
+      .debtor(pii.getDebtor())
       .creationDate(noPii.getCreationDate())
       .updateDate(noPii.getUpdateDate())
       .updateOperatorExternalId(noPii.getUpdateOperatorExternalId())

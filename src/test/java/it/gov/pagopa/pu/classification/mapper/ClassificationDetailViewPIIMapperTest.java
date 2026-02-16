@@ -2,8 +2,8 @@ package it.gov.pagopa.pu.classification.mapper;
 
 import it.gov.pagopa.pu.common.pii.citizen.service.PersonalDataService;
 import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
-import it.gov.pagopa.pu.classification.dto.ReceiptPIIDTO;
+import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
+import it.gov.pagopa.pu.classification.dto.pii.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.ClassificationDetailViewNoPII;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

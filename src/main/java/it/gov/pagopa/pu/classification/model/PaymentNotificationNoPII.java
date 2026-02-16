@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import it.gov.pagopa.pu.classification.dto.PaymentNotificationPIIDTO;
+import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.common.pii.model.NoPIIEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

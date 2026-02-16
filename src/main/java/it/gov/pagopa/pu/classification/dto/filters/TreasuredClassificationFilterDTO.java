@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.dto;
+package it.gov.pagopa.pu.classification.dto.filters;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.LocalDateIntervalFilter;
