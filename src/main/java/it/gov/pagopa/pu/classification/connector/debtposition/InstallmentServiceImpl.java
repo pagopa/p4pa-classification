@@ -2,14 +2,12 @@ package it.gov.pagopa.pu.classification.connector.debtposition;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.client.InstallmentNoPIIClient;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 
 @Service
-@Lazy
 public class InstallmentServiceImpl implements InstallmentService {
   private final InstallmentNoPIIClient installmentNoPIIClient;
 

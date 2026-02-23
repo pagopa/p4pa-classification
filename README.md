@@ -111,6 +111,8 @@ See [application.yml](src/main/resources/application.yml) for each configurable 
 |----------------------------|---------------------------------------------|---------|
 | CACHE_ORGANIZATION_SIZE    | Organization data cache size                | 100     |
 | CACHE_ORGANIZATION_MINUTES | Organization data cache retention (minutes) | 60      |
+| CACHE_DP_TYPE_ORG_SIZE     | DP type org data cache size                 | 100     |
+| CACHE_DP_TYPE_ORG_MINUTES  | DP type org data cache retention (minutes)  | 60      |
 
 ##### 🔗 REST
 | ENV                                               | DESCRIPTION                               | DEFAULT |
