@@ -26,6 +26,8 @@ public class CacheConfig {
 
   @NestedConfigurationProperty
   private CacheConfigurationProperties organization;
+  @NestedConfigurationProperty
+  private CacheConfigurationProperties debtPositionTypeOrg;
 
   @Data
   @NoArgsConstructor
@@ -40,6 +42,7 @@ public class CacheConfig {
   public CacheManager localCacheManager() {
     CaffeineCacheManager cacheManager = new CaffeineCacheManager();
     cacheManager.registerCustomCache(Fields.organization, buildCache(organization));
+    cacheManager.registerCustomCache(Fields.debtPositionTypeOrg, buildCache(debtPositionTypeOrg));
     return cacheManager;
   }
 
