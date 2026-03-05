@@ -59,6 +59,7 @@ val bouncycastleVersion = "1.83"
 val micrometerVersion = "1.6.3"
 val caffeineVersion = "3.2.3"
 val httpClientVersion = "5.6"
+val httpCoreVersion = "5.4.1"
 val postgresJdbcVersion = "42.7.10"
 val activationVersion = "2.1.4"
 val jaxbVersion = "4.0.6"
@@ -110,6 +111,7 @@ dependencies {
   implementation("org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion")
   implementation("org.postgresql:postgresql:$postgresJdbcVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
+  implementation("org.apache.httpcomponents.core5:httpcore5:$httpCoreVersion")
   implementation("io.github.springwolf:springwolf-kafka:$springWolfAsyncApiVersion") {
     exclude(group = "org.lz4", module = "lz4-java")
   }
