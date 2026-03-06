@@ -46,7 +46,7 @@ class TransferClientTest {
 
     when(debtPositionApisHolderMock.getTransferSearchControllerApi(accessToken))
       .thenReturn(transferSearchControllerApiMock);
-    when(transferSearchControllerApiMock.crudTransfersFindByInstallmentId(String.valueOf(installmentId)))
+    when(transferSearchControllerApiMock.crudTransfersFindByInstallmentId(installmentId))
       .thenReturn(collectionModelTransfer);
 
     List<Transfer> result = client.getByInstallmentId(installmentId, accessToken);
@@ -63,7 +63,7 @@ class TransferClientTest {
 
     when(debtPositionApisHolderMock.getTransferSearchControllerApi(accessToken))
       .thenReturn(transferSearchControllerApiMock);
-    when(transferSearchControllerApiMock.crudTransfersFindByInstallmentId(String.valueOf(installmentId)))
+    when(transferSearchControllerApiMock.crudTransfersFindByInstallmentId(installmentId))
       .thenReturn(collectionModelTransfer);
 
     List<Transfer> result = client.getByInstallmentId(installmentId, accessToken);
@@ -78,7 +78,7 @@ class TransferClientTest {
 
     when(debtPositionApisHolderMock.getTransferSearchControllerApi(accessToken))
       .thenReturn(transferSearchControllerApiMock);
-    when(transferSearchControllerApiMock.crudTransfersFindByInstallmentId(String.valueOf(installmentId)))
+    when(transferSearchControllerApiMock.crudTransfersFindByInstallmentId(installmentId))
       .thenReturn(null);
 
     List<Transfer> result = client.getByInstallmentId(installmentId, accessToken);

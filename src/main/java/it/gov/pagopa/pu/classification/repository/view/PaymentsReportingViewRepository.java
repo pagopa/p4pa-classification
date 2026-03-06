@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
@@ -27,11 +28,11 @@ public interface PaymentsReportingViewRepository extends Repository<PaymentsRepo
     """, nativeQuery = true)
   Page<PaymentsReportingView> findDistinctByIufAndRegulationUniqueIdentifier(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
-    @Param("iuf") String iuf,
-    @Param("regulationUniqueIdentifier") String regulationUniqueIdentifier,
-    @Param("regulationDateFrom") LocalDate regulationDateFrom,
-    @Param("regulationDateTo") LocalDate regulationDateTo,
-    @Param("iuv") String iuv,
+    @RequestParam(required = false) @Param("iuf") String iuf,
+    @RequestParam(required = false) @Param("regulationUniqueIdentifier") String regulationUniqueIdentifier,
+    @RequestParam(required = false) @Param("regulationDateFrom") LocalDate regulationDateFrom,
+    @RequestParam(required = false) @Param("regulationDateTo") LocalDate regulationDateTo,
+    @RequestParam(required = false) @Param("iuv") String iuv,
     Pageable pageable);
 
 }
