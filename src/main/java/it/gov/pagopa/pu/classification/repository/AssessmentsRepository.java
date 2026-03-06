@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Set;
 
@@ -37,11 +38,11 @@ public interface AssessmentsRepository extends JpaRepository<Assessments,Long> {
     """)
   Page<Assessments> findPagedAssessments(
     @Parameter(required = true) @Param("organizationId") Long organizationId,
-    @Param("assessmentName") String assessmentName,
-    @Param("updateDateTimeIntervalFilter") LocalDateTimeIntervalFilter updateDateTimeIntervalFilter,
-    @Param("iuv") String iuv,
-    @Param("debtPositionTypeOrgCodes") Set<String> debtPositionTypeOrgCodes,
-    @Param("status") AssessmentStatus status,
+    @RequestParam(required = false) @Param("assessmentName") String assessmentName,
+    @RequestParam(required = false) @Param("updateDateTimeIntervalFilter") LocalDateTimeIntervalFilter updateDateTimeIntervalFilter,
+    @RequestParam(required = false) @Param("iuv") String iuv,
+    @RequestParam(required = false) @Param("debtPositionTypeOrgCodes") Set<String> debtPositionTypeOrgCodes,
+    @RequestParam(required = false) @Param("status") AssessmentStatus status,
     Pageable pageable
   );
 

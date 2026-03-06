@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -46,13 +47,13 @@ public interface AssessmentsDetailRepository extends JpaRepository<AssessmentsDe
     """)
   Page<AssessmentsDetail> findAssessmentsRowsDetail(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("assessmentId") Long assessmentId,
-    @Param("iud") String iud,
-    @Param("iuv") String iuv,
-    @Parameter(schema = @Schema(type = "LocalDateTime")) @Param("updateDateTimeFrom") LocalDateTime updateDateTimeFrom,
-    @Parameter(schema = @Schema(type = "LocalDateTime")) @Param("updateDateTimeTo") LocalDateTime updateDateTimeTo,
-    @Param("paymentDateTimeFrom") OffsetDateTime paymentDateTimeFrom,
-    @Param("paymentDateTimeTo") OffsetDateTime paymentDateTimeTo,
-    @Param("fiscalCode") String fiscalCode,
+    @RequestParam(required = false) @Param("iud") String iud,
+    @RequestParam(required = false) @Param("iuv") String iuv,
+    @RequestParam(required = false) @Parameter(schema = @Schema(type = "LocalDateTime")) @Param("updateDateTimeFrom") LocalDateTime updateDateTimeFrom,
+    @RequestParam(required = false) @Parameter(schema = @Schema(type = "LocalDateTime")) @Param("updateDateTimeTo") LocalDateTime updateDateTimeTo,
+    @RequestParam(required = false) @Param("paymentDateTimeFrom") OffsetDateTime paymentDateTimeFrom,
+    @RequestParam(required = false) @Param("paymentDateTimeTo") OffsetDateTime paymentDateTimeTo,
+    @RequestParam(required = false) @Param("fiscalCode") String fiscalCode,
     Pageable pageable
   );
 

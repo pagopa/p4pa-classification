@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 import java.util.Set;
@@ -40,14 +41,14 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
     Page<AssessmentsRegistry> findAssessmentsRegistriesByFilters(
             @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
             @Parameter(required = true, array = @ArraySchema(uniqueItems = true, schema = @Schema(type = "String"))) @Param("debtPositionTypeOrgCodes") Set<String> debtPositionTypeOrgCodes,
-            String sectionCode,
-            String sectionDescription,
-            String officeCode,
-            String officeDescription,
-            String assessmentCode,
-            String assessmentDescription,
-            String operatingYear,
-            AssessmentsRegistryStatus status,
+            @RequestParam(required = false) String sectionCode,
+            @RequestParam(required = false) String sectionDescription,
+            @RequestParam(required = false) String officeCode,
+            @RequestParam(required = false) String officeDescription,
+            @RequestParam(required = false) String assessmentCode,
+            @RequestParam(required = false) String assessmentDescription,
+            @RequestParam(required = false) String operatingYear,
+            @RequestParam(required = false) AssessmentsRegistryStatus status,
             Pageable pageable
     );
 
@@ -84,11 +85,11 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
       @Param("organizationId") Long organizationId,
       @Param("debtPositionTypeOrgCode") String debtPositionTypeOrgCode,
       @Param("sectionCode") String sectionCode,
-      @Param("sectionDescription") String sectionDescription,
-      @Param("officeCode") String officeCode,
-      @Param("officeDescription") String officeDescription,
-      @Param("assessmentCode") String assessmentCode,
-      @Param("assessmentDescription") String assessmentDescription,
+      @RequestParam(required = false) @Param("sectionDescription") String sectionDescription,
+      @RequestParam(required = false) @Param("officeCode") String officeCode,
+      @RequestParam(required = false) @Param("officeDescription") String officeDescription,
+      @RequestParam(required = false) @Param("assessmentCode") String assessmentCode,
+      @RequestParam(required = false) @Param("assessmentDescription") String assessmentDescription,
       @Param("operatingYear") String operatingYear,
       @Param("userExternalId") String userExternalId,
       @Param("traceId") String traceId

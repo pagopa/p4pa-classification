@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
@@ -63,10 +64,10 @@ public interface PaymentsReportingWithReceiptViewRepository extends Repository<P
   Page<PaymentsReportingWithReceiptView> findPaymentsReportingByFilters(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
     @Parameter(required = true) @Param("iuf") String iuf,
-    @Param("iuv") String iuv,
-    @Param("payDateFrom") LocalDate payDateFrom,
-    @Param("payDateTo") LocalDate payDateTo,
-    @Param("debtPositionTypeOrgCode") String debtPositionTypeOrgCode,
-    @Param("fiscalCode") String fiscalCode,
+    @RequestParam(required = false) @Param("iuv") String iuv,
+    @RequestParam(required = false) @Param("payDateFrom") LocalDate payDateFrom,
+    @RequestParam(required = false) @Param("payDateTo") LocalDate payDateTo,
+    @RequestParam(required = false) @Param("debtPositionTypeOrgCode") String debtPositionTypeOrgCode,
+    @RequestParam(required = false) @Param("fiscalCode") String fiscalCode,
     Pageable pageable);
 }

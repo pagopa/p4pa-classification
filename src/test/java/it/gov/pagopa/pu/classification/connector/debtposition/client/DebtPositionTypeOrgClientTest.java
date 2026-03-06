@@ -82,7 +82,7 @@ class DebtPositionTypeOrgClientTest {
 
     when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
-    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId, true))
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(organizationId, operatorExternalUserId, true))
       .thenReturn(collectionModel);
 
     List<DebtPositionTypeOrg> result = debtPositionTypeOrgClient.findDebtPositionTypeOrgs(organizationId,  operatorExternalUserId, true, accessToken);

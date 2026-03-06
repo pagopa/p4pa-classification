@@ -20,7 +20,7 @@ public class TransferClient {
 
     public List<Transfer> getByInstallmentId(Long installmentId, String accessToken) {
         CollectionModelTransfer transfers = debtPositionApisHolder.getTransferSearchControllerApi(accessToken)
-                .crudTransfersFindByInstallmentId(String.valueOf(installmentId));
+                .crudTransfersFindByInstallmentId(installmentId);
         return transfers != null && transfers.getEmbedded()!=null?transfers.getEmbedded().getTransfers() : Collections.emptyList();
     }
 }

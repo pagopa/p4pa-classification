@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
@@ -55,20 +56,20 @@ public interface TreasuryViewRepository extends Repository<TreasuryView, String>
     """)
   Page<TreasuryView> findTreasuriesByFilters(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
-    @Param("iuv") String iuv,
-    @Param("iuf") String iuf,
-    @Param("billAmountCents") Long billAmountCents,
-    @Param("billDateFrom") LocalDate billDateFrom,
-    @Param("billDateTo") LocalDate billDateTo,
-    @Param("provisionalCode") String provisionalCode,
-    @Param("provisionalAe") String provisionalAe,
-    @Param("billCode") String billCode,
-    @Param("billYear") String billYear,
-    @Param("pspLastName") String pspLastName,
-    @Param("regionValueDateFrom") LocalDate regionValueDateFrom,
-    @Param("regionValueDateTo") LocalDate regionValueDateTo,
-    @Param("documentCode") String documentCode,
-    @Param("documentYear") String documentYear,
+    @RequestParam(required = false) @Param("iuv") String iuv,
+    @RequestParam(required = false) @Param("iuf") String iuf,
+    @RequestParam(required = false) @Param("billAmountCents") Long billAmountCents,
+    @RequestParam(required = false) @Param("billDateFrom") LocalDate billDateFrom,
+    @RequestParam(required = false) @Param("billDateTo") LocalDate billDateTo,
+    @RequestParam(required = false) @Param("provisionalCode") String provisionalCode,
+    @RequestParam(required = false) @Param("provisionalAe") String provisionalAe,
+    @RequestParam(required = false) @Param("billCode") String billCode,
+    @RequestParam(required = false) @Param("billYear") String billYear,
+    @RequestParam(required = false) @Param("pspLastName") String pspLastName,
+    @RequestParam(required = false) @Param("regionValueDateFrom") LocalDate regionValueDateFrom,
+    @RequestParam(required = false) @Param("regionValueDateTo") LocalDate regionValueDateTo,
+    @RequestParam(required = false) @Param("documentCode") String documentCode,
+    @RequestParam(required = false) @Param("documentYear") String documentYear,
     Pageable pageable);
 
 }

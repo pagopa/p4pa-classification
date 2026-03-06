@@ -82,7 +82,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetTransferSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> apisHolder.getTransferSearchControllerApi(accessToken)
-        .crudTransfersFindByInstallmentId("1L"),
+        .crudTransfersFindByInstallmentId(1L),
       new ParameterizedTypeReference<>() {
       },
       apisHolder::unload);

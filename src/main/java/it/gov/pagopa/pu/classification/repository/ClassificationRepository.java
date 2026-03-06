@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -76,10 +77,10 @@ public interface ClassificationRepository extends
     """)
   Page<Classification> findByFilters(
     @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
-    @Param("iuv") String iuv,
-    @Param("iuf") String iuf,
-    @Param("debtPositionTypeOrgCodes") List<String> debtPositionTypeOrgCodes,
-    @Param("labels") List<ClassificationsEnum> labels,
+    @RequestParam(required = false) @Param("iuv") String iuv,
+    @RequestParam(required = false) @Param("iuf") String iuf,
+    @RequestParam(required = false) @Param("debtPositionTypeOrgCodes") List<String> debtPositionTypeOrgCodes,
+    @RequestParam(required = false) @Param("labels") List<ClassificationsEnum> labels,
     Pageable pageable);
 
   @Override
