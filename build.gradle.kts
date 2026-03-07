@@ -67,9 +67,12 @@ val jaxbApiVersion = "4.0.4"
 val xmlSchemaVersion = "2.3.2"
 val podamVersion = "8.0.2.RELEASE"
 val rhinoScriptVersion = "1.8.1"
-val springWolfAsyncApiVersion = "1.20.0"
+val springWolfAsyncApiVersion = "2.1.0"
 val commonsLang3Version = "3.20.0"
 val lz4JavaVersion = "1.10.4"
+
+// Downgrading in order to handle List of enums in SpringDataRest exposed queries
+val hibernateCoreVersion = "7.1.18.Final"
 
 // fix cve
 val jackson2CoreVersion = "2.21.1"
@@ -91,6 +94,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-hateoas")
   implementation("org.springframework.boot:spring-boot-starter-data-rest")
+  implementation("org.hibernate.orm:hibernate-core:${hibernateCoreVersion}")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa") {
