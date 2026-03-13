@@ -124,6 +124,10 @@ dependencies {
 
   implementation("org.mozilla:rhino-engine:$rhinoScriptVersion")
 
+  // CVE fix
+  implementation("tools.jackson.core:jackson-core:${jackson3CoreVersion}")
+  implementation("com.fasterxml.jackson.core:jackson-core:${jackson2CoreVersion}")
+
   //jaxb
   implementation("org.apache.ws.xmlschema:xmlschema-core:$xmlSchemaVersion")
   runtimeOnly("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
@@ -135,10 +139,6 @@ dependencies {
   jaxb("jakarta.activation:jakarta.activation-api:$activationVersion")
   jaxbext("org.jvnet.jaxb:jaxb-plugin-annotate:3.0.2")
   jaxbext("org.slf4j:slf4j-simple:2.0.16") // see https://github.com/IntershopCommunicationsAG/jaxb-gradle-plugin/issues/37
-
-  // CVE fix
-  implementation("tools.jackson.core:jackson-core:$jackson3CoreVersion")
-  implementation("com.fasterxml.jackson.core:jackson-core:$jackson2CoreVersion")
 
   compileOnly("org.projectlombok:lombok")
   annotationProcessor("org.projectlombok:lombok")

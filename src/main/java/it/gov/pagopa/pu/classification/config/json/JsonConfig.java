@@ -53,14 +53,18 @@ public class JsonConfig {
   }
 
   @Bean
-  public JsonMapper objectMapperJackson3() {
+  public JsonMapper.Builder objectMapperJackson3Builder() {
     return JsonMapper.builder()
       .addModule(configureJackson3DateTimeModule())
       .configure(tools.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
       .configure(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
       .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
-      .defaultTimeZone(Constants.DEFAULT_TIMEZONE)
-      .build();
+      .defaultTimeZone(Constants.DEFAULT_TIMEZONE);
+  }
+
+  @Bean
+  public JsonMapper objectMapperJackson3() {
+    return objectMapperJackson3Builder().build();
   }
 
   /**
@@ -72,4 +76,5 @@ public class JsonConfig {
       .addDeserializer(LocalDateTime.class, new OffsetDateTimeToLocalDateTimeJackson3Deserializer())
       .addDeserializer(OffsetDateTime.class, new LocalDateTimeToOffsetDateTimeJackson3Deserializer());
   }
+
 }
