@@ -1,5 +1,8 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.util.Utilities;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -14,6 +17,7 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @Lazy
 @Component
@@ -43,8 +47,19 @@ public class BalanceUnmarshallerService {
    * @param xmlString the XML string to parse
    * @return the unmarshalled CtFlussoRiversamento object
    */
-  public CtBilancio unmarshal(String xmlString) {
-    return xmlUnmarshallerService.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema, NAMESPACE);
+  public CtBilancio unmarshal(String xmlString, Long amountCents) {
+    CtBilancio ctBilancio = xmlUnmarshallerService.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema, NAMESPACE);
+    if(amountCents!=null && !isValidBalanceAmount(ctBilancio, amountCents)){
+      throw new InvalidValueException("[BALANCE_MARSHALLING_ERROR] Function type to calculate amount balance not supported");
+    }
+    return ctBilancio;
   }
 
+  private boolean isValidBalanceAmount(CtBilancio ctBilancio, Long amountCents) {
+    BigDecimal balanceAmount = ctBilancio.getCapitolo().stream()
+      .flatMap(capitolo -> capitolo.getAccertamento().stream())
+      .map(CtAccertamento::getImporto)
+      .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return balanceAmount.compareTo(Utilities.longCentsToBigDecimalEuro(amountCents)) == 0;
+  }
 }

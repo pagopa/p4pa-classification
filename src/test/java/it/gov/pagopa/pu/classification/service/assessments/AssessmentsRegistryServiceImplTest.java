@@ -107,7 +107,7 @@ class AssessmentsRegistryServiceImplTest {
     capitolo.getAccertamento().add(accertamento);
     bilancio.getCapitolo().add(capitolo);
 
-    when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
+    when(balanceUnmashallerServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
 
     try (MockedStatic<SecurityUtils> securityUtilsMockedStatic = mockStatic(SecurityUtils.class);
@@ -171,7 +171,7 @@ class AssessmentsRegistryServiceImplTest {
     capitolo.getAccertamento().add(accertamento);
     bilancio.getCapitolo().add(capitolo);
 
-    when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
+    when(balanceUnmashallerServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
 
     try (MockedStatic<SecurityUtils> securityUtilsMockedStatic = mockStatic(SecurityUtils.class);

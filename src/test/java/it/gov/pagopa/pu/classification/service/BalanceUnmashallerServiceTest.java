@@ -1,8 +1,10 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +57,7 @@ class BalanceUnmashallerServiceTest {
   void testHandleValidXmlWithNamespace() {
 
     //when
-    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE);
+    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE, null);
 
     // then
     assertNotNull(result);
@@ -64,10 +66,28 @@ class BalanceUnmashallerServiceTest {
   }
 
   @Test
+  void testHandleValidXmlWithCorrectAmount() {
+
+    //when
+    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE, 10000L);
+
+    // then
+    assertNotNull(result);
+    assertEquals("CAP1", result.getCapitolo().getFirst().getCodCapitolo());
+    assertEquals("UFF1", result.getCapitolo().getFirst().getCodUfficio());
+  }
+
+  @Test
+  void testHandleValidXmlWithInvalidAmount() {
+    //when
+    Assertions.assertThrows(InvalidValueException.class, ()-> handler.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE, 1L));
+  }
+
+  @Test
   void testHandleValidXmlWithoutNamespace() {
 
     //when
-    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITHOUT_NAMESPACE);
+    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITHOUT_NAMESPACE, null);
 
     // then
     assertNotNull(result);
