@@ -54,7 +54,7 @@ class BalanceTemplateResolverServiceTest {
       .remittanceInformation("remittanceInformation")
       .build();
 
-    when(balanceServiceMock.unmarshalBalance(request.getBalance())).thenReturn(new CtBilancio());
+    when(balanceServiceMock.unmarshalBalance(request.getBalance(),null)).thenReturn(new CtBilancio());
 
     String result = service.calculateAmountBalance(request);
 
@@ -80,11 +80,11 @@ class BalanceTemplateResolverServiceTest {
 
     String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>100.00</importo></accertamento></capitolo></bilancio>";
 
-    when(balanceServiceMock.unmarshalBalance(request.getBalance())).thenReturn(ctBilancioDefault);
+    when(balanceServiceMock.unmarshalBalance(request.getBalance(),null)).thenReturn(ctBilancioDefault);
     String result = service.calculateAmountBalance(request);
 
     assertEquals(balanceExpected, result);
-    assertDoesNotThrow(() -> balanceUnmarshallerService.unmarshal(result));
+    assertDoesNotThrow(() -> balanceUnmarshallerService.unmarshal(result,null));
   }
 
   @Test
@@ -108,12 +108,12 @@ class BalanceTemplateResolverServiceTest {
 
     String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>80.00</importo></accertamento></capitolo></bilancio>";
 
-    when(balanceServiceMock.unmarshalBalance(request.getBalance())).thenReturn(ctBilancioDefault);
+    when(balanceServiceMock.unmarshalBalance(request.getBalance(),null)).thenReturn(ctBilancioDefault);
 
     String result = service.calculateAmountBalance(request);
 
     assertEquals(balanceExpected, result);
-    assertDoesNotThrow(() -> balanceUnmarshallerService.unmarshal(result));
+    assertDoesNotThrow(() -> balanceUnmarshallerService.unmarshal(result,null));
   }
 
   @Test
@@ -135,12 +135,12 @@ class BalanceTemplateResolverServiceTest {
 
     String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>90.00</importo></accertamento></capitolo></bilancio>";
 
-    when(balanceServiceMock.unmarshalBalance(request.getBalance())).thenReturn(ctBilancioDefault);
+    when(balanceServiceMock.unmarshalBalance(request.getBalance(),null)).thenReturn(ctBilancioDefault);
 
     String result = service.calculateAmountBalance(request);
 
     assertEquals(balanceExpected, result);
-    assertDoesNotThrow(() -> balanceUnmarshallerService.unmarshal(result));
+    assertDoesNotThrow(() -> balanceUnmarshallerService.unmarshal(result,null));
   }
 
   @Test
@@ -159,7 +159,7 @@ class BalanceTemplateResolverServiceTest {
     ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
     ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
 
-    when(balanceServiceMock.unmarshalBalance(request.getBalance())).thenReturn(ctBilancioDefault);
+    when(balanceServiceMock.unmarshalBalance(request.getBalance(),null)).thenReturn(ctBilancioDefault);
     InvalidValueException exception = assertThrows(InvalidValueException.class, () -> service.calculateAmountBalance(request));
 
     assertEquals("[BALANCE_CALCULATION_ERROR] Error calculating amount of balance: NOT_VALID as function type to calculate amount balance not supported", exception.getMessage());

@@ -1,11 +1,13 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +23,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BalanceServiceTest {
@@ -40,49 +43,56 @@ class BalanceServiceTest {
     balanceService = new BalanceService(balanceUnmarshallerServiceMock, balanceDefaultMarshallingServiceMock, assessmentsRegistryRepositoryMock);
   }
 
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(
+      balanceUnmarshallerServiceMock,
+      balanceDefaultMarshallingServiceMock,
+      assessmentsRegistryRepositoryMock);
+  }
+
   @Test
   void givenValidBalanceDefaultWhenValidateThenSuccess(){
-    String balance = "balance";
+    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
 
-    when(balanceDefaultMarshallingServiceMock.unmarshal(balance)).thenReturn(new CtBilancioDefault());
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(new CtBilancioDefault());
 
-    Boolean result = balanceService.isBalanceValid(balance);
+    Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
     assertEquals(Boolean.TRUE, result);
-    verify(balanceUnmarshallerServiceMock, times(0)).unmarshal(balance);
   }
 
   @Test
   void givenValidBalanceWhenValidateThenSuccess(){
-    String balance = "balance";
+    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
 
-    when(balanceDefaultMarshallingServiceMock.unmarshal(balance)).thenThrow(InvalidValueException.class);
-    when(balanceUnmarshallerServiceMock.unmarshal(balance)).thenReturn(new CtBilancio());
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenThrow(InvalidValueException.class);
+    when(balanceUnmarshallerServiceMock.unmarshal(validateBalanceRequest.getBalance(),validateBalanceRequest.getAmountCents())).thenReturn(new CtBilancio());
 
-    Boolean result = balanceService.isBalanceValid(balance);
+    Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
     assertEquals(Boolean.TRUE, result);
   }
 
   @Test
   void givenNotValidBalanceWhenValidateThenUnsuccessful(){
-    String balance = "balanceNotValid";
+    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balanceNotValid").amountCents(1L).build();
 
-    when(balanceDefaultMarshallingServiceMock.unmarshal(balance)).thenThrow(InvalidValueException.class);
-    when(balanceUnmarshallerServiceMock.unmarshal(balance)).thenThrow(InvalidValueException.class);
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenThrow(InvalidValueException.class);
+    when(balanceUnmarshallerServiceMock.unmarshal(validateBalanceRequest.getBalance(),validateBalanceRequest.getAmountCents())).thenThrow(InvalidValueException.class);
 
-    Boolean result = balanceService.isBalanceValid(balance);
+    Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
     assertEquals(Boolean.FALSE, result);
   }
 
   @Test
   void givenNullObjectBalanceWhenValidateThenUnsuccessful(){
-    String balance = "balanceNotValid";
+    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balanceNotValid").amountCents(1L).build();
 
-    when(balanceDefaultMarshallingServiceMock.unmarshal(balance)).thenReturn(null);
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(null);
 
-    Boolean result = balanceService.isBalanceValid(balance);
+    Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
     assertEquals(Boolean.FALSE, result);
   }

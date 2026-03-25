@@ -34,7 +34,7 @@ public class BalanceTemplateResolverService {
     String balance = calculateAmountBalanceRequest.getBalance();
     BigDecimal amountInstallment = Utilities.longCentsToBigDecimalEuro(calculateAmountBalanceRequest.getAmountCents());
 
-    Object balanceXML = balanceService.unmarshalBalance(balance);
+    Object balanceXML = balanceService.unmarshalBalance(balance, null);
 
     if (balanceXML instanceof CtBilancio) {
       log.info("The balance amount is already calculated");

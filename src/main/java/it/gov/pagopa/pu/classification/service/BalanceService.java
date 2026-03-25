@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -33,9 +34,9 @@ public class BalanceService {
     this.assessmentsRegistryRepository = assessmentsRegistryRepository;
   }
 
-  public Boolean isBalanceValid(String balance) {
+  public Boolean isBalanceValid(ValidateBalanceRequest validateBalanceRequest) {
     try {
-      if (!Objects.isNull(unmarshalBalance(balance))) {
+      if (!Objects.isNull(unmarshalBalance(validateBalanceRequest.getBalance(), validateBalanceRequest.getAmountCents()))) {
         log.info("The balance value is formally valid");
         return Boolean.TRUE;
       }
@@ -46,13 +47,13 @@ public class BalanceService {
     }
   }
 
-  public Object unmarshalBalance(String balance) {
+  public Object unmarshalBalance(String balance, Long amountCents) {
     try {
       log.info("Validating balance value with default structure");
       return balanceDefaultMarshallingService.unmarshal(balance);
     } catch (InvalidValueException invalidValueException) {
       log.info("Validating balance value with actual structure");
-      return balanceUnmashallerService.unmarshal(balance);
+      return balanceUnmashallerService.unmarshal(balance, amountCents);
     }
   }
 
