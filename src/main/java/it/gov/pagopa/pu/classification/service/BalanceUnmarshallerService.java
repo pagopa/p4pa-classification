@@ -50,7 +50,7 @@ public class BalanceUnmarshallerService {
   public CtBilancio unmarshal(String xmlString, Long amountCents) {
     CtBilancio ctBilancio = xmlUnmarshallerService.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema, NAMESPACE);
     if(amountCents!=null && !isValidBalanceAmount(ctBilancio, amountCents)){
-      throw new InvalidValueException("[BALANCE_MARSHALLING_ERROR] Function type to calculate amount balance not supported");
+      throw new InvalidValueException("[INVALID_BALANCE_AMOUNT] Invalid amount balance");
     }
     return ctBilancio;
   }
