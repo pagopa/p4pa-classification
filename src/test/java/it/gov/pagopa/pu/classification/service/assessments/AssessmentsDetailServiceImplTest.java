@@ -119,7 +119,7 @@ class AssessmentsDetailServiceImplTest {
     assessmentsRegistry.setSectionDescription("sectionDescription");
 
     when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), capitolo.getCodCapitolo(), capitolo.getCodUfficio(), accertamento.getCodAccertamento(), String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
-    when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
+    when(balanceUnmashallerServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
     List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment);
 
@@ -151,7 +151,7 @@ class AssessmentsDetailServiceImplTest {
 
     CtBilancio bilancio = new CtBilancio();
 
-    when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
+    when(balanceUnmashallerServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
     List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment);
 
@@ -186,7 +186,7 @@ class AssessmentsDetailServiceImplTest {
     assessmentsRegistry.setOfficeDescription("officeDescription");
     assessmentsRegistry.setSectionDescription("sectionDescription");
 
-    when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
+    when(balanceUnmashallerServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
     doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
     when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), "CAP1", "UFF1", "ACC1", String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
@@ -238,7 +238,7 @@ class AssessmentsDetailServiceImplTest {
     assessmentsRegistry.setOfficeDescription("officeDescription");
     assessmentsRegistry.setSectionDescription("sectionDescription");
 
-    when(balanceUnmashallerServiceMock.unmarshal(BALANCE)).thenReturn(bilancio);
+    when(balanceUnmashallerServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
     doReturn(existingDetail).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
       "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
     when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), capitolo.getCodCapitolo(), capitolo.getCodUfficio(), accertamento.getCodAccertamento(), String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));

@@ -50,7 +50,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
       .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
       .forEach(i -> {
         if(StringUtils.hasLength(i.getBalance())) {
-          CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance());
+          CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance(), null);
           List<CtCapitolo> capitoloList = balance.getCapitolo();
 
           capitoloList.forEach(capitolo ->
