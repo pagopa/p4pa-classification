@@ -13,6 +13,7 @@ import org.apache.hc.client5.http.HttpHostConnectException;
 import org.slf4j.event.Level;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -71,7 +72,7 @@ public class ClassificationExceptionHandler {
     return handleException(ex, request, HttpStatus.CONFLICT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_CONFLICT);
   }
 
-  @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class})
+  @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class, ConversionFailedException.class})
   public ResponseEntity<ClassificationErrorDTO> handleViolationException(Exception ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST);
   }
