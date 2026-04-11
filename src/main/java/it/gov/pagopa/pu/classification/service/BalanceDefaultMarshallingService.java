@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
 import jakarta.xml.bind.JAXBContext;
@@ -38,7 +39,7 @@ public class BalanceDefaultMarshallingService {
       this.xmlMarshallerService = xmlMarshallerService;
       this.xmlUnmarshallerService = xmlUnmarshallerService;
     } catch (JAXBException | SAXException | IOException e) {
-      throw new IllegalStateException("[BALANCE_MARSHALLING_ERROR] Error while creating jaxb context for CtBilancioDefault", e);
+      throw new IllegalStateException("Error while creating jaxb context for CtBilancioDefault", e);
     }
   }
 
@@ -61,7 +62,7 @@ public class BalanceDefaultMarshallingService {
   public CtBilancioDefault unmarshal(String xmlString) {
     CtBilancioDefault ctBilancioDefault = xmlUnmarshallerService.unmarshal(xmlString, CtBilancioDefault.class, jaxbContext, schema, NAMESPACE);
     if(!isValidBalanceAmountTypes(ctBilancioDefault)){
-      throw new InvalidValueException("[BALANCE_MARSHALLING_ERROR] Function type to calculate amount balance not supported");
+      throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_MARSHALLING_ERROR, "Function type to calculate amount balance not supported");
     }
     return ctBilancioDefault;
   }

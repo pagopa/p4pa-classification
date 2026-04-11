@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
@@ -37,7 +38,7 @@ public class BalanceUnmarshallerService {
       this.schema = schemaFactory.newSchema(paymetsReportingXsdResource.getURL());
       this.xmlUnmarshallerService = xmlUnmarshallerService;
     } catch (JAXBException | SAXException | IOException e) {
-      throw new IllegalStateException("[BALANCE_UNMARSHALLING_ERROR] Error while creating jaxb context for CtBilancio", e);
+      throw new IllegalStateException("Error while creating jaxb context for CtBilancio", e);
     }
   }
 
@@ -50,7 +51,7 @@ public class BalanceUnmarshallerService {
   public CtBilancio unmarshal(String xmlString, Long amountCents) {
     CtBilancio ctBilancio = xmlUnmarshallerService.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema, NAMESPACE);
     if(amountCents!=null && !isValidBalanceAmount(ctBilancio, amountCents)){
-      throw new InvalidValueException("[INVALID_BALANCE_AMOUNT] Invalid amount balance");
+      throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_INVALID_BALANCE_AMOUNT, "Invalid amount balance");
     }
     return ctBilancio;
   }

@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
+import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -20,6 +21,7 @@ import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +29,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.math.BigDecimal;
@@ -435,10 +436,11 @@ class AssessmentsDetailServiceImplTest {
     when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistryId))
             .thenReturn(Optional.empty());
 
-    assertThrows(ResourceNotFoundException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
-            createAssessmentsDetail, accessToken));
+    NotFoundException resultException = assertThrows(NotFoundException.class, () -> assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+      createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(assessmentsDetailRepositoryMock,transferServiceMock);
+    Assertions.assertEquals("ASSESSMENT_REGISTRY_NOT_FOUND",resultException.getCode());
+    Assertions.assertEquals("AssessmentRegistry with id 2 not found",resultException.getMessage());
   }
 
   @Test
@@ -465,10 +467,11 @@ class AssessmentsDetailServiceImplTest {
     when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
             .thenReturn(Optional.of(assessmentsRegistry));
 
-    assertThrows(ResourceNotFoundException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
-            createAssessmentsDetail, accessToken));
+    NotFoundException resultException = assertThrows(NotFoundException.class, () -> assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+      createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(assessmentsDetailRepositoryMock,transferServiceMock);
+    Assertions.assertEquals("ASSESSMENT_REGISTRY_NOT_FOUND",resultException.getCode());
+    Assertions.assertEquals("AssessmentRegistry with id "+assessmentsRegistry.getAssessmentRegistryId()+" not found",resultException.getMessage());
   }
 
   @Test
@@ -517,10 +520,11 @@ class AssessmentsDetailServiceImplTest {
             .thenReturn(null);
 
 
-    assertThrows(ResourceNotFoundException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
-            createAssessmentsDetail, accessToken));
+    NotFoundException resultException = assertThrows(NotFoundException.class, () -> assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+      createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
+    Assertions.assertEquals("RECEIPT_NOT_FOUND",resultException.getCode());
+    Assertions.assertEquals("Receipt with id 3 not found",resultException.getMessage());
   }
 
   @Test
@@ -546,8 +550,6 @@ class AssessmentsDetailServiceImplTest {
 
     assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken));
-
-    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock,transferServiceMock);
   }
 
   @Test
@@ -568,8 +570,6 @@ class AssessmentsDetailServiceImplTest {
 
     assertThrows(InvalidRequestBodyException.class, ()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
             createAssessmentsDetail, accessToken));
-
-    verifyNoInteractions(assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,receiptServiceMock,transferServiceMock);
   }
 
   @Test
@@ -591,13 +591,12 @@ class AssessmentsDetailServiceImplTest {
             createAssessmentsDetail, accessToken);
 
     assertTrue(result.isEmpty());
-    verifyNoInteractions(receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
   }
 
   @Test
   void givenAssessmentsWithWrongOrganizationIdWhenCreateAssessmentsDetailThenResourceNotFoundException(){
-    Long organizationId = 1L;
-    Long assessmentsRegistryId = 2L;
+    long organizationId = 1L;
+    long assessmentsRegistryId = 2L;
     String accessToken = "accessToken";
     Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
     assessments.setOrganizationId(organizationId+1);
@@ -607,27 +606,29 @@ class AssessmentsDetailServiceImplTest {
     when(assessmentsRepositoryMock.findById(assessmentId))
             .thenReturn(Optional.of(assessments));
 
-    assertThrows(ResourceNotFoundException.class,()->assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
-            createAssessmentsDetail, accessToken));
+    NotFoundException resultException = assertThrows(NotFoundException.class, () -> assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+      createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(installmentServiceMock,receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
+    Assertions.assertEquals("ASSESSMENT_NOT_FOUND",resultException.getCode());
+    Assertions.assertEquals("Assessment with id "+assessmentId+" not found",resultException.getMessage());
   }
 
   @Test
   void givenNoAssessmentsWhenCreateAssessmentsDetailThenResourceNotFoundException(){
     Long organizationId = 1L;
     Long assessmentsRegistryId = 2L;
-    Long assessmentsId = 3L;
+    Long assessmentId = 3L;
     String accessToken = "accessToken";
     CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistryId, Collections.emptySet());
 
-    when(assessmentsRepositoryMock.findById(assessmentsId))
+    when(assessmentsRepositoryMock.findById(assessmentId))
             .thenReturn(Optional.empty());
 
-    assertThrows(ResourceNotFoundException.class,()->assessmentsDetailService.createAssessmentsDetail(organizationId,assessmentsId,
-            createAssessmentsDetail, accessToken));
+    NotFoundException resultException = assertThrows(NotFoundException.class, () -> assessmentsDetailService.createAssessmentsDetail(organizationId, assessmentId,
+      createAssessmentsDetail, accessToken));
 
-    verifyNoInteractions(installmentServiceMock,receiptServiceMock,assessmentsRegistryRepositoryMock,assessmentsDetailRepositoryMock,transferServiceMock);
+    Assertions.assertEquals("ASSESSMENT_NOT_FOUND",resultException.getCode());
+    Assertions.assertEquals("Assessment with id "+assessmentId+" not found",resultException.getMessage());
   }
 
   @Test

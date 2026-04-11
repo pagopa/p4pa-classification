@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyExcept
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO;
@@ -83,7 +84,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
 
   private static void validateAssessmentRegistry(AssessmentsRegistry assessmentsRegistry) {
     if(assessmentsRegistry.getAssessmentRegistryId()!=null){
-      throw new InvalidRequestBodyException("[INVALID_ASSESSMENT_REGISTRY] assessmentRegistryId should not be provided");
+      throw new InvalidRequestBodyException(ErrorCodeConstants.ERROR_CODE_INVALID_ASSESSMENT_REGISTRY, "assessmentRegistryId should not be provided");
     }
   }
 }

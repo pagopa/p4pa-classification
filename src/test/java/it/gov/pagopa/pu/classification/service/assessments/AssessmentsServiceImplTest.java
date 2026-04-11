@@ -29,7 +29,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -359,7 +358,8 @@ class AssessmentsServiceImplTest {
     //when
 
     AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId, accessToken));
-    Assertions.assertEquals("[ASSESSMENT_ALREADY_EXISTS] Assessment with the same name ASSESSMENT_NAME and debtPositionTypeOrgCode CODE already exists for the current organizationId 3", ex.getMessage());
+    Assertions.assertEquals("ASSESSMENT_ALREADY_EXISTS",ex.getCode());
+    Assertions.assertEquals("Assessment with the same name ASSESSMENT_NAME and debtPositionTypeOrgCode CODE already exists for the current organizationId 3", ex.getMessage());
   }
 
   @Test
@@ -407,7 +407,7 @@ class AssessmentsServiceImplTest {
     )).thenReturn(null);
 
     // When / Then
-    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+    NotFoundException exception = assertThrows(NotFoundException.class,
       () -> service.createAssessment(
         organizationId,
         assessmentName,
@@ -415,8 +415,8 @@ class AssessmentsServiceImplTest {
         operatorExternalUserId,
         accessToken));
 
-    assertEquals("[DEBT_POSITION_TYPE_ORG_NOT_FOUND] DebtPositionTypeOrg not found by organizationId=3 and debtPositionTypeOrgCode=CODE",
-      exception.getMessage());
+    assertEquals("DEBT_POSITION_TYPE_ORG_NOT_FOUND",exception.getCode());
+    assertEquals("DebtPositionTypeOrg not found by organizationId=3 and debtPositionTypeOrgCode=CODE", exception.getMessage());
 
     verify(debtPositionTypeOrgServiceMock).getDebtPositionTypeOrgByDebtPositionTypeOrgCode(
       organizationId, debtPositionTypeOrgCode, accessToken);

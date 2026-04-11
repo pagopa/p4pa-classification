@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.Unmarshaller;
@@ -26,7 +27,7 @@ import java.io.InputStream;
 @Service
 public class XMLUnmarshallerService {
 
-	/**
+  /**
 	 * Unmarshals an XML string into a Java object.
 	 *
 	 * @param <T>         the type of the resulting Java object
@@ -61,7 +62,7 @@ public class XMLUnmarshallerService {
       return element.getValue();
     } catch (Exception e) {
       log.error("Error while parsing xml: {}", xmlString, e);
-      throw new InvalidValueException("[XML_UNMARSHALLING_ERROR] Error while parsing xml: " + xmlString);
+      throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_XML_UNMARSHALLING_ERROR, "Error while parsing xml: " + xmlString);
     }
   }
 }

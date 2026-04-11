@@ -40,7 +40,7 @@ public class PersonalDataService {
   public <T> T get(long personalDataId, Class<T> classType) {
     return repository.findById(personalDataId)
       .map(personalData -> dataCipherService.decryptObj(personalData.getData(), classType))
-      .orElseThrow(() -> new NotFoundException("[PII_ENTITY_NOT_FOUND] PII Entity with id " + personalDataId + " not found"));
+      .orElseThrow(() -> new NotFoundException("PII_ENTITY_NOT_FOUND", "PII Entity with id " + personalDataId + " not found"));
   }
 
   public <T> Map<Long, T> getAll(Set<Long> personalDataIds, Class<T> classType) {
@@ -78,7 +78,7 @@ public class PersonalDataService {
         .filter(id -> result.get(id) == null)
         .map(String::valueOf)
         .collect(Collectors.joining(","));
-      throw new NotFoundException("[PII_ENTITY_NOT_FOUND] PII Entities with ids " + personalDataIdsNotFound + " not found");
+      throw new NotFoundException("PII_ENTITY_NOT_FOUND", "PII Entities with ids " + personalDataIdsNotFound + " not found");
     }
     return result;
   }

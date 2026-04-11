@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.service;
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
@@ -62,7 +63,7 @@ public class BalanceTemplateResolverService {
               invocable.invokeFunction(BalanceDefaultAmountType.CALCULATE_AMOUNT.getType(), amountInstallment));
             calculatedAmount = new BigDecimal(result);
           } else {
-            throw new InvalidValueException(ctAccertamentoDefault.getImporto() + " as function type to calculate amount balance not supported");
+            throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_CALCULATION_ERROR, ctAccertamentoDefault.getImporto() + " as function type to calculate amount balance not supported");
           }
           String amountString = Utilities.amountToString(calculatedAmount);
 
@@ -71,7 +72,7 @@ public class BalanceTemplateResolverService {
       }
       return balanceDefaultMarshallingService.marshal(ctBilancioDefault);
     } catch (Exception e) {
-      throw new InvalidValueException("[BALANCE_CALCULATION_ERROR] Error calculating amount of balance: " + e.getMessage());
+      throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_CALCULATION_ERROR, "Error calculating amount of balance: " + e.getMessage());
     }
   }
 

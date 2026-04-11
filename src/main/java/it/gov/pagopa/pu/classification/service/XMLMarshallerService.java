@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.Marshaller;
@@ -45,7 +46,7 @@ public class XMLMarshallerService {
       return writer.toString();
     } catch (Exception e) {
       log.error("Error while marshalling {}: {}", clazz.getSimpleName(), object, e);
-      throw new InvalidValueException("[XML_MARSHALLING_ERROR] Error while marshalling " + clazz.getSimpleName() + ": " + object);
+      throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_XML_MARSHALLING_ERROR, "Error while marshalling " + clazz.getSimpleName() + ": " + object);
     }
   }
 
