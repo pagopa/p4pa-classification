@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.classification.exception.custom;
 
-public class InvalidRequestBodyException extends RuntimeException {
+public class InvalidRequestBodyException extends BaseBusinessException {
 
-    public InvalidRequestBodyException(String message) {
-            super(message);
+    public InvalidRequestBodyException(String code, String message) {
+            super(code, message);
         }
 }

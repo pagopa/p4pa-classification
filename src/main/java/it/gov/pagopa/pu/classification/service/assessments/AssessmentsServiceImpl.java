@@ -13,6 +13,7 @@ import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
 import it.gov.pagopa.pu.classification.mapper.pages.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
@@ -21,7 +22,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -75,7 +75,7 @@ public class AssessmentsServiceImpl implements AssessmentsService {
     }
 
     Organization organization = organizationService.getOrganizationByFiscalCode(receiptOrgFiscalCode, accessToken)
-      .orElseThrow(() -> new NotFoundException("[ORGANIZATION_NOT_FOUND] Cannot find organization having fiscal code " + receiptOrgFiscalCode));
+      .orElseThrow(() -> new NotFoundException(ErrorCodeConstants.ERROR_CODE_ORGANIZATION_NOT_FOUND, "Cannot find organization having fiscal code " + receiptOrgFiscalCode));
 
     List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(organization.getOrganizationId(), receipt.getReceiptId(), accessToken);
 
@@ -163,13 +163,13 @@ public class AssessmentsServiceImpl implements AssessmentsService {
   public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String operatorExternalUserId, String accessToken) {
 
     if (assessmentsRepository.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName) != null) {
-     throw new AssessmentConflictException("[ASSESSMENT_ALREADY_EXISTS] Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
+     throw new AssessmentConflictException(ErrorCodeConstants.ERROR_CODE_ASSESSMENT_ALREADY_EXISTS, "Assessment with the same name %s and debtPositionTypeOrgCode %s already exists for the current organizationId %d".formatted(assessmentName, debtPositionTypeOrgCode, organizationId));
     }
 
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken);
 
     if (debtPositionTypeOrg == null) {
-      throw new ResourceNotFoundException("[DEBT_POSITION_TYPE_ORG_NOT_FOUND] DebtPositionTypeOrg not found by organizationId=%d and debtPositionTypeOrgCode=%s".formatted(organizationId, debtPositionTypeOrgCode));
+      throw new NotFoundException(ErrorCodeConstants.ERROR_CODE_DEBT_POSITION_TYPE_ORG_NOT_FOUND, "DebtPositionTypeOrg not found by organizationId=%d and debtPositionTypeOrgCode=%s".formatted(organizationId, debtPositionTypeOrgCode));
     }
 
     return assessmentsRepository.save(

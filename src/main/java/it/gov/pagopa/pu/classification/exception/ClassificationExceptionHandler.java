@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.hc.client5.http.HttpHostConnectException;
 import org.slf4j.event.Level;
 import org.springframework.core.Ordered;
@@ -26,12 +27,14 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.DatabindException;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -114,48 +117,53 @@ public class ClassificationExceptionHandler {
   static ResponseEntity<ClassificationErrorDTO> handleException(Exception ex, HttpServletRequest request, HttpStatus httpStatus, ClassificationErrorDTO.CategoryEnum errorEnum) {
     logException(ex, request, httpStatus);
 
-    String message = Optional.of(request.getRequestURI())
+    Pair<String, String> code2message = Optional.of(request.getRequestURI())
       .filter(path -> path.contains("/crud/"))
       .map(path -> buildCrudErrorMessage(path, httpStatus, ex))
       .orElseGet(() -> buildReturnedMessage(ex));
 
+    String code = Objects.requireNonNullElse(code2message.getLeft(), errorEnum.getValue());
+    String message = code2message.getRight();
+
     return ResponseEntity
       .status(httpStatus)
       .contentType(MediaType.APPLICATION_JSON)
-      .body(new ClassificationErrorDTO(errorEnum, message, Utilities.getTraceId()));
+      .body(new ClassificationErrorDTO(errorEnum, code, String.format(ERROR_MESSAGE_FORMAT, code, message), Utilities.getTraceId()));
   }
 
   private static void logException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus) {
     boolean printStackTrace = httpStatus.is5xxServerError();
-        Level logLevel = printStackTrace ? Level.ERROR : Level.INFO;
-        log.makeLoggingEventBuilder(logLevel)
-                .log("A {} occurred handling request {}: HttpStatus {} - {}",
-                        ex.getClass(),
-                        getRequestDetails(request),
-                        httpStatus.value(),
-                        ex.getMessage(),
-                        printStackTrace ? ex : null
-                );
-        if (!printStackTrace && log.isDebugEnabled() && ex.getCause() != null) {
-            log.debug("CausedBy: ", ex.getCause());
-        }
+    Level logLevel = printStackTrace ? Level.ERROR : Level.INFO;
+    log.makeLoggingEventBuilder(logLevel)
+      .log("A {} occurred handling request {}: HttpStatus {} - {}",
+        ex.getClass(),
+        getRequestDetails(request),
+        httpStatus.value(),
+        ex.getMessage(),
+        printStackTrace ? ex : null
+      );
+    if (!printStackTrace && log.isDebugEnabled() && ex.getCause() != null) {
+      log.debug("CausedBy: ", ex.getCause());
+    }
   }
 
-  private static String buildReturnedMessage(Exception ex) {
+  private static Pair<String, String> buildReturnedMessage(Exception ex) {
     switch (ex) {
       case HttpMessageNotReadableException httpMessageNotReadableException -> {
+        String errorMsg = "Required request body is missing";
         if (httpMessageNotReadableException.getCause() instanceof DatabindException jsonMappingException) {
-          return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
-            "Cannot parse body. " +
+          errorMsg = "Cannot parse body. " +
             jsonMappingException.getPath().stream()
               .map(JacksonException.Reference::getPropertyName)
               .collect(Collectors.joining(".")) +
-            ": " + jsonMappingException.getOriginalMessage());
+            ": " + jsonMappingException.getOriginalMessage();
+        } else if (httpMessageNotReadableException.getCause() instanceof JacksonException jacksonException) {
+          errorMsg = "Cannot parse body. " + jacksonException.getOriginalMessage();
         }
-        return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(), "Required request body is missing");
+        return Pair.of(ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(), errorMsg);
       }
       case MethodArgumentNotValidException methodArgumentNotValidException -> {
-        return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
+        return Pair.of(ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
           "Invalid request content." +
           methodArgumentNotValidException.getBindingResult()
             .getAllErrors().stream()
@@ -166,7 +174,7 @@ public class ClassificationExceptionHandler {
             .collect(Collectors.joining(";")));
       }
       case ConstraintViolationException constraintViolationException -> {
-        return String.format(ERROR_MESSAGE_FORMAT, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
+        return Pair.of(ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
           "Invalid request content." +
           constraintViolationException.getConstraintViolations()
             .stream()
@@ -174,20 +182,34 @@ public class ClassificationExceptionHandler {
             .sorted()
             .collect(Collectors.joining(";")));
       }
+      case DataIntegrityViolationException dataIntegrityViolationException -> {
+        String errorMsg = "Conflict.";
+        if(dataIntegrityViolationException.getCause() instanceof org.hibernate.exception.ConstraintViolationException hibernateConstraintViolationException) {
+          errorMsg += " " + hibernateConstraintViolationException.getSQLException().getMessage();
+        }
+        return Pair.of(ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_CONFLICT.name(),
+          errorMsg) ;
+      }
+      case MissingServletRequestParameterException missingServletRequestParameterException -> {
+        return Pair.of(ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
+          missingServletRequestParameterException.getMessage());
+      }
+      case BaseBusinessException businessException -> {
+        return Pair.of(businessException.getCode(), businessException.getMessage());
+      }
       default -> {
         if (ex.getCause() instanceof HttpHostConnectException) {
-          return String.format(ERROR_MESSAGE_FORMAT, "CLASSIFICATION_CONNECTION_ERROR",
-            ex.getMessage());
+          return Pair.of("CLASSIFICATION_CONNECTION_ERROR", ex.getMessage());
         }
-        return ex.getMessage();
+        return Pair.of(null, ex.getMessage());
       }
     }
   }
 
-  private static String buildCrudErrorMessage(String requestPath, HttpStatus httpStatus, Exception ex) {
+  private static Pair<String, String> buildCrudErrorMessage(String requestPath, HttpStatus httpStatus, Exception ex) {
     String entity = requestPath.split("/crud/")[1].split("/")[0].replaceAll("s$", "");
     String entityCode = entity.replace("-", "_").toUpperCase();
-    return String.format(ERROR_MESSAGE_FORMAT, entityCode + "_" + httpStatus.name(), ex.getMessage());
+    return Pair.of(entityCode + "_" + httpStatus.name(), buildReturnedMessage(ex).getValue());
   }
 
   static String getRequestDetails(HttpServletRequest request) {

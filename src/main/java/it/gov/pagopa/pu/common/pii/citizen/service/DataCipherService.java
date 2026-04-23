@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.common.pii.citizen.service;
 
+import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessException;
 import it.gov.pagopa.pu.common.pii.citizen.util.AESUtils;
 import it.gov.pagopa.pu.common.pii.citizen.util.HashAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +36,7 @@ public class DataCipherService {
         try {
             return encrypt(jsonMapper.writeValueAsString(obj));
         } catch (JacksonException e) {
-            throw new IllegalStateException("[JSON_SERIALIZATION_ERROR] Cannot serialize object as JSON", e);
+            throw new IllegalStateBusinessException("JSON_SERIALIZATION_ERROR", "Cannot serialize object as JSON", e);
         }
     }
 
@@ -43,7 +44,7 @@ public class DataCipherService {
         try {
             return jsonMapper.readValue(decrypt(cipherData), clazz);
         } catch (JacksonException e) {
-            throw new IllegalStateException("[JSON_DESERIALIZATION_ERROR] Cannot deserialize object as JSON", e);
+            throw new IllegalStateBusinessException("JSON_DESERIALIZATION_ERROR", "Cannot deserialize object as JSON", e);
         }
     }
 

@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView
 import it.gov.pagopa.pu.classification.exception.custom.ExportTooManyRecordsException;
 import it.gov.pagopa.pu.classification.mapper.pages.PagedFullClassificationViewMapper;
 import it.gov.pagopa.pu.classification.model.view.classification.FullClassificationViewNoPII;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class FullClassificationViewPIIRepositoryImpl implements FullClassificati
     Page<FullClassificationViewNoPII> pagedClassificationViewNoPIIDTO = fullClassificationViewNoPIIDTORepository.findFullClassificationViewNoPIIDTO(organizationId, exportClassificationsFilterDTO, pageable);
 
     if (pagedClassificationViewNoPIIDTO.getTotalElements() > maxTotalElements) {
-      throw new ExportTooManyRecordsException("[TOO_MANY_EXPORTED_RECORDS] The number of elements returned: %d exceeds the maximum limit of %d".formatted(pagedClassificationViewNoPIIDTO.getTotalElements(), maxTotalElements));
+      throw new ExportTooManyRecordsException(ErrorCodeConstants.ERROR_CODE_TOO_MANY_EXPORTED_RECORDS, "The number of elements returned: %d exceeds the maximum limit of %d".formatted(pagedClassificationViewNoPIIDTO.getTotalElements(), maxTotalElements));
     }
 
     return pagedFullClassificationViewMapper.map2PagedClassificationView(pagedClassificationViewNoPIIDTO);

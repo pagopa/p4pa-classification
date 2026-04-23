@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
+import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessException;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
@@ -124,9 +125,10 @@ class BalanceServiceTest {
     Mockito.when(assessmentsRegistryRepositoryMock.findAssessmentsRegistriesByFilters(orgId, Set.of(debtPositionTypeOrgCode), null, null, null, null, null, null, operatingYear, AssessmentsRegistryStatus.ACTIVE, PageRequest.of(0, 5)))
       .thenReturn(assessmentsRegistryPage);
 
-    IllegalStateException exception = assertThrows(IllegalStateException.class, () -> balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode));
+    IllegalStateBusinessException exception = assertThrows(IllegalStateBusinessException.class, () -> balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode));
 
-    assertEquals("[TOO_MANY_ASSESSMENT_REGISTRY] Expected exactly one assessment registry result, but found 2.", exception.getMessage());
+    assertEquals("TOO_MANY_ASSESSMENT_REGISTRY",exception.getCode());
+    assertEquals("Expected exactly one assessment registry result, but found 2.", exception.getMessage());
   }
 
   @Test

@@ -2,9 +2,11 @@ package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
+import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessException;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
@@ -71,7 +73,7 @@ public class BalanceService {
 
     long assessmentRegistriesSize = assessmentsRegistries.getTotalElements();
     if (assessmentRegistriesSize > 1) {
-      throw new IllegalStateException("[TOO_MANY_ASSESSMENT_REGISTRY] Expected exactly one assessment registry result, but found " + assessmentRegistriesSize + ".");
+      throw new IllegalStateBusinessException(ErrorCodeConstants.ERROR_CODE_TOO_MANY_ASSESSMENT_REGISTRY, "Expected exactly one assessment registry result, but found " + assessmentRegistriesSize + ".");
     }
 
     AssessmentsRegistry assessmentRegistry = assessmentsRegistries.get().findFirst().orElse(null);
