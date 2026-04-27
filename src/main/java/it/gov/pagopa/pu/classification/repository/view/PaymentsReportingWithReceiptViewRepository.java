@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.repository.view;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.model.view.PaymentsReportingWithReceiptView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +61,7 @@ public interface PaymentsReportingWithReceiptViewRepository extends Repository<P
       AND (:fiscalCode IS NULL OR c.debtorFiscalCodeHash = :#{@dataCipherService.hash(#fiscalCode)})
     """)
   Page<PaymentsReportingWithReceiptView> findPaymentsReportingByFilters(
-    @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
+    @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Parameter(required = true) @Param("iuf") String iuf,
     @RequestParam(required = false) @Param("iuv") String iuv,
     @RequestParam(required = false) @Param("payDateFrom") LocalDate payDateFrom,

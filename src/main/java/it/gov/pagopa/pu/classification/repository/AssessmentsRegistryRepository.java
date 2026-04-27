@@ -1,8 +1,6 @@
 package it.gov.pagopa.pu.classification.repository;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import org.springframework.data.domain.Page;
@@ -39,7 +37,7 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
                 AND (:status is null or a.status = :status )
             """)
     Page<AssessmentsRegistry> findAssessmentsRegistriesByFilters(
-            @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
+            @Parameter(required = true) @Param("organizationId") Long organizationId,
             @Parameter(required = true) @Param("debtPositionTypeOrgCodes") Set<String> debtPositionTypeOrgCodes,
             @RequestParam(required = false) String sectionCode,
             @RequestParam(required = false) String sectionDescription,
