@@ -40,7 +40,7 @@ public interface AssessmentsRegistryRepository extends JpaRepository<Assessments
             """)
     Page<AssessmentsRegistry> findAssessmentsRegistriesByFilters(
             @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
-            @Parameter(required = true, array = @ArraySchema(uniqueItems = true, schema = @Schema(type = "String"))) @Param("debtPositionTypeOrgCodes") Set<String> debtPositionTypeOrgCodes,
+            @Parameter(required = true) @Param("debtPositionTypeOrgCodes") Set<String> debtPositionTypeOrgCodes,
             @RequestParam(required = false) String sectionCode,
             @RequestParam(required = false) String sectionDescription,
             @RequestParam(required = false) String officeCode,
