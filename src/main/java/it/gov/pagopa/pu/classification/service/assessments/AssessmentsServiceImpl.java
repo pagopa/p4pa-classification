@@ -24,10 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -74,15 +71,18 @@ public class AssessmentsServiceImpl implements AssessmentsService {
       return Collections.emptyList();
     }
 
-    Organization organization = organizationService.getOrganizationByFiscalCode(receiptOrgFiscalCode, accessToken)
-      .orElseThrow(() -> new NotFoundException(ErrorCodeConstants.ERROR_CODE_ORGANIZATION_NOT_FOUND, "Cannot find organization having fiscal code " + receiptOrgFiscalCode));
+    Optional<Organization> organization = organizationService.getOrganizationByFiscalCode(receiptOrgFiscalCode, accessToken);
+    if(organization.isEmpty()) {
+      log.info("Cannot find organization having fiscal code {}", receiptOrgFiscalCode);
+      return Collections.emptyList();
+    }
 
-    List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(organization.getOrganizationId(), receipt.getReceiptId(), accessToken);
+    List<InstallmentNoPII> installmentsList = installmentService.getByReceiptId(organization.get().getOrganizationId(), receipt.getReceiptId(), accessToken);
 
     return installmentsList.stream()
       .map(installmentNoPII -> {
         assessmentsDetailService.deleteAssessmentDetailsByOrgAndInstallment(
-          organization.getOrganizationId(),
+          organization.get().getOrganizationId(),
           installmentNoPII.getIuv(),
           installmentNoPII.getIud()
         );
