@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.repository.view.classification;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.dto.filters.ClassificationPaidInstallmentsFilterDTO;
 import it.gov.pagopa.pu.classification.model.view.classification.ClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.model.view.classification.ClassificationPaidInstallmentsViewId;
@@ -35,7 +34,7 @@ public interface ClassificationPaidInstallmentsViewRepository extends Repository
     AND NOT EXISTS (SELECT ad FROM AssessmentsDetail ad where ad.iud = c.iud and ad.organizationId = :organizationId)
     """)
   Page<ClassificationPaidInstallmentsView> findPaidInstallments(
-    @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
+    @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Parameter(required = true) @Param("filter")ClassificationPaidInstallmentsFilterDTO filter,
     Pageable pageable
   );

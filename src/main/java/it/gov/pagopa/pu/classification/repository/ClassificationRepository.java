@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.repository;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.model.Classification;
 import org.springframework.data.domain.Page;
@@ -76,7 +75,7 @@ public interface ClassificationRepository extends
     AND (:labels IS NULL OR c.label IN :labels)
     """)
   Page<Classification> findByFilters(
-    @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
+    @Parameter(required = true) @Param("organizationId") Long organizationId,
     @RequestParam(required = false) @Param("iuv") String iuv,
     @RequestParam(required = false) @Param("iuf") String iuf,
     @RequestParam(required = false) @Param("debtPositionTypeOrgCodes") List<String> debtPositionTypeOrgCodes,

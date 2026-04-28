@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.repository.view;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.model.view.TreasuryView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +54,7 @@ public interface TreasuryViewRepository extends Repository<TreasuryView, String>
         AND (:documentYear IS NULL OR t.documentYear = :documentYear)
     """)
   Page<TreasuryView> findTreasuriesByFilters(
-    @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
+    @Parameter(required = true) @Param("organizationId") Long organizationId,
     @RequestParam(required = false) @Param("iuv") String iuv,
     @RequestParam(required = false) @Param("iuf") String iuf,
     @RequestParam(required = false) @Param("billAmountCents") Long billAmountCents,

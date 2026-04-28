@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.repository.view.classification;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.model.view.classification.ClassificationDetailViewNoPII;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -122,6 +121,6 @@ public interface ClassificationDetailViewNoPIIRepository extends Repository<Clas
     AND c.classificationId = :classificationId
     """)
   ClassificationDetailViewNoPII findByOrganizationIdAndClassificationId(
-    @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
-    @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("classificationId") Long classificationId);
+    @Parameter(required = true) @Param("organizationId") Long organizationId,
+    @Parameter(required = true) @Param("classificationId") Long classificationId);
 }

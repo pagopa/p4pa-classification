@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.repository;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.pu.classification.model.Treasury;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,7 +23,7 @@ public interface TreasuryRepository extends JpaRepository<Treasury, String> {
     AND t.treasuryId = :treasuryId
     """)
   Optional<Treasury> findByOrganizationIdAndTreasuryId(
-    @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("organizationId") Long organizationId,
+    @Parameter(required = true) @Param("organizationId") Long organizationId,
     @Parameter(required = true) @Param("treasuryId") String treasuryId);
 
   @Transactional
