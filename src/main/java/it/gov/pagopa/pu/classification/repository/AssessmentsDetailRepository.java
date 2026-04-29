@@ -46,7 +46,7 @@ public interface AssessmentsDetailRepository extends JpaRepository<AssessmentsDe
       AND ((:fiscalCode IS NULL) OR (ad.debtorFiscalCodeHash = :#{@dataCipherService.hash(#fiscalCode)}))
     """)
   Page<AssessmentsDetail> findAssessmentsRowsDetail(
-    @Parameter(required = true, schema = @Schema(type = "integer", format = "int64")) @Param("assessmentId") Long assessmentId,
+    @Parameter(required = true) @Param("assessmentId") Long assessmentId,
     @RequestParam(required = false) @Param("iud") String iud,
     @RequestParam(required = false) @Param("iuv") String iuv,
     @RequestParam(required = false) @Parameter(schema = @Schema(type = "LocalDateTime")) @Param("updateDateTimeFrom") LocalDateTime updateDateTimeFrom,

@@ -87,7 +87,7 @@ class AssessmentsServiceImplTest {
   }
 
   @Test
-  void createAssessment_withNotExistentOrg_throwNotFoundException() {
+  void createAssessment_withNotExistentOrg_ReturnEmptyList() {
     Long receiptId = 1L;
     String accessToken = "accessToken";
     String operatorExternalUserId = "operatorExternalUserId";
@@ -98,7 +98,14 @@ class AssessmentsServiceImplTest {
     when(organizationServiceMock.getOrganizationByFiscalCode(receipt.getOrgFiscalCode(), accessToken))
       .thenReturn(Optional.empty());
 
-    Assertions.assertThrows(NotFoundException.class, () -> service.createAssessment(receiptId, operatorExternalUserId, accessToken));
+    List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+
+    verifyNoInteractions(installmentServiceMock);
+    verifyNoInteractions(debtPositionTypeOrgServiceMock);
+    verifyNoInteractions(assessmentsDetailServiceMock);
   }
 
   @Test

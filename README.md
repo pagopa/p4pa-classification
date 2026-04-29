@@ -2,7 +2,9 @@
 
 This application belong to the **entity** tier of the **Piattaforma Unitaria** product.
 
-See [PU Microservice Architecture](https://pagopa.atlassian.net/wiki/spaces/SPAC/pages/1405845916/Architettura+microservizi) for more details.
+See [PU Microservice Architecture](https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/reference/technical-docs/Architettura_microservizi.pdf) for more details.
+
+See [p4pa-doc](https://github.com/pagopa/p4pa-doc) for further documentation.
 
 ## 🧱 Role
 
@@ -51,9 +53,9 @@ See [log configured pattern](/src/main/resources/logback-spring.xml).
   * To retrieve DebtPositionTypeOrg entities when creating `assessment_registry` and `assessments`;
   * To apply the right visibility during classifications' export;
 * [p4pa-organization](https://github.com/pagopa/p4pa-organization):
-  * To retrieve an Organization given its fiscal code.
+  * To retrieve an Organization given its fiscal code;
 * [p4pa-workflow-hub](https://github.com/pagopa/p4pa-workflow-hub):
-  * To start assessments classification when creating/updating unclassified `assessments_detail`
+  * To start assessments classification when creating/updating unclassified `assessments_detail`.
 
 ## 🗃️ Entities handled
 * `assessments_registry`
