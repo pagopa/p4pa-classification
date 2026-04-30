@@ -1,0 +1,59 @@
+package it.gov.pagopa.pu.classification.model;
+
+import it.gov.pagopa.pu.classification.enums.ClassificationLabel;
+import it.gov.pagopa.pu.classification.model.listeners.AssessmentsDetailEntityListener;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+
+@Entity
+@Table(name = "assessments_detail")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Data
+@EqualsAndHashCode(callSuper = false)
+@EntityListeners({AssessmentsDetailEntityListener.class})
+public class AssessmentsDetail extends BaseEntity implements Serializable {
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "assessments_detail_generator")
+  @SequenceGenerator(name = "assessments_detail_generator", sequenceName = "assessment_detail_id_seq", allocationSize = 1)
+  private Long assessmentDetailId;
+  @NotNull
+  private Long assessmentId;
+  @NotNull
+  private Long organizationId;
+  @NotNull
+  private Long debtPositionTypeOrgId;
+  @NotNull
+  private String debtPositionTypeOrgCode;
+  @NotNull
+  private String iuv;
+  @NotNull
+  private String iud;
+  @NotNull
+  private String iur;
+  @NotNull
+  private byte[] debtorFiscalCodeHash;
+  private OffsetDateTime paymentDateTime;
+  private String officeCode;
+  private String officeDescription;
+  @NotNull
+  private String sectionCode;
+  private String sectionDescription;
+  private String assessmentCode;
+  private String assessmentDescription;
+  @NotNull
+  private Long amountCents;
+  @NotNull
+  private boolean amountSubmitted = true;
+  private Long receiptId;
+  @Enumerated(EnumType.STRING)
+  private ClassificationLabel classificationLabel;
+  private OffsetDateTime dateReceipt;
+  private OffsetDateTime dateReporting;
+  private OffsetDateTime dateTreasury;
+}

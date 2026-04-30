@@ -1,0 +1,44 @@
+package it.gov.pagopa.pu.classification.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
+import it.gov.pagopa.pu.classification.model.PaymentNotificationNoPII;
+import it.gov.pagopa.pu.common.pii.dto.FullEntityPIIDTO;
+import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+public class PaymentNotificationDTO implements FullEntityPIIDTO<PaymentNotificationNoPII, PaymentNotificationPIIDTO> {
+
+  private String paymentNotificationId;
+  private Long organizationId;
+  private Long ingestionFlowFileId;
+  private String iud;
+  private String iuv;
+  private LocalDate paymentExecutionDate;
+  private String paymentType;
+  private Long amountPaidCents;
+  private Long paCommissionCents;
+  private String remittanceInformation;
+  private String transferCategory;
+  private String debtPositionTypeOrgCode;
+  private String balance;
+  private PersonDTO debtor;
+  private LocalDateTime creationDate;
+  private LocalDateTime updateDate;
+  private String updateOperatorExternalId;
+  private String updateTraceId;
+
+  @JsonIgnore
+  private PaymentNotificationNoPII noPII;
+
+}

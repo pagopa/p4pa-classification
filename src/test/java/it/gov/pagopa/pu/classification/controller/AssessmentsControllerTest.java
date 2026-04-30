@@ -1,0 +1,109 @@
+package it.gov.pagopa.pu.classification.controller;
+
+import it.gov.pagopa.pu.classification.dto.filters.LocalDateTimeIntervalFilter;
+import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
+import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
+import it.gov.pagopa.pu.classification.model.Assessments;
+import it.gov.pagopa.pu.classification.service.assessments.AssessmentsService;
+import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@ExtendWith(MockitoExtension.class)
+class AssessmentsControllerTest {
+
+  @Mock
+  private AssessmentsService serviceMock;
+
+  private AssessmentsController controller;
+  private PodamFactory podamFactory;
+
+  @BeforeEach
+  void init() {
+    controller = new AssessmentsController(serviceMock);
+    podamFactory = new PodamFactoryImpl();
+  }
+
+  @AfterEach
+  void clear(){
+    SecurityUtilsTest.clearSecurityContext();
+  }
+
+  @Test
+  void whenCreateAssessmentByReceiptIdWithValidReceiptIdThenReturnAssessments() {
+    Long receiptId = 1L;
+    String accessToken = "accessToken";
+    String operatorExternalUserId = "operatorExternalUserId";
+    SecurityUtilsTest.configureSecurityContext(accessToken, operatorExternalUserId);
+    Mockito.when(serviceMock.createAssessment(receiptId, operatorExternalUserId, accessToken))
+      .thenReturn(List.of(new Assessments()));
+
+    ResponseEntity<List<Assessments>> response = controller.createAssessmentByReceiptId(receiptId);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(1, response.getBody().size());
+    Mockito.verify(serviceMock).createAssessment(receiptId, operatorExternalUserId, accessToken);
+  }
+
+
+  @Test
+  void givenParamsWhenGetPagedAssessmentsListThenReturnPagedAssessmentsView() {
+    //given
+    Long organizationId = 1L;
+    String assessmentName = "ASSESSMENT_NAME";
+    OffsetDateTime from = OffsetDateTime.now();
+    OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
+    String iuv = "IUV";
+    List<String> debtPositionTypeOrgCodes = List.of("DEBT_POSITION_TYPE_ORG_CODE", "DEBT_POSITION_TYPE_ORG_CODE1");
+    LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(from.toLocalDateTime(), to.toLocalDateTime());
+
+    PagedAssessmentsView pagedAssessmentsView = podamFactory.manufacturePojo(PagedAssessmentsView.class);
+    Mockito.when(serviceMock.getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1))).thenReturn(pagedAssessmentsView);
+    //when
+    ResponseEntity<PagedAssessmentsView> result = controller.getPagedAssessmentsList(organizationId, assessmentName, from, to, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
+    //then
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals(5, result.getBody().getContent().size());
+    Mockito.verify(serviceMock).getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
+  }
+
+  @Test
+  void givenParamsWhenCreateAssessmentThenReturnAssessments() {
+    //given
+    Long organizationId = 3L;
+    String assessmentName = "ASSESSMENT_NAME";
+    String debtPositionTypeOrgCode = "CODE";
+    String operatorExternalUserId = "operatorExternalUserId";
+    String accessToken = "TOKENHEADER.TOKENPAYLOAD.TOKENDIGEST";
+    SecurityUtilsTest.configureSecurityContext(operatorExternalUserId);
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    Mockito.when(serviceMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId, accessToken)).thenReturn(assessments);
+
+    //when
+    ResponseEntity<Assessments> result = controller.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
+
+    //then
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals(assessments, result.getBody());
+  }
+
+}
