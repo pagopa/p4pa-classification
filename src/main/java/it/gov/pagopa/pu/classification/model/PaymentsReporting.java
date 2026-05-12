@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import java.time.OffsetDateTime;
 @Builder
 @Data
 @EqualsAndHashCode(of = "paymentsReportingId", callSuper = false)
+@SQLRestriction("deleted = false")
 public class PaymentsReporting extends BaseEntity implements Serializable{
 
   @Id
