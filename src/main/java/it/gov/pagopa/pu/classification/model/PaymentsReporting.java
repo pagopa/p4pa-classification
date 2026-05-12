@@ -66,7 +66,7 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
   @NotNull
   private Integer revision;
   @NotNull
-  private boolean logicallyDeleted;
+  private boolean deleted;
 
 //region keep updated semanticId
   public static String buildSemanticId(PaymentsReporting paymentsReporting) {
