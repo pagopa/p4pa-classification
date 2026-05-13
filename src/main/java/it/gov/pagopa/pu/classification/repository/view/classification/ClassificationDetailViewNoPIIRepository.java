@@ -115,7 +115,7 @@ public interface ClassificationDetailViewNoPIIRepository extends Repository<Clas
     )
     FROM Classification c
     LEFT JOIN Treasury t ON c.treasuryId = t.treasuryId
-    LEFT JOIN PaymentsReporting pr ON c.paymentsReportingId = pr.paymentsReportingId
+    LEFT JOIN PaymentsReporting pr ON c.paymentsReportingId = pr.paymentsReportingId AND pr.deleted = false
     LEFT JOIN PaymentNotificationNoPII pn ON c.paymentNotificationId = pn.paymentNotificationId
     WHERE c.organizationId = :organizationId
     AND c.classificationId = :classificationId

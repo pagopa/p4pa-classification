@@ -80,4 +80,52 @@ class ClassificationDetailViewPIIMapperTest extends Base2PIIMapperTest<Classific
     assertNull(result.getReceiptPayer());
     assertEquals(paymentNotificationPIIDTO.getDebtor(), result.getPaymentNotificationDebtor());
   }
+
+  @Test
+  void testMapperWithNullPaymentsReportingFields() {
+    ClassificationDetailViewNoPII classificationDetailViewNoPII =
+      podamFactory.manufacturePojo(ClassificationDetailViewNoPII.class);
+
+    classificationDetailViewNoPII.setPspIdentifier(null);
+    classificationDetailViewNoPII.setFlowDateTime(null);
+    classificationDetailViewNoPII.setSenderPspType(null);
+    classificationDetailViewNoPII.setSenderPspCode(null);
+    classificationDetailViewNoPII.setSenderPspName(null);
+    classificationDetailViewNoPII.setReceiverOrganizationType(null);
+    classificationDetailViewNoPII.setReceiverOrganizationCode(null);
+    classificationDetailViewNoPII.setReceiverOrganizationName(null);
+    classificationDetailViewNoPII.setTotalPayments(null);
+    classificationDetailViewNoPII.setTotalAmountCents(null);
+    classificationDetailViewNoPII.setAmountPaidCents(null);
+    classificationDetailViewNoPII.setPaymentOutcomeCode(null);
+    classificationDetailViewNoPII.setAcquiringDate(null);
+    classificationDetailViewNoPII.setBicCodePouringBank(null);
+
+    ReceiptPIIDTO receiptPIIDTO = podamFactory.manufacturePojo(ReceiptPIIDTO.class);
+
+    PaymentNotificationPIIDTO paymentNotificationPIIDTO =  podamFactory.manufacturePojo(PaymentNotificationPIIDTO.class);
+
+    when(personalDataServiceMock.get(classificationDetailViewNoPII.getReceiptPersonalDataId(), ReceiptPIIDTO.class)).thenReturn(receiptPIIDTO);
+
+    when(personalDataServiceMock.get(classificationDetailViewNoPII.getPaymentNotificationPersonalDataId(), PaymentNotificationPIIDTO.class)).thenReturn(paymentNotificationPIIDTO);
+
+    ClassificationDetailViewDTO result = mapper.map(classificationDetailViewNoPII);
+
+    assertNotNull(result);
+
+    assertNull(result.getPspIdentifier());
+    assertNull(result.getFlowDateTime());
+    assertNull(result.getSenderPspType());
+    assertNull(result.getSenderPspCode());
+    assertNull(result.getSenderPspName());
+    assertNull(result.getReceiverOrganizationType());
+    assertNull(result.getReceiverOrganizationCode());
+    assertNull(result.getReceiverOrganizationName());
+    assertNull(result.getTotalPayments());
+    assertNull(result.getTotalAmountCents());
+    assertNull(result.getAmountPaidCents());
+    assertNull(result.getPaymentOutcomeCode());
+    assertNull(result.getAcquiringDate());
+    assertNull(result.getBicCodePouringBank());
+  }
 }

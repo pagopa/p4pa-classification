@@ -24,6 +24,7 @@ public interface PaymentsReportingViewRepository extends Repository<PaymentsRepo
         AND (:regulationUniqueIdentifier IS NULL OR regulation_unique_identifier = :regulationUniqueIdentifier)
         AND (regulation_date >= COALESCE(CAST(:regulationDateFrom AS date), regulation_date))
         AND (regulation_date <= COALESCE(CAST(:regulationDateTo AS date), regulation_date))
+        AND deleted = false
       ORDER BY iuf, regulation_unique_identifier, regulation_date DESC
     """, nativeQuery = true)
   Page<PaymentsReportingView> findDistinctByIufAndRegulationUniqueIdentifier(

@@ -12,15 +12,32 @@ import java.util.List;
 @RepositoryRestResource(path = "payments-reporting")
 public interface PaymentsReportingRepository extends JpaRepository<PaymentsReporting,String> {
 
+  @Query("""
+    SELECT p
+    FROM PaymentsReporting p
+    WHERE
+      p.organizationId = :organizationId AND
+      p.iuf = :iuf AND
+      p.deleted = false
+  """)
   List<PaymentsReporting> findByOrganizationIdAndIuf(Long organizationId, String iuf);
 
+  @Query("""
+    SELECT p
+    FROM PaymentsReporting p
+    WHERE
+      p.organizationId = :organizationId AND
+      p.paymentsReportingId = :paymentsReportingId AND
+      p.deleted = false
+  """)
   PaymentsReporting findByOrganizationIdAndPaymentsReportingId(Long organizationId, String paymentsReportingId);
 
   @Query("SELECT p FROM PaymentsReporting p WHERE " +
     "p.organizationId=:organizationId AND " +
     "p.iuv=:iuv AND " +
     "p.iur=:iur AND " +
-    "p.transferIndex=:transferIndex")
+    "p.transferIndex=:transferIndex AND " +
+    "p.deleted=false")
   List<PaymentsReporting> findByTransferSemanticKey (Long organizationId, String iuv, String iur, Integer transferIndex);
 
   @Query("SELECT DISTINCT pr1 FROM PaymentsReporting pr1, PaymentsReporting pr2 WHERE " +
@@ -35,12 +52,14 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     "pr1.transferIndex = pr2.transferIndex AND " +
     "pr1.receiverOrganizationCode = pr2.receiverOrganizationCode AND " +
     "pr1.amountPaidCents = pr2.amountPaidCents AND " +
-    "pr1.paymentOutcomeCode != pr2.paymentOutcomeCode")
+    "pr1.paymentOutcomeCode != pr2.paymentOutcomeCode AND " +
+    "pr1.deleted=false")
   List<PaymentsReporting> findDuplicates(Long organizationId, String iuv,
-    Integer transferIndex, String receiverOrganizationCode);
+                                         Integer transferIndex, String receiverOrganizationCode);
 
   @Query("SELECT pr1.flowDateTime FROM PaymentsReporting pr1 WHERE " +
-    "pr1.organizationId = :organizationId " +
+    "pr1.organizationId = :organizationId AND " +
+    "pr1.deleted=false " +
     "ORDER BY pr1.flowDateTime DESC " +
     "LIMIT 1")
   OffsetDateTime findLatestFlowDate(Long organizationId);
