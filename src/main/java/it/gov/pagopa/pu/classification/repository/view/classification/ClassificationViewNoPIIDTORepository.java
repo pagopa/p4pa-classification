@@ -83,7 +83,7 @@ public interface ClassificationViewNoPIIDTORepository extends Repository<Classif
       c.lastClassificationDate as lastClassificationDate
     )
     FROM Classification c
-    LEFT JOIN PaymentsReporting pr ON c.paymentsReportingId = pr.paymentsReportingId
+    LEFT JOIN PaymentsReporting pr ON c.paymentsReportingId = pr.paymentsReportingId AND pr.deleted = false
     LEFT JOIN Treasury t ON c.treasuryId = t.treasuryId
     WHERE c.organizationId = :organizationId
     AND (:#{#filter.label} IS NULL OR c.label IN (:#{#filter.label}))

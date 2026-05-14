@@ -59,6 +59,7 @@ public interface PaymentsReportingWithReceiptViewRepository extends Repository<P
       AND (CAST(:payDateTo AS DATE) IS NULL OR p.payDate <= :payDateTo)
       AND (:debtPositionTypeOrgCode IS NULL OR c.debtPositionTypeOrgCode = :debtPositionTypeOrgCode)
       AND (:fiscalCode IS NULL OR c.debtorFiscalCodeHash = :#{@dataCipherService.hash(#fiscalCode)})
+      AND p.deleted = false
     """)
   Page<PaymentsReportingWithReceiptView> findPaymentsReportingByFilters(
     @Parameter(required = true) @Param("organizationId") Long organizationId,

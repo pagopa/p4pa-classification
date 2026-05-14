@@ -95,7 +95,7 @@ public interface FullClassificationViewNoPIIDTORepository extends Repository<Ful
       pn.personalDataId as paymentNotificationPersonalDataId
     )
     FROM Classification c
-    LEFT JOIN PaymentsReporting pr ON c.paymentsReportingId = pr.paymentsReportingId
+    LEFT JOIN PaymentsReporting pr ON c.paymentsReportingId = pr.paymentsReportingId AND pr.deleted = false
     LEFT JOIN Treasury t ON c.treasuryId = t.treasuryId
     LEFT JOIN PaymentNotificationNoPII pn ON c.paymentNotificationId = pn.paymentNotificationId
     WHERE c.organizationId = :organizationId
