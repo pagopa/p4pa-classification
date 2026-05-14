@@ -72,4 +72,6 @@ public class PaymentsReportingWithReceiptView implements Serializable {
   private String receiptId;
   private String iud;
   private String debtPositionTypeOrgDescription;
+
+  private boolean deleted;
 }
