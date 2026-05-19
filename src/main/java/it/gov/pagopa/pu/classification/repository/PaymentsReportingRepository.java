@@ -63,4 +63,14 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     "ORDER BY pr1.flowDateTime DESC " +
     "LIMIT 1")
   OffsetDateTime findLatestFlowDate(Long organizationId);
+
+  @Query("""
+    SELECT p
+    FROM PaymentsReporting p
+    WHERE
+      p.organizationId = :organizationId AND
+      p.iuf = :iuf AND
+      p.ingestionFlowFileId <> :ingestionFlowFileId
+  """)
+  List<PaymentsReporting> findByOrganizationIdAndIufAndIngestionFlowFileIdNot(Long organizationId, String iuf, Long ingestionFlowFileId);
 }
