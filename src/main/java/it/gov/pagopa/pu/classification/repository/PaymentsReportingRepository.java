@@ -38,7 +38,14 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     "p.iur=:iur AND " +
     "p.transferIndex=:transferIndex AND " +
     "p.deleted=false")
-  List<PaymentsReporting> findByTransferSemanticKey (Long organizationId, String iuv, String iur, Integer transferIndex);
+  List<PaymentsReporting> findByTransferSemanticKey(Long organizationId, String iuv, String iur, Integer transferIndex);
+
+  @Query("SELECT p FROM PaymentsReporting p WHERE " +
+    "p.organizationId=:organizationId AND " +
+    "p.iuv=:iuv AND " +
+    "p.iur=:iur AND " +
+    "p.transferIndex=:transferIndex")
+  List<PaymentsReporting> findByTransferSemanticKeyIncludedDeleted(Long organizationId, String iuv, String iur, Integer transferIndex);
 
   @Query("SELECT DISTINCT pr1 FROM PaymentsReporting pr1, PaymentsReporting pr2 WHERE " +
     // Input filters
