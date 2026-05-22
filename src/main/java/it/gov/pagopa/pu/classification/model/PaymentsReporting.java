@@ -65,6 +65,8 @@ public class PaymentsReporting extends BaseEntity implements Serializable{
   private String bicCodePouringBank;
   @NotNull
   private Integer revision;
+  @NotNull
+  private boolean deleted;
 
 //region keep updated semanticId
   public static String buildSemanticId(PaymentsReporting paymentsReporting) {
