@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
+import it.gov.pagopa.pu.classification.dto.generated.DebtPositionTypeOrgBalanceCostDTO;
 import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 @Service
 @Slf4j
 public class BalanceTemplateResolverService {
+  private static final String DEFAULT_FALLBACK_CODE = "SEND";
 
   private final BalanceService balanceService;
   private final BalanceDefaultMarshallingService balanceDefaultMarshallingService;
@@ -70,10 +72,50 @@ public class BalanceTemplateResolverService {
           ctAccertamentoDefault.setImporto(amountString);
         }
       }
+
+      addNotificationCostToBalance(ctBilancioDefault, calculateAmountBalanceRequest);
+
       return balanceDefaultMarshallingService.marshal(ctBilancioDefault);
     } catch (Exception e) {
       throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_CALCULATION_ERROR, "Error calculating amount of balance: " + e.getMessage());
     }
   }
 
+  private void addNotificationCostToBalance(CtBilancioDefault ctBilancioDefault, CalculateAmountBalanceRequest request) {
+    Long notificationFeeCents = request.getNotificationFeeCents();
+
+    if (notificationFeeCents == null) {
+      return;
+    }
+
+    log.info("Adding notification costs to the balance");
+    DebtPositionTypeOrgBalanceCostDTO debtPositionTypeOrgBalanceCost = request.getDebtPositionTypeOrgBalanceCost();
+
+    String codUfficio;
+    String codCapitolo;
+    String codAccertamento;
+
+    if (debtPositionTypeOrgBalanceCost != null) {
+      codUfficio = debtPositionTypeOrgBalanceCost.getOfficeCode();
+      codCapitolo = debtPositionTypeOrgBalanceCost.getSectionCode();
+      codAccertamento = debtPositionTypeOrgBalanceCost.getAssessmentCode();
+    } else {
+      codUfficio = DEFAULT_FALLBACK_CODE;
+      codCapitolo = DEFAULT_FALLBACK_CODE;
+      codAccertamento = DEFAULT_FALLBACK_CODE;
+    }
+
+    CtCapitoloDefault capitoloNotifica = new CtCapitoloDefault();
+    capitoloNotifica.setCodCapitolo(codCapitolo);
+    capitoloNotifica.setCodUfficio(codUfficio);
+
+    CtAccertamentoDefault accertamentoNotifica = new CtAccertamentoDefault();
+    accertamentoNotifica.setCodAccertamento(codAccertamento);
+
+    BigDecimal notificationAmount = Utilities.longCentsToBigDecimalEuro(notificationFeeCents);
+    accertamentoNotifica.setImporto(Utilities.amountToString(notificationAmount));
+
+    capitoloNotifica.getAccertamento().add(accertamentoNotifica);
+    ctBilancioDefault.getCapitolo().add(capitoloNotifica);
+  }
 }
