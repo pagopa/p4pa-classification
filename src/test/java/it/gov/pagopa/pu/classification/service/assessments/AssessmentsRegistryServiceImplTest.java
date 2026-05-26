@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
-import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
+import it.gov.pagopa.pu.classification.service.BalanceMarshallingService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
@@ -41,7 +41,7 @@ class AssessmentsRegistryServiceImplTest {
   @Mock
   private AssessmentsRegistryRepository assessmentsRegistryRepositoryMock;
   @Mock
-  private BalanceUnmarshallerService balanceUnmashallerServiceMock;
+  private BalanceMarshallingService balanceMarshallingServiceMock;
   @Mock
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
 
@@ -68,7 +68,7 @@ class AssessmentsRegistryServiceImplTest {
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       assessmentsRegistryRepositoryMock,
-      balanceUnmashallerServiceMock,
+      balanceMarshallingServiceMock,
       debtPositionTypeOrgServiceMock
       );
   }
@@ -107,7 +107,7 @@ class AssessmentsRegistryServiceImplTest {
     capitolo.getAccertamento().add(accertamento);
     bilancio.getCapitolo().add(capitolo);
 
-    when(balanceUnmashallerServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
+    when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
 
     try (MockedStatic<SecurityUtils> securityUtilsMockedStatic = mockStatic(SecurityUtils.class);
@@ -171,7 +171,7 @@ class AssessmentsRegistryServiceImplTest {
     capitolo.getAccertamento().add(accertamento);
     bilancio.getCapitolo().add(capitolo);
 
-    when(balanceUnmashallerServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
+    when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
 
     try (MockedStatic<SecurityUtils> securityUtilsMockedStatic = mockStatic(SecurityUtils.class);

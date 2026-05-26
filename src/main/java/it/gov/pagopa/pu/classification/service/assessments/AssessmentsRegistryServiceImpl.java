@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
-import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
+import it.gov.pagopa.pu.classification.service.BalanceMarshallingService;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
@@ -24,15 +24,15 @@ import java.util.List;
 public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryService{
 
   private final AssessmentsRegistryRepository assessmentsRegistryRepository;
-  private final BalanceUnmarshallerService balanceUnmashallerService;
+  private final BalanceMarshallingService balanceMarshallingService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
 
   public AssessmentsRegistryServiceImpl(
     AssessmentsRegistryRepository assessmentsRegistryRepository,
-    BalanceUnmarshallerService balanceUnmashallerService,
+    BalanceMarshallingService balanceMarshallingService,
     DebtPositionTypeOrgService debtPositionTypeOrgService) {
     this.assessmentsRegistryRepository = assessmentsRegistryRepository;
-    this.balanceUnmashallerService = balanceUnmashallerService;
+    this.balanceMarshallingService = balanceMarshallingService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
   }
 
@@ -51,7 +51,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
       .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
       .forEach(i -> {
         if(StringUtils.hasLength(i.getBalance())) {
-          CtBilancio balance = balanceUnmashallerService.unmarshal(i.getBalance(), null);
+          CtBilancio balance = balanceMarshallingService.unmarshal(i.getBalance(), null);
           List<CtCapitolo> capitoloList = balance.getCapitolo();
 
           capitoloList.forEach(capitolo ->

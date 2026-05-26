@@ -13,7 +13,7 @@ import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsDetailRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
-import it.gov.pagopa.pu.classification.service.BalanceUnmarshallerService;
+import it.gov.pagopa.pu.classification.service.BalanceMarshallingService;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
@@ -38,7 +38,7 @@ import java.util.Optional;
 public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
 
   private final AssessmentsDetailRepository assessmentsDetailRepository;
-  private final BalanceUnmarshallerService balanceUnmashallerService;
+  private final BalanceMarshallingService balanceMarshallingService;
   private final AssessmentsRepository assessmentsRepository;
   private final AssessmentsRegistryRepository assessmentsRegistryRepository;
   private final InstallmentService installmentService;
@@ -46,9 +46,9 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   private final TransferService transferService;
 
 
-  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceUnmarshallerService balanceUnmashallerService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService) {
+  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceMarshallingService balanceMarshallingService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
-    this.balanceUnmashallerService = balanceUnmashallerService;
+    this.balanceMarshallingService = balanceMarshallingService;
     this.assessmentsRepository = assessmentsRepository;
     this.assessmentsRegistryRepository = assessmentsRegistryRepository;
     this.installmentService = installmentService;
@@ -74,7 +74,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   }
 
   List<AssessmentsDetail> buildAssessmentDetail(ReceiptNoPII receipt, InstallmentNoPII installment, Assessments assessment) {
-    CtBilancio balance = balanceUnmashallerService.unmarshal(installment.getBalance(), null);
+    CtBilancio balance = balanceMarshallingService.unmarshal(installment.getBalance(), null);
 
     List<CtCapitolo> capitoloList = balance.getCapitolo();
     return capitoloList.stream()
