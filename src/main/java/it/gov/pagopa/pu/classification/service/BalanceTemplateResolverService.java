@@ -43,11 +43,11 @@ public class BalanceTemplateResolverService {
 
     Object balanceXML = balanceService.unmarshalBalance(balance, null);
 
-    if (balanceXML instanceof CtBilancio) {
+    if (balanceXML instanceof CtBilancio ctBilancio) {
       log.info("The balance amount is already calculated");
       if (notificationFeeCents != null && notificationFeeCents != 0) {
-        addNotificationCostToBalance((CtBilancio) balanceXML, calculateAmountBalanceRequest, notificationFeeCents);
-        return balanceMarshallingService.marshal((CtBilancio) balanceXML);
+        addNotificationCostToBalance(ctBilancio, calculateAmountBalanceRequest, notificationFeeCents);
+        return balanceMarshallingService.marshal(ctBilancio);
       }
 
       return balance;
@@ -58,27 +58,8 @@ public class BalanceTemplateResolverService {
       log.info("Calculating balance amount resolving default type");
       for (CtCapitoloDefault capitolo : ctBilancioDefault.getCapitolo()) {
         for (CtAccertamentoDefault ctAccertamentoDefault : capitolo.getAccertamento()) {
-          BigDecimal calculatedAmount;
-          if (ctAccertamentoDefault.getImporto().equals(BalanceDefaultAmountType.TOTAL.getType())) {
-            calculatedAmount = amountInstallment;
-          } else if (ctAccertamentoDefault.getImporto().contains(BalanceDefaultAmountType.EXTRACT_AMOUNT.getType())) {
-            engine.eval(ctAccertamentoDefault.getImporto());
-            Invocable invocable = (Invocable) engine;
-            String result = String.valueOf(invocable.invokeFunction(BalanceDefaultAmountType.EXTRACT_AMOUNT.getType(),
-              calculateAmountBalanceRequest.getRemittanceInformation()));
-            calculatedAmount = new BigDecimal(result);
-          } else if (ctAccertamentoDefault.getImporto().contains(BalanceDefaultAmountType.CALCULATE_AMOUNT.getType())) {
-            engine.eval(ctAccertamentoDefault.getImporto());
-            Invocable invocable = (Invocable) engine;
-            String result = String.valueOf(
-              invocable.invokeFunction(BalanceDefaultAmountType.CALCULATE_AMOUNT.getType(), amountInstallment));
-            calculatedAmount = new BigDecimal(result);
-          } else {
-            throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_CALCULATION_ERROR, ctAccertamentoDefault.getImporto() + " as function type to calculate amount balance not supported");
-          }
-          String amountString = Utilities.amountToString(calculatedAmount);
-
-          ctAccertamentoDefault.setImporto(amountString);
+          BigDecimal calculatedAmount = calculateAccertamentoAmount(ctAccertamentoDefault, amountInstallment, calculateAmountBalanceRequest);
+          ctAccertamentoDefault.setImporto(Utilities.amountToString(calculatedAmount));
         }
       }
 
@@ -90,6 +71,30 @@ public class BalanceTemplateResolverService {
     } catch (Exception e) {
       throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_CALCULATION_ERROR, "Error calculating amount of balance: " + e.getMessage());
     }
+  }
+
+  private BigDecimal calculateAccertamentoAmount(CtAccertamentoDefault accertamento, BigDecimal amountInstallment, CalculateAmountBalanceRequest request) throws Exception {
+    String importo = accertamento.getImporto();
+
+    if (importo.equals(BalanceDefaultAmountType.TOTAL.getType())) {
+      return amountInstallment;
+    }
+
+    if (importo.contains(BalanceDefaultAmountType.EXTRACT_AMOUNT.getType())) {
+      engine.eval(importo);
+      Invocable invocable = (Invocable) engine;
+      String result = String.valueOf(invocable.invokeFunction(BalanceDefaultAmountType.EXTRACT_AMOUNT.getType(), request.getRemittanceInformation()));
+      return new BigDecimal(result);
+    }
+
+    if (importo.contains(BalanceDefaultAmountType.CALCULATE_AMOUNT.getType())) {
+      engine.eval(importo);
+      Invocable invocable = (Invocable) engine;
+      String result = String.valueOf(invocable.invokeFunction(BalanceDefaultAmountType.CALCULATE_AMOUNT.getType(), amountInstallment));
+      return new BigDecimal(result);
+    }
+
+    throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_CALCULATION_ERROR, importo + " as function type to calculate amount balance not supported");
   }
 
   private void addNotificationCostToBalanceDefault(CtBilancioDefault ctBilancioDefault, CalculateAmountBalanceRequest request, Long notificationFeeCents) {
