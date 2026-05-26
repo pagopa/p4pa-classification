@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.math.BigDecimal;
 
 @Service
@@ -73,7 +74,7 @@ public class BalanceTemplateResolverService {
     }
   }
 
-  private BigDecimal calculateAccertamentoAmount(CtAccertamentoDefault accertamento, BigDecimal amountInstallment, CalculateAmountBalanceRequest request) throws Exception {
+  private BigDecimal calculateAccertamentoAmount(CtAccertamentoDefault accertamento, BigDecimal amountInstallment, CalculateAmountBalanceRequest request) throws ScriptException, NoSuchMethodException, NumberFormatException {
     String importo = accertamento.getImporto();
 
     if (importo.equals(BalanceDefaultAmountType.TOTAL.getType())) {
