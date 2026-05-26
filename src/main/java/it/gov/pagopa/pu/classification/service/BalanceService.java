@@ -26,12 +26,12 @@ public class BalanceService {
   private static final AssessmentsRegistryStatus ASSESSMENTS_REGISTRY_STATUS = AssessmentsRegistryStatus.ACTIVE;
   private static final String BALANCE_AMOUNT_DEFAULT_VALUE = "TOTALE";
 
-  private final BalanceUnmarshallerService balanceUnmashallerService;
+  private final BalanceMarshallingService balanceMarshallingService;
   private final BalanceDefaultMarshallingService balanceDefaultMarshallingService;
   private final AssessmentsRegistryRepository assessmentsRegistryRepository;
 
-  public BalanceService(BalanceUnmarshallerService balanceUnmashallerService, BalanceDefaultMarshallingService balanceDefaultMarshallingService, AssessmentsRegistryRepository assessmentsRegistryRepository) {
-    this.balanceUnmashallerService = balanceUnmashallerService;
+  public BalanceService(BalanceMarshallingService balanceMarshallingService, BalanceDefaultMarshallingService balanceDefaultMarshallingService, AssessmentsRegistryRepository assessmentsRegistryRepository) {
+    this.balanceMarshallingService = balanceMarshallingService;
     this.balanceDefaultMarshallingService = balanceDefaultMarshallingService;
     this.assessmentsRegistryRepository = assessmentsRegistryRepository;
   }
@@ -55,7 +55,7 @@ public class BalanceService {
       return balanceDefaultMarshallingService.unmarshal(balance);
     } catch (InvalidValueException invalidValueException) {
       log.info("Validating balance value with actual structure");
-      return balanceUnmashallerService.unmarshal(balance, amountCents);
+      return balanceMarshallingService.unmarshal(balance, amountCents);
     }
   }
 

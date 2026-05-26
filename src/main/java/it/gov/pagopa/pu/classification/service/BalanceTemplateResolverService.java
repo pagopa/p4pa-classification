@@ -6,10 +6,7 @@ import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.Utilities;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,22 +22,34 @@ public class BalanceTemplateResolverService {
 
   private final BalanceService balanceService;
   private final BalanceDefaultMarshallingService balanceDefaultMarshallingService;
+  private final BalanceMarshallingService balanceMarshallingService;
   private final ScriptEngineManager factory = new ScriptEngineManager();
   private final ScriptEngine engine = factory.getEngineByName("rhino");
 
-  public BalanceTemplateResolverService(BalanceService balanceService, BalanceDefaultMarshallingService balanceDefaultMarshallingService) {
+  public BalanceTemplateResolverService(
+    BalanceService balanceService,
+    BalanceDefaultMarshallingService balanceDefaultMarshallingService,
+    BalanceMarshallingService balanceMarshallingService
+  ) {
     this.balanceService = balanceService;
     this.balanceDefaultMarshallingService = balanceDefaultMarshallingService;
+    this.balanceMarshallingService = balanceMarshallingService;
   }
 
   public String calculateAmountBalance(CalculateAmountBalanceRequest calculateAmountBalanceRequest) {
     String balance = calculateAmountBalanceRequest.getBalance();
     BigDecimal amountInstallment = Utilities.longCentsToBigDecimalEuro(calculateAmountBalanceRequest.getAmountCents());
+    Long notificationFeeCents = calculateAmountBalanceRequest.getNotificationFeeCents();
 
     Object balanceXML = balanceService.unmarshalBalance(balance, null);
 
     if (balanceXML instanceof CtBilancio) {
       log.info("The balance amount is already calculated");
+      if (notificationFeeCents != null && notificationFeeCents != 0) {
+        addNotificationCostToBalance((CtBilancio) balanceXML, calculateAmountBalanceRequest, notificationFeeCents);
+        return balanceMarshallingService.marshal((CtBilancio) balanceXML);
+      }
+
       return balance;
     }
 
@@ -73,7 +82,9 @@ public class BalanceTemplateResolverService {
         }
       }
 
-      addNotificationCostToBalance(ctBilancioDefault, calculateAmountBalanceRequest);
+      if (notificationFeeCents != null && notificationFeeCents != 0) {
+        addNotificationCostToBalanceDefault(ctBilancioDefault, calculateAmountBalanceRequest, notificationFeeCents);
+      }
 
       return balanceDefaultMarshallingService.marshal(ctBilancioDefault);
     } catch (Exception e) {
@@ -81,41 +92,53 @@ public class BalanceTemplateResolverService {
     }
   }
 
-  private void addNotificationCostToBalance(CtBilancioDefault ctBilancioDefault, CalculateAmountBalanceRequest request) {
-    Long notificationFeeCents = request.getNotificationFeeCents();
-
-    if (notificationFeeCents == null) {
-      return;
-    }
-
+  private void addNotificationCostToBalanceDefault(CtBilancioDefault ctBilancioDefault, CalculateAmountBalanceRequest request, Long notificationFeeCents) {
     log.info("Adding notification costs to the balance");
-    DebtPositionTypeOrgBalanceCostDTO debtPositionTypeOrgBalanceCost = request.getDebtPositionTypeOrgBalanceCost();
-
-    String codUfficio;
-    String codCapitolo;
-    String codAccertamento;
-
-    if (debtPositionTypeOrgBalanceCost != null) {
-      codUfficio = debtPositionTypeOrgBalanceCost.getOfficeCode();
-      codCapitolo = debtPositionTypeOrgBalanceCost.getSectionCode();
-      codAccertamento = debtPositionTypeOrgBalanceCost.getAssessmentCode();
-    } else {
-      codUfficio = DEFAULT_FALLBACK_CODE;
-      codCapitolo = DEFAULT_FALLBACK_CODE;
-      codAccertamento = DEFAULT_FALLBACK_CODE;
-    }
+    NotificationCodes codes = extractNotificationCodes(request.getDebtPositionTypeOrgBalanceCost());
 
     CtCapitoloDefault capitoloNotifica = new CtCapitoloDefault();
-    capitoloNotifica.setCodCapitolo(codCapitolo);
-    capitoloNotifica.setCodUfficio(codUfficio);
+    capitoloNotifica.setCodCapitolo(codes.sectionCode());
+    capitoloNotifica.setCodUfficio(codes.officeCode());
 
     CtAccertamentoDefault accertamentoNotifica = new CtAccertamentoDefault();
-    accertamentoNotifica.setCodAccertamento(codAccertamento);
+    accertamentoNotifica.setCodAccertamento(codes.assessmentCode());
 
     BigDecimal notificationAmount = Utilities.longCentsToBigDecimalEuro(notificationFeeCents);
     accertamentoNotifica.setImporto(Utilities.amountToString(notificationAmount));
 
     capitoloNotifica.getAccertamento().add(accertamentoNotifica);
     ctBilancioDefault.getCapitolo().add(capitoloNotifica);
+  }
+
+  private void addNotificationCostToBalance(CtBilancio ctBilancio, CalculateAmountBalanceRequest request, Long notificationFeeCents) {
+    log.info("Adding notification costs to the balance");
+    NotificationCodes codes = extractNotificationCodes(request.getDebtPositionTypeOrgBalanceCost());
+
+    CtCapitolo capitoloNotifica = new CtCapitolo();
+    capitoloNotifica.setCodCapitolo(codes.sectionCode());
+    capitoloNotifica.setCodUfficio(codes.officeCode());
+
+    CtAccertamento accertamentoNotifica = new CtAccertamento();
+    accertamentoNotifica.setCodAccertamento(codes.assessmentCode());
+
+    BigDecimal notificationAmount = Utilities.longCentsToBigDecimalEuro(notificationFeeCents);
+    accertamentoNotifica.setImporto(notificationAmount);
+
+    capitoloNotifica.getAccertamento().add(accertamentoNotifica);
+    ctBilancio.getCapitolo().add(capitoloNotifica);
+  }
+
+  private record NotificationCodes(
+    String officeCode,
+    String sectionCode,
+    String assessmentCode
+  ) {}
+
+  private NotificationCodes extractNotificationCodes(DebtPositionTypeOrgBalanceCostDTO dto) {
+    if (dto != null) {
+      return new NotificationCodes(dto.getOfficeCode(), dto.getSectionCode(), dto.getAssessmentCode());
+    }
+
+    return new NotificationCodes(DEFAULT_FALLBACK_CODE, DEFAULT_FALLBACK_CODE, DEFAULT_FALLBACK_CODE);
   }
 }
