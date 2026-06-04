@@ -23,23 +23,39 @@ import java.math.BigDecimal;
 @Lazy
 @Component
 @Slf4j
-public class BalanceUnmarshallerService {
+public class BalanceMarshallingService {
   private final JAXBContext jaxbContext;
   private final Schema schema;
+  private final XMLMarshallerService xmlMarshallerService;
   private final XMLUnmarshallerService xmlUnmarshallerService;
 
   private static final String NAMESPACE = "http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/";
+  private static final String ROOT_ELEMENT = "bilancio";
 
-  public BalanceUnmarshallerService(@Value("classpath:xsd/PagInf_Dovuti_Pagati_6_2_0.xsd") Resource paymetsReportingXsdResource,
-                                    XMLUnmarshallerService xmlUnmarshallerService) {
+  public BalanceMarshallingService(
+    @Value("classpath:xsd/PagInf_Dovuti_Pagati_6_2_0.xsd") Resource paymetsReportingXsdResource,
+    XMLMarshallerService xmlMarshallerService,
+    XMLUnmarshallerService xmlUnmarshallerService
+  ) {
     try {
       this.jaxbContext = JAXBContext.newInstance(CtBilancio.class);
       SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
       this.schema = schemaFactory.newSchema(paymetsReportingXsdResource.getURL());
+      this.xmlMarshallerService = xmlMarshallerService;
       this.xmlUnmarshallerService = xmlUnmarshallerService;
     } catch (JAXBException | SAXException | IOException e) {
       throw new IllegalStateException("Error while creating jaxb context for CtBilancio", e);
     }
+  }
+
+  /**
+   * Marshals a CtBilancio object into an XML string.
+   *
+   * @param ctBilancio the CtBilancio object to serialize
+   * @return the marshalled CtBilancio to xmlString
+   */
+  public String marshal(CtBilancio ctBilancio) {
+    return xmlMarshallerService.marshal(ctBilancio, CtBilancio.class, jaxbContext, schema, NAMESPACE, ROOT_ELEMENT);
   }
 
   /**

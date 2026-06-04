@@ -30,6 +30,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.DatabindException;
@@ -78,6 +79,11 @@ public class ClassificationExceptionHandler {
   @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class, ConversionFailedException.class})
   public ResponseEntity<ClassificationErrorDTO> handleViolationException(Exception ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST);
+  }
+
+  @ExceptionHandler(HttpClientErrorException.TooManyRequests.class)
+  public ResponseEntity<ClassificationErrorDTO> handleInvokedHttpClientTooManyRequestsError(Exception ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.TOO_MANY_REQUESTS, ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_TOO_MANY_REQUESTS);
   }
 
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})
@@ -193,6 +199,9 @@ public class ClassificationExceptionHandler {
       case MissingServletRequestParameterException missingServletRequestParameterException -> {
         return Pair.of(ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_BAD_REQUEST.name(),
           missingServletRequestParameterException.getMessage());
+      }
+      case HttpClientErrorException.TooManyRequests tooManyRequestsException -> {
+        return Pair.of(ClassificationErrorDTO.CategoryEnum.CLASSIFICATION_TOO_MANY_REQUESTS.name(), tooManyRequestsException.getMessage());
       }
       case BaseBusinessException businessException -> {
         return Pair.of(businessException.getCode(), businessException.getMessage());

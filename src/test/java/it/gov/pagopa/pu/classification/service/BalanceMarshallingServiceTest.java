@@ -21,12 +21,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BalanceUnmashallerServiceTest {
+class BalanceMarshallingServiceTest {
 
 
   private Resource resource;
-  private BalanceUnmarshallerService handler;
-  private XMLUnmarshallerService xmlUnmarshallerService;
+  private BalanceMarshallingService handler;
   private static final String XML_STRING_CAPITOLO =  "<capitolo>" +
     "<codCapitolo>CAP1</codCapitolo>" +
     "<codUfficio>UFF1</codUfficio>" +
@@ -47,9 +46,10 @@ class BalanceUnmashallerServiceTest {
 
   @BeforeEach
   void setUp() {
-    xmlUnmarshallerService = new XMLUnmarshallerService();
+    XMLUnmarshallerService xmlUnmarshallerService = new XMLUnmarshallerService();
+    XMLMarshallerService xmlMarshallerService = new XMLMarshallerService();
     resource = new ClassPathResource("xsd/PagInf_Dovuti_Pagati_6_2_0.xsd");
-    handler = new BalanceUnmarshallerService(resource, xmlUnmarshallerService);
+    handler = new BalanceMarshallingService(resource, xmlMarshallerService, xmlUnmarshallerService);
   }
 
 
@@ -100,7 +100,7 @@ class BalanceUnmashallerServiceTest {
     try(MockedStatic<JAXBContext> mockedStaticJAXBContext = Mockito.mockStatic(JAXBContext.class)) {
       mockedStaticJAXBContext.when(() -> JAXBContext.newInstance(CtBilancio.class))
         .thenThrow(new JAXBException("Simulated JAXBException"));
-      assertThrows(IllegalStateException.class, () -> new BalanceUnmarshallerService(resource, null));
+      assertThrows(IllegalStateException.class, () -> new BalanceMarshallingService(resource, null, null));
     }
   }
 
@@ -111,7 +111,7 @@ class BalanceUnmashallerServiceTest {
     when(mockResource.getURL()).thenThrow(new IOException("Simulated IOException"));
 
     // when then
-    assertThrows(IllegalStateException.class, () -> new BalanceUnmarshallerService(mockResource, null));
+    assertThrows(IllegalStateException.class, () -> new BalanceMarshallingService(mockResource, null, null));
   }
 
 
