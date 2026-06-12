@@ -12,6 +12,7 @@ import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentStatus;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
@@ -49,6 +50,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
     debtPositionDTO.getPaymentOptions().stream()
       .flatMap(paymentOptionDTO -> paymentOptionDTO.getInstallments().stream())
       .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
+      .filter(installmentDTO -> !InstallmentStatus.PAID.equals(installmentDTO.getStatus()))
       .forEach(i -> {
         if(StringUtils.hasLength(i.getBalance())) {
           CtBilancio balance = balanceMarshallingService.unmarshal(i.getBalance(), null);
