@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.service.assessments;
 
+import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgBalanceCostService;
 import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
@@ -10,9 +11,7 @@ import it.gov.pagopa.pu.classification.service.BalanceMarshallingService;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentStatus;
+import it.gov.pagopa.pu.debtposition.dto.generated.*;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
@@ -20,21 +19,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryService{
-
   private final AssessmentsRegistryRepository assessmentsRegistryRepository;
   private final BalanceMarshallingService balanceMarshallingService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
+  private final DebtPositionTypeOrgBalanceCostService debtPositionTypeOrgBalanceCostService;
 
   public AssessmentsRegistryServiceImpl(
     AssessmentsRegistryRepository assessmentsRegistryRepository,
     BalanceMarshallingService balanceMarshallingService,
-    DebtPositionTypeOrgService debtPositionTypeOrgService) {
+    DebtPositionTypeOrgService debtPositionTypeOrgService,
+    DebtPositionTypeOrgBalanceCostService debtPositionTypeOrgBalanceCostService
+  ) {
     this.assessmentsRegistryRepository = assessmentsRegistryRepository;
     this.balanceMarshallingService = balanceMarshallingService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
+    this.debtPositionTypeOrgBalanceCostService = debtPositionTypeOrgBalanceCostService;
   }
 
   @Transactional
@@ -50,27 +53,46 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
     debtPositionDTO.getPaymentOptions().stream()
       .flatMap(paymentOptionDTO -> paymentOptionDTO.getInstallments().stream())
       .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
-      .filter(installmentDTO -> !InstallmentStatus.PAID.equals(installmentDTO.getStatus()))
       .forEach(i -> {
         if(StringUtils.hasLength(i.getBalance())) {
           CtBilancio balance = balanceMarshallingService.unmarshal(i.getBalance(), null);
           List<CtCapitolo> capitoloList = balance.getCapitolo();
 
-          capitoloList.forEach(capitolo ->
-            capitolo.getAccertamento().forEach(accertamento ->
-              assessmentsRegistryRepository.insertIfNotExists(
-                organizationId,
-                debtPositionTypeOrg.getCode(),
-                capitolo.getCodCapitolo(),
-                null,
-                capitolo.getCodUfficio(),
-                null,
-                accertamento.getCodAccertamento(),
-                null,
-                String.valueOf(i.getCreationDate().getYear()),
-                SecurityUtils.getCurrentUserExternalId(),
-                Utilities.getTraceId()
-              )));
+          String opYear = getOperatingYear(i);
+
+          List<DebtPositionTypeOrgBalanceCost> debtPositionTypeOrgBalanceCosts = debtPositionTypeOrgBalanceCostService
+            .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(debtPositionTypeOrg.getDebtPositionTypeOrgId(), opYear, accessToken);
+
+          capitoloList.forEach(capitolo -> {
+            String codCapitolo = capitolo.getCodCapitolo();
+            String codUfficio = capitolo.getCodUfficio();
+
+            capitolo.getAccertamento().forEach(accertamento -> {
+              String codAccertamento = accertamento.getCodAccertamento();
+
+              boolean shouldSkip = debtPositionTypeOrgBalanceCosts
+                .stream()
+                .anyMatch(dptobc ->
+                  Objects.equals(dptobc.getSectionCode(), codCapitolo) && Objects.equals(dptobc.getOfficeCode(), codUfficio) && Objects.equals(dptobc.getAssessmentCode(), codAccertamento)
+                );
+
+              if (!shouldSkip) {
+                assessmentsRegistryRepository.insertIfNotExists(
+                  organizationId,
+                  debtPositionTypeOrg.getCode(),
+                  capitolo.getCodCapitolo(),
+                  null,
+                  capitolo.getCodUfficio(),
+                  null,
+                  accertamento.getCodAccertamento(),
+                  null,
+                  opYear,
+                  SecurityUtils.getCurrentUserExternalId(),
+                  Utilities.getTraceId()
+                );
+              }
+            });
+          });
         }
       });
   }
@@ -88,5 +110,12 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
     if(assessmentsRegistry.getAssessmentRegistryId()!=null){
       throw new InvalidRequestBodyException(ErrorCodeConstants.ERROR_CODE_INVALID_ASSESSMENT_REGISTRY, "assessmentRegistryId should not be provided");
     }
+  }
+
+  private String getOperatingYear(InstallmentDTO installment) {
+    if (InstallmentStatus.PAID.equals(installment.getStatus())) {
+      return String.valueOf(installment.getUpdateDate().getYear());
+    }
+    return String.valueOf(installment.getCreationDate().getYear());
   }
 }
