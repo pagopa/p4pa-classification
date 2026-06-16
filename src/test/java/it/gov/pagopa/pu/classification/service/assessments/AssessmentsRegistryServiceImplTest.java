@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static it.gov.pagopa.pu.classification.util.Constants.DEFAULT_SEND_DPTOBC_CODE;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
@@ -320,6 +321,58 @@ class AssessmentsRegistryServiceImplTest {
     bilancio.getCapitolo().add(capitolo);
 
     when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
+
+    try (MockedStatic<SecurityUtils> securityUtilsMockedStatic = mockStatic(SecurityUtils.class);
+         MockedStatic<Utilities> utilMock = mockStatic(Utilities.class)) {
+
+      securityUtilsMockedStatic.when(SecurityUtils::getCurrentUserExternalId).thenReturn(externalUserId);
+      utilMock.when(Utilities::getTraceId).thenReturn(traceId);
+
+      assessmentsRegistryService.createAssessmentsRegistryByDebtPositionDTOAndIud(request, accessToken);
+
+      verifyNoInteractions(assessmentsRegistryRepositoryMock);
+    }
+  }
+
+  @Test
+  void givenRequestWithDefaultDptobcCodesWhenCreateAssessmentsRegistryThenVerifyNoExecute() {
+    String externalUserId = "externalUserId";
+    String traceId = "traceId";
+    String accessToken = "accessToken";
+
+    DebtPositionDTO debtPositionDTO = buildDebtPositionDTO();
+
+    CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest request =
+      TestUtils.getPodamFactory().manufacturePojo(CreateAssessmentsRegistryByDebtPositionDTOAndIudRequest.class);
+    request.setDebtPositionDTO(debtPositionDTO);
+    request.setIudList(null);
+
+    DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
+    debtPositionTypeOrg.setCode("CODE01");
+    debtPositionTypeOrg.setDebtPositionTypeOrgId(debtPositionDTO.getDebtPositionTypeOrgId());
+
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByDebtPositionTypeOrgId(debtPositionDTO.getOrganizationId(),
+      debtPositionDTO.getDebtPositionTypeOrgId(), accessToken)).thenReturn(debtPositionTypeOrg);
+
+    when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(
+      debtPositionDTO.getDebtPositionTypeOrgId(), String.valueOf(creationDate.getYear()), accessToken))
+      .thenReturn(List.of());
+
+    CtBilancio bilancio = new CtBilancio();
+
+    CtCapitolo capitolo = new CtCapitolo();
+
+    capitolo.setCodCapitolo(DEFAULT_SEND_DPTOBC_CODE);
+    capitolo.setCodUfficio(DEFAULT_SEND_DPTOBC_CODE);
+
+    CtAccertamento accertamento = new CtAccertamento();
+    accertamento.setCodAccertamento(DEFAULT_SEND_DPTOBC_CODE);
+    accertamento.setImporto(new BigDecimal("100.00"));
+
+    capitolo.getAccertamento().add(accertamento);
+    bilancio.getCapitolo().add(capitolo);
+
+    when(balanceMarshallingServiceMock.unmarshal(BALANCE, null)).thenReturn(bilancio);
 
     try (MockedStatic<SecurityUtils> securityUtilsMockedStatic = mockStatic(SecurityUtils.class);
          MockedStatic<Utilities> utilMock = mockStatic(Utilities.class)) {
