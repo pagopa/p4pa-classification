@@ -18,8 +18,12 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import static it.gov.pagopa.pu.classification.util.Constants.DEFAULT_SEND_DPTOBC_CODE;
 
 @Service
 public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryService{
@@ -50,6 +54,8 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService
       .getDebtPositionTypeOrgByDebtPositionTypeOrgId(organizationId, debtPositionDTO.getDebtPositionTypeOrgId(), accessToken);
 
+    Map<String, List<DebtPositionTypeOrgBalanceCost>> debtPositionTypeOrgBalanceCostMap = new HashMap<>();
+
     debtPositionDTO.getPaymentOptions().stream()
       .flatMap(paymentOptionDTO -> paymentOptionDTO.getInstallments().stream())
       .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
@@ -60,8 +66,11 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
 
           String opYear = getOperatingYear(i);
 
-          List<DebtPositionTypeOrgBalanceCost> debtPositionTypeOrgBalanceCosts = debtPositionTypeOrgBalanceCostService
-            .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(debtPositionTypeOrg.getDebtPositionTypeOrgId(), opYear, accessToken);
+          List<DebtPositionTypeOrgBalanceCost> debtPositionTypeOrgBalanceCosts = debtPositionTypeOrgBalanceCostMap.computeIfAbsent(
+            opYear,
+            year -> debtPositionTypeOrgBalanceCostService.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(
+              debtPositionTypeOrg.getDebtPositionTypeOrgId(), year, accessToken)
+          );
 
           capitoloList.forEach(capitolo -> {
             String codCapitolo = capitolo.getCodCapitolo();
@@ -75,6 +84,10 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
                 .anyMatch(dptobc ->
                   Objects.equals(dptobc.getSectionCode(), codCapitolo) && Objects.equals(dptobc.getOfficeCode(), codUfficio) && Objects.equals(dptobc.getAssessmentCode(), codAccertamento)
                 );
+
+              if (Objects.equals(DEFAULT_SEND_DPTOBC_CODE, codCapitolo) && Objects.equals(DEFAULT_SEND_DPTOBC_CODE, codUfficio) && Objects.equals(DEFAULT_SEND_DPTOBC_CODE, codAccertamento)) {
+                shouldSkip = true;
+              }
 
               if (!shouldSkip) {
                 assessmentsRegistryRepository.insertIfNotExists(
