@@ -79,17 +79,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
             capitolo.getAccertamento().forEach(accertamento -> {
               String codAccertamento = accertamento.getCodAccertamento();
 
-              boolean shouldSkip = debtPositionTypeOrgBalanceCosts
-                .stream()
-                .anyMatch(dptobc ->
-                  Objects.equals(dptobc.getSectionCode(), codCapitolo) && Objects.equals(dptobc.getOfficeCode(), codUfficio) && Objects.equals(dptobc.getAssessmentCode(), codAccertamento)
-                );
-
-              if (Objects.equals(DEFAULT_SEND_DPTOBC_CODE, codCapitolo) && Objects.equals(DEFAULT_SEND_DPTOBC_CODE, codUfficio) && Objects.equals(DEFAULT_SEND_DPTOBC_CODE, codAccertamento)) {
-                shouldSkip = true;
-              }
-
-              if (!shouldSkip) {
+              if (!shouldSkipAssessmentInsertion(debtPositionTypeOrgBalanceCosts, codCapitolo, codUfficio, codAccertamento)) {
                 assessmentsRegistryRepository.insertIfNotExists(
                   organizationId,
                   debtPositionTypeOrg.getCode(),
@@ -108,6 +98,26 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
           });
         }
       });
+  }
+
+  private static boolean shouldSkipAssessmentInsertion(
+    List<DebtPositionTypeOrgBalanceCost> debtPositionTypeOrgBalanceCosts,
+    String codCapitolo,
+    String codUfficio,
+    String codAccertamento
+  ) {
+    if (Objects.equals(DEFAULT_SEND_DPTOBC_CODE, codCapitolo) &&
+      Objects.equals(DEFAULT_SEND_DPTOBC_CODE, codUfficio) &&
+      Objects.equals(DEFAULT_SEND_DPTOBC_CODE, codAccertamento)) {
+      return true;
+    }
+
+    return debtPositionTypeOrgBalanceCosts.stream()
+      .anyMatch(dptobc ->
+        Objects.equals(dptobc.getSectionCode(), codCapitolo) &&
+          Objects.equals(dptobc.getOfficeCode(), codUfficio) &&
+          Objects.equals(dptobc.getAssessmentCode(), codAccertamento)
+      );
   }
 
   @Transactional
