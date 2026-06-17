@@ -64,7 +64,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
           CtBilancio balance = balanceMarshallingService.unmarshal(i.getBalance(), null);
           List<CtCapitolo> capitoloList = balance.getCapitolo();
 
-          String opYear = getOperatingYear(i);
+          String opYear = String.valueOf(i.getUpdateDate().getYear());
 
           List<DebtPositionTypeOrgBalanceCost> debtPositionTypeOrgBalanceCosts = debtPositionTypeOrgBalanceCostMap.computeIfAbsent(
             opYear,
@@ -123,12 +123,5 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
     if(assessmentsRegistry.getAssessmentRegistryId()!=null){
       throw new InvalidRequestBodyException(ErrorCodeConstants.ERROR_CODE_INVALID_ASSESSMENT_REGISTRY, "assessmentRegistryId should not be provided");
     }
-  }
-
-  private String getOperatingYear(InstallmentDTO installment) {
-    if (InstallmentStatus.PAID.equals(installment.getStatus())) {
-      return String.valueOf(installment.getUpdateDate().getYear());
-    }
-    return String.valueOf(installment.getCreationDate().getYear());
   }
 }
