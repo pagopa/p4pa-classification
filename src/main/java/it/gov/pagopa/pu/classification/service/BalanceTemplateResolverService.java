@@ -16,11 +16,11 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.math.BigDecimal;
 
+import static it.gov.pagopa.pu.classification.util.Constants.DEFAULT_SEND_DPTOBC_CODE;
+
 @Service
 @Slf4j
 public class BalanceTemplateResolverService {
-  private static final String DEFAULT_FALLBACK_CODE = "SEND";
-
   private final BalanceService balanceService;
   private final BalanceDefaultMarshallingService balanceDefaultMarshallingService;
   private final BalanceMarshallingService balanceMarshallingService;
@@ -145,6 +145,6 @@ public class BalanceTemplateResolverService {
       return new NotificationCodes(dto.getOfficeCode(), dto.getSectionCode(), dto.getAssessmentCode());
     }
 
-    return new NotificationCodes(DEFAULT_FALLBACK_CODE, DEFAULT_FALLBACK_CODE, DEFAULT_FALLBACK_CODE);
+    return new NotificationCodes(DEFAULT_SEND_DPTOBC_CODE, DEFAULT_SEND_DPTOBC_CODE, DEFAULT_SEND_DPTOBC_CODE);
   }
 }
