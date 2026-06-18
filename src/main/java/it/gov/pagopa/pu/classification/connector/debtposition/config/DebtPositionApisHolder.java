@@ -19,6 +19,7 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
   private final ReceiptNoPiiSearchControllerApi receiptNoPiiSearchControllerApi;
   private final TransferSearchControllerApi transferSearchControllerApi;
+  private final DebtPositionTypeOrgBalanceCostSearchControllerApi debtPositionTypeOrgBalanceCostSearchControllerApi;
 
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
@@ -41,6 +42,7 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
     this.receiptNoPiiSearchControllerApi = new ReceiptNoPiiSearchControllerApi(apiClient);
     this.transferSearchControllerApi = new TransferSearchControllerApi(apiClient);
+    this.debtPositionTypeOrgBalanceCostSearchControllerApi = new DebtPositionTypeOrgBalanceCostSearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -66,6 +68,10 @@ public class DebtPositionApisHolder {
 
   public TransferSearchControllerApi getTransferSearchControllerApi(String accessToken) {
     return getApi(accessToken, transferSearchControllerApi);
+  }
+
+  public DebtPositionTypeOrgBalanceCostSearchControllerApi getDebtPositionTypeOrgBalanceCostSearchControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionTypeOrgBalanceCostSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {
