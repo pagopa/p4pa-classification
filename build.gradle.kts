@@ -72,7 +72,7 @@ val springWolfAsyncApiVersion = "1.21.0"
 val springWolfUiAsyncApiVersion = "1.21.0"
 val commonsLang3Version = "3.20.0"
 
-// Downgrading in order to handle List of enums in SpringDataRest exposed queries
+// Downgrading in order to handle List of enums in SpringDataRest exposed queries (see https://github.com/spring-projects/spring-data-commons/issues/3502)
 val hibernateCoreVersion = "7.1.18.Final"
 
 val springCloudDepsVersion = "2025.1.2"
