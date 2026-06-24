@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.service.assessments;
 
+import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgBalanceCostService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
@@ -14,11 +15,10 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsDetailRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.classification.service.BalanceMarshallingService;
+import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.Utilities;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
-import it.gov.pagopa.pu.debtposition.dto.generated.Transfer;
+import it.gov.pagopa.pu.debtposition.dto.generated.*;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
@@ -44,9 +44,10 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   private final InstallmentService installmentService;
   private final ReceiptService receiptService;
   private final TransferService transferService;
+  private final DebtPositionTypeOrgBalanceCostService debtPositionTypeOrgBalanceCostService;
 
 
-  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceMarshallingService balanceMarshallingService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService) {
+  public AssessmentsDetailServiceImpl(AssessmentsDetailRepository assessmentsDetailRepository, BalanceMarshallingService balanceMarshallingService, AssessmentsRepository assessmentsRepository, AssessmentsRegistryRepository assessmentsRegistryRepository, InstallmentService installmentService, ReceiptService receiptService, TransferService transferService, DebtPositionTypeOrgBalanceCostService debtPositionTypeOrgBalanceCostService) {
     this.assessmentsDetailRepository = assessmentsDetailRepository;
     this.balanceMarshallingService = balanceMarshallingService;
     this.assessmentsRepository = assessmentsRepository;
@@ -54,6 +55,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     this.installmentService = installmentService;
     this.receiptService = receiptService;
     this.transferService = transferService;
+    this.debtPositionTypeOrgBalanceCostService = debtPositionTypeOrgBalanceCostService;
   }
 
   @Transactional
@@ -107,7 +109,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
       sectionCode,
       officeCode,
       assessmentCode,
-      String.valueOf(Optional.ofNullable(receipt.getPaymentDateTime()).orElse(OffsetDateTime.now()).getYear())
+      String.valueOf(Optional.ofNullable(receipt.getPaymentDateTime()).orElse(OffsetDateTime.now(Constants.ZONEID)).getYear())
     ).orElse(null);
 
     return this.buildAssessmentsDetail(BuildAssessmentsDetailParamsDTO.builder()
@@ -118,23 +120,13 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
         .sectionCode(sectionCode)
         .assessmentCode(assessmentCode)
         .amountCents(amountCents)
-        .assessmentsRegistry(assessmentsRegistry)
+        .officeDescription(assessmentsRegistry != null ? assessmentsRegistry.getOfficeDescription() : null)
+        .sectionDescription(assessmentsRegistry != null ? assessmentsRegistry.getSectionDescription() : null)
+        .assessmentDescription(assessmentsRegistry != null ? assessmentsRegistry.getAssessmentDescription() : null)
         .build());
   }
 
   private AssessmentsDetail buildAssessmentsDetail(BuildAssessmentsDetailParamsDTO params) {
-    String officeDescription = Optional.ofNullable(params.getAssessmentsRegistry())
-      .map(AssessmentsRegistry::getOfficeDescription)
-      .orElse(null);
-
-    String sectionDescription = Optional.ofNullable(params.getAssessmentsRegistry())
-      .map(AssessmentsRegistry::getSectionDescription)
-      .orElse(null);
-
-    String assessmentDescription = Optional.ofNullable(params.getAssessmentsRegistry())
-      .map(AssessmentsRegistry::getAssessmentDescription)
-      .orElse(null);
-
     return AssessmentsDetail.builder()
             .assessmentId(params.getAssessment().getAssessmentId())
             .organizationId(params.getAssessment().getOrganizationId())
@@ -146,11 +138,11 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
             .debtorFiscalCodeHash(params.getInstallment().getDebtorFiscalCodeHash())
             .paymentDateTime(params.getReceipt().getPaymentDateTime())
             .officeCode(params.getOfficeCode())
-            .officeDescription(officeDescription)
+            .officeDescription(params.getOfficeDescription())
             .sectionCode(params.getSectionCode())
-            .sectionDescription(sectionDescription)
+            .sectionDescription(params.getSectionDescription())
             .assessmentCode(params.getAssessmentCode())
-            .assessmentDescription(assessmentDescription)
+            .assessmentDescription(params.getAssessmentDescription())
             .amountCents(params.getAmountCents())
             .receiptId(params.getReceipt().getReceiptId())
             .build();
@@ -167,7 +159,7 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     List<AssessmentsDetail> assessmentsDetails = new ArrayList<>();
     for (InstallmentNoPII installment : installments) {
       ReceiptNoPII receipt = getReceiptByReceiptIdAndDebtPositionTypeOrgCode(installment, assessments, accessToken);
-      assessmentsDetails.add(saveAssessmentsDetail(
+      assessmentsDetails.addAll(saveAssessmentsDetail(
         organizationId,
         createAssessmentsDetail,
         installment,
@@ -204,13 +196,19 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
     return installments;
   }
 
-  private AssessmentsDetail saveAssessmentsDetail(Long organizationId, CreateAssessmentsDetail createAssessmentsDetail, InstallmentNoPII installment, ReceiptNoPII receipt, Assessments assessments, String accessToken) {
+  private List<AssessmentsDetail> saveAssessmentsDetail(Long organizationId, CreateAssessmentsDetail createAssessmentsDetail, InstallmentNoPII installment, ReceiptNoPII receipt, Assessments assessments, String accessToken) {
     AssessmentsRegistry assessmentsRegistry = assessmentsRegistryRepository.findById(createAssessmentsDetail.getAssessmentRegistryId())
             .filter(ar-> organizationId.equals(ar.getOrganizationId()))
             .orElseThrow(
             ()->new NotFoundException(ErrorCodeConstants.ERROR_CODE_ASSESSMENT_REGISTRY_NOT_FOUND, "AssessmentRegistry with id "+createAssessmentsDetail.getAssessmentRegistryId()+" not found")
     );
-    return assessmentsDetailRepository.save(
+    List<AssessmentsDetail> assessmentsDetails = new ArrayList<>();
+    Long amountCents = getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(), accessToken);
+    if (installment.getNotificationFeeCents() != null && installment.getNotificationFeeCents() > 0) {
+      amountCents = Math.max(amountCents -  installment.getNotificationFeeCents(),0L);
+      assessmentsDetails.add(saveNotificationFeeAssessmentDetail(installment, receipt, assessments, assessmentsRegistry.getOperatingYear(), accessToken));
+    }
+    assessmentsDetails.add(assessmentsDetailRepository.save(
             buildAssessmentsDetail(
               BuildAssessmentsDetailParamsDTO.builder()
                 .receipt(receipt)
@@ -219,15 +217,47 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
                 .officeCode(assessmentsRegistry.getOfficeCode())
                 .sectionCode(assessmentsRegistry.getSectionCode())
                 .assessmentCode(assessmentsRegistry.getAssessmentCode())
-                .amountCents(getAssessmentDetailAmount(installment.getInstallmentId(), receipt.getOrgFiscalCode(),accessToken))
-                .assessmentsRegistry(assessmentsRegistry)
+                .amountCents(amountCents)
+                .officeDescription(assessmentsRegistry.getOfficeDescription())
+                .sectionDescription(assessmentsRegistry.getSectionDescription())
+                .assessmentDescription(assessmentsRegistry.getAssessmentDescription())
                 .build()
-            )
+            ))
     );
+    return assessmentsDetails;
   }
 
   private Long getAssessmentDetailAmount(Long installmentId, String orgFiscalCode, String accessToken){
     List<Transfer> transfers = transferService.getByInstallmentId(installmentId, accessToken);
     return transfers.stream().filter(t->orgFiscalCode.equals(t.getOrgFiscalCode())).map(Transfer::getAmountCents).reduce(0L,Long::sum);
+  }
+
+  private AssessmentsDetail saveNotificationFeeAssessmentDetail(InstallmentNoPII installment, ReceiptNoPII receipt, Assessments assessments, String operatingYear, String accessToken) {
+    BuildAssessmentsDetailParamsDTO.BuildAssessmentsDetailParamsDTOBuilder<?, ?> builder = BuildAssessmentsDetailParamsDTO.builder()
+      .receipt(receipt)
+      .installment(installment)
+      .assessment(assessments)
+      .amountCents(installment.getNotificationFeeCents());
+    DebtPositionTypeOrgBalanceCost dptoBalanceCost = debtPositionTypeOrgBalanceCostService.getDptoBalanceCostByInstallmentIdAndTypeAndOperatingYear(installment.getInstallmentId(),
+          DebtPositionTypeOrgBalanceCostType.NOTIFICATION_COST, operatingYear, accessToken);
+    if (dptoBalanceCost != null) {
+      builder
+        .officeCode(dptoBalanceCost.getOfficeCode())
+        .sectionCode(dptoBalanceCost.getSectionCode())
+        .assessmentCode(dptoBalanceCost.getAssessmentCode())
+        .officeDescription(dptoBalanceCost.getOfficeDescription())
+        .sectionDescription(dptoBalanceCost.getSectionDescription())
+        .assessmentDescription(dptoBalanceCost.getAssessmentDescription());
+    }else{
+      builder
+        .officeCode(Constants.DEFAULT_SEND_DPTOBC_CODE)
+        .sectionCode(Constants.DEFAULT_SEND_DPTOBC_CODE)
+        .assessmentCode(Constants.DEFAULT_SEND_DPTOBC_CODE);
+    }
+    return assessmentsDetailRepository.save(
+      buildAssessmentsDetail(
+        builder
+          .build()
+      ));
   }
 }

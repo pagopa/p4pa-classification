@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.service.assessments;
 
+import it.gov.pagopa.pu.classification.connector.debtposition.DebtPositionTypeOrgBalanceCostService;
 import it.gov.pagopa.pu.classification.connector.debtposition.InstallmentService;
 import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
@@ -13,10 +14,9 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsDetailRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.classification.service.BalanceMarshallingService;
+import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.TestUtils;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
-import it.gov.pagopa.pu.debtposition.dto.generated.Transfer;
+import it.gov.pagopa.pu.debtposition.dto.generated.*;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
@@ -27,13 +27,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -59,6 +60,8 @@ class AssessmentsDetailServiceImplTest {
   private ReceiptService receiptServiceMock;
   @Mock
   private TransferService transferServiceMock;
+  @Mock
+  private DebtPositionTypeOrgBalanceCostService debtPositionTypeOrgBalanceCostServiceMock;
 
   private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
@@ -79,14 +82,14 @@ class AssessmentsDetailServiceImplTest {
   @BeforeEach
   void init() {
     assessmentsDetailService = new AssessmentsDetailServiceImpl(assessmentsDetailRepositoryMock, balanceMarshallingServiceMock,
-            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock);
+            assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock, transferServiceMock, debtPositionTypeOrgBalanceCostServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(assessmentsDetailRepositoryMock, balanceMarshallingServiceMock,
             assessmentsRepositoryMock, assessmentsRegistryRepositoryMock, installmentServiceMock, receiptServiceMock,
-      transferServiceMock);
+      transferServiceMock, debtPositionTypeOrgBalanceCostServiceMock);
   }
 
   @Test
@@ -94,10 +97,11 @@ class AssessmentsDetailServiceImplTest {
     InstallmentNoPII installment = TestUtils.getPodamFactory().manufacturePojo(InstallmentNoPII.class);
     installment.setBalance(BALANCE);
     ReceiptNoPII receipt = new ReceiptNoPII();
-    receipt.setPaymentDateTime(OffsetDateTime.now());
+    OffsetDateTime offsetDateTime = OffsetDateTime.of(2026, 6, 24, 12, 0, 0, 0, ZoneOffset.UTC);
+    receipt.setPaymentDateTime(offsetDateTime);
     receipt.setReceiptId(9999L);
-    receipt.setCreationDate(OffsetDateTime.now());
-    receipt.setTransferDate(OffsetDateTime.now());
+    receipt.setCreationDate(offsetDateTime);
+    receipt.setTransferDate(offsetDateTime);
     Assessments assessment = new Assessments();
     assessment.setAssessmentId(1L);
     assessment.setOrganizationId(1L);
@@ -119,7 +123,7 @@ class AssessmentsDetailServiceImplTest {
     assessmentsRegistry.setOfficeDescription("officeDescription");
     assessmentsRegistry.setSectionDescription("sectionDescription");
 
-    when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), capitolo.getCodCapitolo(), capitolo.getCodUfficio(), accertamento.getCodAccertamento(), String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
+    when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), capitolo.getCodCapitolo(), capitolo.getCodUfficio(), accertamento.getCodAccertamento(), String.valueOf(offsetDateTime.getYear()))).thenReturn(Optional.of(assessmentsRegistry));
     when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
     List<AssessmentsDetail> result = assessmentsDetailService.buildAssessmentDetail(receipt, installment, assessment);
@@ -187,14 +191,18 @@ class AssessmentsDetailServiceImplTest {
     assessmentsRegistry.setOfficeDescription("officeDescription");
     assessmentsRegistry.setSectionDescription("sectionDescription");
 
-    when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
-    doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
-      "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
-    when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), "CAP1", "UFF1", "ACC1", String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
-    assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
+    OffsetDateTime offsetDateTime = OffsetDateTime.of(2026, 6, 24, 12, 0, 0, 0, ZoneOffset.UTC);
+    try(MockedStatic<OffsetDateTime> offsetDateTimeMock = Mockito.mockStatic(OffsetDateTime.class)) {
+      offsetDateTimeMock.when(() -> OffsetDateTime.now(Constants.ZONEID)).thenReturn(offsetDateTime);
+      when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
+      doReturn(null).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
+        "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
+      when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), "CAP1", "UFF1", "ACC1", String.valueOf(offsetDateTime.getYear()))).thenReturn(Optional.of(assessmentsRegistry));
 
+      assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
-    verify(assessmentsDetailRepositoryMock, times(1)).save(any(AssessmentsDetail.class));
+      verify(assessmentsDetailRepositoryMock, times(1)).save(any(AssessmentsDetail.class));
+    }
   }
 
   @Test
@@ -239,15 +247,19 @@ class AssessmentsDetailServiceImplTest {
     assessmentsRegistry.setOfficeDescription("officeDescription");
     assessmentsRegistry.setSectionDescription("sectionDescription");
 
-    when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
-    doReturn(existingDetail).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
-      "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
-    when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), capitolo.getCodCapitolo(), capitolo.getCodUfficio(), accertamento.getCodAccertamento(), String.valueOf(LocalDateTime.now().getYear()))).thenReturn(Optional.of(assessmentsRegistry));
+    OffsetDateTime offsetDateTime = OffsetDateTime.of(2026, 6, 24, 12, 0, 0, 0, ZoneOffset.UTC);
+    try(MockedStatic<OffsetDateTime> offsetDateTimeMock = Mockito.mockStatic(OffsetDateTime.class)) {
+      offsetDateTimeMock.when(() -> OffsetDateTime.now(Constants.ZONEID)).thenReturn(offsetDateTime);
+      when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
+      doReturn(existingDetail).when(assessmentsDetailRepositoryMock).findByDebtPositionTypeOrgCodeAndIuvAndIudAndOfficeCodeAndSectionCodeAndAssessmentCode(
+        "DPTC", "IUV", "IUD", "UFF1", "CAP1", "ACC1");
+      when(assessmentsRegistryRepositoryMock.findByOrganizationIdAndCodes(assessment.getOrganizationId(), assessment.getDebtPositionTypeOrgCode(), capitolo.getCodCapitolo(), capitolo.getCodUfficio(), accertamento.getCodAccertamento(), String.valueOf(offsetDateTime.getYear()))).thenReturn(Optional.of(assessmentsRegistry));
 
-    assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
+      assessmentsDetailService.createAssessmentDetail(assessment, receipt, installment);
 
-    verify(assessmentsDetailRepositoryMock, times(1)).save(existingDetail);
-    assertEquals(10000L, existingDetail.getAmountCents());
+      verify(assessmentsDetailRepositoryMock, times(1)).save(existingDetail);
+      assertEquals(10000L, existingDetail.getAmountCents());
+    }
   }
 
   @Test
@@ -262,6 +274,7 @@ class AssessmentsDetailServiceImplTest {
     assessmentsRegistry.setSectionDescription("sectionDescription");
     assessmentsRegistry.setOfficeDescription("officeDescription");
     List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    installments.forEach(i->i.setNotificationFeeCents(null));
     Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
     ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
     installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
@@ -302,6 +315,9 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(assessmentsRegistry.getOfficeCode(),assessmentsDetail.getOfficeCode());
       assertEquals(assessmentsRegistry.getSectionCode(),assessmentsDetail.getSectionCode());
       assertEquals(assessmentsRegistry.getAssessmentCode(),assessmentsDetail.getAssessmentCode());
+      assertEquals(assessmentsRegistry.getOfficeDescription(), assessmentsDetail.getOfficeDescription());
+      assertEquals(assessmentsRegistry.getSectionDescription(), assessmentsDetail.getSectionDescription());
+      assertEquals(assessmentsRegistry.getAssessmentDescription(), assessmentsDetail.getAssessmentDescription());
       assertEquals(transfers.stream().map(Transfer::getAmountCents).reduce(0L,Long::sum),assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
@@ -316,6 +332,7 @@ class AssessmentsDetailServiceImplTest {
     AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
     assessmentsRegistry.setOrganizationId(organizationId);
     List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    installments.forEach(i->i.setNotificationFeeCents(0L));
     Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
     ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
     installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
@@ -356,6 +373,9 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(assessmentsRegistry.getOfficeCode(),assessmentsDetail.getOfficeCode());
       assertEquals(assessmentsRegistry.getSectionCode(),assessmentsDetail.getSectionCode());
       assertEquals(assessmentsRegistry.getAssessmentCode(),assessmentsDetail.getAssessmentCode());
+      assertEquals(assessmentsRegistry.getOfficeDescription(), assessmentsDetail.getOfficeDescription());
+      assertEquals(assessmentsRegistry.getSectionDescription(), assessmentsDetail.getSectionDescription());
+      assertEquals(assessmentsRegistry.getAssessmentDescription(), assessmentsDetail.getAssessmentDescription());
       assertEquals(0L,assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
@@ -370,6 +390,7 @@ class AssessmentsDetailServiceImplTest {
     AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
     assessmentsRegistry.setOrganizationId(organizationId);
     List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    installments.forEach(i->i.setNotificationFeeCents(0L));
     Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
     ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
     installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
@@ -408,6 +429,9 @@ class AssessmentsDetailServiceImplTest {
       assertEquals(assessmentsRegistry.getOfficeCode(),assessmentsDetail.getOfficeCode());
       assertEquals(assessmentsRegistry.getSectionCode(),assessmentsDetail.getSectionCode());
       assertEquals(assessmentsRegistry.getAssessmentCode(),assessmentsDetail.getAssessmentCode());
+      assertEquals(assessmentsRegistry.getOfficeDescription(), assessmentsDetail.getOfficeDescription());
+      assertEquals(assessmentsRegistry.getSectionDescription(), assessmentsDetail.getSectionDescription());
+      assertEquals(assessmentsRegistry.getAssessmentDescription(), assessmentsDetail.getAssessmentDescription());
       assertEquals(0L,assessmentsDetail.getAmountCents());
       assertEquals(receipt.getReceiptId(),assessmentsDetail.getReceiptId());
     }
@@ -450,6 +474,7 @@ class AssessmentsDetailServiceImplTest {
     Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
     assessments.setOrganizationId(organizationId);
     List<InstallmentNoPII> installments = podamFactory.manufacturePojo(List.class,InstallmentNoPII.class);
+    installments.forEach(i->i.setNotificationFeeCents(0L));
     Map<String,InstallmentNoPII> installmentsMap = installments.stream().collect(Collectors.toMap(InstallmentNoPII::getIud,Function.identity()));
     ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
     installments.forEach(i->i.setReceiptId(receipt.getReceiptId()));
@@ -638,5 +663,163 @@ class AssessmentsDetailServiceImplTest {
     String iud = "iud";
     assessmentsDetailService.deleteAssessmentDetailsByOrgAndInstallment(organizationId, iuv, iud);
     verify(assessmentsDetailRepositoryMock).deleteAllByOrganizationIdAndIuvAndIud(organizationId, iuv, iud);
+  }
+
+  @Test
+  void givenNotificationCostAndNoDebtPositionTypeOrgBalanceCostWhenCreateAssessmentsDetailThenOk() {
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setOrganizationId(organizationId);
+    assessmentsRegistry.setOfficeCode("registryOfficeCode");
+    InstallmentNoPII installment = podamFactory.manufacturePojo(InstallmentNoPII.class);
+    ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
+    installment.setReceiptId(receipt.getReceiptId());
+    List<Transfer> transfers = podamFactory.manufacturePojo(List.class, Transfer.class);
+    Long transferTotalAmount = 0L;
+    for(Transfer t:transfers){
+      t.setOrgFiscalCode(receipt.getOrgFiscalCode());
+      transferTotalAmount+=t.getAmountCents();
+    }
+    installment.setAmountCents(transferTotalAmount);
+    installment.setNotificationFeeCents(transferTotalAmount / 2);
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistry.getAssessmentRegistryId(), Set.of(installment.getIud()));
+
+    when(assessmentsRepositoryMock.findById(assessments.getAssessmentId()))
+      .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, createAssessmentsDetail.getIuds(), accessToken))
+      .thenReturn(List.of(installment));
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(), accessToken))
+      .thenReturn(receipt);
+    when(transferServiceMock.getByInstallmentId(installment.getInstallmentId(), accessToken))
+      .thenReturn(transfers);
+    when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
+      .thenReturn(Optional.of(assessmentsRegistry));
+    when(debtPositionTypeOrgBalanceCostServiceMock.getDptoBalanceCostByInstallmentIdAndTypeAndOperatingYear(
+      installment.getInstallmentId(),
+      DebtPositionTypeOrgBalanceCostType.NOTIFICATION_COST,
+      assessmentsRegistry.getOperatingYear(),
+      accessToken))
+      .thenReturn(null);
+    ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
+    when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
+      .thenReturn(new AssessmentsDetail());
+
+    List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId, assessments.getAssessmentId(),
+      createAssessmentsDetail, accessToken);
+
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    List<AssessmentsDetail> assessmentsDetails = assessmentsDetailArgumentCaptor.getAllValues();
+    for (AssessmentsDetail assessmentsDetail : assessmentsDetails) {
+      assertEquals(assessments.getAssessmentId(), assessmentsDetail.getAssessmentId());
+      assertEquals(assessments.getOrganizationId(), assessmentsDetail.getOrganizationId());
+      assertEquals(assessments.getDebtPositionTypeOrgCode(), assessmentsDetail.getDebtPositionTypeOrgCode());
+      assertEquals(installment.getIuv(), assessmentsDetail.getIuv());
+      assertEquals(installment.getIud(), assessmentsDetail.getIud());
+      assertEquals(installment.getIur(), assessmentsDetail.getIur());
+      assertEquals(installment.getDebtorFiscalCodeHash(), assessmentsDetail.getDebtorFiscalCodeHash());
+      assertEquals(receipt.getPaymentDateTime(), assessmentsDetail.getPaymentDateTime());
+      assertEquals(receipt.getReceiptId(), assessmentsDetail.getReceiptId());
+      if(assessmentsRegistry.getOfficeCode().equals(assessmentsDetail.getOfficeCode())){
+        assertEquals(assessmentsRegistry.getOfficeCode(),assessmentsDetail.getOfficeCode());
+        assertEquals(assessmentsRegistry.getSectionCode(),assessmentsDetail.getSectionCode());
+        assertEquals(assessmentsRegistry.getAssessmentCode(),assessmentsDetail.getAssessmentCode());
+        assertEquals(assessmentsRegistry.getOfficeDescription(), assessmentsDetail.getOfficeDescription());
+        assertEquals(assessmentsRegistry.getSectionDescription(), assessmentsDetail.getSectionDescription());
+        assertEquals(assessmentsRegistry.getAssessmentDescription(), assessmentsDetail.getAssessmentDescription());
+        assertEquals(transferTotalAmount-installment.getNotificationFeeCents(), assessmentsDetail.getAmountCents());
+      }else{
+        assertEquals(Constants.DEFAULT_SEND_DPTOBC_CODE, assessmentsDetail.getOfficeCode());
+        assertEquals(Constants.DEFAULT_SEND_DPTOBC_CODE, assessmentsDetail.getSectionCode());
+        assertEquals(Constants.DEFAULT_SEND_DPTOBC_CODE, assessmentsDetail.getAssessmentCode());
+        assertNull(assessmentsDetail.getOfficeDescription());
+        assertNull(assessmentsDetail.getSectionDescription());
+        assertNull(assessmentsDetail.getAssessmentDescription());
+        assertEquals(installment.getNotificationFeeCents(), assessmentsDetail.getAmountCents());
+      }
+    }
+  }
+
+  @Test
+  void givenNotificationCostAndDebtPositionTypeOrgBalanceCostWhenCreateAssessmentsDetailThenOk(){
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setOrganizationId(organizationId);
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setOrganizationId(organizationId);
+    assessmentsRegistry.setOfficeCode("registryOfficeCode");
+    InstallmentNoPII installment = podamFactory.manufacturePojo(InstallmentNoPII.class);
+    ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
+    installment.setReceiptId(receipt.getReceiptId());
+    List<Transfer> transfers = podamFactory.manufacturePojo(List.class, Transfer.class);
+    Long transferTotalAmount = 0L;
+    for(Transfer t:transfers){
+      t.setOrgFiscalCode(receipt.getOrgFiscalCode());
+      transferTotalAmount+=t.getAmountCents();
+    }
+    installment.setAmountCents(transferTotalAmount);
+    installment.setNotificationFeeCents(transferTotalAmount / 2);
+    CreateAssessmentsDetail createAssessmentsDetail = new CreateAssessmentsDetail(assessmentsRegistry.getAssessmentRegistryId(), Set.of(installment.getIud()));
+    DebtPositionTypeOrgBalanceCost debtPositionTypeOrgBalanceCost = podamFactory.manufacturePojo(DebtPositionTypeOrgBalanceCost.class);
+    debtPositionTypeOrgBalanceCost.setOfficeCode("dptoBalanceCostOfficeCode");
+
+    when(assessmentsRepositoryMock.findById(assessments.getAssessmentId()))
+      .thenReturn(Optional.of(assessments));
+    when(installmentServiceMock.findByOrganizationIdAndIuds(organizationId, createAssessmentsDetail.getIuds(), accessToken))
+      .thenReturn(List.of(installment));
+    when(receiptServiceMock.getByReceiptIdAndDebtPositionTypeOrgCode(receipt.getReceiptId(), assessments.getDebtPositionTypeOrgCode(), accessToken))
+      .thenReturn(receipt);
+    when(transferServiceMock.getByInstallmentId(installment.getInstallmentId(), accessToken))
+      .thenReturn(transfers);
+    when(assessmentsRegistryRepositoryMock.findById(assessmentsRegistry.getAssessmentRegistryId()))
+      .thenReturn(Optional.of(assessmentsRegistry));
+    when(debtPositionTypeOrgBalanceCostServiceMock.getDptoBalanceCostByInstallmentIdAndTypeAndOperatingYear(
+      installment.getInstallmentId(),
+      DebtPositionTypeOrgBalanceCostType.NOTIFICATION_COST,
+      assessmentsRegistry.getOperatingYear(),
+      accessToken))
+      .thenReturn(debtPositionTypeOrgBalanceCost);
+    ArgumentCaptor<AssessmentsDetail> assessmentsDetailArgumentCaptor = ArgumentCaptor.forClass(AssessmentsDetail.class);
+    when(assessmentsDetailRepositoryMock.save(assessmentsDetailArgumentCaptor.capture()))
+      .thenReturn(new AssessmentsDetail());
+
+    List<AssessmentsDetail> result = assessmentsDetailService.createAssessmentsDetail(organizationId, assessments.getAssessmentId(),
+      createAssessmentsDetail, accessToken);
+
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    List<AssessmentsDetail> assessmentsDetails = assessmentsDetailArgumentCaptor.getAllValues();
+    for (AssessmentsDetail assessmentsDetail : assessmentsDetails) {
+      assertEquals(assessments.getAssessmentId(), assessmentsDetail.getAssessmentId());
+      assertEquals(assessments.getOrganizationId(), assessmentsDetail.getOrganizationId());
+      assertEquals(assessments.getDebtPositionTypeOrgCode(), assessmentsDetail.getDebtPositionTypeOrgCode());
+      assertEquals(installment.getIuv(), assessmentsDetail.getIuv());
+      assertEquals(installment.getIud(), assessmentsDetail.getIud());
+      assertEquals(installment.getIur(), assessmentsDetail.getIur());
+      assertEquals(installment.getDebtorFiscalCodeHash(), assessmentsDetail.getDebtorFiscalCodeHash());
+      assertEquals(receipt.getPaymentDateTime(), assessmentsDetail.getPaymentDateTime());
+      assertEquals(receipt.getReceiptId(), assessmentsDetail.getReceiptId());
+      if(assessmentsRegistry.getOfficeCode().equals(assessmentsDetail.getOfficeCode())){
+        assertEquals(assessmentsRegistry.getOfficeCode(),assessmentsDetail.getOfficeCode());
+        assertEquals(assessmentsRegistry.getSectionCode(),assessmentsDetail.getSectionCode());
+        assertEquals(assessmentsRegistry.getAssessmentCode(),assessmentsDetail.getAssessmentCode());
+        assertEquals(assessmentsRegistry.getOfficeDescription(), assessmentsDetail.getOfficeDescription());
+        assertEquals(assessmentsRegistry.getSectionDescription(), assessmentsDetail.getSectionDescription());
+        assertEquals(assessmentsRegistry.getAssessmentDescription(), assessmentsDetail.getAssessmentDescription());
+        assertEquals(transferTotalAmount-installment.getNotificationFeeCents(), assessmentsDetail.getAmountCents());
+      }else{
+        assertEquals(debtPositionTypeOrgBalanceCost.getOfficeCode(), assessmentsDetail.getOfficeCode());
+        assertEquals(debtPositionTypeOrgBalanceCost.getSectionCode(), assessmentsDetail.getSectionCode());
+        assertEquals(debtPositionTypeOrgBalanceCost.getAssessmentCode(), assessmentsDetail.getAssessmentCode());
+        assertEquals(debtPositionTypeOrgBalanceCost.getOfficeDescription(), assessmentsDetail.getOfficeDescription());
+        assertEquals(debtPositionTypeOrgBalanceCost.getSectionDescription(), assessmentsDetail.getSectionDescription());
+        assertEquals(debtPositionTypeOrgBalanceCost.getAssessmentDescription(), assessmentsDetail.getAssessmentDescription());
+        assertEquals(installment.getNotificationFeeCents(), assessmentsDetail.getAmountCents());
+      }
+    }
   }
 }
