@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.client.DebtPositio
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelDebtPositionTypeOrgBalanceCost;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,5 +53,22 @@ class DebtPositionTypeOrgBalanceCostServiceImplTest {
     List<DebtPositionTypeOrgBalanceCost> result = service.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(dptoId, opYear, accessToken);
 
     assertSame(expectedList, result);
+  }
+
+  @Test
+  void whenGetDptoBalanceCostByInstallmentIdAndTypeAndOperatingYearThenInvokeClient() {
+    long installmentId = 1L;
+    DebtPositionTypeOrgBalanceCostType debtPositionTypeOrgBalanceCostType = DebtPositionTypeOrgBalanceCostType.NOTIFICATION_COST;
+    String operatingYear = "2026";
+    String accessToken = "accessToken";
+
+    DebtPositionTypeOrgBalanceCost expectedResult = podamFactory.manufacturePojo(DebtPositionTypeOrgBalanceCost.class);
+
+    when(debtPositionTypeOrgBalanceCostClientMock.getByInstallmentIdAndTypeAndOperatingYear(installmentId, debtPositionTypeOrgBalanceCostType, operatingYear, accessToken))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeOrgBalanceCost result = service.getDptoBalanceCostByInstallmentIdAndTypeAndOperatingYear(installmentId, debtPositionTypeOrgBalanceCostType, operatingYear, accessToken);
+
+    assertSame(expectedResult, result);
   }
 }

@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.classification.dto;
 
 import it.gov.pagopa.pu.classification.model.Assessments;
-import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
 import lombok.AllArgsConstructor;
@@ -21,5 +20,7 @@ public class BuildAssessmentsDetailParamsDTO {
   private String sectionCode;
   private String assessmentCode;
   private Long amountCents;
-  private AssessmentsRegistry assessmentsRegistry;
+  private String officeDescription;
+  private String sectionDescription;
+  private String assessmentDescription;
 }

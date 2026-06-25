@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.classification.connector.debtposition;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.client.DebtPositionTypeOrgBalanceCostClient;
 import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,5 +21,10 @@ public class DebtPositionTypeOrgBalanceCostServiceImpl implements DebtPositionTy
       .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(debtPositionTypeOrgId, opYear, accessToken)
       .getEmbedded()
       .getDebtPositionTypeOrgBalanceCosts();
+  }
+
+  @Override
+  public DebtPositionTypeOrgBalanceCost getDptoBalanceCostByInstallmentIdAndTypeAndOperatingYear(Long installmentId, DebtPositionTypeOrgBalanceCostType debtPositionTypeOrgBalanceCostType, String operatingYear, String accessToken) {
+    return debtPositionTypeOrgBalanceCostClient.getByInstallmentIdAndTypeAndOperatingYear(installmentId, debtPositionTypeOrgBalanceCostType, operatingYear, accessToken);
   }
 }
