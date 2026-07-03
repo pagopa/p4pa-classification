@@ -3,6 +3,8 @@ package it.gov.pagopa.pu.classification.connector.debtposition.client;
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtposition.client.generated.DebtPositionTypeOrgBalanceCostSearchControllerApi;
 import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelDebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
@@ -49,5 +54,42 @@ class DebtPositionTypeOrgBalanceCostClientTest {
     CollectionModelDebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgBalanceCostClient.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(dptoId, opYear, accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetByInstallmentIdAndTypeAndOperatingYearThenInvokeWithAccessToken() {
+    long installmentId = 1L;
+    DebtPositionTypeOrgBalanceCostType debtPositionTypeOrgBalanceCostType = DebtPositionTypeOrgBalanceCostType.NOTIFICATION_COST;
+    String operatingYear = "2025";
+    String accessToken = "accessToken";
+
+    DebtPositionTypeOrgBalanceCost expectedResult = new DebtPositionTypeOrgBalanceCost();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgBalanceCostSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgBalanceCostSearchControllerApiMock);
+    when(debtPositionTypeOrgBalanceCostSearchControllerApiMock.crudDebtPositionTypeOrgBalanceCostsGetByInstallmentIdAndTypeAndOperatingYear(installmentId, debtPositionTypeOrgBalanceCostType, operatingYear))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgBalanceCostClient.getByInstallmentIdAndTypeAndOperatingYear(installmentId, debtPositionTypeOrgBalanceCostType, operatingYear, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenNotFoundWhenGetByInstallmentIdAndTypeAndOperatingYearThenNull() {
+    long installmentId = 1L;
+    DebtPositionTypeOrgBalanceCostType debtPositionTypeOrgBalanceCostType = DebtPositionTypeOrgBalanceCostType.NOTIFICATION_COST;
+    String operatingYear = "2025";
+    String accessToken = "accessToken";
+
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgBalanceCostSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgBalanceCostSearchControllerApiMock);
+    when(debtPositionTypeOrgBalanceCostSearchControllerApiMock.crudDebtPositionTypeOrgBalanceCostsGetByInstallmentIdAndTypeAndOperatingYear(installmentId, debtPositionTypeOrgBalanceCostType, operatingYear))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    DebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgBalanceCostClient.getByInstallmentIdAndTypeAndOperatingYear(installmentId, debtPositionTypeOrgBalanceCostType, operatingYear, accessToken);
+
+    assertNull(result);
   }
 }
