@@ -13,7 +13,7 @@ import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.*;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
+import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -101,7 +101,7 @@ class AssessmentsRegistryServiceImplTest {
       debtPositionDTO.getDebtPositionTypeOrgId(), String.valueOf(creationDate.getYear()), accessToken))
       .thenReturn(List.of());
 
-    CtBilancio bilancio = new CtBilancio();
+    Bilancio bilancio = new Bilancio();
 
     CtCapitolo capitolo = new CtCapitolo();
     capitolo.setCodCapitolo("CAP1");
@@ -111,8 +111,8 @@ class AssessmentsRegistryServiceImplTest {
     accertamento.setCodAccertamento("ACC1");
     accertamento.setImporto(new BigDecimal("100.00"));
 
-    capitolo.getAccertamento().add(accertamento);
-    bilancio.getCapitolo().add(capitolo);
+    capitolo.getAccertamentos().add(accertamento);
+    bilancio.getCapitolos().add(capitolo);
 
     when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
@@ -170,7 +170,7 @@ class AssessmentsRegistryServiceImplTest {
       debtPositionDTO.getDebtPositionTypeOrgId(), String.valueOf(creationDate.getYear()), accessToken))
       .thenReturn(List.of());
 
-    CtBilancio bilancio = new CtBilancio();
+    Bilancio bilancio = new Bilancio();
 
     CtCapitolo capitolo = new CtCapitolo();
     capitolo.setCodCapitolo("CAP1");
@@ -180,8 +180,8 @@ class AssessmentsRegistryServiceImplTest {
     accertamento.setCodAccertamento("ACC1");
     accertamento.setImporto(new BigDecimal("100.00"));
 
-    capitolo.getAccertamento().add(accertamento);
-    bilancio.getCapitolo().add(capitolo);
+    capitolo.getAccertamentos().add(accertamento);
+    bilancio.getCapitolos().add(capitolo);
 
     when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
@@ -307,7 +307,7 @@ class AssessmentsRegistryServiceImplTest {
       debtPositionDTO.getDebtPositionTypeOrgId(), String.valueOf(creationDate.getYear()), accessToken))
       .thenReturn(debtPositionTypeOrgBalanceCosts);
 
-    CtBilancio bilancio = new CtBilancio();
+    Bilancio bilancio = new Bilancio();
 
     CtCapitolo capitolo = new CtCapitolo();
     capitolo.setCodCapitolo("CAP1");
@@ -317,8 +317,8 @@ class AssessmentsRegistryServiceImplTest {
     accertamento.setCodAccertamento("ACC1");
     accertamento.setImporto(new BigDecimal("100.00"));
 
-    capitolo.getAccertamento().add(accertamento);
-    bilancio.getCapitolo().add(capitolo);
+    capitolo.getAccertamentos().add(accertamento);
+    bilancio.getCapitolos().add(capitolo);
 
     when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
@@ -358,7 +358,7 @@ class AssessmentsRegistryServiceImplTest {
       debtPositionDTO.getDebtPositionTypeOrgId(), String.valueOf(creationDate.getYear()), accessToken))
       .thenReturn(List.of());
 
-    CtBilancio bilancio = new CtBilancio();
+    Bilancio bilancio = new Bilancio();
 
     CtCapitolo capitolo = new CtCapitolo();
 
@@ -369,8 +369,8 @@ class AssessmentsRegistryServiceImplTest {
     accertamento.setCodAccertamento(DEFAULT_SEND_DPTOBC_CODE);
     accertamento.setImporto(new BigDecimal("100.00"));
 
-    capitolo.getAccertamento().add(accertamento);
-    bilancio.getCapitolo().add(capitolo);
+    capitolo.getAccertamentos().add(accertamento);
+    bilancio.getCapitolos().add(capitolo);
 
     when(balanceMarshallingServiceMock.unmarshal(BALANCE, null)).thenReturn(bilancio);
 

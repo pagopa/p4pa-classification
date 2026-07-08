@@ -6,9 +6,10 @@ import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessExce
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
+import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -60,7 +61,7 @@ public class BalanceService {
   }
 
   public String getBalanceByAssessmentRegistry(Long organizationId, String debtPositionTypeOrgCode) {
-    String operatingYear = String.valueOf(LocalDate.now().getYear());
+    String operatingYear = String.valueOf(LocalDate.now(Constants.ZONEID).getYear());
     log.info("Retrieving balance from AssessmentsRegistry with orgId[{}], debtPositionTypeCode[{}], operatingYear [{}], status [{}]",
       organizationId, debtPositionTypeOrgCode, operatingYear, ASSESSMENTS_REGISTRY_STATUS);
     Page<AssessmentsRegistry> assessmentsRegistries = assessmentsRegistryRepository.findAssessmentsRegistriesByFilters(
@@ -81,13 +82,13 @@ public class BalanceService {
       return null;
     }
 
-    CtBilancioDefault bilancio = getCtBilancioDefault(assessmentRegistry);
+    BilancioDefault bilancio = getCtBilancioDefault(assessmentRegistry);
 
     return balanceDefaultMarshallingService.marshal(bilancio);
   }
 
-  private static CtBilancioDefault getCtBilancioDefault(AssessmentsRegistry assessmentRegistry) {
-    CtBilancioDefault bilancio = new CtBilancioDefault();
+  private static BilancioDefault getCtBilancioDefault(AssessmentsRegistry assessmentRegistry) {
+    BilancioDefault bilancio = new BilancioDefault();
 
     CtCapitoloDefault capitolo = new CtCapitoloDefault();
     capitolo.setCodCapitolo(assessmentRegistry.getSectionCode());
@@ -97,9 +98,9 @@ public class BalanceService {
     accertamento.setCodAccertamento(assessmentRegistry.getAssessmentCode());
     accertamento.setImporto(BALANCE_AMOUNT_DEFAULT_VALUE);
 
-    capitolo.getAccertamento().add(accertamento);
+    capitolo.getAccertamentos().add(accertamento);
 
-    bilancio.getCapitolo().add(capitolo);
+    bilancio.getCapitolos().add(capitolo);
     return bilancio;
   }
 

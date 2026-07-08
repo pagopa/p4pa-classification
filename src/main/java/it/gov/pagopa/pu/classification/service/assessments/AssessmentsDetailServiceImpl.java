@@ -19,7 +19,7 @@ import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.*;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
+import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -76,11 +76,11 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
   }
 
   List<AssessmentsDetail> buildAssessmentDetail(ReceiptNoPII receipt, InstallmentNoPII installment, Assessments assessment) {
-    CtBilancio balance = balanceMarshallingService.unmarshal(installment.getBalance(), null);
+    Bilancio balance = balanceMarshallingService.unmarshal(installment.getBalance(), null);
 
-    List<CtCapitolo> capitoloList = balance.getCapitolo();
+    List<CtCapitolo> capitoloList = balance.getCapitolos();
     return capitoloList.stream()
-      .flatMap(capitolo -> capitolo.getAccertamento().stream()
+      .flatMap(capitolo -> capitolo.getAccertamentos().stream()
         .map(accertamento ->
                 buildAssessmentsDetail(
                   receipt,

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jxb:bindings version="3.0" xmlns:jxb="https://jakarta.ee/xml/ns/jaxb"
+              xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+              xmlns:xs="http://www.w3.org/2001/XMLSchema"
+              jxb:extensionBindingPrefixes="xjc">
+    <jxb:globalBindings>
+        <xjc:simple/> <!-- adds @XmlRootElement annotations -->
+    </jxb:globalBindings>
+
+    <jxb:bindings schemaLocation="bilancioDefault.xsd">
+        <jxb:schemaBindings>
+            <jxb:nameXmlTransform>
+                <jxb:elementName suffix="Default" />
+            </jxb:nameXmlTransform>
+        </jxb:schemaBindings>
+    </jxb:bindings>
+</jxb:bindings>

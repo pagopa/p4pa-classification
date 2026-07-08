@@ -6,8 +6,8 @@ import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessExce
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
+import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ class BalanceServiceTest {
   void givenValidBalanceDefaultWhenValidateThenSuccess(){
     ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
 
-    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(new CtBilancioDefault());
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(new BilancioDefault());
 
     Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
@@ -68,7 +68,7 @@ class BalanceServiceTest {
     ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
 
     when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenThrow(InvalidValueException.class);
-    when(balanceMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance(),validateBalanceRequest.getAmountCents())).thenReturn(new CtBilancio());
+    when(balanceMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance(),validateBalanceRequest.getAmountCents())).thenReturn(new Bilancio());
 
     Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 

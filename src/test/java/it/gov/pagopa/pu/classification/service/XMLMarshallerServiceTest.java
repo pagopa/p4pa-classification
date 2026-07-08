@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -29,7 +29,7 @@ class XMLMarshallerServiceTest {
   @BeforeEach
   void setUp() throws JAXBException {
     service = new XMLMarshallerService();
-    jaxbContext = JAXBContext.newInstance(CtBilancioDefault.class);
+    jaxbContext = JAXBContext.newInstance(BilancioDefault.class);
 
     try {
       URL xsdUrl = getClass().getResource("/xsd/bilancioDefault.xsd");
@@ -55,17 +55,17 @@ class XMLMarshallerServiceTest {
       "</capitolo>" +
       "</bilancio>";
 
-    CtBilancioDefault bilancio = new CtBilancioDefault();
+    BilancioDefault bilancio = new BilancioDefault();
     CtCapitoloDefault capitolo = new CtCapitoloDefault();
     capitolo.setCodCapitolo("CAP1");
     capitolo.setCodUfficio("UFF1");
     CtAccertamentoDefault accertamento = new CtAccertamentoDefault();
     accertamento.setCodAccertamento("ACC1");
     accertamento.setImporto("TOTALE");
-    capitolo.getAccertamento().add(accertamento);
-    bilancio.getCapitolo().add(capitolo);
+    capitolo.getAccertamentos().add(accertamento);
+    bilancio.getCapitolos().add(capitolo);
 
-    String result = service.marshal(bilancio, CtBilancioDefault.class, jaxbContext, schema,"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/", "bilancio");
+    String result = service.marshal(bilancio, BilancioDefault.class, jaxbContext, schema,"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/", "bilancio");
 
     assertNotNull(result);
     assertEquals(xmlString, result);
@@ -73,10 +73,10 @@ class XMLMarshallerServiceTest {
 
   @Test
   void marshalWithNoNamespaceAndRootElementThenException() {
-    CtBilancioDefault bilancio = new CtBilancioDefault();
+    BilancioDefault bilancio = new BilancioDefault();
 
     assertThrows(InvalidValueException.class, () -> {
-      service.marshal(bilancio, CtBilancioDefault.class, jaxbContext, schema, null, null);
+      service.marshal(bilancio, BilancioDefault.class, jaxbContext, schema, null, null);
     });
   }
 
