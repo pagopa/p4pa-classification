@@ -6,8 +6,8 @@ import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessExce
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
+import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ class BalanceServiceTest {
   void givenValidBalanceDefaultWhenValidateThenSuccess(){
     ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
 
-    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(new CtBilancioDefault());
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(new BilancioDefault());
 
     Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
@@ -68,7 +68,7 @@ class BalanceServiceTest {
     ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
 
     when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenThrow(InvalidValueException.class);
-    when(balanceMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance(),validateBalanceRequest.getAmountCents())).thenReturn(new CtBilancio());
+    when(balanceMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance(),validateBalanceRequest.getAmountCents())).thenReturn(new Bilancio());
 
     Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
@@ -104,7 +104,7 @@ class BalanceServiceTest {
     String debtPositionTypeOrgCode = "CODE";
     String operatingYear = String.valueOf(LocalDate.now().getYear());
 
-    Mockito.when(assessmentsRegistryRepositoryMock.findAssessmentsRegistriesByFilters(orgId, Set.of(debtPositionTypeOrgCode), null, null, null, null, null, null, operatingYear, AssessmentsRegistryStatus.ACTIVE, PageRequest.of(0, 5)))
+    when(assessmentsRegistryRepositoryMock.findAssessmentsRegistriesByFilters(orgId, Set.of(debtPositionTypeOrgCode), null, null, null, null, null, null, operatingYear, AssessmentsRegistryStatus.ACTIVE, PageRequest.of(0, 5)))
       .thenReturn(Page.empty());
 
     String result = balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode);
@@ -122,7 +122,7 @@ class BalanceServiceTest {
     AssessmentsRegistry assessmentRegistry2 = AssessmentsRegistry.builder().organizationId(orgId).debtPositionTypeOrgCode(debtPositionTypeOrgCode).sectionCode("SEC02").operatingYear(operatingYear).build();
     Page<AssessmentsRegistry> assessmentsRegistryPage = new PageImpl<>(List.of(assessmentRegistry1, assessmentRegistry2), PageRequest.of(0,2), 2);
 
-    Mockito.when(assessmentsRegistryRepositoryMock.findAssessmentsRegistriesByFilters(orgId, Set.of(debtPositionTypeOrgCode), null, null, null, null, null, null, operatingYear, AssessmentsRegistryStatus.ACTIVE, PageRequest.of(0, 5)))
+    when(assessmentsRegistryRepositoryMock.findAssessmentsRegistriesByFilters(orgId, Set.of(debtPositionTypeOrgCode), null, null, null, null, null, null, operatingYear, AssessmentsRegistryStatus.ACTIVE, PageRequest.of(0, 5)))
       .thenReturn(assessmentsRegistryPage);
 
     IllegalStateBusinessException exception = assertThrows(IllegalStateBusinessException.class, () -> balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode));
@@ -149,9 +149,9 @@ class BalanceServiceTest {
     AssessmentsRegistry assessmentRegistry = AssessmentsRegistry.builder().organizationId(orgId).debtPositionTypeOrgCode(debtPositionTypeOrgCode).sectionCode("CAP1").operatingYear(operatingYear).build();
     Page<AssessmentsRegistry> assessmentsRegistryPage = new PageImpl<>(List.of(assessmentRegistry), PageRequest.of(0,1), 1);
 
-    Mockito.when(assessmentsRegistryRepositoryMock.findAssessmentsRegistriesByFilters(orgId, Set.of(debtPositionTypeOrgCode), null, null, null, null, null, null, operatingYear, AssessmentsRegistryStatus.ACTIVE, PageRequest.of(0, 5)))
+    when(assessmentsRegistryRepositoryMock.findAssessmentsRegistriesByFilters(orgId, Set.of(debtPositionTypeOrgCode), null, null, null, null, null, null, operatingYear, AssessmentsRegistryStatus.ACTIVE, PageRequest.of(0, 5)))
       .thenReturn(assessmentsRegistryPage);
-    Mockito.when(balanceDefaultMarshallingServiceMock.marshal(any())).thenReturn(balance);
+    when(balanceDefaultMarshallingServiceMock.marshal(any())).thenReturn(balance);
 
     String result = balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode);
 

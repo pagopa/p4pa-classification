@@ -18,7 +18,7 @@ import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.debtposition.dto.generated.*;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
+import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -108,15 +108,15 @@ class AssessmentsDetailServiceImplTest {
     assessment.setDebtPositionTypeOrgCode("DPTC");
     assessment.setDebtPositionTypeOrgId(1L);
 
-    CtBilancio bilancio = new CtBilancio();
+    Bilancio bilancio = new Bilancio();
     CtCapitolo capitolo = new CtCapitolo();
     capitolo.setCodCapitolo("CAP1");
     capitolo.setCodUfficio("UFF1");
     CtAccertamento accertamento = new CtAccertamento();
     accertamento.setCodAccertamento("ACC1");
     accertamento.setImporto(new BigDecimal("100.00"));
-    capitolo.getAccertamento().add(accertamento);
-    bilancio.getCapitolo().add(capitolo);
+    capitolo.getAccertamentos().add(accertamento);
+    bilancio.getCapitolos().add(capitolo);
 
     AssessmentsRegistry assessmentsRegistry = new AssessmentsRegistry();
     assessmentsRegistry.setAssessmentDescription("assessmentDescription");
@@ -154,7 +154,7 @@ class AssessmentsDetailServiceImplTest {
     ReceiptNoPII receipt = new ReceiptNoPII();
     Assessments assessment = new Assessments();
 
-    CtBilancio bilancio = new CtBilancio();
+    Bilancio bilancio = new Bilancio();
 
     when(balanceMarshallingServiceMock.unmarshal(BALANCE,null)).thenReturn(bilancio);
 
@@ -176,15 +176,15 @@ class AssessmentsDetailServiceImplTest {
     assessment.setOrganizationId(1L);
     assessment.setDebtPositionTypeOrgCode("DPTC");
 
-    CtBilancio bilancio = new CtBilancio();
+    Bilancio bilancio = new Bilancio();
     CtCapitolo capitolo = new CtCapitolo();
     capitolo.setCodCapitolo("CAP1");
     capitolo.setCodUfficio("UFF1");
     CtAccertamento accertamento = new CtAccertamento();
     accertamento.setCodAccertamento("ACC1");
     accertamento.setImporto(new BigDecimal("100.00"));
-    capitolo.getAccertamento().add(accertamento);
-    bilancio.getCapitolo().add(capitolo);
+    capitolo.getAccertamentos().add(accertamento);
+    bilancio.getCapitolos().add(capitolo);
 
     AssessmentsRegistry assessmentsRegistry = new AssessmentsRegistry();
     assessmentsRegistry.setAssessmentDescription("assessmentDescription");
@@ -217,15 +217,15 @@ class AssessmentsDetailServiceImplTest {
     assessment.setOrganizationId(1L);
     assessment.setDebtPositionTypeOrgCode("DPTC");
 
-    CtBilancio bilancio = new CtBilancio();
+    Bilancio bilancio = new Bilancio();
     CtCapitolo capitolo = new CtCapitolo();
     capitolo.setCodCapitolo("CAP1");
     capitolo.setCodUfficio("UFF1");
     CtAccertamento accertamento = new CtAccertamento();
     accertamento.setCodAccertamento("ACC1");
     accertamento.setImporto(new BigDecimal("100.00"));
-    capitolo.getAccertamento().add(accertamento);
-    bilancio.getCapitolo().add(capitolo);
+    capitolo.getAccertamentos().add(accertamento);
+    bilancio.getCapitolos().add(capitolo);
 
     AssessmentsDetail existingDetail = AssessmentsDetail.builder()
       .assessmentId(1L)

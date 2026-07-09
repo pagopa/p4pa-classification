@@ -4,19 +4,24 @@ import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.XMLReader;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.Schema;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -59,8 +64,12 @@ public class XMLUnmarshallerService {
       }
 
       JAXBElement<T> element = unmarshaller.unmarshal(saxSource, clazz);
+      XmlRootElement rootElement = clazz.getAnnotation(XmlRootElement.class);
+      if(rootElement != null && !rootElement.name().equals(element.getName().getLocalPart())) {
+        throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_XML_UNMARSHALLING_ERROR, "Unexpected root element name: found " + element.getName().getLocalPart() + " instead of " + rootElement.name());
+      }
       return element.getValue();
-    } catch (Exception e) {
+    } catch (ParserConfigurationException | SAXException | IOException | JAXBException e) {
       log.error("Error while parsing xml: {}", xmlString, e);
       throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_XML_UNMARSHALLING_ERROR, "Error while parsing xml: " + xmlString);
     }

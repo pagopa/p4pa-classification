@@ -42,7 +42,7 @@ class BalanceTemplateResolverServiceTest {
       .remittanceInformation("remittanceInformation")
       .build();
 
-    when(balanceServiceMock.unmarshalBalance(request.getBalance(),null)).thenReturn(new CtBilancio());
+    when(balanceServiceMock.unmarshalBalance(request.getBalance(),null)).thenReturn(new Bilancio());
 
     String result = service.calculateAmountBalance(request);
 
@@ -58,13 +58,13 @@ class BalanceTemplateResolverServiceTest {
       .remittanceInformation("remittanceInformation")
       .build();
 
-    CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
+    BilancioDefault ctBilancioDefault = new BilancioDefault();
     CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
     ctCapitoloDefault.setCodCapitolo("CAP1");
     CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
     ctAccertamentoDefault.setImporto("TOTALE");
-    ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
-    ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
+    ctCapitoloDefault.getAccertamentos().add(ctAccertamentoDefault);
+    ctBilancioDefault.getCapitolos().add(ctCapitoloDefault);
 
     String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>100.00</importo></accertamento></capitolo></bilancio>";
 
@@ -85,13 +85,13 @@ class BalanceTemplateResolverServiceTest {
       .remittanceInformation("remittanceInformation")
       .build();
 
-    CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
+    BilancioDefault ctBilancioDefault = new BilancioDefault();
     CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
     ctCapitoloDefault.setCodCapitolo("CAP1");
     CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
     ctAccertamentoDefault.setImporto("function calcola_importo(IMPORTO){var importo = Number(IMPORTO);var risultato = importo * 0.80;return (Math.ceil(risultato * 100) / 100).toString();}");
-    ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
-    ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
+    ctCapitoloDefault.getAccertamentos().add(ctAccertamentoDefault);
+    ctBilancioDefault.getCapitolos().add(ctCapitoloDefault);
 
     String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>80.00</importo></accertamento></capitolo></bilancio>";
 
@@ -111,13 +111,13 @@ class BalanceTemplateResolverServiceTest {
       .remittanceInformation("remittanceInformation")
       .build();
 
-    CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
+    BilancioDefault ctBilancioDefault = new BilancioDefault();
     CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
     ctCapitoloDefault.setCodCapitolo("CAP1");
     CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
     ctAccertamentoDefault.setImporto("function estrai_importo(IMPORTO){ return '90.00'; }");
-    ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
-    ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
+    ctCapitoloDefault.getAccertamentos().add(ctAccertamentoDefault);
+    ctBilancioDefault.getCapitolos().add(ctCapitoloDefault);
 
     String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>90.00</importo></accertamento></capitolo></bilancio>";
 
@@ -137,12 +137,12 @@ class BalanceTemplateResolverServiceTest {
       .remittanceInformation("remittanceInformation")
       .build();
 
-    CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
+    BilancioDefault ctBilancioDefault = new BilancioDefault();
     CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
     CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
     ctAccertamentoDefault.setImporto("NOT_VALID");
-    ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
-    ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
+    ctCapitoloDefault.getAccertamentos().add(ctAccertamentoDefault);
+    ctBilancioDefault.getCapitolos().add(ctCapitoloDefault);
 
     when(balanceServiceMock.unmarshalBalance(request.getBalance(),null)).thenReturn(ctBilancioDefault);
     InvalidValueException exception = assertThrows(InvalidValueException.class, () -> service.calculateAmountBalance(request));
@@ -161,13 +161,13 @@ class BalanceTemplateResolverServiceTest {
       .remittanceInformation("remittanceInformation")
       .build();
 
-    CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
+    BilancioDefault ctBilancioDefault = new BilancioDefault();
     CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
     ctCapitoloDefault.setCodCapitolo("CAP1");
     CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
     ctAccertamentoDefault.setImporto("TOTALE");
-    ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
-    ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
+    ctCapitoloDefault.getAccertamentos().add(ctAccertamentoDefault);
+    ctBilancioDefault.getCapitolos().add(ctCapitoloDefault);
 
     String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>100.00</importo></accertamento></capitolo><capitolo><codCapitolo>SEND</codCapitolo><codUfficio>SEND</codUfficio><accertamento><codAccertamento>SEND</codAccertamento><importo>1.50</importo></accertamento></capitolo></bilancio>";
 
@@ -195,13 +195,13 @@ class BalanceTemplateResolverServiceTest {
       .remittanceInformation("remittanceInformation")
       .build();
 
-    CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
+    BilancioDefault ctBilancioDefault = new BilancioDefault();
     CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
     ctCapitoloDefault.setCodCapitolo("CAP1");
     CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
     ctAccertamentoDefault.setImporto("TOTALE");
-    ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
-    ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
+    ctCapitoloDefault.getAccertamentos().add(ctAccertamentoDefault);
+    ctBilancioDefault.getCapitolos().add(ctCapitoloDefault);
 
     String balanceExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><bilancio xmlns=\"http://www.regione.veneto.it/schemas/2012/Pagamenti/Ente/\"><capitolo><codCapitolo>CAP1</codCapitolo><accertamento><importo>100.00</importo></accertamento></capitolo><capitolo><codCapitolo>CAP1</codCapitolo><codUfficio>UFF1</codUfficio><accertamento><codAccertamento>ACC1</codAccertamento><importo>2.00</importo></accertamento></capitolo></bilancio>";
 
@@ -227,14 +227,14 @@ class BalanceTemplateResolverServiceTest {
       .remittanceInformation("remittanceInformation")
       .build();
 
-    CtBilancio ctBilancio = new CtBilancio();
+    Bilancio ctBilancio = new Bilancio();
     CtCapitolo ctCapitolo = new CtCapitolo();
     ctCapitolo.setCodCapitolo("CAP1");
     CtAccertamento ctAccertamento = new CtAccertamento();
     ctAccertamento.setCodAccertamento("ACC1");
     ctAccertamento.setImporto(new BigDecimal("100.00"));
-    ctCapitolo.getAccertamento().add(ctAccertamento);
-    ctBilancio.getCapitolo().add(ctCapitolo);
+    ctCapitolo.getAccertamentos().add(ctAccertamento);
+    ctBilancio.getCapitolos().add(ctCapitolo);
 
     when(balanceServiceMock.unmarshalBalance(request.getBalance(), null)).thenReturn(ctBilancio);
 

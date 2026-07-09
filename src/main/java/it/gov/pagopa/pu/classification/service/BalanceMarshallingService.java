@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
+import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class BalanceMarshallingService {
     XMLUnmarshallerService xmlUnmarshallerService
   ) {
     try {
-      this.jaxbContext = JAXBContext.newInstance(CtBilancio.class);
+      this.jaxbContext = JAXBContext.newInstance(Bilancio.class);
       SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
       this.schema = schemaFactory.newSchema(paymetsReportingXsdResource.getURL());
       this.xmlMarshallerService = xmlMarshallerService;
@@ -54,8 +54,8 @@ public class BalanceMarshallingService {
    * @param ctBilancio the CtBilancio object to serialize
    * @return the marshalled CtBilancio to xmlString
    */
-  public String marshal(CtBilancio ctBilancio) {
-    return xmlMarshallerService.marshal(ctBilancio, CtBilancio.class, jaxbContext, schema, NAMESPACE, ROOT_ELEMENT);
+  public String marshal(Bilancio ctBilancio) {
+    return xmlMarshallerService.marshal(ctBilancio, Bilancio.class, jaxbContext, schema, NAMESPACE, ROOT_ELEMENT);
   }
 
   /**
@@ -64,17 +64,17 @@ public class BalanceMarshallingService {
    * @param xmlString the XML string to parse
    * @return the unmarshalled CtFlussoRiversamento object
    */
-  public CtBilancio unmarshal(String xmlString, Long amountCents) {
-    CtBilancio ctBilancio = xmlUnmarshallerService.unmarshal(xmlString, CtBilancio.class, jaxbContext, schema, NAMESPACE);
+  public Bilancio unmarshal(String xmlString, Long amountCents) {
+    Bilancio ctBilancio = xmlUnmarshallerService.unmarshal(xmlString, Bilancio.class, jaxbContext, schema, NAMESPACE);
     if(amountCents!=null && !isValidBalanceAmount(ctBilancio, amountCents)){
       throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_INVALID_BALANCE_AMOUNT, "Invalid amount balance");
     }
     return ctBilancio;
   }
 
-  private boolean isValidBalanceAmount(CtBilancio ctBilancio, Long amountCents) {
-    BigDecimal balanceAmount = ctBilancio.getCapitolo().stream()
-      .flatMap(capitolo -> capitolo.getAccertamento().stream())
+  private boolean isValidBalanceAmount(Bilancio ctBilancio, Long amountCents) {
+    BigDecimal balanceAmount = ctBilancio.getCapitolos().stream()
+      .flatMap(capitolo -> capitolo.getAccertamentos().stream())
       .map(CtAccertamento::getImporto)
       .reduce(BigDecimal.ZERO, BigDecimal::add);
     return balanceAmount.compareTo(Utilities.longCentsToBigDecimalEuro(amountCents)) == 0;

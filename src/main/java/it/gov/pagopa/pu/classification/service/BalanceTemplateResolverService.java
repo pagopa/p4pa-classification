@@ -44,7 +44,7 @@ public class BalanceTemplateResolverService {
 
     Object balanceXML = balanceService.unmarshalBalance(balance, null);
 
-    if (balanceXML instanceof CtBilancio ctBilancio) {
+    if (balanceXML instanceof Bilancio ctBilancio) {
       log.info("The balance amount is already calculated");
       if (notificationFeeCents != null && notificationFeeCents != 0) {
         addNotificationCostToBalance(ctBilancio, calculateAmountBalanceRequest, notificationFeeCents);
@@ -55,10 +55,10 @@ public class BalanceTemplateResolverService {
     }
 
     try {
-      CtBilancioDefault ctBilancioDefault = (CtBilancioDefault) balanceXML;
+      BilancioDefault ctBilancioDefault = (BilancioDefault) balanceXML;
       log.info("Calculating balance amount resolving default type");
-      for (CtCapitoloDefault capitolo : ctBilancioDefault.getCapitolo()) {
-        for (CtAccertamentoDefault ctAccertamentoDefault : capitolo.getAccertamento()) {
+      for (CtCapitoloDefault capitolo : ctBilancioDefault.getCapitolos()) {
+        for (CtAccertamentoDefault ctAccertamentoDefault : capitolo.getAccertamentos()) {
           BigDecimal calculatedAmount = calculateAccertamentoAmount(ctAccertamentoDefault, amountInstallment, calculateAmountBalanceRequest);
           ctAccertamentoDefault.setImporto(Utilities.amountToString(calculatedAmount));
         }
@@ -98,7 +98,7 @@ public class BalanceTemplateResolverService {
     throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_CALCULATION_ERROR, importo + " as function type to calculate amount balance not supported");
   }
 
-  private void addNotificationCostToBalanceDefault(CtBilancioDefault ctBilancioDefault, CalculateAmountBalanceRequest request, Long notificationFeeCents) {
+  private void addNotificationCostToBalanceDefault(BilancioDefault ctBilancioDefault, CalculateAmountBalanceRequest request, Long notificationFeeCents) {
     log.info("Adding notification costs to the balance");
     NotificationCodes codes = extractNotificationCodes(request.getDebtPositionTypeOrgBalanceCost());
 
@@ -112,11 +112,11 @@ public class BalanceTemplateResolverService {
     BigDecimal notificationAmount = Utilities.longCentsToBigDecimalEuro(notificationFeeCents);
     accertamentoNotifica.setImporto(Utilities.amountToString(notificationAmount));
 
-    capitoloNotifica.getAccertamento().add(accertamentoNotifica);
-    ctBilancioDefault.getCapitolo().add(capitoloNotifica);
+    capitoloNotifica.getAccertamentos().add(accertamentoNotifica);
+    ctBilancioDefault.getCapitolos().add(capitoloNotifica);
   }
 
-  private void addNotificationCostToBalance(CtBilancio ctBilancio, CalculateAmountBalanceRequest request, Long notificationFeeCents) {
+  private void addNotificationCostToBalance(Bilancio ctBilancio, CalculateAmountBalanceRequest request, Long notificationFeeCents) {
     log.info("Adding notification costs to the balance");
     NotificationCodes codes = extractNotificationCodes(request.getDebtPositionTypeOrgBalanceCost());
 
@@ -130,8 +130,8 @@ public class BalanceTemplateResolverService {
     BigDecimal notificationAmount = Utilities.longCentsToBigDecimalEuro(notificationFeeCents);
     accertamentoNotifica.setImporto(notificationAmount);
 
-    capitoloNotifica.getAccertamento().add(accertamentoNotifica);
-    ctBilancio.getCapitolo().add(capitoloNotifica);
+    capitoloNotifica.getAccertamentos().add(accertamentoNotifica);
+    ctBilancio.getCapitolos().add(capitoloNotifica);
   }
 
   private record NotificationCodes(
