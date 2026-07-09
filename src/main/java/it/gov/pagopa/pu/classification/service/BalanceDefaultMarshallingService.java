@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class BalanceDefaultMarshallingService {
   public BalanceDefaultMarshallingService(@Value("classpath:xsd/bilancioDefault.xsd") Resource xsdResource,
                                           XMLMarshallerService xmlMarshallerService, XMLUnmarshallerService xmlUnmarshallerService) {
     try {
-      this.jaxbContext = JAXBContext.newInstance(CtBilancioDefault.class);
+      this.jaxbContext = JAXBContext.newInstance(BilancioDefault.class);
       SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
       this.schema = schemaFactory.newSchema(xsdResource.getURL());
       this.xmlMarshallerService = xmlMarshallerService;
@@ -49,8 +49,8 @@ public class BalanceDefaultMarshallingService {
    * @param ctBilancioDefault the XML object to parse
    * @return the marshalled CtBilancioDefault to xmlString
    */
-  public String marshal(CtBilancioDefault ctBilancioDefault) {
-    return xmlMarshallerService.marshal(ctBilancioDefault, CtBilancioDefault.class, jaxbContext, schema, NAMESPACE, ROOT_ELEMENT);
+  public String marshal(BilancioDefault ctBilancioDefault) {
+    return xmlMarshallerService.marshal(ctBilancioDefault, BilancioDefault.class, jaxbContext, schema, NAMESPACE, ROOT_ELEMENT);
   }
 
   /**
@@ -59,17 +59,17 @@ public class BalanceDefaultMarshallingService {
    * @param xmlString the XML string to parse
    * @return the unmarshalled CtBilancioDefault
    */
-  public CtBilancioDefault unmarshal(String xmlString) {
-    CtBilancioDefault ctBilancioDefault = xmlUnmarshallerService.unmarshal(xmlString, CtBilancioDefault.class, jaxbContext, schema, NAMESPACE);
+  public BilancioDefault unmarshal(String xmlString) {
+    BilancioDefault ctBilancioDefault = xmlUnmarshallerService.unmarshal(xmlString, BilancioDefault.class, jaxbContext, schema, NAMESPACE);
     if(!isValidBalanceAmountTypes(ctBilancioDefault)){
       throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_MARSHALLING_ERROR, "Function type to calculate amount balance not supported");
     }
     return ctBilancioDefault;
   }
 
-  private boolean isValidBalanceAmountTypes(CtBilancioDefault ctBilancioDefault) {
-    return ctBilancioDefault.getCapitolo().stream()
-      .flatMap(capitolo -> capitolo.getAccertamento().stream())
+  private boolean isValidBalanceAmountTypes(BilancioDefault ctBilancioDefault) {
+    return ctBilancioDefault.getCapitolos().stream()
+      .flatMap(capitolo -> capitolo.getAccertamentos().stream())
       .map(CtAccertamentoDefault::getImporto)
       .allMatch(this::containsValidAmountType);
   }

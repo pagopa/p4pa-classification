@@ -12,7 +12,7 @@ import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.gov.pagopa.pu.debtposition.dto.generated.*;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
+import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -61,8 +61,8 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
       .filter(installmentDTO -> request.getIudList()==null || request.getIudList().contains(installmentDTO.getIud()))
       .forEach(i -> {
         if(StringUtils.hasLength(i.getBalance())) {
-          CtBilancio balance = balanceMarshallingService.unmarshal(i.getBalance(), null);
-          List<CtCapitolo> capitoloList = balance.getCapitolo();
+          Bilancio balance = balanceMarshallingService.unmarshal(i.getBalance(), null);
+          List<CtCapitolo> capitoloList = balance.getCapitolos();
 
           String opYear = String.valueOf(i.getUpdateDate().getYear());
 
@@ -76,7 +76,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
             String codCapitolo = capitolo.getCodCapitolo();
             String codUfficio = capitolo.getCodUfficio();
 
-            capitolo.getAccertamento().forEach(accertamento -> {
+            capitolo.getAccertamentos().forEach(accertamento -> {
               String codAccertamento = accertamento.getCodAccertamento();
 
               if (!shouldSkipAssessmentInsertion(debtPositionTypeOrgBalanceCosts, codCapitolo, codUfficio, codAccertamento)) {

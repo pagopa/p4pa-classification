@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancio;
+import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import org.junit.jupiter.api.Assertions;
@@ -57,24 +57,24 @@ class BalanceMarshallingServiceTest {
   void testHandleValidXmlWithNamespace() {
 
     //when
-    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE, null);
+    Bilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE, null);
 
     // then
     assertNotNull(result);
-    assertEquals("CAP1", result.getCapitolo().getFirst().getCodCapitolo());
-    assertEquals("UFF1", result.getCapitolo().getFirst().getCodUfficio());
+    assertEquals("CAP1", result.getCapitolos().getFirst().getCodCapitolo());
+    assertEquals("UFF1", result.getCapitolos().getFirst().getCodUfficio());
   }
 
   @Test
   void testHandleValidXmlWithCorrectAmount() {
 
     //when
-    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE, 10000L);
+    Bilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE, 10000L);
 
     // then
     assertNotNull(result);
-    assertEquals("CAP1", result.getCapitolo().getFirst().getCodCapitolo());
-    assertEquals("UFF1", result.getCapitolo().getFirst().getCodUfficio());
+    assertEquals("CAP1", result.getCapitolos().getFirst().getCodCapitolo());
+    assertEquals("UFF1", result.getCapitolos().getFirst().getCodUfficio());
   }
 
   @Test
@@ -87,18 +87,18 @@ class BalanceMarshallingServiceTest {
   void testHandleValidXmlWithoutNamespace() {
 
     //when
-    CtBilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITHOUT_NAMESPACE, null);
+    Bilancio result = handler.unmarshal(XML_STRING_BILANCIO_WITHOUT_NAMESPACE, null);
 
     // then
     assertNotNull(result);
-    assertEquals("CAP1", result.getCapitolo().getFirst().getCodCapitolo());
-    assertEquals("UFF1", result.getCapitolo().getFirst().getCodUfficio());
+    assertEquals("CAP1", result.getCapitolos().getFirst().getCodCapitolo());
+    assertEquals("UFF1", result.getCapitolos().getFirst().getCodUfficio());
   }
 
   @Test
   void testJAXBExceptionInConstructor() {
     try(MockedStatic<JAXBContext> mockedStaticJAXBContext = Mockito.mockStatic(JAXBContext.class)) {
-      mockedStaticJAXBContext.when(() -> JAXBContext.newInstance(CtBilancio.class))
+      mockedStaticJAXBContext.when(() -> JAXBContext.newInstance(Bilancio.class))
         .thenThrow(new JAXBException("Simulated JAXBException"));
       assertThrows(IllegalStateException.class, () -> new BalanceMarshallingService(resource, null, null));
     }

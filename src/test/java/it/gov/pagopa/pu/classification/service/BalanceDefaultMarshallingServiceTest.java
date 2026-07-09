@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.classification.service;
 
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtBilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -57,15 +57,15 @@ class BalanceDefaultMarshallingServiceTest {
 
   @Test
   void testMarshalValidCtBilancioDefaultWithNamespace() {
-    CtBilancioDefault ctBilancioDefault = new CtBilancioDefault();
+    BilancioDefault ctBilancioDefault = new BilancioDefault();
     CtCapitoloDefault ctCapitoloDefault = new CtCapitoloDefault();
     CtAccertamentoDefault ctAccertamentoDefault = new CtAccertamentoDefault();
     ctAccertamentoDefault.setCodAccertamento("ACC1");
     ctAccertamentoDefault.setImporto("TOTALE");
-    ctCapitoloDefault.getAccertamento().add(ctAccertamentoDefault);
+    ctCapitoloDefault.getAccertamentos().add(ctAccertamentoDefault);
     ctCapitoloDefault.setCodCapitolo("CAP1");
     ctCapitoloDefault.setCodUfficio("UFF1");
-    ctBilancioDefault.getCapitolo().add(ctCapitoloDefault);
+    ctBilancioDefault.getCapitolos().add(ctCapitoloDefault);
 
     String result = service.marshal(ctBilancioDefault);
 
@@ -93,30 +93,30 @@ class BalanceDefaultMarshallingServiceTest {
 
   @Test
   void testUnmarshalValidXmlWithNamespace() {
-    CtBilancioDefault result = service.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE);
+    BilancioDefault result = service.unmarshal(XML_STRING_BILANCIO_WITH_NAMESPACE);
 
     assertNotNull(result);
-    assertEquals("CAP1", result.getCapitolo().getFirst().getCodCapitolo());
-    assertEquals("UFF1", result.getCapitolo().getFirst().getCodUfficio());
-    assertEquals("ACC1", result.getCapitolo().getFirst().getAccertamento().getFirst().getCodAccertamento());
-    assertEquals("TOTALE", result.getCapitolo().getFirst().getAccertamento().getFirst().getImporto());
+    assertEquals("CAP1", result.getCapitolos().getFirst().getCodCapitolo());
+    assertEquals("UFF1", result.getCapitolos().getFirst().getCodUfficio());
+    assertEquals("ACC1", result.getCapitolos().getFirst().getAccertamentos().getFirst().getCodAccertamento());
+    assertEquals("TOTALE", result.getCapitolos().getFirst().getAccertamentos().getFirst().getImporto());
   }
 
   @Test
   void testUnmarshalValidXmlWithoutNamespace() {
-    CtBilancioDefault result = service.unmarshal(XML_STRING_BILANCIO_WITHOUT_NAMESPACE);
+    BilancioDefault result = service.unmarshal(XML_STRING_BILANCIO_WITHOUT_NAMESPACE);
 
     assertNotNull(result);
-    assertEquals("CAP1", result.getCapitolo().getFirst().getCodCapitolo());
-    assertEquals("UFF1", result.getCapitolo().getFirst().getCodUfficio());
-    assertEquals("ACC1", result.getCapitolo().getFirst().getAccertamento().getFirst().getCodAccertamento());
-    assertEquals("TOTALE", result.getCapitolo().getFirst().getAccertamento().getFirst().getImporto());
+    assertEquals("CAP1", result.getCapitolos().getFirst().getCodCapitolo());
+    assertEquals("UFF1", result.getCapitolos().getFirst().getCodUfficio());
+    assertEquals("ACC1", result.getCapitolos().getFirst().getAccertamentos().getFirst().getCodAccertamento());
+    assertEquals("TOTALE", result.getCapitolos().getFirst().getAccertamentos().getFirst().getImporto());
   }
 
   @Test
   void testJAXBExceptionInConstructor() {
     try(MockedStatic<JAXBContext> mockedStaticJAXBContext = Mockito.mockStatic(JAXBContext.class)) {
-      mockedStaticJAXBContext.when(() -> JAXBContext.newInstance(CtBilancioDefault.class))
+      mockedStaticJAXBContext.when(() -> JAXBContext.newInstance(BilancioDefault.class))
         .thenThrow(new JAXBException("Simulated JAXBException"));
       assertThrows(IllegalStateException.class, () -> new BalanceDefaultMarshallingService(resource, null, null));
     }
