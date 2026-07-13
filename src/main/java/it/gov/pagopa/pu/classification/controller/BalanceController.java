@@ -24,7 +24,9 @@ public class BalanceController implements BalanceApi {
   @Override
   public ResponseEntity<Boolean> validateBalance(ValidateBalanceRequest balanceRequest) {
     log.info("Validate formal structure of balance: {} amountCents: {}", balanceRequest.getBalance(), balanceRequest.getAmountCents());
-    return ResponseEntity.ok(balanceService.isBalanceValid(balanceRequest));
+    Boolean isValid = balanceService.isBalanceValid(balanceRequest);
+
+    return ResponseEntity.ok(isValid);
   }
 
   @Override

@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessException;
@@ -8,14 +9,15 @@ import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
+import it.gov.pagopa.pu.classification.util.Utilities;
+import it.veneto.regione.schemas._2012.pagamenti.ente.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
@@ -30,20 +32,29 @@ public class BalanceService {
   private final BalanceMarshallingService balanceMarshallingService;
   private final BalanceDefaultMarshallingService balanceDefaultMarshallingService;
   private final AssessmentsRegistryRepository assessmentsRegistryRepository;
+  private final BalanceTemplateResolverService balanceTemplateResolverService;
 
-  public BalanceService(BalanceMarshallingService balanceMarshallingService, BalanceDefaultMarshallingService balanceDefaultMarshallingService, AssessmentsRegistryRepository assessmentsRegistryRepository) {
+  public BalanceService(BalanceMarshallingService balanceMarshallingService, BalanceDefaultMarshallingService balanceDefaultMarshallingService,
+                        AssessmentsRegistryRepository assessmentsRegistryRepository,
+                        @Lazy BalanceTemplateResolverService balanceTemplateResolverService) {
     this.balanceMarshallingService = balanceMarshallingService;
     this.balanceDefaultMarshallingService = balanceDefaultMarshallingService;
     this.assessmentsRegistryRepository = assessmentsRegistryRepository;
+    this.balanceTemplateResolverService = balanceTemplateResolverService;
   }
 
   public Boolean isBalanceValid(ValidateBalanceRequest validateBalanceRequest) {
     try {
-      if (!Objects.isNull(unmarshalBalance(validateBalanceRequest.getBalance(), validateBalanceRequest.getAmountCents()))) {
-        log.info("The balance value is formally valid");
-        return Boolean.TRUE;
+      Object unmarshalled = unmarshalBalance(validateBalanceRequest.getBalance(), validateBalanceRequest.getAmountCents());
+      if (Objects.isNull(unmarshalled)) {
+        log.info("The balance value is not formally valid");
+        return Boolean.FALSE;
       }
-      return Boolean.FALSE;
+      log.info("The balance value is formally valid");
+      if (unmarshalled instanceof BilancioDefault) {
+        verifyBalancePercentageCompleteness(validateBalanceRequest.getBalance());
+      }
+      return Boolean.TRUE;
     } catch (InvalidValueException invalidValueException) {
       log.info("The balance value is not valid: {}", invalidValueException.getMessage());
       return Boolean.FALSE;
@@ -57,6 +68,31 @@ public class BalanceService {
     } catch (InvalidValueException invalidValueException) {
       log.info("Validating balance value with actual structure");
       return balanceMarshallingService.unmarshal(balance, amountCents);
+    }
+  }
+
+  private void verifyBalancePercentageCompleteness(String rawBalanceXml) {
+    long testAmountCents = 10000L;
+    BigDecimal expectedEuroAmount = Utilities.longCentsToBigDecimalEuro(testAmountCents);
+
+    CalculateAmountBalanceRequest simulationRequest = new CalculateAmountBalanceRequest();
+    simulationRequest.setBalance(rawBalanceXml);
+    simulationRequest.setAmountCents(testAmountCents);
+    simulationRequest.setNotificationFeeCents(0L);
+
+    String resolvedXml = balanceTemplateResolverService.calculateAmountBalance(simulationRequest);
+
+    Bilancio computedBalance = balanceMarshallingService.unmarshal(resolvedXml, null);
+
+    BigDecimal totalCalculated = computedBalance.getCapitolos().stream()
+      .flatMap(capitolo -> capitolo.getAccertamentos().stream())
+      .map(CtAccertamento::getImporto)
+      .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    log.info("Balance percentage verification - Expected total: {}, Calculated total: {}", expectedEuroAmount, totalCalculated);
+
+    if (totalCalculated.compareTo(expectedEuroAmount) != 0) {
+      throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_PERCENTAGE_INCOMPLETE, "Balance doesn't cover full percentage value");
     }
   }
 

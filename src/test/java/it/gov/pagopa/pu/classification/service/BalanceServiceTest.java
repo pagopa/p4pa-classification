@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessException;
@@ -8,6 +9,8 @@ import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
+import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -36,12 +40,15 @@ class BalanceServiceTest {
   private BalanceDefaultMarshallingService balanceDefaultMarshallingServiceMock;
   @Mock
   private AssessmentsRegistryRepository assessmentsRegistryRepositoryMock;
+  @Mock
+  private BalanceTemplateResolverService balanceTemplateResolverServiceMock;
 
   private BalanceService balanceService;
 
   @BeforeEach
   void init() {
-    balanceService = new BalanceService(balanceMarshallingServiceMock, balanceDefaultMarshallingServiceMock, assessmentsRegistryRepositoryMock);
+    balanceService = new BalanceService(balanceMarshallingServiceMock, balanceDefaultMarshallingServiceMock,
+      assessmentsRegistryRepositoryMock, balanceTemplateResolverServiceMock);
   }
 
   @AfterEach
@@ -49,7 +56,8 @@ class BalanceServiceTest {
     Mockito.verifyNoMoreInteractions(
       balanceMarshallingServiceMock,
       balanceDefaultMarshallingServiceMock,
-      assessmentsRegistryRepositoryMock);
+      assessmentsRegistryRepositoryMock,
+      balanceTemplateResolverServiceMock);
   }
 
   @Test
@@ -57,6 +65,19 @@ class BalanceServiceTest {
     ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
 
     when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(new BilancioDefault());
+
+    String simulatedXmlResult = "simulatedXmlResult";
+    when(balanceTemplateResolverServiceMock.calculateAmountBalance(any(CalculateAmountBalanceRequest.class)))
+      .thenReturn(simulatedXmlResult);
+
+    Bilancio computedBalance = new Bilancio();
+    CtCapitolo capitolo = new CtCapitolo();
+    CtAccertamento accertamento = new CtAccertamento();
+    accertamento.setImporto(new BigDecimal("100.00"));
+    capitolo.getAccertamentos().add(accertamento);
+    computedBalance.getCapitolos().add(capitolo);
+
+    when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null)).thenReturn(computedBalance);
 
     Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
