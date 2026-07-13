@@ -53,23 +53,29 @@ public class BalanceTemplateResolverService {
 
       return balance;
     }
+    if (balanceXML instanceof BilancioDefault ctBilancioDefault) {
+      return processAndMarshalDefaultBalance(ctBilancioDefault, amountInstallment, notificationFeeCents, calculateAmountBalanceRequest);
+    }
+    throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_MARSHALLING_ERROR, "Unsupported balance structure type");
+  }
 
+  public String processAndMarshalDefaultBalance(BilancioDefault ctBilancioDefault, BigDecimal amountInstallment, Long notificationFeeCents, CalculateAmountBalanceRequest request) {
     try {
-      BilancioDefault ctBilancioDefault = (BilancioDefault) balanceXML;
       log.info("Calculating balance amount resolving default type");
       for (CtCapitoloDefault capitolo : ctBilancioDefault.getCapitolos()) {
-        for (CtAccertamentoDefault ctAccertamentoDefault : capitolo.getAccertamentos()) {
-          BigDecimal calculatedAmount = calculateAccertamentoAmount(ctAccertamentoDefault, amountInstallment, calculateAmountBalanceRequest);
-          ctAccertamentoDefault.setImporto(Utilities.amountToString(calculatedAmount));
+        for (CtAccertamentoDefault accertamento : capitolo.getAccertamentos()) {
+          BigDecimal calculatedAmount = calculateAccertamentoAmount(accertamento, amountInstallment, request);
+          accertamento.setImporto(Utilities.amountToString(calculatedAmount));
         }
       }
 
       if (notificationFeeCents != null && notificationFeeCents != 0) {
-        addNotificationCostToBalanceDefault(ctBilancioDefault, calculateAmountBalanceRequest, notificationFeeCents);
+        addNotificationCostToBalanceDefault(ctBilancioDefault, request, notificationFeeCents);
       }
 
       return balanceDefaultMarshallingService.marshal(ctBilancioDefault);
     } catch (Exception e) {
+      log.error("Failed to calculate default balance amounts", e);
       throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_CALCULATION_ERROR, "Error calculating amount of balance: " + e.getMessage());
     }
   }

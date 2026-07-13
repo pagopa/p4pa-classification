@@ -53,15 +53,13 @@ public class BalanceService {
     }
 
     if (Objects.isNull(unmarshalled)) {
-      log.info("The balance value is null");
       return Boolean.FALSE;
     }
     log.info("The balance value is formally valid");
 
-    if (unmarshalled instanceof BilancioDefault) {
-      verifyBalancePercentageCompleteness(validateBalanceRequest.getBalance());
+    if (unmarshalled instanceof BilancioDefault bilancioDefault) {
+      verifyBalancePercentageCompleteness(bilancioDefault);
     }
-
     return Boolean.TRUE;
   }
 
@@ -75,27 +73,18 @@ public class BalanceService {
     }
   }
 
-  private void verifyBalancePercentageCompleteness(String rawBalanceXml) {
+  private void verifyBalancePercentageCompleteness(BilancioDefault bilancioDefault) {
     long testAmountCents = 10000L;
-    BigDecimal expectedEuroAmount = Utilities.longCentsToBigDecimalEuro(testAmountCents);
+    BigDecimal testAmountEuro = Utilities.longCentsToBigDecimalEuro(testAmountCents);
 
     CalculateAmountBalanceRequest simulationRequest = new CalculateAmountBalanceRequest();
-    simulationRequest.setBalance(rawBalanceXml);
     simulationRequest.setAmountCents(testAmountCents);
     simulationRequest.setNotificationFeeCents(0L);
 
-    String resolvedXml = balanceTemplateResolverService.calculateAmountBalance(simulationRequest);
+    String resolvedXml = balanceTemplateResolverService.processAndMarshalDefaultBalance(bilancioDefault, testAmountEuro, 0L, simulationRequest);
 
     Bilancio computedBalance = balanceMarshallingService.unmarshal(resolvedXml, null);
-
-    BigDecimal totalCalculated = computedBalance.getCapitolos().stream()
-      .flatMap(capitolo -> capitolo.getAccertamentos().stream())
-      .map(CtAccertamento::getImporto)
-      .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    log.info("Balance percentage verification - Expected total: {}, Calculated total: {}", expectedEuroAmount, totalCalculated);
-
-    if (totalCalculated.compareTo(expectedEuroAmount) != 0) {
+    if (!balanceMarshallingService.isValidBalanceAmount(computedBalance, testAmountCents)) {
       throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_PERCENTAGE_INCOMPLETE, "Balance doesn't cover full percentage value");
     }
   }

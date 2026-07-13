@@ -10,8 +10,6 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
-import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +27,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -63,22 +63,28 @@ class BalanceServiceTest {
 
   @Test
   void givenValidBalanceDefaultWhenValidateThenSuccess(){
-    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
+    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder()
+      .balance("balance")
+      .amountCents(1L)
+      .build();
 
-    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(new BilancioDefault());
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance()))
+      .thenReturn(new BilancioDefault());
 
     String simulatedXmlResult = "simulatedXmlResult";
-    when(balanceTemplateResolverServiceMock.calculateAmountBalance(any(CalculateAmountBalanceRequest.class)))
+    when(balanceTemplateResolverServiceMock.processAndMarshalDefaultBalance(
+      any(BilancioDefault.class),
+      any(BigDecimal.class),
+      anyLong(),
+      any(CalculateAmountBalanceRequest.class)))
       .thenReturn(simulatedXmlResult);
 
     Bilancio computedBalance = new Bilancio();
-    CtCapitolo capitolo = new CtCapitolo();
-    CtAccertamento accertamento = new CtAccertamento();
-    accertamento.setImporto(new BigDecimal("100.00"));
-    capitolo.getAccertamentos().add(accertamento);
-    computedBalance.getCapitolos().add(capitolo);
+    when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null))
+      .thenReturn(computedBalance);
 
-    when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null)).thenReturn(computedBalance);
+    when(balanceMarshallingServiceMock.isValidBalanceAmount(eq(computedBalance), eq(10000L)))
+      .thenReturn(true);
 
     Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
@@ -191,17 +197,19 @@ class BalanceServiceTest {
       .thenReturn(new BilancioDefault());
 
     String simulatedXmlResult = "simulatedXmlIncompleteResult";
-    when(balanceTemplateResolverServiceMock.calculateAmountBalance(any(CalculateAmountBalanceRequest.class)))
+    when(balanceTemplateResolverServiceMock.processAndMarshalDefaultBalance(
+      any(BilancioDefault.class),
+      any(BigDecimal.class),
+      anyLong(),
+      any(CalculateAmountBalanceRequest.class)))
       .thenReturn(simulatedXmlResult);
 
     Bilancio computedBalance = new Bilancio();
-    CtCapitolo capitolo = new CtCapitolo();
-    CtAccertamento accertamento = new CtAccertamento();
-    accertamento.setImporto(new BigDecimal("80.00"));
-    capitolo.getAccertamentos().add(accertamento);
-    computedBalance.getCapitolos().add(capitolo);
+    when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null))
+      .thenReturn(computedBalance);
 
-    when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null)).thenReturn(computedBalance);
+    when(balanceMarshallingServiceMock.isValidBalanceAmount(eq(computedBalance), eq(10000L)))
+      .thenReturn(false);
 
     InvalidValueException exception = assertThrows(InvalidValueException.class, () -> {
       balanceService.isBalanceValid(validateBalanceRequest);
