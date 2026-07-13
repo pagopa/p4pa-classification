@@ -44,21 +44,25 @@ public class BalanceService {
   }
 
   public Boolean isBalanceValid(ValidateBalanceRequest validateBalanceRequest) {
+    Object unmarshalled;
     try {
-      Object unmarshalled = unmarshalBalance(validateBalanceRequest.getBalance(), validateBalanceRequest.getAmountCents());
-      if (Objects.isNull(unmarshalled)) {
-        log.info("The balance value is not formally valid");
-        return Boolean.FALSE;
-      }
-      log.info("The balance value is formally valid");
-      if (unmarshalled instanceof BilancioDefault) {
-        verifyBalancePercentageCompleteness(validateBalanceRequest.getBalance());
-      }
-      return Boolean.TRUE;
+      unmarshalled = unmarshalBalance(validateBalanceRequest.getBalance(), validateBalanceRequest.getAmountCents());
     } catch (InvalidValueException invalidValueException) {
-      log.info("The balance value is not valid: {}", invalidValueException.getMessage());
+      log.info("The balance value is not formally valid: {}", invalidValueException.getMessage());
       return Boolean.FALSE;
     }
+
+    if (Objects.isNull(unmarshalled)) {
+      log.info("The balance value is null");
+      return Boolean.FALSE;
+    }
+    log.info("The balance value is formally valid");
+
+    if (unmarshalled instanceof BilancioDefault) {
+      verifyBalancePercentageCompleteness(validateBalanceRequest.getBalance());
+    }
+
+    return Boolean.TRUE;
   }
 
   public Object unmarshalBalance(String balance, Long amountCents) {

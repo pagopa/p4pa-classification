@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessExce
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
@@ -177,6 +178,36 @@ class BalanceServiceTest {
     String result = balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode);
 
     assertEquals(balance, result);
+  }
+
+  @Test
+  void givenIncompleteBalancePercentageWhenValidateThenThrowInvalidValueException() {
+    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder()
+      .balance("balance_incomplete")
+      .amountCents(1000L)
+      .build();
+
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance()))
+      .thenReturn(new BilancioDefault());
+
+    String simulatedXmlResult = "simulatedXmlIncompleteResult";
+    when(balanceTemplateResolverServiceMock.calculateAmountBalance(any(CalculateAmountBalanceRequest.class)))
+      .thenReturn(simulatedXmlResult);
+
+    Bilancio computedBalance = new Bilancio();
+    CtCapitolo capitolo = new CtCapitolo();
+    CtAccertamento accertamento = new CtAccertamento();
+    accertamento.setImporto(new BigDecimal("80.00"));
+    capitolo.getAccertamentos().add(accertamento);
+    computedBalance.getCapitolos().add(capitolo);
+
+    when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null)).thenReturn(computedBalance);
+
+    InvalidValueException exception = assertThrows(InvalidValueException.class, () -> {
+      balanceService.isBalanceValid(validateBalanceRequest);
+    });
+
+    assertEquals(ErrorCodeConstants.ERROR_CODE_BALANCE_PERCENTAGE_INCOMPLETE, exception.getCode());
   }
 
 }
