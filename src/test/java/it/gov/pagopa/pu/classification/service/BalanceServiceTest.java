@@ -83,7 +83,7 @@ class BalanceServiceTest {
     when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null))
       .thenReturn(computedBalance);
 
-    when(balanceMarshallingServiceMock.isValidBalanceAmount(eq(computedBalance), eq(10000L)))
+    when(balanceMarshallingServiceMock.isValidBalanceAmount(computedBalance, 10000L))
       .thenReturn(true);
 
     Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
@@ -208,7 +208,7 @@ class BalanceServiceTest {
     when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null))
       .thenReturn(computedBalance);
 
-    when(balanceMarshallingServiceMock.isValidBalanceAmount(eq(computedBalance), eq(10000L)))
+    when(balanceMarshallingServiceMock.isValidBalanceAmount(computedBalance, 10000L))
       .thenReturn(false);
 
     InvalidValueException exception = assertThrows(InvalidValueException.class, () -> {

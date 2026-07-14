@@ -59,18 +59,18 @@ public class BalanceTemplateResolverService {
     throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_MARSHALLING_ERROR, "Unsupported balance structure type");
   }
 
-  public String processAndMarshalDefaultBalance(BilancioDefault ctBilancioDefault, BigDecimal amountInstallment, Long notificationFeeCents, CalculateAmountBalanceRequest request) {
+  public String processAndMarshalDefaultBalance(BilancioDefault ctBilancioDefault, BigDecimal amountInstallment, Long notificationFeeCents, CalculateAmountBalanceRequest calculateAmountBalanceRequest) {
     try {
       log.info("Calculating balance amount resolving default type");
       for (CtCapitoloDefault capitolo : ctBilancioDefault.getCapitolos()) {
-        for (CtAccertamentoDefault accertamento : capitolo.getAccertamentos()) {
-          BigDecimal calculatedAmount = calculateAccertamentoAmount(accertamento, amountInstallment, request);
-          accertamento.setImporto(Utilities.amountToString(calculatedAmount));
+        for (CtAccertamentoDefault ctAccertamentoDefault : capitolo.getAccertamentos()) {
+          BigDecimal calculatedAmount = calculateAccertamentoAmount(ctAccertamentoDefault, amountInstallment, calculateAmountBalanceRequest);
+          ctAccertamentoDefault.setImporto(Utilities.amountToString(calculatedAmount));
         }
       }
 
       if (notificationFeeCents != null && notificationFeeCents != 0) {
-        addNotificationCostToBalanceDefault(ctBilancioDefault, request, notificationFeeCents);
+        addNotificationCostToBalanceDefault(ctBilancioDefault, calculateAmountBalanceRequest, notificationFeeCents);
       }
 
       return balanceDefaultMarshallingService.marshal(ctBilancioDefault);

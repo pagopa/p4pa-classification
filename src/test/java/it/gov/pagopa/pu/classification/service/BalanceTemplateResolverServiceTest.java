@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.classification.service;
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.DebtPositionTypeOrgBalanceCostDTO;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.veneto.regione.schemas._2012.pagamenti.ente.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -250,5 +251,24 @@ class BalanceTemplateResolverServiceTest {
     String result = service.calculateAmountBalance(request);
 
     assertEquals(expectedXml, result);
+  }
+
+  @Test
+  void givenUnsupportedBalanceTypeWhenCalculateThenThrowInvalidValueException() {
+    CalculateAmountBalanceRequest request = CalculateAmountBalanceRequest.builder()
+      .balance("unsupported_structure_xml")
+      .amountCents(100_00L)
+      .remittanceInformation("remittanceInformation")
+      .build();
+
+    when(balanceServiceMock.unmarshalBalance(request.getBalance(), null))
+      .thenReturn("Unsupported balance structure type");
+
+    InvalidValueException exception = assertThrows(InvalidValueException.class, () -> {
+      service.calculateAmountBalance(request);
+    });
+
+    assertEquals(ErrorCodeConstants.ERROR_CODE_BALANCE_MARSHALLING_ERROR, exception.getCode());
+    assertEquals("Unsupported balance structure type", exception.getMessage());
   }
 }
