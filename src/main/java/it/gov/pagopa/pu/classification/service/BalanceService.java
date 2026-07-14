@@ -80,7 +80,7 @@ public class BalanceService {
     simulationRequest.setAmountCents(testAmountCents);
     simulationRequest.setNotificationFeeCents(0L);
 
-    String resolvedXml = balanceTemplateResolverService.processAndMarshalDefaultBalance(bilancioDefault, 0L, simulationRequest);
+    String resolvedXml = balanceTemplateResolverService.processAndMarshalDefaultBalance(bilancioDefault, simulationRequest);
 
     Bilancio computedBalance = balanceMarshallingService.unmarshal(resolvedXml, null);
     if (!balanceMarshallingService.isValidBalanceAmount(computedBalance, testAmountCents)) {

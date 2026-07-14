@@ -72,7 +72,6 @@ class BalanceServiceTest {
     String simulatedXmlResult = "simulatedXmlResult";
     when(balanceTemplateResolverServiceMock.processAndMarshalDefaultBalance(
       any(BilancioDefault.class),
-      anyLong(),
       any(CalculateAmountBalanceRequest.class)))
       .thenReturn(simulatedXmlResult);
 
@@ -196,7 +195,6 @@ class BalanceServiceTest {
     String simulatedXmlResult = "simulatedXmlIncompleteResult";
     when(balanceTemplateResolverServiceMock.processAndMarshalDefaultBalance(
       any(BilancioDefault.class),
-      anyLong(),
       any(CalculateAmountBalanceRequest.class)))
       .thenReturn(simulatedXmlResult);
 

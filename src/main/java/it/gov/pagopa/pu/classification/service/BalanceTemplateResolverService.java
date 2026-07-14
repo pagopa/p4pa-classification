@@ -53,15 +53,16 @@ public class BalanceTemplateResolverService {
       return balance;
     }
     if (balanceXML instanceof BilancioDefault ctBilancioDefault) {
-      return processAndMarshalDefaultBalance(ctBilancioDefault, notificationFeeCents, calculateAmountBalanceRequest);
+      return processAndMarshalDefaultBalance(ctBilancioDefault, calculateAmountBalanceRequest);
     }
     throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_MARSHALLING_ERROR, "Unsupported balance structure type");
   }
 
-  public String processAndMarshalDefaultBalance(BilancioDefault ctBilancioDefault, Long notificationFeeCents, CalculateAmountBalanceRequest calculateAmountBalanceRequest) {
+  public String processAndMarshalDefaultBalance(BilancioDefault ctBilancioDefault, CalculateAmountBalanceRequest calculateAmountBalanceRequest) {
     try {
       log.info("Calculating balance amount resolving default type");
       BigDecimal amountInstallment = Utilities.longCentsToBigDecimalEuro(calculateAmountBalanceRequest.getAmountCents());
+      Long notificationFeeCents = calculateAmountBalanceRequest.getNotificationFeeCents();
       for (CtCapitoloDefault capitolo : ctBilancioDefault.getCapitolos()) {
         for (CtAccertamentoDefault ctAccertamentoDefault : capitolo.getAccertamentos()) {
           BigDecimal calculatedAmount = calculateAccertamentoAmount(ctAccertamentoDefault, amountInstallment, calculateAmountBalanceRequest);
