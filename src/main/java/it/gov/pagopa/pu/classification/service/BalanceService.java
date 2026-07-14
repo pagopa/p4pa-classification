@@ -75,13 +75,12 @@ public class BalanceService {
 
   private void verifyBalancePercentageCompleteness(BilancioDefault bilancioDefault) {
     long testAmountCents = 10000L;
-    BigDecimal testAmountEuro = Utilities.longCentsToBigDecimalEuro(testAmountCents);
 
     CalculateAmountBalanceRequest simulationRequest = new CalculateAmountBalanceRequest();
     simulationRequest.setAmountCents(testAmountCents);
     simulationRequest.setNotificationFeeCents(0L);
 
-    String resolvedXml = balanceTemplateResolverService.processAndMarshalDefaultBalance(bilancioDefault, testAmountEuro, 0L, simulationRequest);
+    String resolvedXml = balanceTemplateResolverService.processAndMarshalDefaultBalance(bilancioDefault, 0L, simulationRequest);
 
     Bilancio computedBalance = balanceMarshallingService.unmarshal(resolvedXml, null);
     if (!balanceMarshallingService.isValidBalanceAmount(computedBalance, testAmountCents)) {

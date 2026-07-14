@@ -21,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -73,7 +72,6 @@ class BalanceServiceTest {
     String simulatedXmlResult = "simulatedXmlResult";
     when(balanceTemplateResolverServiceMock.processAndMarshalDefaultBalance(
       any(BilancioDefault.class),
-      any(BigDecimal.class),
       anyLong(),
       any(CalculateAmountBalanceRequest.class)))
       .thenReturn(simulatedXmlResult);
@@ -198,7 +196,6 @@ class BalanceServiceTest {
     String simulatedXmlResult = "simulatedXmlIncompleteResult";
     when(balanceTemplateResolverServiceMock.processAndMarshalDefaultBalance(
       any(BilancioDefault.class),
-      any(BigDecimal.class),
       anyLong(),
       any(CalculateAmountBalanceRequest.class)))
       .thenReturn(simulatedXmlResult);
