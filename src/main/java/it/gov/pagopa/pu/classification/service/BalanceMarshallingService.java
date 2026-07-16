@@ -72,7 +72,7 @@ public class BalanceMarshallingService {
     return ctBilancio;
   }
 
-  private boolean isValidBalanceAmount(Bilancio ctBilancio, Long amountCents) {
+  public boolean isValidBalanceAmount(Bilancio ctBilancio, Long amountCents) {
     BigDecimal balanceAmount = ctBilancio.getCapitolos().stream()
       .flatMap(capitolo -> capitolo.getAccertamentos().stream())
       .map(CtAccertamento::getImporto)

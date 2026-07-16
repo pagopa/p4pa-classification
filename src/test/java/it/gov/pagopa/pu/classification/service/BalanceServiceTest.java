@@ -1,11 +1,13 @@
 package it.gov.pagopa.pu.classification.service;
 
+import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessException;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
+import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
 import org.junit.jupiter.api.AfterEach;
@@ -36,12 +38,15 @@ class BalanceServiceTest {
   private BalanceDefaultMarshallingService balanceDefaultMarshallingServiceMock;
   @Mock
   private AssessmentsRegistryRepository assessmentsRegistryRepositoryMock;
+  @Mock
+  private BalanceTemplateResolverService balanceTemplateResolverServiceMock;
 
   private BalanceService balanceService;
 
   @BeforeEach
   void init() {
-    balanceService = new BalanceService(balanceMarshallingServiceMock, balanceDefaultMarshallingServiceMock, assessmentsRegistryRepositoryMock);
+    balanceService = new BalanceService(balanceMarshallingServiceMock, balanceDefaultMarshallingServiceMock,
+      assessmentsRegistryRepositoryMock, balanceTemplateResolverServiceMock);
   }
 
   @AfterEach
@@ -49,14 +54,32 @@ class BalanceServiceTest {
     Mockito.verifyNoMoreInteractions(
       balanceMarshallingServiceMock,
       balanceDefaultMarshallingServiceMock,
-      assessmentsRegistryRepositoryMock);
+      assessmentsRegistryRepositoryMock,
+      balanceTemplateResolverServiceMock);
   }
 
   @Test
   void givenValidBalanceDefaultWhenValidateThenSuccess(){
-    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
+    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder()
+      .balance("balance")
+      .amountCents(1L)
+      .build();
 
-    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(new BilancioDefault());
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance()))
+      .thenReturn(new BilancioDefault());
+
+    String simulatedXmlResult = "simulatedXmlResult";
+    when(balanceTemplateResolverServiceMock.processAndMarshalDefaultBalance(
+      any(BilancioDefault.class),
+      any(CalculateAmountBalanceRequest.class)))
+      .thenReturn(simulatedXmlResult);
+
+    Bilancio computedBalance = new Bilancio();
+    when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null))
+      .thenReturn(computedBalance);
+
+    when(balanceMarshallingServiceMock.isValidBalanceAmount(computedBalance, 10000L))
+      .thenReturn(true);
 
     Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
 
@@ -156,6 +179,36 @@ class BalanceServiceTest {
     String result = balanceService.getBalanceByAssessmentRegistry(orgId, debtPositionTypeOrgCode);
 
     assertEquals(balance, result);
+  }
+
+  @Test
+  void givenIncompleteBalancePercentageWhenValidateThenThrowInvalidValueException() {
+    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder()
+      .balance("balance_incomplete")
+      .amountCents(1000L)
+      .build();
+
+    when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance()))
+      .thenReturn(new BilancioDefault());
+
+    String simulatedXmlResult = "simulatedXmlIncompleteResult";
+    when(balanceTemplateResolverServiceMock.processAndMarshalDefaultBalance(
+      any(BilancioDefault.class),
+      any(CalculateAmountBalanceRequest.class)))
+      .thenReturn(simulatedXmlResult);
+
+    Bilancio computedBalance = new Bilancio();
+    when(balanceMarshallingServiceMock.unmarshal(simulatedXmlResult, null))
+      .thenReturn(computedBalance);
+
+    when(balanceMarshallingServiceMock.isValidBalanceAmount(computedBalance, 10000L))
+      .thenReturn(false);
+
+    InvalidValueException exception = assertThrows(InvalidValueException.class, () -> {
+      balanceService.isBalanceValid(validateBalanceRequest);
+    });
+
+    assertEquals(ErrorCodeConstants.ERROR_CODE_BALANCE_PERCENTAGE_INCOMPLETE, exception.getCode());
   }
 
 }

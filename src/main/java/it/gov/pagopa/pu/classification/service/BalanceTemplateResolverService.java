@@ -39,7 +39,6 @@ public class BalanceTemplateResolverService {
 
   public String calculateAmountBalance(CalculateAmountBalanceRequest calculateAmountBalanceRequest) {
     String balance = calculateAmountBalanceRequest.getBalance();
-    BigDecimal amountInstallment = Utilities.longCentsToBigDecimalEuro(calculateAmountBalanceRequest.getAmountCents());
     Long notificationFeeCents = calculateAmountBalanceRequest.getNotificationFeeCents();
 
     Object balanceXML = balanceService.unmarshalBalance(balance, null);
@@ -53,10 +52,17 @@ public class BalanceTemplateResolverService {
 
       return balance;
     }
+    if (balanceXML instanceof BilancioDefault ctBilancioDefault) {
+      return processAndMarshalDefaultBalance(ctBilancioDefault, calculateAmountBalanceRequest);
+    }
+    throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_MARSHALLING_ERROR, "Unsupported balance structure type");
+  }
 
+  public String processAndMarshalDefaultBalance(BilancioDefault ctBilancioDefault, CalculateAmountBalanceRequest calculateAmountBalanceRequest) {
     try {
-      BilancioDefault ctBilancioDefault = (BilancioDefault) balanceXML;
       log.info("Calculating balance amount resolving default type");
+      BigDecimal amountInstallment = Utilities.longCentsToBigDecimalEuro(calculateAmountBalanceRequest.getAmountCents());
+      Long notificationFeeCents = calculateAmountBalanceRequest.getNotificationFeeCents();
       for (CtCapitoloDefault capitolo : ctBilancioDefault.getCapitolos()) {
         for (CtAccertamentoDefault ctAccertamentoDefault : capitolo.getAccertamentos()) {
           BigDecimal calculatedAmount = calculateAccertamentoAmount(ctAccertamentoDefault, amountInstallment, calculateAmountBalanceRequest);
@@ -70,6 +76,7 @@ public class BalanceTemplateResolverService {
 
       return balanceDefaultMarshallingService.marshal(ctBilancioDefault);
     } catch (Exception e) {
+      log.error("Failed to calculate default balance amounts", e);
       throw new InvalidValueException(ErrorCodeConstants.ERROR_CODE_BALANCE_CALCULATION_ERROR, "Error calculating amount of balance: " + e.getMessage());
     }
   }
