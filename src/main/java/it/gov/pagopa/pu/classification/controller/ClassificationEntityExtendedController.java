@@ -52,9 +52,8 @@ public class ClassificationEntityExtendedController implements ClassificationEnt
 
   @Override
   public ResponseEntity<Integer> deleteDuplicates(Long organizationId,
-    String iuv, Integer transferIndex, Long receiptPaymentAmount,
-    String receiptOrgFiscalCode, ClassificationsEnum label) {
-    return ResponseEntity.ok(repository.deleteDuplicates(organizationId, iuv, transferIndex, receiptPaymentAmount, receiptOrgFiscalCode, label));
+    String iuv, Integer transferIndex, ClassificationsEnum label) {
+    return ResponseEntity.ok(repository.deleteDuplicates(organizationId, iuv, transferIndex, label));
   }
 
   @Override
