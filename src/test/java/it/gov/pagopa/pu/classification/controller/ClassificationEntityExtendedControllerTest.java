@@ -6,9 +6,9 @@ import it.gov.pagopa.pu.classification.repository.ClassificationRepository;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,12 +23,8 @@ class ClassificationEntityExtendedControllerTest {
   @Mock
   private ClassificationService serviceMock;
 
+  @InjectMocks
   private ClassificationEntityExtendedController controller;
-
-  @BeforeEach
-  void init(){
-    controller = new ClassificationEntityExtendedController(repositoryMock, serviceMock);
-  }
 
   @AfterEach
   void verifyNoMoreInteractions(){
@@ -131,20 +127,17 @@ class ClassificationEntityExtendedControllerTest {
     Long organizationId = 0L;
     String iuv = "IUV";
     int transferIndex = 1;
-    Long receiptPaymentAmount = 100L;
-    String receiptOrgFiscalCode = "ORGFISCALCODE";
     ClassificationsEnum label = ClassificationsEnum.DOPPI;
     int expectedResult = 1;
 
     Mockito.when(repositoryMock.deleteDuplicates(Mockito.same(organizationId),
         Mockito.same(iuv), Mockito.same(transferIndex),
-        Mockito.same(receiptPaymentAmount), Mockito.same(receiptOrgFiscalCode),
         Mockito.same(label)))
       .thenReturn(expectedResult);
 
     // When
     Integer result = controller.deleteDuplicates(organizationId, iuv,
-        transferIndex, receiptPaymentAmount, receiptOrgFiscalCode, label)
+        transferIndex, label)
       .getBody();
 
     // Then

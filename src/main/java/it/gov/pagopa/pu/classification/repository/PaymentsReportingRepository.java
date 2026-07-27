@@ -60,7 +60,7 @@ public interface PaymentsReportingRepository extends JpaRepository<PaymentsRepor
     "pr1.receiverOrganizationCode = pr2.receiverOrganizationCode AND " +
     "pr1.amountPaidCents = pr2.amountPaidCents AND " +
     "pr1.paymentOutcomeCode != pr2.paymentOutcomeCode AND " +
-    "pr1.deleted=false")
+    "pr1.deleted=false AND pr2.deleted=false")
   List<PaymentsReporting> findDuplicates(Long organizationId, String iuv,
                                          Integer transferIndex, String receiverOrganizationCode);
 
