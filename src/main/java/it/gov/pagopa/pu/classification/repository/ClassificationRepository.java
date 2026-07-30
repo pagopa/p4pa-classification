@@ -52,12 +52,9 @@ public interface ClassificationRepository extends
     WHERE c.organizationId = :organizationId
     AND c.iuv = :iuv
     AND c.transferIndex = :transferIndex
-    AND c.receiptPaymentAmount = :receiptPaymentAmount
-    AND c.receiptOrgFiscalCode = :receiptOrgFiscalCode
     AND c.label = :label
     """)
   Integer deleteDuplicates(Long organizationId, String iuv, Integer transferIndex,
-    Long receiptPaymentAmount, String receiptOrgFiscalCode,
     ClassificationsEnum label);
 
   @Transactional
