@@ -9,7 +9,6 @@ import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
-import it.gov.pagopa.pu.classification.util.Utilities;
 import it.veneto.regione.schemas._2012.pagamenti.ente.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
@@ -43,10 +41,10 @@ public class BalanceService {
     this.balanceTemplateResolverService = balanceTemplateResolverService;
   }
 
-  public Boolean isBalanceValid(ValidateBalanceRequest validateBalanceRequest) {
+  public Boolean isBalanceValid(ValidateBalanceRequest validateBalanceRequest, Boolean allowTemplate) {
     Object unmarshalled;
     try {
-      unmarshalled = unmarshalBalance(validateBalanceRequest.getBalance(), validateBalanceRequest.getAmountCents());
+      unmarshalled = unmarshalBalance(validateBalanceRequest.getBalance(), validateBalanceRequest.getAmountCents(), allowTemplate);
     } catch (InvalidValueException invalidValueException) {
       log.info("The balance value is not formally valid: {}", invalidValueException.getMessage());
       return Boolean.FALSE;
@@ -63,14 +61,18 @@ public class BalanceService {
     return Boolean.TRUE;
   }
 
-  public Object unmarshalBalance(String balance, Long amountCents) {
-    try {
-      log.info("Validating balance value with default structure");
-      return balanceDefaultMarshallingService.unmarshal(balance);
-    } catch (InvalidValueException invalidValueException) {
-      log.info("Validating balance value with actual structure");
-      return balanceMarshallingService.unmarshal(balance, amountCents);
+  public Object unmarshalBalance(String balance, Long amountCents, Boolean allowTemplate) {
+    if (Boolean.TRUE.equals(allowTemplate)) {
+      try {
+        log.info("Validating balance value with template structure");
+        return balanceDefaultMarshallingService.unmarshal(balance);
+      } catch (InvalidValueException invalidValueException) {
+        log.info("Template structure validation failed, falling back to actual structure");
+      }
     }
+
+    log.info("Validating balance value with actual structure");
+    return balanceMarshallingService.unmarshal(balance, amountCents);
   }
 
   private void verifyBalancePercentageCompleteness(BilancioDefault bilancioDefault) {
