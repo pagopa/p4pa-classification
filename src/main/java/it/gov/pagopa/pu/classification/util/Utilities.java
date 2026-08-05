@@ -17,6 +17,14 @@ public class Utilities {
 
   private Utilities(){}
 
+  public static String getTraceId(){
+    return MDC.get("traceId");
+  }
+
+  public static String getSpanId(){
+    return MDC.get("spanId");
+  }
+
   public static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
 
   public static final ThreadLocal<NumberFormat> DECIMAL_FORMAT = ThreadLocal.withInitial(() -> {
@@ -45,10 +53,6 @@ public class Utilities {
   public static boolean isValidIntervalBetweenLocalDate(LocalDate dateFrom, LocalDate dateTo, ChronoUnit chronoUnit, long maxInterval) {
     long result = chronoUnit.between(dateFrom, dateTo);
     return result >= 0 && result <= maxInterval;
-  }
-
-  public static String getTraceId(){
-    return MDC.get("traceId");
   }
 
   public static String amountToString(BigDecimal amount) {
