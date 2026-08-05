@@ -33,10 +33,10 @@ class BalanceControllerTest {
   @Test
   void givenValidBalanceWhenValidateThenSuccess() {
     ValidateBalanceRequest balanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
-    Mockito.when(balanceServiceMock.isBalanceValid(balanceRequest))
+    Mockito.when(balanceServiceMock.isBalanceValid(balanceRequest, true))
       .thenReturn(Boolean.TRUE);
 
-    ResponseEntity<Boolean> response = balanceController.validateBalance(balanceRequest);
+    ResponseEntity<Boolean> response = balanceController.validateBalance(balanceRequest, true);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(Boolean.TRUE, response.getBody());

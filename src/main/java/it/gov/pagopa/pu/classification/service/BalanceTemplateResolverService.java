@@ -41,7 +41,7 @@ public class BalanceTemplateResolverService {
     String balance = calculateAmountBalanceRequest.getBalance();
     Long notificationFeeCents = calculateAmountBalanceRequest.getNotificationFeeCents();
 
-    Object balanceXML = balanceService.unmarshalBalance(balance, null);
+    Object balanceXML = balanceService.unmarshalBalance(balance, null, true);
 
     if (balanceXML instanceof Bilancio ctBilancio) {
       log.info("The balance amount is already calculated");
