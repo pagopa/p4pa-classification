@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.common.pii.citizen.service;
 
-import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessException;
+import it.gov.pagopa.pu.classification.exception.common.IllegalStateBusinessException;
 import it.gov.pagopa.pu.common.pii.citizen.util.AESUtils;
 import it.gov.pagopa.pu.common.pii.citizen.util.HashAlgorithm;
 import org.springframework.beans.factory.annotation.Value;

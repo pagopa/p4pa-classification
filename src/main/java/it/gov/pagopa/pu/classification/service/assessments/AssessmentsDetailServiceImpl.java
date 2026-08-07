@@ -7,7 +7,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.BuildAssessmentsDetailParamsDTO;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
-import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
+import it.gov.pagopa.pu.classification.exception.common.NotFoundException;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;

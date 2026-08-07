@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.service;
 
-import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.exception.common.InvalidValueException;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
