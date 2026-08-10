@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.classification.util.faker;
 
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentStatus;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentSyncStatus;
-import it.gov.pagopa.pu.debtposition.dto.generated.PersonEntityType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentSyncStatus;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonEntityType;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;

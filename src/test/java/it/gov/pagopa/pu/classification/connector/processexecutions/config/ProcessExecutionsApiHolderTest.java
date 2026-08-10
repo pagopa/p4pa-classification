@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.connector.processexecutions.config;
 
+import it.gov.pagopa.pu.classification.config.json.JsonConfig;
 import it.gov.pagopa.pu.classification.connector.BaseApiHolderTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,21 +13,28 @@ import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class ProcessExecutionsApiHolderTest extends BaseApiHolderTest {
   @Mock
   private RestTemplateBuilder restTemplateBuilderMock;
 
-  private ProcessExecutionsApisHolder processExecutionsApisHolder;
+  private ProcessExecutionsApisHolder apisHolder;
+  private ProcessExecutionsApiClientConfig apiClientConfig;
 
   @BeforeEach
   void setUp() {
-    Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
-    Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-    ProcessExecutionsApiClientConfig clientConfig = ProcessExecutionsApiClientConfig.builder()
+    when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
+    when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
+
+    apiClientConfig = ProcessExecutionsApiClientConfig.builder()
       .baseUrl("http://example.com")
+      .maxAttempts(3)
       .build();
-    processExecutionsApisHolder = new ProcessExecutionsApisHolder(clientConfig, restTemplateBuilderMock);
+    apisHolder = new ProcessExecutionsApisHolder(apiClientConfig, restTemplateBuilderMock, new JsonConfig().objectMapperJackson3());
+
+    verifyHttpClientErrorJsonBodyHandlerConfiguration(apisHolder.getIngestionFlowFileEntityControllerApi(null));
   }
 
   @AfterEach
@@ -38,12 +46,22 @@ class ProcessExecutionsApiHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void testRetryConfiguration() {
+    assertRetry(apiClientConfig,
+      accessToken ->
+        apisHolder.getIngestionFlowFileEntityControllerApi(accessToken)
+          .crudGetIngestionflowfile("123"),
+      new ParameterizedTypeReference<>() {}
+    );
+  }
+
+  @Test
   void whenGetIngestionFlowFileEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken ->
-        processExecutionsApisHolder.getIngestionFlowFileEntityControllerApi(accessToken)
+        apisHolder.getIngestionFlowFileEntityControllerApi(accessToken)
           .crudGetIngestionflowfile("123"),
       new ParameterizedTypeReference<>() {},
-      processExecutionsApisHolder::unload);
+      apisHolder::unload);
   }
 }

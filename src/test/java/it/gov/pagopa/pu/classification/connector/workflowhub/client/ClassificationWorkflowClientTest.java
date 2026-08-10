@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.classification.connector.workflowhub.client;
 
 import it.gov.pagopa.pu.classification.connector.workflowhub.config.WorkflowHubApisHolder;
-import it.gov.pagopa.pu.workflow.client.generated.ClassificationApi;
-import it.gov.pagopa.pu.workflow.dto.generated.WorkflowCreatedDTO;
+import it.gov.pagopa.pu.workflowhub.client.generated.ClassificationApi;
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.classification.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.enums.TreasuryOrigin;
-import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

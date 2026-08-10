@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.classification.model;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionOrigin;
-import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptOriginType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.classification.model.listeners;
 import it.gov.pagopa.pu.classification.connector.workflowhub.service.ClassificationWorkflowService;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
-import it.gov.pagopa.pu.workflow.dto.generated.WorkflowCreatedDTO;
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

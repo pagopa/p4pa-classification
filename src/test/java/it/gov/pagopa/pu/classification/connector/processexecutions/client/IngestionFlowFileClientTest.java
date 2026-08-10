@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.classification.connector.processexecutions.client;
 
 import it.gov.pagopa.pu.classification.connector.processexecutions.config.ProcessExecutionsApisHolder;
-import it.gov.pagopa.pu.p4paprocessexecutions.controller.generated.IngestionFlowFileControllerApi;
-import it.gov.pagopa.pu.p4paprocessexecutions.controller.generated.IngestionFlowFileEntityControllerApi;
-import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
+import it.gov.pagopa.pu.processexecutions.client.generated.IngestionFlowFileControllerApi;
+import it.gov.pagopa.pu.processexecutions.client.generated.IngestionFlowFileEntityControllerApi;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
