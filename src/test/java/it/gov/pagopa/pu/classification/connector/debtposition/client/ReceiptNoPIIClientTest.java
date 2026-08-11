@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.debtposition.client;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.classification.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.debtpositions.client.generated.ReceiptNoPiiEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.client.generated.ReceiptNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptNoPII;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static org.mockito.Mockito.when;
 
@@ -59,7 +59,7 @@ class ReceiptNoPIIClientTest {
     when(debtPositionApisHolderMock.getReceiptNoPiiEntityControllerApi(accessToken))
       .thenReturn(receiptNoPiiEntityControllerApiMock);
     when(receiptNoPiiEntityControllerApiMock.crudGetReceiptnopii(String.valueOf(receiptId)))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     ReceiptNoPII result = client.getById(receiptId, accessToken);
 
@@ -92,7 +92,7 @@ class ReceiptNoPIIClientTest {
     when(debtPositionApisHolderMock.getReceiptNoPiiSearchControllerApi(accessToken))
             .thenReturn(receiptNoPiiSearchControllerApiMock);
     when(receiptNoPiiSearchControllerApiMock.crudReceiptsGetByReceiptIdAndDebtPositionTypeOrgCode(receiptId,debtPositionTypeOrgCode))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     ReceiptNoPII result = client.getByReceiptIdAndDebtPositionTypeOrgCode(receiptId, debtPositionTypeOrgCode, accessToken);
 
