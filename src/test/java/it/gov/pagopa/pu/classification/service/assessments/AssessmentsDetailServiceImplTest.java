@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.classification.connector.debtposition.ReceiptService;
 import it.gov.pagopa.pu.classification.connector.debtposition.TransferService;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import it.gov.pagopa.pu.classification.exception.custom.InvalidRequestBodyException;
-import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
+import it.gov.pagopa.pu.classification.exception.common.NotFoundException;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.model.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
@@ -16,7 +16,7 @@ import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.classification.service.BalanceMarshallingService;
 import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.TestUtils;
-import it.gov.pagopa.pu.debtposition.dto.generated.*;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@SuppressWarnings("unchecked")
 @ExtendWith(MockitoExtension.class)
 class AssessmentsDetailServiceImplTest {
 
@@ -667,7 +668,7 @@ class AssessmentsDetailServiceImplTest {
 
   @Test
   void givenNotificationCostAndNoDebtPositionTypeOrgBalanceCostWhenCreateAssessmentsDetailThenOk() {
-    Long organizationId = 1L;
+    long organizationId = 1L;
     String accessToken = "accessToken";
     Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
     assessments.setOrganizationId(organizationId);
@@ -678,7 +679,7 @@ class AssessmentsDetailServiceImplTest {
     ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
     installment.setReceiptId(receipt.getReceiptId());
     List<Transfer> transfers = podamFactory.manufacturePojo(List.class, Transfer.class);
-    Long transferTotalAmount = 0L;
+    long transferTotalAmount = 0L;
     for(Transfer t:transfers){
       t.setOrgFiscalCode(receipt.getOrgFiscalCode());
       transferTotalAmount+=t.getAmountCents();
@@ -745,7 +746,7 @@ class AssessmentsDetailServiceImplTest {
 
   @Test
   void givenNotificationCostAndDebtPositionTypeOrgBalanceCostWhenCreateAssessmentsDetailThenOk(){
-    Long organizationId = 1L;
+    long organizationId = 1L;
     String accessToken = "accessToken";
     Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
     assessments.setOrganizationId(organizationId);
@@ -756,7 +757,7 @@ class AssessmentsDetailServiceImplTest {
     ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
     installment.setReceiptId(receipt.getReceiptId());
     List<Transfer> transfers = podamFactory.manufacturePojo(List.class, Transfer.class);
-    Long transferTotalAmount = 0L;
+    long transferTotalAmount = 0L;
     for(Transfer t:transfers){
       t.setOrgFiscalCode(receipt.getOrgFiscalCode());
       transferTotalAmount+=t.getAmountCents();
@@ -825,7 +826,7 @@ class AssessmentsDetailServiceImplTest {
 
   @Test
   void givenNotificationCostGreaterThanTransferAmountAndDebtPositionTypeOrgBalanceCostWhenCreateAssessmentsDetailThenOk(){
-    Long organizationId = 1L;
+    long organizationId = 1L;
     String accessToken = "accessToken";
     Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
     assessments.setOrganizationId(organizationId);
@@ -836,7 +837,7 @@ class AssessmentsDetailServiceImplTest {
     ReceiptNoPII receipt = podamFactory.manufacturePojo(ReceiptNoPII.class);
     installment.setReceiptId(receipt.getReceiptId());
     List<Transfer> transfers = podamFactory.manufacturePojo(List.class, Transfer.class);
-    Long transferTotalAmount = 0L;
+    long transferTotalAmount = 0L;
     for(Transfer t:transfers){
       t.setOrgFiscalCode(receipt.getOrgFiscalCode());
       transferTotalAmount+=t.getAmountCents();

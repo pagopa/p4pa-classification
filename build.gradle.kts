@@ -60,7 +60,7 @@ val caffeineVersion = "3.2.4"
 val httpClientVersion = "5.6.1"
 val httpCoreVersion = "5.4.2"
 val kafkaAppender = "0.2.0-RC2"
-val lz4JavaVersion = "1.11.0"
+val lz4JavaVersion = "1.11.1"
 val postgresJdbcVersion = "42.7.13"
 val activationVersion = "2.1.4"
 val jaxbVersion = "4.0.9"
@@ -256,13 +256,13 @@ openApiGenerate {
       "ClassificationView" to "it.gov.pagopa.pu.classification.dto.ClassificationViewDTO",
       "Assessments" to "it.gov.pagopa.pu.classification.model.Assessments",
       "PaymentNotificationDTO" to "it.gov.pagopa.pu.classification.dto.PaymentNotificationDTO",
-      "PersonDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO",
+      "PersonDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO",
       "FullClassificationView" to "it.gov.pagopa.pu.classification.dto.FullClassificationViewDTO",
       "ClassificationsEnum" to "it.gov.pagopa.pu.classification.enums.ClassificationsEnum",
       "TreasuredClassificationDTO" to "it.gov.pagopa.pu.classification.model.view.TreasuredClassificationView",
       "ClassificationDetailViewDTO" to "it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO",
       "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.enums.AssessmentStatus",
-      "DebtPositionDTO" to "it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionDTO",
+      "DebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO",
       "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.model.AssessmentsRegistry",
       "AssessmentsDetail" to "it.gov.pagopa.pu.classification.model.AssessmentsDetail",
       "ClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.model.view.classification.ClassificationPaidInstallmentsView"
@@ -301,9 +301,9 @@ tasks.register<GenerateTask>("openApiGenerateDEBTPOSITIONS") {
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-debt-positions.generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
-  invokerPackage.set("it.gov.pagopa.pu.debtposition.generated")
-  apiPackage.set("it.gov.pagopa.pu.debtposition.client.generated")
-  modelPackage.set("it.gov.pagopa.pu.debtposition.dto.generated")
+  invokerPackage.set("it.gov.pagopa.pu.debtpositions.generated")
+  apiPackage.set("it.gov.pagopa.pu.debtpositions.client.generated")
+  modelPackage.set("it.gov.pagopa.pu.debtpositions.dto.generated")
   typeMappings.set(mapOf("LocalDateTime" to "java.time.LocalDateTime"))
   configOptions.set(
     mapOf(
@@ -335,8 +335,9 @@ tasks.register<GenerateTask>("openApiGeneratePROCESSEXECUTION") {
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-process-executions.generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.pu.p4paprocessexecutions.controller.generated")
-  modelPackage.set("it.gov.pagopa.pu.p4paprocessexecutions.dto.generated")
+  invokerPackage.set("it.gov.pagopa.pu.processexecutions.generated")
+  apiPackage.set("it.gov.pagopa.pu.processexecutions.client.generated")
+  modelPackage.set("it.gov.pagopa.pu.processexecutions.dto.generated")
   typeMappings.set(
     mapOf(
       "LocalDateTime" to "java.time.LocalDateTime"
@@ -403,9 +404,9 @@ tasks.register<GenerateTask>("openApiGenerateWORKFLOWHUB") {
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-workflow-hub.generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
-  invokerPackage.set("it.gov.pagopa.pu.workflow.generated")
-  apiPackage.set("it.gov.pagopa.pu.workflow.client.generated")
-  modelPackage.set("it.gov.pagopa.pu.workflow.dto.generated")
+  invokerPackage.set("it.gov.pagopa.pu.workflowhub.generated")
+  apiPackage.set("it.gov.pagopa.pu.workflowhub.client.generated")
+  modelPackage.set("it.gov.pagopa.pu.workflowhub.dto.generated")
   configOptions.set(
     mapOf(
       "swaggerAnnotations" to "false",

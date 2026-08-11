@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.classification.connector.debtposition.client;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.classification.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +22,7 @@ public class DebtPositionTypeOrgClient {
     try {
       return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsGetDebtPositionTypeOrgByInstallmentId(installmentId);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.info("Cannot find DeptPositionTypeOrg from installment id {}", installmentId);
       return null;
     }
@@ -44,7 +44,7 @@ public class DebtPositionTypeOrgClient {
     try {
       return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsFindByOrganizationIdAndCode(organizationId, debtPositionTypeOrgCode);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.info("Cannot find DebtPositionTypeOrg from organizationId={} and debtPositionTypeOrgCode={}", organizationId, debtPositionTypeOrgCode);
       return null;
     }

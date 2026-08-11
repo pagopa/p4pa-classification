@@ -11,7 +11,7 @@ import it.gov.pagopa.pu.classification.service.BalanceMarshallingService;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
-import it.gov.pagopa.pu.debtposition.dto.generated.*;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;
 import jakarta.transaction.Transactional;
@@ -64,7 +64,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
           Bilancio balance = balanceMarshallingService.unmarshal(i.getBalance(), null);
           List<CtCapitolo> capitoloList = balance.getCapitolos();
 
-          String opYear = String.valueOf(i.getUpdateDate().getYear());
+          String opYear = String.valueOf(Objects.requireNonNull(i.getUpdateDate()).getYear());
 
           List<DebtPositionTypeOrgBalanceCost> debtPositionTypeOrgBalanceCosts = debtPositionTypeOrgBalanceCostMap.computeIfAbsent(
             opYear,

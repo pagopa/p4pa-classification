@@ -11,7 +11,7 @@ import it.gov.pagopa.pu.classification.service.BalanceMarshallingService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.classification.util.Utilities;
-import it.gov.pagopa.pu.debtposition.dto.generated.*;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamento;
 import it.veneto.regione.schemas._2012.pagamenti.ente.Bilancio;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitolo;

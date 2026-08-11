@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.connector.workflowhub.service;
 
-import it.gov.pagopa.pu.workflow.dto.generated.WorkflowCreatedDTO;
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 
 public interface ClassificationWorkflowService {
 

@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.common.pii.citizen.service;
 
-import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
+import it.gov.pagopa.pu.classification.exception.common.NotFoundException;
 import it.gov.pagopa.pu.common.pii.citizen.enums.PersonalDataType;
 import it.gov.pagopa.pu.common.pii.citizen.model.PersonalData;
 import it.gov.pagopa.pu.common.pii.citizen.repository.PersonalDataRepository;

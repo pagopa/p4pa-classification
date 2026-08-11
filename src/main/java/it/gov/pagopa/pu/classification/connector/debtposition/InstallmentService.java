@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.connector.debtposition;
 
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 
 import java.util.List;
 import java.util.Set;

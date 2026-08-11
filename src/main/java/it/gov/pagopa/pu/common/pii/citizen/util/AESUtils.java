@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.common.pii.citizen.util;
 
-import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessException;
+import it.gov.pagopa.pu.classification.exception.common.IllegalStateBusinessException;
 
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;

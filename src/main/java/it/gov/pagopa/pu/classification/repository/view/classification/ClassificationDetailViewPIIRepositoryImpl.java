@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.repository.view.classification;
 
 import it.gov.pagopa.pu.classification.dto.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
+import it.gov.pagopa.pu.classification.exception.common.NotFoundException;
 import it.gov.pagopa.pu.classification.mapper.pii.view.ClassificationDetailViewPIIMapper;
 import it.gov.pagopa.pu.classification.model.view.classification.ClassificationDetailViewNoPII;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;

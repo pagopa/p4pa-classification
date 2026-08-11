@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.debtposition;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.client.ReceiptNoPIIClient;
-import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptNoPII;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
