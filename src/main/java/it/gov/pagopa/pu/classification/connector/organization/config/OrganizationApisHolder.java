@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.organization.config;
 
 import it.gov.pagopa.pu.classification.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.classification.connector.organization.mapper.OrganizationErrorDTOMapper;
 import it.gov.pagopa.pu.organization.client.generated.OrganizationSearchControllerApi;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationErrorDTO;
 import it.gov.pagopa.pu.organization.generated.ApiClient;
@@ -30,7 +31,7 @@ public class OrganizationApisHolder {
     apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
     apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
     restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "ORGANIZATION", clientConfig.isPrintBodyWhenError(),
-      OrganizationErrorDTO.class, OrganizationErrorDTO::getCode, OrganizationErrorDTO::getMessage)
+      OrganizationErrorDTO.class, OrganizationErrorDTOMapper::map)
     );
 
     this.organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
