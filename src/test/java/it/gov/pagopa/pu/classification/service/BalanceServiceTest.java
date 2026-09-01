@@ -3,8 +3,8 @@ package it.gov.pagopa.pu.classification.service;
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.ValidateBalanceRequest;
 import it.gov.pagopa.pu.classification.enums.AssessmentsRegistryStatus;
-import it.gov.pagopa.pu.classification.exception.custom.IllegalStateBusinessException;
-import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.exception.common.IllegalStateBusinessException;
+import it.gov.pagopa.pu.classification.exception.common.InvalidValueException;
 import it.gov.pagopa.pu.classification.model.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRegistryRepository;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
@@ -81,7 +81,7 @@ class BalanceServiceTest {
     when(balanceMarshallingServiceMock.isValidBalanceAmount(computedBalance, 10000L))
       .thenReturn(true);
 
-    Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
+    Boolean result = balanceService.isBalanceValid(validateBalanceRequest, true);
 
     assertEquals(Boolean.TRUE, result);
   }
@@ -93,7 +93,18 @@ class BalanceServiceTest {
     when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenThrow(InvalidValueException.class);
     when(balanceMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance(),validateBalanceRequest.getAmountCents())).thenReturn(new Bilancio());
 
-    Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
+    Boolean result = balanceService.isBalanceValid(validateBalanceRequest, true);
+
+    assertEquals(Boolean.TRUE, result);
+  }
+
+  @Test
+  void givenValidBalanceWithNotAllowedTemplateWhenValidateThenSuccess(){
+    ValidateBalanceRequest validateBalanceRequest = ValidateBalanceRequest.builder().balance("balance").amountCents(1L).build();
+
+    when(balanceMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance(),validateBalanceRequest.getAmountCents())).thenReturn(new Bilancio());
+
+    Boolean result = balanceService.isBalanceValid(validateBalanceRequest, false);
 
     assertEquals(Boolean.TRUE, result);
   }
@@ -105,7 +116,7 @@ class BalanceServiceTest {
     when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenThrow(InvalidValueException.class);
     when(balanceMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance(),validateBalanceRequest.getAmountCents())).thenThrow(InvalidValueException.class);
 
-    Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
+    Boolean result = balanceService.isBalanceValid(validateBalanceRequest, true);
 
     assertEquals(Boolean.FALSE, result);
   }
@@ -116,7 +127,7 @@ class BalanceServiceTest {
 
     when(balanceDefaultMarshallingServiceMock.unmarshal(validateBalanceRequest.getBalance())).thenReturn(null);
 
-    Boolean result = balanceService.isBalanceValid(validateBalanceRequest);
+    Boolean result = balanceService.isBalanceValid(validateBalanceRequest, true);
 
     assertEquals(Boolean.FALSE, result);
   }
@@ -204,9 +215,9 @@ class BalanceServiceTest {
     when(balanceMarshallingServiceMock.isValidBalanceAmount(computedBalance, 10000L))
       .thenReturn(false);
 
-    InvalidValueException exception = assertThrows(InvalidValueException.class, () -> {
-      balanceService.isBalanceValid(validateBalanceRequest);
-    });
+    InvalidValueException exception = assertThrows(InvalidValueException.class, () ->
+      balanceService.isBalanceValid(validateBalanceRequest, true)
+    );
 
     assertEquals(ErrorCodeConstants.ERROR_CODE_BALANCE_PERCENTAGE_INCOMPLETE, exception.getCode());
   }

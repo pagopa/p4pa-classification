@@ -1,13 +1,16 @@
 package it.gov.pagopa.pu.classification.connector.processexecutions.config;
 
-import it.gov.pagopa.pu.classification.config.rest.RestTemplateConfig;
-import it.gov.pagopa.pu.p4paprocessexecutions.controller.ApiClient;
-import it.gov.pagopa.pu.p4paprocessexecutions.controller.BaseApi;
-import it.gov.pagopa.pu.p4paprocessexecutions.controller.generated.IngestionFlowFileEntityControllerApi;
+import it.gov.pagopa.pu.classification.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.classification.connector.processexecutions.mapper.ProcessExecutionsErrorDTOMapper;
+import it.gov.pagopa.pu.processexecutions.generated.ApiClient;
+import it.gov.pagopa.pu.processexecutions.generated.BaseApi;
+import it.gov.pagopa.pu.processexecutions.client.generated.IngestionFlowFileEntityControllerApi;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ProcessExecutionsErrorDTO;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class ProcessExecutionsApisHolder {
@@ -16,19 +19,20 @@ public class ProcessExecutionsApisHolder {
 
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
-    public ProcessExecutionsApisHolder(
-        ProcessExecutionsApiClientConfig clientConfig,
-        RestTemplateBuilder restTemplateBuilder
-    ) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ApiClient apiClient = new ApiClient(restTemplate);
-      apiClient.setBasePath(clientConfig.getBaseUrl());
-      apiClient.setBearerToken(bearerTokenHolder::get);
-      apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
-      apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
-      if (clientConfig.isPrintBodyWhenError()) {
-        restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("PROCESS-EXECUTIONS"));
-      }
+  public ProcessExecutionsApisHolder(
+    ProcessExecutionsApiClientConfig clientConfig,
+    RestTemplateBuilder restTemplateBuilder,
+    JsonMapper jsonMapper
+  ) {
+    RestTemplate restTemplate = restTemplateBuilder.build();
+    ApiClient apiClient = new ApiClient(restTemplate);
+    apiClient.setBasePath(clientConfig.getBaseUrl());
+    apiClient.setBearerToken(bearerTokenHolder::get);
+    apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
+    apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
+    restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "PROCESS-EXECUTIONs", clientConfig.isPrintBodyWhenError(),
+      ProcessExecutionsErrorDTO.class, ProcessExecutionsErrorDTOMapper::map)
+    );
 
     this.ingestionFlowFileEntityControllerApi = new IngestionFlowFileEntityControllerApi(
       apiClient);

@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.common.pii.citizen.service;
 
 import it.gov.pagopa.pu.classification.dto.ClassificationViewDTO;
 import it.gov.pagopa.pu.classification.dto.pii.ReceiptPIIDTO;
-import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
+import it.gov.pagopa.pu.classification.exception.common.NotFoundException;
 import it.gov.pagopa.pu.classification.util.TestUtils;
 import it.gov.pagopa.pu.common.pii.citizen.enums.PersonalDataType;
 import it.gov.pagopa.pu.common.pii.citizen.model.PersonalData;
@@ -26,6 +26,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PersonalDataServiceTest {
@@ -65,7 +67,7 @@ class PersonalDataServiceTest {
     ClassificationViewDTO pii = new ClassificationViewDTO();
 
     byte[] cipherData = new byte[0];
-    Mockito.when(cipherServiceMock.encryptObj(pii)).thenReturn(cipherData);
+    when(cipherServiceMock.encryptObj(pii)).thenReturn(cipherData);
     PersonalData personalDataInput = PersonalData.builder()
       .type(PERSONAL_DATA_TYPE.name())
       .data(cipherData)
@@ -78,7 +80,7 @@ class PersonalDataServiceTest {
       .data(cipherData)
       .build();
 
-    Mockito.when(repositoryMock.save(personalDataInput)).thenReturn(personalDataOutput);
+    when(repositoryMock.save(personalDataInput)).thenReturn(personalDataOutput);
 
     // When
     long insert = service.insert(pii, PERSONAL_DATA_TYPE);
@@ -93,9 +95,9 @@ class PersonalDataServiceTest {
     // Given
     long personalDataId = 1L;
     ClassificationViewDTO expected = podamFactory.manufacturePojo(CLASS_PII_DTO);
-    Mockito.when(repositoryMock.findById(personalDataId)).thenReturn(
+    when(repositoryMock.findById(personalDataId)).thenReturn(
       Optional.of(PersonalData.builder().id(personalDataId).data(new byte[0]).type(PERSONAL_DATA_TYPE.name()).build()));
-    Mockito.when(cipherServiceMock.decryptObj(new byte[0], CLASS_PII_DTO)).thenReturn(expected);
+    when(cipherServiceMock.decryptObj(new byte[0], CLASS_PII_DTO)).thenReturn(expected);
 
     // When
     ClassificationViewDTO result = service.get(personalDataId, CLASS_PII_DTO);
@@ -108,7 +110,7 @@ class PersonalDataServiceTest {
   void givenNotFoundPersonalDataIdWhenGetThenException() {
     // Given
     long personalDataId = 1L;
-    Mockito.when(repositoryMock.findById(personalDataId)).thenReturn(Optional.empty());
+    when(repositoryMock.findById(personalDataId)).thenReturn(Optional.empty());
 
     // When
     NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> service.get(personalDataId, CLASS_PII_DTO));
@@ -129,11 +131,11 @@ class PersonalDataServiceTest {
     ClassificationViewDTO pii1 = podamFactory.manufacturePojo(CLASS_PII_DTO);
     ClassificationViewDTO pii2 = podamFactory.manufacturePojo(CLASS_PII_DTO);
 
-    Mockito.when(repositoryMock.findAllById(personalDataIds)).thenReturn(List.of(
+    when(repositoryMock.findAllById(personalDataIds)).thenReturn(List.of(
       PersonalData.builder().id(pId1).data(new byte[0]).type(PERSONAL_DATA_TYPE.name()).build(),
       PersonalData.builder().id(pId2).data(new byte[0]).type(PERSONAL_DATA_TYPE.name()).build()
     ));
-    Mockito.when(cipherServiceMock.decryptObj(new byte[0], CLASS_PII_DTO))
+    when(cipherServiceMock.decryptObj(new byte[0], CLASS_PII_DTO))
       .thenReturn(pii1)
       .thenReturn(pii2);
 
@@ -149,9 +151,9 @@ class PersonalDataServiceTest {
   void givenNotFoundPersonalDataIdsWhenGetAllThenException() {
     // Given
     Set<Long> personalDataIds = Set.of(1L, 2L);
-    Mockito.when(repositoryMock.findAllById(personalDataIds)).thenReturn(List.of(
+    when(repositoryMock.findAllById(personalDataIds)).thenReturn(List.of(
       PersonalData.builder().id(1L).data(new byte[0]).type(PERSONAL_DATA_TYPE.name()).build()));
-    Mockito.when(cipherServiceMock.decryptObj(new byte[0], CLASS_PII_DTO)).thenReturn(podamFactory.manufacturePojo(CLASS_PII_DTO));
+    when(cipherServiceMock.decryptObj(new byte[0], CLASS_PII_DTO)).thenReturn(podamFactory.manufacturePojo(CLASS_PII_DTO));
 
     // When
     NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> service.getAll(personalDataIds, CLASS_PII_DTO));
@@ -187,7 +189,7 @@ class PersonalDataServiceTest {
 
     ClassificationViewDTO pii1 = podamFactory.manufacturePojo(CLASS_PII_DTO);
     ClassificationViewDTO pii2 = podamFactory.manufacturePojo(CLASS_PII_DTO);
-    Mockito.when(cipherServiceMock.decryptObj(new byte[0], CLASS_PII_DTO))
+    when(cipherServiceMock.decryptObj(new byte[0], CLASS_PII_DTO))
       .thenReturn(pii1)
       .thenReturn(pii2);
 
@@ -211,21 +213,21 @@ class PersonalDataServiceTest {
     Class<ReceiptPIIDTO> classType2 = CLASS_PII_DTO2;
     Map<Long, ReceiptPIIDTO> expectedPData2Dtos = Map.of();
 
-    service = Mockito.spy(service);
+    service = spy(service);
 
     List<PersonalData> pData = List.of();
 
-    Mockito.when(repositoryMock.findAllById(Stream.concat(
+    when(repositoryMock.findAllById(Stream.concat(
         pDataIds1.stream(),
         pDataIds2.stream()
       ).toList()))
       .thenReturn(pData);
 
-    Mockito.doReturn(expectedPData1Dtos)
+    doReturn(expectedPData1Dtos)
       .when(service)
       .getAll(Mockito.same(pData), Mockito.same(pDataIds1), Mockito.same(classType1));
 
-    Mockito.doReturn(expectedPData2Dtos)
+    doReturn(expectedPData2Dtos)
       .when(service)
       .getAll(Mockito.same(pData), Mockito.same(pDataIds2), Mockito.same(classType2));
 
@@ -249,6 +251,6 @@ class PersonalDataServiceTest {
     service.delete(id);
 
     // Then
-    Mockito.verify(repositoryMock).deleteById(id);
+    verify(repositoryMock).deleteById(id);
   }
 }

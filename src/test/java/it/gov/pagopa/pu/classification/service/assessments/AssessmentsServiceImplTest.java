@@ -7,15 +7,15 @@ import it.gov.pagopa.pu.classification.connector.organization.service.Organizati
 import it.gov.pagopa.pu.classification.dto.filters.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
+import it.gov.pagopa.pu.classification.exception.common.NotFoundException;
 import it.gov.pagopa.pu.classification.exception.custom.AssessmentConflictException;
-import it.gov.pagopa.pu.classification.exception.custom.NotFoundException;
 import it.gov.pagopa.pu.classification.mapper.pages.PagedAssessmentsViewMapper;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.repository.AssessmentsRepository;
 import it.gov.pagopa.pu.classification.util.faker.InstallmentNoPIIFaker;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptNoPII;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -140,8 +140,8 @@ class AssessmentsServiceImplTest {
     assertEquals(1, result.size());
     assertEquals(assessment, result.getFirst());
 
-    Mockito.verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
-    Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
+    verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
+    verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
 
   @Test
@@ -175,9 +175,9 @@ class AssessmentsServiceImplTest {
     assertEquals(1, result.size());
     assertEquals(assessment, result.getFirst());
 
-    Mockito.verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
-    Mockito.verify(assessmentsRepositoryMock, times(0)).save(Mockito.any());
-    Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
+    verify(assessmentsDetailServiceMock).createAssessmentDetail(Mockito.same(assessment), Mockito.same(receipt), Mockito.same(installments.getFirst()));
+    verify(assessmentsRepositoryMock, times(0)).save(Mockito.any());
+    verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
 
 
@@ -225,8 +225,8 @@ class AssessmentsServiceImplTest {
 
     PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
-    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, new HashSet<>(debtPositionTypeOrgCodes), AssessmentStatus.ACTIVE, Pageable.ofSize(1))).thenReturn(pagedAssessments);
-    Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
+    when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, new HashSet<>(debtPositionTypeOrgCodes), AssessmentStatus.ACTIVE, Pageable.ofSize(1))).thenReturn(pagedAssessments);
+    when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
     //when
     PagedAssessmentsView result = service.getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
     //then
@@ -249,8 +249,8 @@ class AssessmentsServiceImplTest {
     Page<Assessments> pagedAssessments = new PageImpl<>(content, pageable, 1);
     PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
-    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
-    Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
+    when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
+    when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
 
     // when
     PagedAssessmentsView result = service.getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, pageable);
@@ -275,8 +275,8 @@ class AssessmentsServiceImplTest {
     Page<Assessments> pagedAssessments = new PageImpl<>(content, pageable, 1);
     PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
-    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
-    Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
+    when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, null, AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
+    when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
 
     // when
     PagedAssessmentsView result = service.getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, pageable);
@@ -301,8 +301,8 @@ class AssessmentsServiceImplTest {
     Page<Assessments> pagedAssessments = new PageImpl<>(content, pageable, 1);
     PagedAssessmentsView expected = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
-    Mockito.when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, Set.of("VALID_CODE"), AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
-    Mockito.when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
+    when(assessmentsRepositoryMock.findPagedAssessments(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, Set.of("VALID_CODE"), AssessmentStatus.ACTIVE, pageable)).thenReturn(pagedAssessments);
+    when(pagedAssessmentsViewMapperMock.map(pagedAssessments)).thenReturn(expected);
 
     // when
     PagedAssessmentsView result = service.getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, pageable);
@@ -333,9 +333,9 @@ class AssessmentsServiceImplTest {
             .printed(false)
             .operatorExternalUserId(operatorExternalUserId)
             .build();
-    Mockito.when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(null);
-    Mockito.when(assessmentsRepositoryMock.save(assessments)).thenReturn(assessments);
-    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken)).thenReturn(debtPositionTypeOrg);
+    when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(null);
+    when(assessmentsRepositoryMock.save(assessments)).thenReturn(assessments);
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken)).thenReturn(debtPositionTypeOrg);
     //when
 
     Assessments result = service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId, accessToken);
@@ -361,7 +361,7 @@ class AssessmentsServiceImplTest {
       .flagManualGeneration(true)
       .printed(false)
       .operatorExternalUserId(operatorExternalUserId).build();
-    Mockito.when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(assessments);
+    when(assessmentsRepositoryMock.findByOrganizationIdAndDebtPositionTypeOrgCodeAndAssessmentName(organizationId, debtPositionTypeOrgCode, assessmentName)).thenReturn(assessments);
     //when
 
     AssessmentConflictException ex = assertThrows(AssessmentConflictException.class, () -> service.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, operatorExternalUserId, accessToken));
@@ -394,7 +394,7 @@ class AssessmentsServiceImplTest {
     List<Assessments> result = service.createAssessment(receiptId, operatorExternalUserId, accessToken);
 
     assertEquals(0, result.size());
-    Mockito.verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
+    verify(assessmentsDetailServiceMock).deleteAssessmentDetailsByOrgAndInstallment(Mockito.same(organizationId), Mockito.same(installments.getFirst().getIuv()), Mockito.same(installments.getFirst().getIud()));
   }
 
   @Test

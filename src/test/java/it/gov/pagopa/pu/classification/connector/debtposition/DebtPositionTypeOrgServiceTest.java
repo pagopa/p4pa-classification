@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.debtposition;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.client.DebtPositionTypeOrgClient;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

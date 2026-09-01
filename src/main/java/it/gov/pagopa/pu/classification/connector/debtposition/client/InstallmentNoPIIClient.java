@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.classification.connector.debtposition.client;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelInstallmentNoPII;
-import it.gov.pagopa.pu.debtposition.dto.generated.InstallmentNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelInstallmentNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

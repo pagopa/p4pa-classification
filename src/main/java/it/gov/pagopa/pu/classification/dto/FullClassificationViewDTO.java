@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.classification.dto.pii.PaymentNotificationPIIDTO;
 import it.gov.pagopa.pu.classification.dto.pii.ReceiptPIIDTO;
 import it.gov.pagopa.pu.classification.model.view.classification.FullClassificationViewNoPII;
 import it.gov.pagopa.pu.common.pii.dto.Full2PIIDTO;
-import it.gov.pagopa.pu.debtposition.dto.generated.PersonDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

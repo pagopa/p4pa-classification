@@ -1,10 +1,11 @@
 package it.gov.pagopa.pu.classification.connector.debtposition.client;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.debtposition.client.generated.DebtPositionTypeOrgBalanceCostSearchControllerApi;
-import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelDebtPositionTypeOrgBalanceCost;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrgBalanceCost;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrgBalanceCostType;
+import it.gov.pagopa.pu.classification.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.debtpositions.client.generated.DebtPositionTypeOrgBalanceCostSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -86,7 +86,7 @@ class DebtPositionTypeOrgBalanceCostClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeOrgBalanceCostSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeOrgBalanceCostSearchControllerApiMock);
     when(debtPositionTypeOrgBalanceCostSearchControllerApiMock.crudDebtPositionTypeOrgBalanceCostsGetByInstallmentIdAndTypeAndOperatingYear(installmentId, debtPositionTypeOrgBalanceCostType, operatingYear))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     DebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgBalanceCostClient.getByInstallmentIdAndTypeAndOperatingYear(installmentId, debtPositionTypeOrgBalanceCostType, operatingYear, accessToken);
 

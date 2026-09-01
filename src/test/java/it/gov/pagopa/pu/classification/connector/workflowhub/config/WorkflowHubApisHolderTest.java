@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.classification.connector.workflowhub.config;
 
+import it.gov.pagopa.pu.classification.config.json.JsonConfig;
 import it.gov.pagopa.pu.classification.connector.BaseApiHolderTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,28 +13,33 @@ import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class WorkflowHubApisHolderTest extends BaseApiHolderTest {
 
   @Mock
   private RestTemplateBuilder restTemplateBuilderMock;
 
-  private WorkflowHubApisHolder workflowHubApisHolder;
+  private WorkflowHubApisHolder apisHolder;
+  private WorkflowHubApiClientConfig apiClientConfig;
 
   @BeforeEach
   void setUp() {
-    Mockito.when(restTemplateBuilderMock.build())
-      .thenReturn(restTemplateMock);
-    Mockito.when(restTemplateMock.getUriTemplateHandler())
-      .thenReturn(new DefaultUriBuilderFactory());
-    WorkflowHubApiClientConfig clientConfig = WorkflowHubApiClientConfig.builder()
+    when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
+    when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
+
+    apiClientConfig = WorkflowHubApiClientConfig.builder()
       .baseUrl("http://example.com")
+      .maxAttempts(3)
       .build();
-    workflowHubApisHolder = new WorkflowHubApisHolder(clientConfig, restTemplateBuilderMock);
+    apisHolder = new WorkflowHubApisHolder(apiClientConfig, restTemplateBuilderMock, new JsonConfig().objectMapperJackson3());
+
+    verifyHttpClientErrorJsonBodyHandlerConfiguration(apisHolder.getClassificationApi(null));
   }
 
   @AfterEach
-  void verifyNoMoreInteraction() {
+  void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       restTemplateBuilderMock,
       restTemplateMock
@@ -41,12 +47,21 @@ class WorkflowHubApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void testRetryConfiguration() {
+    assertRetry(apiClientConfig,
+      accessToken -> apisHolder.getClassificationApi(accessToken)
+        .assessmentsClassification(1L, "IUV", "IUD"),
+      new ParameterizedTypeReference<>() {}
+    );
+  }
+
+  @Test
   void whenGetClassificationApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> workflowHubApisHolder.getClassificationApi(accessToken)
+      accessToken -> apisHolder.getClassificationApi(accessToken)
         .assessmentsClassification(1L, "IUV", "IUD"),
       new ParameterizedTypeReference<>() {},
-      workflowHubApisHolder::unload);
+      apisHolder::unload);
   }
 
 }

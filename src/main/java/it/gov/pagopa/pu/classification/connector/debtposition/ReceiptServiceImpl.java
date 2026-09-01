@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.debtposition;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.client.ReceiptNoPIIClient;
-import it.gov.pagopa.pu.debtposition.dto.generated.ReceiptNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptNoPII;
 import org.springframework.stereotype.Service;
 
 @Service

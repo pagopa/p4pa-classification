@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.dto.filters;
 
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
-import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.LocalDateIntervalFilter;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

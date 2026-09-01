@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.classification.exception.custom;
+package it.gov.pagopa.pu.classification.exception.common;
 
 public class IllegalStateBusinessException extends BaseBusinessException {
   public IllegalStateBusinessException(String code, String message) {

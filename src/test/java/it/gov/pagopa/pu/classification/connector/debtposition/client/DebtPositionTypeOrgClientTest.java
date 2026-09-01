@@ -1,10 +1,11 @@
 package it.gov.pagopa.pu.classification.connector.debtposition.client;
 
 import it.gov.pagopa.pu.classification.connector.debtposition.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.debtposition.client.generated.DebtPositionTypeOrgSearchControllerApi;
-import it.gov.pagopa.pu.debtposition.dto.generated.CollectionModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtposition.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtposition.dto.generated.PagedModelDebtPositionTypeOrgEmbedded;
+import it.gov.pagopa.pu.classification.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.debtpositions.client.generated.DebtPositionTypeOrgSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgEmbedded;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ class DebtPositionTypeOrgClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
     when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsGetDebtPositionTypeOrgByInstallmentId(installmentId))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgByInstallmentId(installmentId, accessToken);
 
@@ -137,7 +137,7 @@ class DebtPositionTypeOrgClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
     when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByOrganizationIdAndCode(organizationId, debtPositionTypeOrgCode))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     // When
     DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgByDebtPositionTypeOrgCode(organizationId, debtPositionTypeOrgCode, accessToken);

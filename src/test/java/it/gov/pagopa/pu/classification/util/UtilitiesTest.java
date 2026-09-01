@@ -19,6 +19,45 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class UtilitiesTest {
 
+  public static void setTraceId(String traceId) {
+    setTraceId(traceId, null);
+  }
+  public static void setTraceId(String traceId, String spanId) {
+    MDC.put("traceId", traceId);
+    MDC.put("spanId", spanId);
+  }
+  public static void clearTraceIdContext(){
+    MDC.clear();
+  }
+
+  @Test
+  void testGetTraceId(){
+    // Given
+    String expectedResult = "TRACEID";
+    setTraceId(expectedResult);
+
+    // When
+    String result = Utilities.getTraceId();
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
+    clearTraceIdContext();
+  }
+
+  @Test
+  void testGetSpanId(){
+    // Given
+    String expectedResult = "SPANID";
+    setTraceId("TRACEID", expectedResult);
+
+    // When
+    String result = Utilities.getSpanId();
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
+    clearTraceIdContext();
+  }
+
   @Test
   void testBigDecimalEuroToLongCentsAmount(){
     // Given
@@ -91,27 +130,6 @@ public class UtilitiesTest {
 
     Assertions.assertFalse(Utilities.isValidIntervalBetweenLocalDate(dateFrom, dateTo, ChronoUnit.DAYS, 1));
     Assertions.assertTrue(Utilities.isValidIntervalBetweenLocalDate(dateFrom, dateTo, ChronoUnit.DAYS, 2));
-  }
-
-  @Test
-  void testGetTraceId(){
-    // Given
-    String expectedResult = "TRACEID";
-    setTraceId(expectedResult);
-
-    // When
-    String result = Utilities.getTraceId();
-
-    // Then
-    Assertions.assertSame(expectedResult, result);
-    clearTraceIdContext();
-  }
-
-  public static void setTraceId(String traceId) {
-    MDC.put("traceId", traceId);
-  }
-  public static void clearTraceIdContext(){
-    MDC.clear();
   }
 
   @Test

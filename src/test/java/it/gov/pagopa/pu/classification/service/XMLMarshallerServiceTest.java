@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.service;
 
-import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.exception.common.InvalidValueException;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtAccertamentoDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.BilancioDefault;
 import it.veneto.regione.schemas._2012.pagamenti.ente.CtCapitoloDefault;
@@ -75,9 +75,7 @@ class XMLMarshallerServiceTest {
   void marshalWithNoNamespaceAndRootElementThenException() {
     BilancioDefault bilancio = new BilancioDefault();
 
-    assertThrows(InvalidValueException.class, () -> {
-      service.marshal(bilancio, BilancioDefault.class, jaxbContext, schema, null, null);
-    });
+    assertThrows(InvalidValueException.class, () -> service.marshal(bilancio, BilancioDefault.class, jaxbContext, schema, null, null));
   }
 
 }

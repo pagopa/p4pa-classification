@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.classification.service;
 
-import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.exception.common.InvalidValueException;
 import it.veneto.regione.schemas._2012.pagamenti.ente.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -68,11 +68,11 @@ class XMLUnmarshallerServiceTest {
 
     assertNotNull(result);
     assertEquals(expectedBilancio.getCapitolos().size(), result.getCapitolos().size());
-    assertEquals(expectedBilancio.getCapitolos().get(0).getCodCapitolo(), result.getCapitolos().get(0).getCodCapitolo());
-    assertEquals(expectedBilancio.getCapitolos().get(0).getCodUfficio(), result.getCapitolos().get(0).getCodUfficio());
-    assertEquals(expectedBilancio.getCapitolos().get(0).getAccertamentos().size(), result.getCapitolos().get(0).getAccertamentos().size());
-    assertEquals(expectedBilancio.getCapitolos().get(0).getAccertamentos().get(0).getCodAccertamento(), result.getCapitolos().get(0).getAccertamentos().get(0).getCodAccertamento());
-    assertEquals(expectedBilancio.getCapitolos().get(0).getAccertamentos().get(0).getImporto(), result.getCapitolos().get(0).getAccertamentos().get(0).getImporto());
+    assertEquals(expectedBilancio.getCapitolos().getFirst().getCodCapitolo(), result.getCapitolos().getFirst().getCodCapitolo());
+    assertEquals(expectedBilancio.getCapitolos().getFirst().getCodUfficio(), result.getCapitolos().getFirst().getCodUfficio());
+    assertEquals(expectedBilancio.getCapitolos().getFirst().getAccertamentos().size(), result.getCapitolos().getFirst().getAccertamentos().size());
+    assertEquals(expectedBilancio.getCapitolos().getFirst().getAccertamentos().getFirst().getCodAccertamento(), result.getCapitolos().getFirst().getAccertamentos().getFirst().getCodAccertamento());
+    assertEquals(expectedBilancio.getCapitolos().getFirst().getAccertamentos().getFirst().getImporto(), result.getCapitolos().getFirst().getAccertamentos().getFirst().getImporto());
   }
 
   @Test

@@ -1,13 +1,16 @@
 package it.gov.pagopa.pu.classification.connector.workflowhub.config;
 
-import it.gov.pagopa.pu.classification.config.rest.RestTemplateConfig;
-import it.gov.pagopa.pu.workflow.client.generated.ClassificationApi;
-import it.gov.pagopa.pu.workflow.generated.ApiClient;
-import it.gov.pagopa.pu.workflow.generated.BaseApi;
+import it.gov.pagopa.pu.classification.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.classification.connector.workflowhub.mapper.WorkflowErrorDTOMapper;
+import it.gov.pagopa.pu.workflowhub.client.generated.ClassificationApi;
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowErrorDTO;
+import it.gov.pagopa.pu.workflowhub.generated.ApiClient;
+import it.gov.pagopa.pu.workflowhub.generated.BaseApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class WorkflowHubApisHolder {
@@ -18,7 +21,8 @@ public class WorkflowHubApisHolder {
 
   public WorkflowHubApisHolder(
     WorkflowHubApiClientConfig clientConfig,
-    RestTemplateBuilder restTemplateBuilder
+    RestTemplateBuilder restTemplateBuilder,
+    JsonMapper jsonMapper
   ) {
     RestTemplate restTemplate = restTemplateBuilder.build();
     ApiClient apiClient = new ApiClient(restTemplate);
@@ -26,9 +30,9 @@ public class WorkflowHubApisHolder {
     apiClient.setBearerToken(bearerTokenHolder::get);
     apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
     apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
-    if (clientConfig.isPrintBodyWhenError()) {
-      restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("WORKFLOW-HUB"));
-    }
+    restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "WORKFLOW-HUB", clientConfig.isPrintBodyWhenError(),
+      WorkflowErrorDTO.class, WorkflowErrorDTOMapper::map)
+    );
 
     this.classificationApi = new ClassificationApi(apiClient);
 

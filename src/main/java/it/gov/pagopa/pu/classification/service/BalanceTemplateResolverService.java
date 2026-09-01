@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.classification.service;
 import it.gov.pagopa.pu.classification.dto.generated.CalculateAmountBalanceRequest;
 import it.gov.pagopa.pu.classification.dto.generated.DebtPositionTypeOrgBalanceCostDTO;
 import it.gov.pagopa.pu.classification.enums.BalanceDefaultAmountType;
-import it.gov.pagopa.pu.classification.exception.custom.InvalidValueException;
+import it.gov.pagopa.pu.classification.exception.common.InvalidValueException;
 import it.gov.pagopa.pu.classification.util.ErrorCodeConstants;
 import it.gov.pagopa.pu.classification.util.Utilities;
 import it.veneto.regione.schemas._2012.pagamenti.ente.*;
@@ -41,7 +41,7 @@ public class BalanceTemplateResolverService {
     String balance = calculateAmountBalanceRequest.getBalance();
     Long notificationFeeCents = calculateAmountBalanceRequest.getNotificationFeeCents();
 
-    Object balanceXML = balanceService.unmarshalBalance(balance, null);
+    Object balanceXML = balanceService.unmarshalBalance(balance, null, true);
 
     if (balanceXML instanceof Bilancio ctBilancio) {
       log.info("The balance amount is already calculated");

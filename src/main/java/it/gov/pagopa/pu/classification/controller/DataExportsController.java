@@ -8,7 +8,7 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedFullClassificationView
 import it.gov.pagopa.pu.classification.enums.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.service.ClassificationService;
 import it.gov.pagopa.pu.classification.util.SecurityUtils;
-import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.LocalDateIntervalFilter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

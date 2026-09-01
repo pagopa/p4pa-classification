@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.workflowhub.client;
 
 import it.gov.pagopa.pu.classification.connector.workflowhub.config.WorkflowHubApisHolder;
-import it.gov.pagopa.pu.workflow.dto.generated.WorkflowCreatedDTO;
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

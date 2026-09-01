@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.classification.connector.processexecutions;
 
 import it.gov.pagopa.pu.classification.connector.processexecutions.client.IngestionFlowFileClient;
-import it.gov.pagopa.pu.p4paprocessexecutions.dto.generated.IngestionFlowFile;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile;
 import org.springframework.stereotype.Service;
 
 @Service
