@@ -77,6 +77,9 @@ val hibernateCoreVersion = "7.1.18.Final"
 
 val springCloudDepsVersion = "2025.1.3"
 
+// CVE Security dependencies
+val tomcatEmbedCoreVersion = "11.0.25"
+
 dependencyManagement {
   imports {
     mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudDepsVersion")
@@ -91,7 +94,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-hateoas")
   implementation("org.springframework.boot:spring-boot-starter-data-rest")
-  implementation("org.hibernate.orm:hibernate-core:${hibernateCoreVersion}")
+  implementation("org.hibernate.orm:hibernate-core:$hibernateCoreVersion")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa") {
@@ -123,6 +126,9 @@ dependencies {
   implementation("io.github.springwolf:springwolf-cloud-stream:$springWolfAsyncApiVersion")
 
   implementation("org.mozilla:rhino-engine:$rhinoScriptVersion")
+
+  // CVE Security dependencies
+  implementation("org.apache.tomcat.embed:tomcat-embed-core:$tomcatEmbedCoreVersion")
 
   //jaxb
   implementation("org.apache.ws.xmlschema:xmlschema-core:$xmlSchemaVersion")
