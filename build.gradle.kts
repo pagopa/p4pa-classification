@@ -11,7 +11,6 @@ plugins {
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
   id("org.sonarqube") version "7.4.0.8496"
-  id("com.github.ben-manes.versions") version "0.54.0"
   id("org.openapi.generator") version "7.25.0"
   id("org.ajoberstar.grgit") version "5.3.2"
   id("com.gorylenko.gradle-git-properties") version "4.0.1"
@@ -131,8 +130,8 @@ dependencies {
 
   // CVE Security dependencies
   implementation("org.apache.tomcat.embed:tomcat-embed-core:$tomcatEmbedCoreVersion")
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jackson2DatabindVersion")
-    implementation("tools.jackson.core:jackson-databind:$jackson3DatabindVersion")
+  implementation("com.fasterxml.jackson.core:jackson-databind:$jackson2DatabindVersion")
+  implementation("tools.jackson.core:jackson-databind:$jackson3DatabindVersion")
 
   //jaxb
   implementation("org.apache.ws.xmlschema:xmlschema-core:$xmlSchemaVersion")
@@ -195,6 +194,25 @@ val projectInfo = mapOf(
   "version" to project.version
 )
 
+configure<SourceSetContainer> {
+  named("main") {
+    java.srcDir("$projectDir/build/generated/src/main/java")
+  }
+}
+
+springBoot {
+  buildInfo()
+  mainClass.value("it.gov.pagopa.pu.classification.ClassificationApplication")
+}
+
+tasks.named<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>("dependencyUpdates") {
+  revision = "release"
+  outputFormatter = "json"
+  checkForGradleUpdate = false
+  checkEmbeddedKotlin = false
+  rejectPreReleases = true
+}
+
 tasks {
   val processResources by getting(ProcessResources::class) {
     filesMatching("**/application.yml") {
@@ -219,7 +237,8 @@ jaxb {
       args = listOf("-xmlschema")
       outputDir = file("$projectDir/build/generated/jaxb/java")
       schema = file("src/main/resources/xsd/bilancioDefault.xsd")
-      bindings = layout.files("$rootDir/src/main/resources/xsd/bindings-bilancioDefault.xjb")
+      bindings =
+        layout.files("$rootDir/src/main/resources/xsd/bindings-bilancioDefault.xjb")
     }
   }
 }
@@ -240,17 +259,6 @@ tasks.register("dependenciesBuild") {
     "openApiGenerateWORKFLOWHUB",
     "jaxbJavaGenAssessment"
   )
-}
-
-configure<SourceSetContainer> {
-  named("main") {
-    java.srcDir("$projectDir/build/generated/src/main/java")
-  }
-}
-
-springBoot {
-  buildInfo()
-  mainClass.value("it.gov.pagopa.pu.classification.ClassificationApplication")
 }
 
 openApiGenerate {
