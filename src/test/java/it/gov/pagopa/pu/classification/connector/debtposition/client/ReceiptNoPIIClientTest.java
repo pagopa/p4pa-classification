@@ -59,7 +59,7 @@ class ReceiptNoPIIClientTest {
     when(debtPositionApisHolderMock.getReceiptNoPiiEntityControllerApi(accessToken))
       .thenReturn(receiptNoPiiEntityControllerApiMock);
     when(receiptNoPiiEntityControllerApiMock.crudGetReceiptnopii(String.valueOf(receiptId)))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     ReceiptNoPII result = client.getById(receiptId, accessToken);
 
@@ -92,7 +92,7 @@ class ReceiptNoPIIClientTest {
     when(debtPositionApisHolderMock.getReceiptNoPiiSearchControllerApi(accessToken))
             .thenReturn(receiptNoPiiSearchControllerApiMock);
     when(receiptNoPiiSearchControllerApiMock.crudReceiptsGetByReceiptIdAndDebtPositionTypeOrgCode(receiptId,debtPositionTypeOrgCode))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     ReceiptNoPII result = client.getByReceiptIdAndDebtPositionTypeOrgCode(receiptId, debtPositionTypeOrgCode, accessToken);
 
