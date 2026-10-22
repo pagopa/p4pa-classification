@@ -54,7 +54,8 @@ repositories {
 val springDocOpenApiVersion = "3.1.1"
 val openApiToolsVersion = "0.2.11"
 val bouncycastleVersion = "1.86"
-val micrometerVersion = "1.7.1"
+val micrometerOtelBridgeVersion = "1.7.1"
+val micrometerPrometheusVersion = "1.17.1"
 val caffeineVersion = "3.3.0"
 val httpClientVersion = "5.6.4"
 val httpCoreVersion = "5.4.4"
@@ -107,8 +108,8 @@ dependencies {
     exclude(group = "org.lz4", module = "lz4-java")
   }
   implementation("at.yawk.lz4:lz4-java:$lz4JavaVersion")
-  implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
-  implementation("io.micrometer:micrometer-registry-prometheus")
+  implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerOtelBridgeVersion")
+  implementation("io.micrometer:micrometer-registry-prometheus:$micrometerPrometheusVersion")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion") {
     exclude(group = "org.apache.commons", module = "commons-lang3")
   }
