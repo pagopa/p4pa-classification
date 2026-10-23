@@ -128,6 +128,7 @@ dependencies {
   }
   implementation("io.github.springwolf:springwolf-ui:$springWolfUiAsyncApiVersion")
   implementation("io.github.springwolf:springwolf-cloud-stream:$springWolfAsyncApiVersion")
+  implementation("org.apache.ws.xmlschema:xmlschema-core:${xmlSchemaVersion}")
 
   implementation("org.mozilla:rhino-engine:$rhinoScriptVersion")
 
@@ -137,7 +138,6 @@ dependencies {
   implementation("tools.jackson.core:jackson-databind:$jackson3DatabindVersion")
 
   //jaxb
-  implementation("org.apache.ws.xmlschema:xmlschema-core:$xmlSchemaVersion")
   runtimeOnly("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
   jaxb("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
   jaxb("com.sun.xml.bind:jaxb-xjc:$jaxbVersion")
