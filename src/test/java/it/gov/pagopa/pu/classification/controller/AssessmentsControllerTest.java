@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.enums.AssessmentStatus;
 import it.gov.pagopa.pu.classification.model.Assessments;
 import it.gov.pagopa.pu.classification.service.assessments.AssessmentsService;
+import it.gov.pagopa.pu.classification.util.Constants;
 import it.gov.pagopa.pu.classification.util.SecurityUtilsTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,8 +69,8 @@ class AssessmentsControllerTest {
     //given
     Long organizationId = 1L;
     String assessmentName = "ASSESSMENT_NAME";
-    OffsetDateTime from = OffsetDateTime.now();
-    OffsetDateTime to = OffsetDateTime.now().plusDays(1L);
+    OffsetDateTime from = OffsetDateTime.now(Constants.ZONEID);
+    OffsetDateTime to = OffsetDateTime.now(Constants.ZONEID).plusHours(1L);
     String iuv = "IUV";
     List<String> debtPositionTypeOrgCodes = List.of("DEBT_POSITION_TYPE_ORG_CODE", "DEBT_POSITION_TYPE_ORG_CODE1");
     LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(from.toLocalDateTime(), to.toLocalDateTime());
@@ -81,6 +82,7 @@ class AssessmentsControllerTest {
     //then
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result.getBody());
     assertEquals(5, result.getBody().getContent().size());
     Mockito.verify(serviceMock).getPagedAssessmentsView(organizationId, assessmentName, localDateTimeIntervalFilter, iuv, debtPositionTypeOrgCodes, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
   }

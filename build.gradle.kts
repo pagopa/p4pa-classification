@@ -7,15 +7,14 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
   java
-  id("org.springframework.boot") version "4.1.1"
+  id("org.springframework.boot") version "4.1.2"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
-  id("org.sonarqube") version "7.4.0.8496"
-  id("com.github.ben-manes.versions") version "0.54.0"
-  id("org.openapi.generator") version "7.25.0"
-  id("org.ajoberstar.grgit") version "5.3.2"
+  id("org.sonarqube") version "7.5.0.8588"
+  id("org.openapi.generator") version "7.26.0"
+  id("org.ajoberstar.grgit") version "5.3.3"
   id("com.gorylenko.gradle-git-properties") version "4.0.1"
-  id("com.intershop.gradle.jaxb") version "8.0.1"
+  id("com.intershop.gradle.jaxb") version "9.0.0"
   id("com.github.jk1.dependency-license-report") version "3.1.4"
 }
 
@@ -53,24 +52,27 @@ repositories {
 }
 
 val springDocOpenApiVersion = "3.1.1"
-val openApiToolsVersion = "0.2.11"
+val openApiToolsVersion = "0.2.12"
 val bouncycastleVersion = "1.86"
-val micrometerVersion = "1.7.1"
-val caffeineVersion = "3.3.0"
-val httpClientVersion = "5.6.4"
+val micrometerOtelBridgeVersion = "1.7.2"
+val micrometerPrometheusVersion = "1.17.2"
+val caffeineVersion = "3.3.1"
+val httpClientVersion = "5.6.5"
 val httpCoreVersion = "5.4.4"
 val kafkaAppender = "0.2.0-RC2"
-val lz4JavaVersion = "1.12.0"
-val postgresJdbcVersion = "42.7.13"
+val lz4JavaVersion = "1.12.1"
+val postgresJdbcVersion = "42.7.14"
 val activationVersion = "2.1.4"
 val jaxbVersion = "4.0.9"
 val jaxbApiVersion = "4.0.5"
-val xmlSchemaVersion = "2.3.2"
+val jaxbPluginAnnotateVersion = "4.0.16"
+val slf4jSimpleVersion = "2.0.20"
+val xmlSchemaVersion = "2.3.3"
 val podamVersion = "8.0.2.RELEASE"
 val rhinoScriptVersion = "1.9.1"
-val springWolfAsyncApiVersion = "1.21.0"
-val springWolfUiAsyncApiVersion = "1.21.0"
-val commonsLang3Version = "3.20.0"
+val springWolfAsyncApiVersion = "2.8.0"
+val springWolfUiAsyncApiVersion = "2.8.0"
+val commonsLang3Version = "3.21.0"
 
 // Downgrading in order to handle List of enums in SpringDataRest exposed queries (see https://github.com/spring-projects/spring-data-commons/issues/3502)
 val hibernateCoreVersion = "7.1.18.Final"
@@ -78,9 +80,7 @@ val hibernateCoreVersion = "7.1.18.Final"
 val springCloudDepsVersion = "2025.1.3"
 
 // CVE Security dependencies
-val tomcatEmbedCoreVersion = "11.0.26"
 val jackson2DatabindVersion = "2.22.3"
-val jackson3DatabindVersion = "3.1.7"
 
 dependencyManagement {
   imports {
@@ -106,8 +106,8 @@ dependencies {
     exclude(group = "org.lz4", module = "lz4-java")
   }
   implementation("at.yawk.lz4:lz4-java:$lz4JavaVersion")
-  implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
-  implementation("io.micrometer:micrometer-registry-prometheus")
+  implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerOtelBridgeVersion")
+  implementation("io.micrometer:micrometer-registry-prometheus:$micrometerPrometheusVersion")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion") {
     exclude(group = "org.apache.commons", module = "commons-lang3")
   }
@@ -126,16 +126,14 @@ dependencies {
   }
   implementation("io.github.springwolf:springwolf-ui:$springWolfUiAsyncApiVersion")
   implementation("io.github.springwolf:springwolf-cloud-stream:$springWolfAsyncApiVersion")
+  implementation("org.apache.ws.xmlschema:xmlschema-core:${xmlSchemaVersion}")
 
   implementation("org.mozilla:rhino-engine:$rhinoScriptVersion")
 
   // CVE Security dependencies
-  implementation("org.apache.tomcat.embed:tomcat-embed-core:$tomcatEmbedCoreVersion")
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jackson2DatabindVersion")
-    implementation("tools.jackson.core:jackson-databind:$jackson3DatabindVersion")
+  implementation("com.fasterxml.jackson.core:jackson-databind:$jackson2DatabindVersion")
 
   //jaxb
-  implementation("org.apache.ws.xmlschema:xmlschema-core:$xmlSchemaVersion")
   runtimeOnly("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
   jaxb("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
   jaxb("com.sun.xml.bind:jaxb-xjc:$jaxbVersion")
@@ -143,8 +141,8 @@ dependencies {
   jaxb("com.sun.xml.bind:jaxb-core:$jaxbVersion")
   jaxb("jakarta.xml.bind:jakarta.xml.bind-api:$jaxbApiVersion")
   jaxb("jakarta.activation:jakarta.activation-api:$activationVersion")
-  jaxbext("org.jvnet.jaxb:jaxb-plugin-annotate:3.0.2")
-  jaxbext("org.slf4j:slf4j-simple:2.0.16") // see https://github.com/IntershopCommunicationsAG/jaxb-gradle-plugin/issues/37
+  jaxbext("org.jvnet.jaxb:jaxb-plugin-annotate:$jaxbPluginAnnotateVersion")
+  jaxbext("org.slf4j:slf4j-simple:$slf4jSimpleVersion") // see https://github.com/IntershopCommunicationsAG/jaxb-gradle-plugin/issues/37
 
   compileOnly("org.projectlombok:lombok")
   annotationProcessor("org.projectlombok:lombok")
@@ -195,6 +193,25 @@ val projectInfo = mapOf(
   "version" to project.version
 )
 
+configure<SourceSetContainer> {
+  named("main") {
+    java.srcDir("$projectDir/build/generated/src/main/java")
+  }
+}
+
+springBoot {
+  buildInfo()
+  mainClass.value("it.gov.pagopa.pu.classification.ClassificationApplication")
+}
+
+tasks.named<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>("dependencyUpdates") {
+  revision = "release"
+  outputFormatter = "json"
+  checkForGradleUpdate = false
+  checkEmbeddedKotlin = false
+  rejectPreReleases = true
+}
+
 tasks {
   val processResources by getting(ProcessResources::class) {
     filesMatching("**/application.yml") {
@@ -219,7 +236,8 @@ jaxb {
       args = listOf("-xmlschema")
       outputDir = file("$projectDir/build/generated/jaxb/java")
       schema = file("src/main/resources/xsd/bilancioDefault.xsd")
-      bindings = layout.files("$rootDir/src/main/resources/xsd/bindings-bilancioDefault.xjb")
+      bindings =
+        layout.files("$rootDir/src/main/resources/xsd/bindings-bilancioDefault.xjb")
     }
   }
 }
@@ -240,17 +258,6 @@ tasks.register("dependenciesBuild") {
     "openApiGenerateWORKFLOWHUB",
     "jaxbJavaGenAssessment"
   )
-}
-
-configure<SourceSetContainer> {
-  named("main") {
-    java.srcDir("$projectDir/build/generated/src/main/java")
-  }
-}
-
-springBoot {
-  buildInfo()
-  mainClass.value("it.gov.pagopa.pu.classification.ClassificationApplication")
 }
 
 openApiGenerate {
